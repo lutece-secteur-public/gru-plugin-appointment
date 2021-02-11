@@ -33,6 +33,7 @@
  */
 package fr.paris.lutece.plugins.appointment.business;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import fr.paris.lutece.plugins.appointment.business.form.Form;
@@ -45,7 +46,7 @@ import fr.paris.lutece.test.LuteceTestCase;
 
 /**
  * Test class of the WorkingDay
- * 
+ *
  * @author Laurent Payen
  *
  */
@@ -54,18 +55,14 @@ public final class WorkingDayTest extends LuteceTestCase
 
     public final static int DAY_OF_WEEK_1 = 1;
     public final static int DAY_OF_WEEK_2 = 2;
+    private Form form;
+    private WeekDefinition weekDefinition;
 
     /**
      * Test method for a working day (CRUD)
      */
     public void testWorkingDay( )
     {
-        // Initialize a WorkingDay
-        Form form = FormTest.buildForm1( );
-        FormHome.create( form );
-        WeekDefinition weekDefinition = WeekDefinitionTest.buildWeekDefinition( );
-        weekDefinition.setIdForm( form.getIdForm( ) );
-        WeekDefinitionHome.create( weekDefinition );
         WorkingDay workingDay = buildWorkingDay( );
         workingDay.setIdWeekDefinition( weekDefinition.getIdWeekDefinition( ) );
         // Insert the WorkingDay in database
@@ -89,9 +86,6 @@ public final class WorkingDayTest extends LuteceTestCase
         workingDayStored = WorkingDayHome.findByPrimaryKey( workingDay.getIdWorkingDay( ) );
         // Check the workingDay has been removed from database
         assertNull( workingDayStored );
-
-        // Clean
-        FormHome.delete( form.getIdForm( ) );
     }
 
     /**
@@ -99,12 +93,6 @@ public final class WorkingDayTest extends LuteceTestCase
      */
     public void testDeleteCascade( )
     {
-        // Initialize a WorkingDay
-        Form form = FormTest.buildForm1( );
-        FormHome.create( form );
-        WeekDefinition weekDefinition = WeekDefinitionTest.buildWeekDefinition( );
-        weekDefinition.setIdForm( form.getIdForm( ) );
-        WeekDefinitionHome.create( weekDefinition );
         WorkingDay workingDay = buildWorkingDay( );
         workingDay.setIdWeekDefinition( weekDefinition.getIdWeekDefinition( ) );
         // Insert the WorkingDay in database
@@ -113,7 +101,7 @@ public final class WorkingDayTest extends LuteceTestCase
         WorkingDay workingDayStored = WorkingDayHome.findByPrimaryKey( workingDay.getIdWorkingDay( ) );
         assertNotNull( workingDayStored );
         // Delete the form and by cascade the workingDay
-        FormHome.delete( form.getIdForm( ) );
+        FormHome.delete( this.form.getIdForm( ) );
         workingDayStored = WorkingDayHome.findByPrimaryKey( workingDay.getIdWorkingDay( ) );
         // Check the workingDay has been removed from database
         assertNull( workingDayStored );
@@ -124,12 +112,6 @@ public final class WorkingDayTest extends LuteceTestCase
      */
     public void testFindByIdWeekDefinition( )
     {
-        // Initialize a WorkingDay
-        Form form = FormTest.buildForm1( );
-        FormHome.create( form );
-        WeekDefinition weekDefinition = WeekDefinitionTest.buildWeekDefinition( );
-        weekDefinition.setIdForm( form.getIdForm( ) );
-        WeekDefinitionHome.create( weekDefinition );
         WorkingDay workingDay = buildWorkingDay( );
         workingDay.setIdWeekDefinition( weekDefinition.getIdWeekDefinition( ) );
         // Insert the WorkingDay in database
@@ -139,14 +121,11 @@ public final class WorkingDayTest extends LuteceTestCase
         // Check Asserts
         assertEquals( listWorkingDayStored.size( ), 1 );
         checkAsserts( listWorkingDayStored.get( 0 ), workingDay );
-
-        // Clean
-        FormHome.delete( form.getIdForm( ) );
     }
 
     /**
      * Build a WorkingDay Business Object
-     * 
+     *
      * @return the working day
      */
     public static WorkingDay buildWorkingDay( )
@@ -158,7 +137,7 @@ public final class WorkingDayTest extends LuteceTestCase
 
     /**
      * Check that all the asserts are true
-     * 
+     *
      * @param workingDayStored
      *            the working day stored
      * @param workingDay
@@ -168,5 +147,26 @@ public final class WorkingDayTest extends LuteceTestCase
     {
         assertEquals( workingDayStored.getDayOfWeek( ), workingDay.getDayOfWeek( ) );
         assertEquals( workingDayStored.getIdWeekDefinition( ), workingDay.getIdWeekDefinition( ) );
+    }
+
+    @Override
+    protected void setUp() throws Exception {
+        super.setUp();
+        this.form = FormTest.buildForm1( );
+        FormHome.create( this.form );
+        this.weekDefinition = WeekDefinitionTest.buildWeekDefinition( );
+        weekDefinition.setIdForm( this.form.getIdForm( ) );
+        WeekDefinitionHome.create( weekDefinition );
+
+    }
+
+    @Override
+    protected void tearDown() throws Exception {
+        super.tearDown();
+        //delete all the forms left over from tests
+        for (Form f : FormHome.findAllForms()) {
+            FormHome.delete(f.getIdForm());
+        }
+        this.form = null;
     }
 }

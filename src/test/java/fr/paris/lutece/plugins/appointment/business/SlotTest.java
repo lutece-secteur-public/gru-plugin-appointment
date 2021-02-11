@@ -44,23 +44,21 @@ import fr.paris.lutece.test.LuteceTestCase;
 
 /**
  * Test class for the Slot
- * 
+ *
  * @author Laurent Payen
  *
  */
 public final class SlotTest extends LuteceTestCase
 {
+    private Form form;
 
     /**
      * Test method for the Slot (CRUD)
      */
     public void testSlot( )
     {
-        Form form = FormTest.buildForm1( );
-        FormHome.create( form );
-
         // Initialize a Slot
-        Slot slot = buildSlot( form.getIdForm( ), Constants.STARTING_DATE_1, Constants.ENDING_DATE_1, Constants.NB_REMAINING_PLACES_1,
+        Slot slot = buildSlot( this.form.getIdForm( ), Constants.STARTING_DATE_1, Constants.ENDING_DATE_1, Constants.NB_REMAINING_PLACES_1,
                 Constants.NB_REMAINING_PLACES_1, 0, Constants.NB_REMAINING_PLACES_1, Boolean.TRUE, Boolean.TRUE );
         // Create the Slot in database
         SlotHome.create( slot );
@@ -86,9 +84,6 @@ public final class SlotTest extends LuteceTestCase
         slotStored = SlotHome.findByPrimaryKey( slot.getIdSlot( ) );
         // Check the Slot has been removed from database
         assertNull( slotStored );
-
-        // Clean
-        FormHome.delete( form.getIdForm( ) );
     }
 
     /**
@@ -96,11 +91,8 @@ public final class SlotTest extends LuteceTestCase
      */
     public void testDeleteCascade( )
     {
-        Form form = FormTest.buildForm1( );
-        FormHome.create( form );
-
         // Initialize a Slot
-        Slot slot = buildSlot( form.getIdForm( ), Constants.STARTING_DATE_1, Constants.ENDING_DATE_1, Constants.NB_REMAINING_PLACES_1,
+        Slot slot = buildSlot( this.form.getIdForm( ), Constants.STARTING_DATE_1, Constants.ENDING_DATE_1, Constants.NB_REMAINING_PLACES_1,
                 Constants.NB_REMAINING_PLACES_1, 0, Constants.NB_REMAINING_PLACES_1, Boolean.TRUE, Boolean.TRUE );
         slot.setIdForm( form.getIdForm( ) );
         // Create the Slot in database
@@ -109,7 +101,7 @@ public final class SlotTest extends LuteceTestCase
         Slot slotStored = SlotHome.findByPrimaryKey( slot.getIdSlot( ) );
         assertNotNull( slotStored );
         // Delete the Form and by cascade the Slot
-        FormHome.delete( form.getIdForm( ) );
+        FormHome.delete( this.form.getIdForm( ) );
         slotStored = SlotHome.findByPrimaryKey( slot.getIdSlot( ) );
         // Check the Slot has been removed from database
         assertNull( slotStored );
@@ -120,9 +112,6 @@ public final class SlotTest extends LuteceTestCase
      */
     public void testFindByIdFormAndDateRange( )
     {
-        Form form = FormTest.buildForm1( );
-        FormHome.create( form );
-
         // Initialize a first Slot that matches
         Slot slot1 = buildSlot( form.getIdForm( ), Constants.STARTING_DATE_1, Constants.ENDING_DATE_1, Constants.NB_REMAINING_PLACES_1,
                 Constants.NB_REMAINING_PLACES_1, 0, Constants.NB_REMAINING_PLACES_1, Boolean.TRUE, Boolean.TRUE );
@@ -130,17 +119,15 @@ public final class SlotTest extends LuteceTestCase
         SlotHome.create( slot1 );
 
         // Initialize a second slot that doesn't matche
-        Slot slot2 = buildSlot( form.getIdForm( ), Constants.STARTING_DATE_2, Constants.ENDING_DATE_2, Constants.NB_REMAINING_PLACES_2,
+        Slot slot2 = buildSlot( this.form.getIdForm( ), Constants.STARTING_DATE_2, Constants.ENDING_DATE_2, Constants.NB_REMAINING_PLACES_2,
                 Constants.NB_REMAINING_PLACES_2, 0, Constants.NB_REMAINING_PLACES_2, Boolean.TRUE, Boolean.TRUE );
         // Create the Slot in database
         SlotHome.create( slot2 );
 
         // Find the Slot created in database
-        List<Slot> listSlotStored = SlotHome.findByIdFormAndDateRange( form.getIdForm( ), Constants.STARTING_DATE_1, Constants.ENDING_DATE_1 );
+        List<Slot> listSlotStored = SlotHome.findByIdFormAndDateRange( this.form.getIdForm( ), Constants.STARTING_DATE_1, Constants.ENDING_DATE_1 );
         assertEquals( listSlotStored.size( ), 1 );
 
-        // Clean
-        FormHome.delete( form.getIdForm( ) );
     }
 
     /**
@@ -148,17 +135,14 @@ public final class SlotTest extends LuteceTestCase
      */
     public void testFindOpenSlotsByIdFormAndDateRange( )
     {
-        Form form = FormTest.buildForm1( );
-        FormHome.create( form );
-
         // Initialize a first Slot
-        Slot slot1 = buildSlot( form.getIdForm( ), Constants.STARTING_DATE_1, Constants.ENDING_DATE_1, Constants.NB_REMAINING_PLACES_1,
+        Slot slot1 = buildSlot( this.form.getIdForm( ), Constants.STARTING_DATE_1, Constants.ENDING_DATE_1, Constants.NB_REMAINING_PLACES_1,
                 Constants.NB_REMAINING_PLACES_1, 0, Constants.NB_REMAINING_PLACES_1, Boolean.TRUE, Boolean.TRUE );
         // Create the Slot in database
         SlotHome.create( slot1 );
 
         // Initialize a second Slot closed
-        Slot slotClosed = buildSlot( form.getIdForm( ), Constants.STARTING_DATE_2, Constants.ENDING_DATE_2, Constants.NB_REMAINING_PLACES_2,
+        Slot slotClosed = buildSlot( this.form.getIdForm( ), Constants.STARTING_DATE_2, Constants.ENDING_DATE_2, Constants.NB_REMAINING_PLACES_2,
                 Constants.NB_REMAINING_PLACES_2, 0, Constants.NB_REMAINING_PLACES_2, Boolean.FALSE, Boolean.TRUE );
         // Create the Slot in database
         SlotHome.create( slotClosed );
@@ -166,8 +150,6 @@ public final class SlotTest extends LuteceTestCase
         List<Slot> listSlotStored = SlotHome.findOpenSlotsByIdFormAndDateRange( form.getIdForm( ), Constants.STARTING_DATE_1, Constants.ENDING_DATE_2 );
         assertEquals( listSlotStored.size( ), 1 );
 
-        // Clean
-        FormHome.delete( form.getIdForm( ) );
     }
 
     /**
@@ -175,44 +157,38 @@ public final class SlotTest extends LuteceTestCase
      */
     public void testFindOpenSlotsByIdForm( )
     {
-        Form form = FormTest.buildForm1( );
-        FormHome.create( form );
-
         // Initialize a Slot
-        Slot slot1 = buildSlot( form.getIdForm( ), Constants.STARTING_DATE_1, Constants.ENDING_DATE_1, Constants.NB_REMAINING_PLACES_1,
+        Slot slot1 = buildSlot( this.form.getIdForm( ), Constants.STARTING_DATE_1, Constants.ENDING_DATE_1, Constants.NB_REMAINING_PLACES_1,
                 Constants.NB_REMAINING_PLACES_1, 0, Constants.NB_REMAINING_PLACES_1, Boolean.TRUE, Boolean.TRUE );
         // Create the Slot in database
         SlotHome.create( slot1 );
 
         // Initialize a 2nd Slot
-        Slot slot2 = buildSlot( form.getIdForm( ), Constants.STARTING_DATE_2, Constants.ENDING_DATE_2, Constants.NB_REMAINING_PLACES_2,
+        Slot slot2 = buildSlot( this.form.getIdForm( ), Constants.STARTING_DATE_2, Constants.ENDING_DATE_2, Constants.NB_REMAINING_PLACES_2,
                 Constants.NB_REMAINING_PLACES_2, 0, Constants.NB_REMAINING_PLACES_2, Boolean.TRUE, Boolean.TRUE );
         // Create the Slot in database
         SlotHome.create( slot2 );
 
         // Initialize a 3th slot closed
-        Slot slot3 = buildSlot( form.getIdForm( ), Constants.STARTING_DATE_3, Constants.ENDING_DATE_3, Constants.NB_REMAINING_PLACES_3,
+        Slot slot3 = buildSlot( this.form.getIdForm( ), Constants.STARTING_DATE_3, Constants.ENDING_DATE_3, Constants.NB_REMAINING_PLACES_3,
                 Constants.NB_REMAINING_PLACES_3, 0, Constants.NB_REMAINING_PLACES_3, Boolean.FALSE, Boolean.TRUE );
 
         // Create the Slot in database
         SlotHome.create( slot3 );
 
         // Find the Slot created in database
-        List<Slot> listSlotStored = SlotHome.findOpenSlotsByIdForm( form.getIdForm( ) );
+        List<Slot> listSlotStored = SlotHome.findOpenSlotsByIdForm( this.form.getIdForm( ) );
         assertEquals( listSlotStored.size( ), 2 );
-
-        // Clean
-        FormHome.delete( form.getIdForm( ) );
 
     }
 
     /**
      * Build a SLot Business Object
-     * 
+     *
      * @return a slot
      */
     public static Slot buildSlot( int nIdForm, LocalDateTime startingDateTime, LocalDateTime endingDateTime, int nbRemainingPlaces,
-            int nbPotentialRemaningPlaces, int nbPlacesTaken, int nMaxCapacity, boolean isOpen, boolean isSpecific )
+                                  int nbPotentialRemaningPlaces, int nbPlacesTaken, int nMaxCapacity, boolean isOpen, boolean isSpecific )
     {
         Slot slot = new Slot( );
         slot.setIdForm( nIdForm );
@@ -229,7 +205,7 @@ public final class SlotTest extends LuteceTestCase
 
     /**
      * Check that all the asserts are true
-     * 
+     *
      * @param slotStored
      *            the Slot stored
      * @param slot
@@ -242,6 +218,24 @@ public final class SlotTest extends LuteceTestCase
         assertEquals( slotStored.getIsOpen( ), slot.getIsOpen( ) );
         assertEquals( slotStored.getNbRemainingPlaces( ), slot.getNbRemainingPlaces( ) );
         assertEquals( slotStored.getIdForm( ), slot.getIdForm( ) );
+    }
+
+    @Override
+    protected void setUp() throws Exception {
+        super.setUp();
+        this.form = FormTest.buildForm1( );
+        FormHome.create( this.form );
+
+    }
+
+    @Override
+    protected void tearDown() throws Exception {
+        super.tearDown();
+        //delete all the forms left over from tests
+        for (Form f : FormHome.findAllForms()) {
+            FormHome.delete(f.getIdForm());
+        }
+        this.form = null;
     }
 
 }

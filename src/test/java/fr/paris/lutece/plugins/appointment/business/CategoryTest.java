@@ -39,7 +39,7 @@ import fr.paris.lutece.test.LuteceTestCase;
 
 /**
  * Test Class for the Display
- * 
+ *
  * @author Laurent Payen
  *
  */
@@ -82,7 +82,7 @@ public final class CategoryTest extends LuteceTestCase
 
     /**
      * Build a Category Business Object
-     * 
+     *
      * @return the category
      */
     public static Category buildCategory( String strLabel )
@@ -94,7 +94,7 @@ public final class CategoryTest extends LuteceTestCase
 
     /**
      * Check that all the asserts are true
-     * 
+     *
      * @param categoryStored
      *            the Category stored
      * @param category

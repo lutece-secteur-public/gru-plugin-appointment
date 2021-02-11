@@ -44,7 +44,7 @@ import fr.paris.lutece.test.LuteceTestCase;
 
 /**
  * Test class of the WeekDefinition
- * 
+ *
  * @author Laurent Payen
  *
  */
@@ -53,6 +53,7 @@ public final class WeekDefinitionTest extends LuteceTestCase
 
     public final static LocalDate DATE_OF_APPLY_1 = LocalDate.parse( "2017-01-26" );
     public final static LocalDate DATE_OF_APPLY_2 = LocalDate.parse( "2017-01-27" );
+    private Form form;
 
     /**
      * Test method for the weekDefinition (CRUD)
@@ -60,10 +61,8 @@ public final class WeekDefinitionTest extends LuteceTestCase
     public void testWeekDefinition( )
     {
         // Initialize a WeekDefinition
-        Form form = FormTest.buildForm1( );
-        FormHome.create( form );
         WeekDefinition weekDefinition = buildWeekDefinition( );
-        weekDefinition.setIdForm( form.getIdForm( ) );
+        weekDefinition.setIdForm( this.form.getIdForm( ) );
         // Insert the WeekDefinition in database
         WeekDefinitionHome.create( weekDefinition );
         // Find the weekDefinition created in database
@@ -85,9 +84,6 @@ public final class WeekDefinitionTest extends LuteceTestCase
         weekDefinitionStored = WeekDefinitionHome.findByPrimaryKey( weekDefinition.getIdWeekDefinition( ) );
         // Check the weekDefinition has been removed from database
         assertNull( weekDefinitionStored );
-
-        // Clean
-        FormHome.delete( form.getIdForm( ) );
     }
 
     /**
@@ -96,17 +92,15 @@ public final class WeekDefinitionTest extends LuteceTestCase
     public void testDeleteCascade( )
     {
         // Initialize a WeekDefinition
-        Form form = FormTest.buildForm1( );
-        FormHome.create( form );
         WeekDefinition weekDefinition = buildWeekDefinition( );
-        weekDefinition.setIdForm( form.getIdForm( ) );
+        weekDefinition.setIdForm( this.form.getIdForm( ) );
         // Insert the WeekDefinition in database
         WeekDefinitionHome.create( weekDefinition );
         // Find the weekDefinition created in database
         WeekDefinition weekDefinitionStored = WeekDefinitionHome.findByPrimaryKey( weekDefinition.getIdWeekDefinition( ) );
         assertNotNull( weekDefinitionStored );
         // Delete the Form and by cascade the weekDefinition
-        FormHome.delete( form.getIdForm( ) );
+        FormHome.delete( this.form.getIdForm( ) );
         weekDefinitionStored = WeekDefinitionHome.findByPrimaryKey( weekDefinition.getIdWeekDefinition( ) );
         // Check the weekDefinition has been removed from database
         assertNull( weekDefinitionStored );
@@ -118,25 +112,20 @@ public final class WeekDefinitionTest extends LuteceTestCase
     public void testFindByIdForm( )
     {
         // Initialize a WeekDefinition
-        Form form = FormTest.buildForm1( );
-        FormHome.create( form );
         WeekDefinition weekDefinition = buildWeekDefinition( );
-        weekDefinition.setIdForm( form.getIdForm( ) );
+        weekDefinition.setIdForm( this.form.getIdForm( ) );
         // Insert the WeekDefinition in database
         WeekDefinitionHome.create( weekDefinition );
         // Find the weekDefinition created in database
-        List<WeekDefinition> listWeekDefinitionStored = WeekDefinitionHome.findByIdForm( form.getIdForm( ) );
+        List<WeekDefinition> listWeekDefinitionStored = WeekDefinitionHome.findByIdForm( this.form.getIdForm( ) );
         // Check Asserts
         assertEquals( listWeekDefinitionStored.size( ), 1 );
         checkAsserts( listWeekDefinitionStored.get( 0 ), weekDefinition );
-
-        // Clean
-        FormHome.delete( form.getIdForm( ) );
     }
 
     /**
      * Build a WeekDefinition Business Object
-     * 
+     *
      * @return the weekDefinition
      */
     public static WeekDefinition buildWeekDefinition( )
@@ -148,7 +137,7 @@ public final class WeekDefinitionTest extends LuteceTestCase
 
     /**
      * Check that all the asserts are true
-     * 
+     *
      * @param weekDefinitionStored
      *            the weekDefinition stored
      * @param weekDefinition
@@ -158,5 +147,27 @@ public final class WeekDefinitionTest extends LuteceTestCase
     {
         assertEquals( weekDefinitionStored.getDateOfApply( ), weekDefinition.getDateOfApply( ) );
         assertEquals( weekDefinitionStored.getIdForm( ), weekDefinition.getIdForm( ) );
+    }
+
+    /*
+     * This function is used for cleaning up the database after all of the individual tests
+     */
+
+    @Override
+    protected void setUp() throws Exception {
+        super.setUp();
+        this.form = FormTest.buildForm1( );
+        FormHome.create( this.form );
+
+    }
+
+    @Override
+    protected void tearDown() throws Exception {
+        super.tearDown();
+        //delete all the forms left over from tests
+        for (Form f : FormHome.findAllForms()) {
+            FormHome.delete(f.getIdForm());
+        }
+        this.form = null;
     }
 }

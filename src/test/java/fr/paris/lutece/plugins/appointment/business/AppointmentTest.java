@@ -35,6 +35,7 @@ package fr.paris.lutece.plugins.appointment.business;
 
 import java.time.LocalTime;
 import java.util.List;
+import java.util.ArrayList;
 
 import fr.paris.lutece.plugins.appointment.business.appointment.Appointment;
 import fr.paris.lutece.plugins.appointment.business.appointment.AppointmentHome;
@@ -49,32 +50,27 @@ import fr.paris.lutece.test.LuteceTestCase;
 
 /**
  * Test Class for the Appointment
- * 
+ *
  * @author Laurent Payen
  *
  */
 public final class AppointmentTest extends LuteceTestCase
 {
+    private List<Integer> userIds = new ArrayList<>();
+    private List<Integer> slotIds = new ArrayList<>();
+    private Form form;
+    private User user;
+    private Slot slotOne;
 
     /**
      * Test method for the Appointment (CRUD)
      */
     public void testAppointment( )
     {
-        Form form = FormTest.buildForm1( );
-        FormHome.create( form );
-
-        User user = UserTest.buildUser( Constants.GUID_1, Constants.FIRST_NAME_1, Constants.LAST_NAME_1, Constants.EMAIL_1, Constants.PHONE_NUMBER_1 );
-        UserHome.create( user );
-
-        Slot slot = SlotTest.buildSlot( form.getIdForm( ), Constants.STARTING_DATE_1, Constants.ENDING_DATE_1, Constants.NB_REMAINING_PLACES_1,
-                Constants.NB_REMAINING_PLACES_1, 0, Constants.NB_REMAINING_PLACES_1, Boolean.TRUE, Boolean.TRUE );
-        SlotHome.create( slot );
-
         // Initialize a Appointment
         Appointment appointment = new Appointment( );
-        appointment.setIdUser( user.getIdUser( ) );
-        appointment.setIdSlot( slot.getIdSlot( ) );
+        appointment.setIdUser( this.user.getIdUser( ) );
+        appointment.setIdSlot( this.slotOne.getIdSlot( ) );
         // Create the Appointment in database
         AppointmentHome.create( appointment );
         // Find the Appointment created in database
@@ -92,9 +88,6 @@ public final class AppointmentTest extends LuteceTestCase
         // Check the Appointment has been removed from database
         assertNull( appointmentStored );
 
-        // Clean
-        FormHome.delete( form.getIdForm( ) );
-        UserHome.delete( user.getIdUser( ) );
     }
 
     /**
@@ -102,34 +95,21 @@ public final class AppointmentTest extends LuteceTestCase
      */
     public void testDeleteCascade( )
     {
-        Form form = FormTest.buildForm1( );
-        FormHome.create( form );
-
-        User user = UserTest.buildUser( Constants.GUID_1, Constants.FIRST_NAME_1, Constants.LAST_NAME_1, Constants.EMAIL_1, Constants.PHONE_NUMBER_1 );
-        UserHome.create( user );
-
-        Slot slot = SlotTest.buildSlot( form.getIdForm( ), Constants.STARTING_DATE_1, Constants.ENDING_DATE_1, Constants.NB_REMAINING_PLACES_1,
-                Constants.NB_REMAINING_PLACES_1, 0, Constants.NB_REMAINING_PLACES_1, Boolean.TRUE, Boolean.TRUE );
-        SlotHome.create( slot );
-
         // Initialize a Appointment
         Appointment appointment = new Appointment( );
-        appointment.setIdUser( user.getIdUser( ) );
-        appointment.setIdSlot( slot.getIdSlot( ) );
+        appointment.setIdUser( this.user.getIdUser( ) );
+        appointment.setIdSlot( this.slotOne.getIdSlot( ) );
         // Create the Appointment in database
         AppointmentHome.create( appointment );
         // Find the Appointment created in database
         Appointment appointmentStored = AppointmentHome.findByPrimaryKey( appointment.getIdAppointment( ) );
         assertNotNull( appointmentStored );
         // Delete the form and by cascade the appointment
-        FormHome.delete( form.getIdForm( ) );
+        FormHome.delete( this.form.getIdForm( ) );
         appointmentStored = AppointmentHome.findByPrimaryKey( appointment.getIdAppointment( ) );
         // Check the Appointment has been removed from database
         assertNull( appointmentStored );
 
-        // Clean
-        FormHome.delete( form.getIdForm( ) );
-        UserHome.delete( user.getIdUser( ) );
     }
 
     /**
@@ -137,30 +117,22 @@ public final class AppointmentTest extends LuteceTestCase
      */
     public void testFindByIdUser( )
     {
-        Form form = FormTest.buildForm1( );
-        FormHome.create( form );
-
-        User user = UserTest.buildUser( Constants.GUID_1, Constants.FIRST_NAME_1, Constants.LAST_NAME_1, Constants.EMAIL_1, Constants.PHONE_NUMBER_1 );
-        UserHome.create( user );
-
-        Slot slot1 = SlotTest.buildSlot( form.getIdForm( ), Constants.STARTING_DATE_1, Constants.ENDING_DATE_1, Constants.NB_REMAINING_PLACES_1,
-                Constants.NB_REMAINING_PLACES_1, 0, Constants.NB_REMAINING_PLACES_1, Boolean.TRUE, Boolean.TRUE );
-        SlotHome.create( slot1 );
-
         Slot slot2 = SlotTest.buildSlot( form.getIdForm( ), Constants.STARTING_DATE_2, Constants.ENDING_DATE_2, Constants.NB_REMAINING_PLACES_2,
                 Constants.NB_REMAINING_PLACES_2, 0, Constants.NB_REMAINING_PLACES_2, Boolean.TRUE, Boolean.TRUE );
         SlotHome.create( slot2 );
 
+        this.slotIds.add(slot2.getIdSlot());
+
         // Initialize a fist Appointment
         Appointment appointment1 = new Appointment( );
-        appointment1.setIdUser( user.getIdUser( ) );
-        appointment1.setIdSlot( slot1.getIdSlot( ) );
+        appointment1.setIdUser( this.user.getIdUser( ) );
+        appointment1.setIdSlot( this.slotOne.getIdSlot( ) );
         // Create the Appointment in database
         AppointmentHome.create( appointment1 );
 
         // Initialize a 2nd Appointment
         Appointment appointment2 = new Appointment( );
-        appointment2.setIdUser( user.getIdUser( ) );
+        appointment2.setIdUser( this.user.getIdUser( ) );
         appointment2.setIdSlot( slot2.getIdSlot( ) );
         // Create the Appointment in database
         AppointmentHome.create( appointment2 );
@@ -169,9 +141,6 @@ public final class AppointmentTest extends LuteceTestCase
         // Check that the list has two results
         assertEquals( listAppointmentStored.size( ), 2 );
 
-        // Clean
-        FormHome.delete( form.getIdForm( ) );
-        UserHome.delete( user.getIdUser( ) );
     }
 
     /**
@@ -179,30 +148,22 @@ public final class AppointmentTest extends LuteceTestCase
      */
     public void testFindByIdSlot( )
     {
-        Form form = FormTest.buildForm1( );
-        FormHome.create( form );
-
-        User user1 = UserTest.buildUser( Constants.GUID_1, Constants.FIRST_NAME_1, Constants.LAST_NAME_1, Constants.EMAIL_1, Constants.PHONE_NUMBER_1 );
-        UserHome.create( user1 );
-
         User user2 = UserTest.buildUser( Constants.GUID_2, Constants.FIRST_NAME_2, Constants.LAST_NAME_2, Constants.EMAIL_2, Constants.PHONE_NUMBER_2 );
         UserHome.create( user2 );
 
-        Slot slot = SlotTest.buildSlot( form.getIdForm( ), Constants.STARTING_DATE_1, Constants.ENDING_DATE_1, Constants.NB_REMAINING_PLACES_1,
-                Constants.NB_REMAINING_PLACES_1, 0, Constants.NB_REMAINING_PLACES_1, Boolean.TRUE, Boolean.TRUE );
-        SlotHome.create( slot );
+        this.userIds.add(user2.getIdUser());
 
         // Initialize a fist Appointment
         Appointment appointment1 = new Appointment( );
-        appointment1.setIdUser( user1.getIdUser( ) );
-        appointment1.setIdSlot( slot.getIdSlot( ) );
+        appointment1.setIdUser( this.user.getIdUser( ) );
+        appointment1.setIdSlot( this.slotOne.getIdSlot( ) );
         // Create the Appointment in database
         AppointmentHome.create( appointment1 );
 
         // Initialize a 2nd Appointment
         Appointment appointment2 = new Appointment( );
         appointment2.setIdUser( user2.getIdUser( ) );
-        appointment2.setIdSlot( slot.getIdSlot( ) );
+        appointment2.setIdSlot( this.slotOne.getIdSlot( ) );
         // Create the Appointment in database
         AppointmentHome.create( appointment2 );
         // Find the Appointments created in database
@@ -210,15 +171,11 @@ public final class AppointmentTest extends LuteceTestCase
         // Check that the list has two results
         assertEquals( listAppointmentStored.size( ), 2 );
 
-        // Clean
-        FormHome.delete( form.getIdForm( ) );
-        UserHome.delete( user1.getIdUser( ) );
-        UserHome.delete( user2.getIdUser( ) );
     }
 
     /**
      * Check that all the asserts are true
-     * 
+     *
      * @param appointmentStored
      *            the Appointment stored
      * @param appointment
@@ -231,7 +188,7 @@ public final class AppointmentTest extends LuteceTestCase
     }
 
     public static AppointmentDTO buildAppointmentDTO( Slot slot, String strEmail, String strFirstName, String strLastName, LocalTime startingTime,
-            LocalTime endingTime, int nbBookedSeats )
+                                                      LocalTime endingTime, int nbBookedSeats )
     {
         AppointmentDTO appointmentDTO = new AppointmentDTO( );
         appointmentDTO.setSlot( slot );
@@ -242,5 +199,49 @@ public final class AppointmentTest extends LuteceTestCase
         appointmentDTO.setEndingTime( endingTime );
         appointmentDTO.setNbBookedSeats( nbBookedSeats );
         return appointmentDTO;
+    }
+
+    @Override
+    protected  void setUp() throws Exception {
+        super.setUp();
+        this.form = FormTest.buildForm1( );
+        FormHome.create( this.form );
+
+        this.user = UserTest.buildUser( Constants.GUID_1, Constants.FIRST_NAME_1, Constants.LAST_NAME_1, Constants.EMAIL_1, Constants.PHONE_NUMBER_1 );
+        UserHome.create( user );
+        // Add user id to private list of users that will be deleted int he tear down
+        this.userIds.add(this.user.getIdUser());
+
+        this.slotOne = SlotTest.buildSlot( form.getIdForm( ), Constants.STARTING_DATE_1, Constants.ENDING_DATE_1, Constants.NB_REMAINING_PLACES_1,
+                Constants.NB_REMAINING_PLACES_1, 0, Constants.NB_REMAINING_PLACES_1, Boolean.TRUE, Boolean.TRUE );
+        SlotHome.create( slotOne);
+        this.slotIds.add(this.slotOne.getIdSlot());
+
+    }
+
+    @Override
+    protected void tearDown() throws Exception {
+        super.tearDown();
+        //delete all the forms left over from tests
+        for (Form f : FormHome.findAllForms()) {
+            FormHome.delete(f.getIdForm());
+            assertNull(FormHome.findByPrimaryKey(f.getIdForm()));
+        }
+        for (int id : this.userIds) {
+            UserHome.delete(id);
+            assertNull(UserHome.findByPrimaryKey(id));
+        }
+
+        for (int id : this.slotIds) {
+            SlotHome.delete(id);
+            assertNull(SlotHome.findByPrimaryKey(id));
+        }
+
+        this.userIds = null;
+        this.slotIds = null;
+        this.form = null;
+        this.user = null;
+        this.slotOne = null;
+
     }
 }
