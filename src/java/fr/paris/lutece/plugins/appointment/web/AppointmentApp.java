@@ -594,7 +594,7 @@ public class AppointmentApp extends MVCApplication
         {
 
             addError( ERROR_MESSAGE_FORM_NOT_ACTIVE, getLocale( request ) );
-            return redirect( request, VIEW_APPOINTMENT_CALENDAR, PARAMETER_ID_FORM, nIdForm );
+            return redirect( request, VIEW_APPOINTMENT_CALENDAR, PARAMETER_ID_FORM, nIdForm, PARAMETER_NB_PLACE_TO_TAKE, _nNbPlacesToTake  );
         }
         checkMyLuteceAuthentication( _appointmentForm, request );
         // Patch needed for authentication after being on the form
@@ -644,7 +644,7 @@ public class AppointmentApp extends MVCApplication
                     || ( _nNbPlacesToTake > 0 && listSlot.size( ) != _nNbPlacesToTake ) || !AppointmentUtilities.isConsecutiveSlots( listSlot ) )
             {
                 addError( ERROR_MESSAGE_SLOT_FULL, getLocale( request ) );
-                return redirect( request, VIEW_APPOINTMENT_CALENDAR, PARAMETER_ID_FORM, nIdForm );
+                return redirect( request, VIEW_APPOINTMENT_CALENDAR, PARAMETER_ID_FORM, nIdForm, PARAMETER_NB_PLACE_TO_TAKE, _nNbPlacesToTake );
             }
 
         }
@@ -721,7 +721,7 @@ public class AppointmentApp extends MVCApplication
                 {
                     _notValidatedAppointment = null;
                     addError( ERROR_MESSAGE_SLOT_FULL, getLocale( request ) );
-                    return redirect( request, VIEW_APPOINTMENT_CALENDAR, PARAMETER_ID_FORM, nIdForm );
+                    return redirect( request, VIEW_APPOINTMENT_CALENDAR, PARAMETER_ID_FORM, nIdForm, PARAMETER_NB_PLACE_TO_TAKE, _nNbPlacesToTake  );
                 }
 
                 _notValidatedAppointment.addSlot( slot );
@@ -743,7 +743,7 @@ public class AppointmentApp extends MVCApplication
             if ( _notValidatedAppointment.getNbMaxPotentialBookedSeats( ) == 0 )
             {
                 addError( ERROR_MESSAGE_SLOT_FULL, getLocale( request ) );
-                return redirect( request, VIEW_APPOINTMENT_CALENDAR, PARAMETER_ID_FORM, nIdForm );
+                return redirect( request, VIEW_APPOINTMENT_CALENDAR, PARAMETER_ID_FORM, nIdForm, PARAMETER_NB_PLACE_TO_TAKE, _nNbPlacesToTake  );
             }
         }
         else
@@ -991,7 +991,7 @@ public class AppointmentApp extends MVCApplication
         if ( !_appointmentForm.getIsActive( ) )
         {
             addError( ERROR_MESSAGE_FORM_NOT_ACTIVE, getLocale( request ) );
-            return redirect( request, VIEW_APPOINTMENT_CALENDAR, PARAMETER_ID_FORM, _appointmentForm.getIdForm( ) );
+            return redirect( request, VIEW_APPOINTMENT_CALENDAR, PARAMETER_ID_FORM, _appointmentForm.getIdForm( ), PARAMETER_NB_PLACE_TO_TAKE, _nNbPlacesToTake  );
         }
 
         if ( StringUtils.isNotEmpty( request.getParameter( PARAMETER_BACK ) ) )
@@ -1039,7 +1039,7 @@ public class AppointmentApp extends MVCApplication
         if ( _validatedAppointment.getNbBookedSeats( ) > nbRemainingPlaces )
         {
             addInfo( ERROR_MESSAGE_SLOT_FULL, getLocale( request ) );
-            return redirect( request, VIEW_APPOINTMENT_CALENDAR, PARAMETER_ID_FORM, _validatedAppointment.getIdForm( ) );
+            return redirect( request, VIEW_APPOINTMENT_CALENDAR, PARAMETER_ID_FORM, _validatedAppointment.getIdForm( ), PARAMETER_NB_PLACE_TO_TAKE, _nNbPlacesToTake  );
         }
         _validatedAppointment.setSlot( listSlot );
         int nIdAppointment;
@@ -1053,7 +1053,7 @@ public class AppointmentApp extends MVCApplication
         {
 
             addInfo( ERROR_MESSAGE_SLOT_FULL, getLocale( request ) );
-            return redirect( request, VIEW_APPOINTMENT_CALENDAR, PARAMETER_ID_FORM, _validatedAppointment.getIdForm( ) );
+            return redirect( request, VIEW_APPOINTMENT_CALENDAR, PARAMETER_ID_FORM, _validatedAppointment.getIdForm( ),PARAMETER_NB_PLACE_TO_TAKE, _nNbPlacesToTake  );
         }
         catch( AppointmentSavedException e )
         {
@@ -1153,7 +1153,7 @@ public class AppointmentApp extends MVCApplication
 
             _validatedAppointment = null;
             addError( ERROR_MESSAGE_FORM_NOT_ACTIVE, getLocale( request ) );
-            return redirect( request, VIEW_APPOINTMENT_CALENDAR, PARAMETER_ID_FORM, form.getIdForm( ) );
+            return redirect( request, VIEW_APPOINTMENT_CALENDAR, PARAMETER_ID_FORM, form.getIdForm( ), PARAMETER_NB_PLACE_TO_TAKE, _nNbPlacesToTake  );
         }
         int nNbConsecutiveSlot = ( _nNbPlacesToTake == 0 ) ? 1 : _nNbPlacesToTake;
         LocalDateTime startingDateTime = LocalDateTime.parse( request.getParameter( PARAMETER_STARTING_DATE_TIME ) );
@@ -1167,7 +1167,7 @@ public class AppointmentApp extends MVCApplication
         if ( listSlot == null || ( _nNbPlacesToTake > 0 && listSlot.size( ) != _nNbPlacesToTake ) || !AppointmentUtilities.isConsecutiveSlots( listSlot ) )
         {
             addError( ERROR_MESSAGE_SLOT_FULL, getLocale( request ) );
-            return redirect( request, VIEW_APPOINTMENT_CALENDAR, PARAMETER_ID_FORM, nIdForm );
+            return redirect( request, VIEW_APPOINTMENT_CALENDAR, PARAMETER_ID_FORM, nIdForm, PARAMETER_NB_PLACE_TO_TAKE, _nNbPlacesToTake  );
         }
 
         boolean bool = true;
@@ -1193,7 +1193,7 @@ public class AppointmentApp extends MVCApplication
             if ( slot.getNbPotentialRemainingPlaces( ) <= 0 )
             {
                 addError( ERROR_MESSAGE_SLOT_FULL, locale );
-                return redirect( request, VIEW_APPOINTMENT_CALENDAR, PARAMETER_ID_FORM, nIdForm );
+                return redirect( request, VIEW_APPOINTMENT_CALENDAR, PARAMETER_ID_FORM, nIdForm , PARAMETER_NB_PLACE_TO_TAKE, _nNbPlacesToTake );
             }
 
             _validatedAppointment.addSlot( slot );
@@ -1211,7 +1211,7 @@ public class AppointmentApp extends MVCApplication
         if ( _validatedAppointment.getNbMaxPotentialBookedSeats( ) == 0 )
         {
             addError( ERROR_MESSAGE_SLOT_FULL, locale );
-            return redirect( request, VIEW_APPOINTMENT_CALENDAR, PARAMETER_ID_FORM, nIdForm );
+            return redirect( request, VIEW_APPOINTMENT_CALENDAR, PARAMETER_ID_FORM, nIdForm , PARAMETER_NB_PLACE_TO_TAKE, _nNbPlacesToTake );
         }
 
         for ( Response response : _validatedAppointment.getListResponse( ) )
