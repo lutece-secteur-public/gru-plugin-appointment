@@ -39,7 +39,7 @@ import fr.paris.lutece.test.LuteceTestCase;
 
 /**
  * Test Class for the CalendarTemplate
- * 
+ *
  * @author Laurent Payen
  *
  */
@@ -87,7 +87,7 @@ public final class CalendarTemplateTest extends LuteceTestCase
 
     /**
      * Build a CalendarTemplate Business Object
-     * 
+     *
      * @return the calendarTemplate
      */
     public static CalendarTemplate buildCalendarTemplate( )
@@ -102,7 +102,7 @@ public final class CalendarTemplateTest extends LuteceTestCase
 
     /**
      * Check that all the asserts are true
-     * 
+     *
      * @param calendarTemplateStored
      *            the CalendarTemplate stored
      * @param calendarTemplate

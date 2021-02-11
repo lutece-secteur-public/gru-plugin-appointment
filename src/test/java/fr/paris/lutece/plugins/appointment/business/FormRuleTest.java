@@ -39,9 +39,11 @@ import fr.paris.lutece.plugins.appointment.business.rule.FormRule;
 import fr.paris.lutece.plugins.appointment.business.rule.FormRuleHome;
 import fr.paris.lutece.test.LuteceTestCase;
 
+import java.util.List;
+
 /**
  * Test Class for the FormRule
- * 
+ *
  * @author Laurent Payen
  *
  */
@@ -52,18 +54,16 @@ public final class FormRuleTest extends LuteceTestCase
     public static final boolean IS_CAPTCHA_ENABLED_2 = false;
     public static final boolean IS_MANDATORY_EMAIL_ENABLED_1 = true;
     public static final boolean IS_MANDATORY_EMAIL_ENABLED_2 = false;
+    private Form form;
 
     /**
      * Test method for the FormRule (CRUD)
      */
     public void testFormRule( )
     {
-        Form form = FormTest.buildForm1( );
-        FormHome.create( form );
-
         // Initialize a FormRule
         FormRule formRule = buildFormRule( );
-        formRule.setIdForm( form.getIdForm( ) );
+        formRule.setIdForm( this.form.getIdForm( ) );
         // Create the FormRule in database
         FormRuleHome.create( formRule );
         // Find the FormRule created in database
@@ -87,8 +87,6 @@ public final class FormRuleTest extends LuteceTestCase
         // Check the FormRule has been removed from database
         assertNull( formRuleStored );
 
-        // Clean
-        FormHome.delete( form.getIdForm( ) );
     }
 
     /**
@@ -96,19 +94,16 @@ public final class FormRuleTest extends LuteceTestCase
      */
     public void testDeleteCascade( )
     {
-        Form form = FormTest.buildForm1( );
-        FormHome.create( form );
-
         // Initialize a FormRule
         FormRule formRule = buildFormRule( );
-        formRule.setIdForm( form.getIdForm( ) );
+        formRule.setIdForm( this.form.getIdForm( ) );
         // Create the FormRule in database
         FormRuleHome.create( formRule );
         // Find the FormRule created in database
         FormRule formRuleStored = FormRuleHome.findByPrimaryKey( formRule.getIdFormRule( ) );
         assertNotNull( formRuleStored );
         // Delete the Form and by cascade the Rule
-        FormHome.delete( form.getIdForm( ) );
+        FormHome.delete( this.form.getIdForm( ) );
         formRuleStored = FormRuleHome.findByPrimaryKey( formRule.getIdFormRule( ) );
         // Check the FormRule has been removed from database
         assertNull( formRuleStored );
@@ -119,26 +114,21 @@ public final class FormRuleTest extends LuteceTestCase
      */
     public void testFindByIdForm( )
     {
-        Form form = FormTest.buildForm1( );
-        FormHome.create( form );
-
         // Initialize a FormRule
         FormRule formRule = buildFormRule( );
-        formRule.setIdForm( form.getIdForm( ) );
+        formRule.setIdForm( this.form.getIdForm( ) );
         // Create the FormRule in database
         FormRuleHome.create( formRule );
         // Find the FormRule created in database
-        FormRule formRuleStored = FormRuleHome.findByIdForm( form.getIdForm( ) );
+        FormRule formRuleStored = FormRuleHome.findByIdForm( this.form.getIdForm( ) );
         // Check Asserts
         checkAsserts( formRuleStored, formRule );
 
-        // Clean
-        FormHome.delete( form.getIdForm( ) );
     }
 
     /**
      * Build a FormRule Business Object
-     * 
+     *
      * @return the formRule
      */
     public FormRule buildFormRule( )
@@ -151,7 +141,7 @@ public final class FormRuleTest extends LuteceTestCase
 
     /**
      * Check that all the asserts are true
-     * 
+     *
      * @param formRuleStored
      *            the FormRule stored
      * @param formRule
@@ -162,6 +152,24 @@ public final class FormRuleTest extends LuteceTestCase
         assertEquals( formRuleStored.getIsCaptchaEnabled( ), formRule.getIsCaptchaEnabled( ) );
         assertEquals( formRuleStored.getIsMandatoryEmailEnabled( ), formRule.getIsMandatoryEmailEnabled( ) );
         assertEquals( formRuleStored.getIdForm( ), formRule.getIdForm( ) );
+    }
+
+    @Override
+    protected void setUp() throws Exception {
+        super.setUp();
+        this.form = FormTest.buildForm1( );
+        FormHome.create( this.form );
+
+    }
+
+    @Override
+    protected void tearDown() throws Exception {
+        super.tearDown();
+        //delete all the forms left over from tests
+        for (Form f : FormHome.findAllForms()) {
+            FormHome.delete(f.getIdForm());
+        }
+        this.form = null;
     }
 
 }

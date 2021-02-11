@@ -39,7 +39,7 @@ import fr.paris.lutece.test.LuteceTestCase;
 
 /**
  * Test class for the User
- * 
+ *
  * @author Laurent Payen
  *
  */
@@ -82,7 +82,7 @@ public final class UserTest extends LuteceTestCase
 
     /**
      * Build a User Business Object
-     * 
+     *
      * @return the User
      */
     public static User buildUser( String strGuid, String strFirstName, String strLastName, String strEmail, String strPhoneNumber )
@@ -98,7 +98,7 @@ public final class UserTest extends LuteceTestCase
 
     /**
      * Check that all the asserts are true
-     * 
+     *
      * @param userStored
      *            the user stored
      * @param user

@@ -18,7 +18,7 @@
         <jiraComponentId>12273</jiraComponentId>
         <jiraProjectName>RENDEZVOUS</jiraProjectName>
         <regularexpression.version>3.0.3</regularexpression.version>                        
-        <workflow.version>4.3.6</workflow.version>    
+        <workflow.version>5.0.0</workflow.version>
         <rest.version>3.1.0</rest.version>
     </properties>
     <repositories>
@@ -33,7 +33,8 @@
         <dependency>
             <groupId>fr.paris.lutece</groupId>
             <artifactId>lutece-core</artifactId>
-            <version>${core.version}</version>
+<!--            <version>${core.version}</version>-->
+            <version>7.0.0-RC-03</version>
             <type>lutece-core</type>
         </dependency>
         <dependency>
@@ -67,6 +68,13 @@
             <artifactId>json-lib</artifactId>
             <version>2.4</version>
             <classifier>jdk15</classifier>
+        </dependency>
+
+        <!-- Adding jackson dependency -->
+        <dependency>
+            <groupId>com.fasterxml.jackson.datatype</groupId>
+            <artifactId>jackson-datatype-jsr310</artifactId>
+            <version>2.11.0</version>
         </dependency>
     </dependencies>
 

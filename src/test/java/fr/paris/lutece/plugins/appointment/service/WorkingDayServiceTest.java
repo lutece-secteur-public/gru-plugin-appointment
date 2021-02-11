@@ -1,3 +1,37 @@
+/*
+ * Copyright (c) 2002-2021, City of Paris
+ * All rights reserved.
+ *
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the following conditions
+ * are met:
+ *
+ *  1. Redistributions of source code must retain the above copyright notice
+ *     and the following disclaimer.
+ *
+ *  2. Redistributions in binary form must reproduce the above copyright notice
+ *     and the following disclaimer in the documentation and/or other materials
+ *     provided with the distribution.
+ *
+ *  3. Neither the name of 'Mairie de Paris' nor 'Lutece' nor the names of its
+ *     contributors may be used to endorse or promote products derived from
+ *     this software without specific prior written permission.
+ *
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+ * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+ * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+ * ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDERS OR CONTRIBUTORS BE
+ * LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
+ * CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
+ * SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+ * INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
+ * CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+ * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
+ * POSSIBILITY OF SUCH DAMAGE.
+ *
+ * License 1.0
+ */
+
 package fr.paris.lutece.plugins.appointment.service;
 
 import java.time.DayOfWeek;
@@ -6,6 +40,8 @@ import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
 
+import fr.paris.lutece.plugins.appointment.business.form.Form;
+import fr.paris.lutece.plugins.appointment.business.form.FormHome;
 import fr.paris.lutece.plugins.appointment.business.planning.WeekDefinition;
 import fr.paris.lutece.plugins.appointment.business.planning.WorkingDay;
 import fr.paris.lutece.plugins.appointment.web.dto.AppointmentFormDTO;
@@ -13,33 +49,34 @@ import fr.paris.lutece.test.LuteceTestCase;
 
 public class WorkingDayServiceTest extends LuteceTestCase
 {
-
+    public final static String TIME_1 = "18:00";
+    public final static String TIME_3 = "20:00";
+    public final static String TIME_4 = "09:00";
+    public final static String TIME_6 = "10:00";
+    private AppointmentFormDTO appointmentForm;
+    private int nIdForm;
     /**
      * Get the max ending time of a list of working days
      */
     public void testGetMaxEndingTimeOfAListOfWorkingDay( )
     {
         // Build the form
-        AppointmentFormDTO appointmentForm = FormServiceTest.buildAppointmentForm( );
-        appointmentForm.setTimeEnd( "18:00" );
-        int nIdForm = FormService.createAppointmentForm( appointmentForm );
+        this.appointmentForm.setTimeEnd( TIME_1 );
 
         AppointmentFormDTO appointmentForm2 = FormServiceTest.buildAppointmentForm( );
-        appointmentForm2.setIdForm( nIdForm );
-        appointmentForm2.setTimeEnd( "20:00" );
-        LocalDate dateOfModification = LocalDate.parse( "2018-06-20" );
+        appointmentForm2.setIdForm( this.nIdForm );
+        appointmentForm2.setTimeEnd( TIME_3 );
+        LocalDate dateOfModification = Constants.DATE_4;
         FormService.updateAdvancedParameters( appointmentForm2, dateOfModification );
 
-        List<WeekDefinition> listWeekDefinition = WeekDefinitionService.findListWeekDefinition( nIdForm );
+        List<WeekDefinition> listWeekDefinition = WeekDefinitionService.findListWeekDefinition( this.nIdForm );
         List<WorkingDay> listWorkingDay = new ArrayList<>( );
         for ( WeekDefinition weekDefinition : listWeekDefinition )
         {
             listWorkingDay.addAll( weekDefinition.getListWorkingDay( ) );
         }
 
-        assertEquals( LocalTime.parse( "20:00" ), WorkingDayService.getMaxEndingTimeOfAListOfWorkingDay( listWorkingDay ) );
-
-        FormService.removeForm( nIdForm );
+        assertEquals( Constants.TIME_9, WorkingDayService.getMaxEndingTimeOfAListOfWorkingDay( listWorkingDay ) );
     }
 
     /**
@@ -48,18 +85,14 @@ public class WorkingDayServiceTest extends LuteceTestCase
     public void testGetMaxEndingTimeOfAWorkingDay( )
     {
         // Build the form
-        AppointmentFormDTO appointmentForm = FormServiceTest.buildAppointmentForm( );
-        appointmentForm.setTimeEnd( "18:00" );
-        int nIdForm = FormService.createAppointmentForm( appointmentForm );
+        this.appointmentForm.setTimeEnd( TIME_1 );
 
-        List<WeekDefinition> listWeekDefinition = WeekDefinitionService.findListWeekDefinition( nIdForm );
+        List<WeekDefinition> listWeekDefinition = WeekDefinitionService.findListWeekDefinition( this.nIdForm );
         List<WorkingDay> listWorkingDay = WorkingDayService.findListWorkingDayByWeekDefinition( listWeekDefinition.get( 0 ).getIdWeekDefinition( ) );
 
         WorkingDay workingDayMonday = listWorkingDay.stream( ).filter( w -> w.getDayOfWeek( ) == DayOfWeek.MONDAY.getValue( ) ).findFirst( ).get( );
 
-        assertEquals( LocalTime.parse( "18:00" ), WorkingDayService.getMaxEndingTimeOfAWorkingDay( workingDayMonday ) );
-
-        FormService.removeForm( nIdForm );
+        assertEquals( Constants.TIME_8, WorkingDayService.getMaxEndingTimeOfAWorkingDay( workingDayMonday ) );
     }
 
     /**
@@ -68,17 +101,15 @@ public class WorkingDayServiceTest extends LuteceTestCase
     public void testGetMinDurationTimeSlotOfAListOfWorkingDay( )
     {
         // Build the form
-        AppointmentFormDTO appointmentForm = FormServiceTest.buildAppointmentForm( );
-        appointmentForm.setDurationAppointments( 30 );
-        int nIdForm = FormService.createAppointmentForm( appointmentForm );
+        this.appointmentForm.setDurationAppointments( 30 );
 
         AppointmentFormDTO appointmentForm2 = FormServiceTest.buildAppointmentForm( );
-        appointmentForm2.setIdForm( nIdForm );
+        appointmentForm2.setIdForm( this.nIdForm );
         appointmentForm2.setDurationAppointments( 10 );
-        LocalDate dateOfModification = LocalDate.parse( "2028-06-20" );
+        LocalDate dateOfModification = Constants.DATE_7;
         FormService.updateAdvancedParameters( appointmentForm2, dateOfModification );
 
-        List<WeekDefinition> listWeekDefinition = WeekDefinitionService.findListWeekDefinition( nIdForm );
+        List<WeekDefinition> listWeekDefinition = WeekDefinitionService.findListWeekDefinition( this.nIdForm );
         List<WorkingDay> listWorkingDay = new ArrayList<>( );
         for ( WeekDefinition weekDefinition : listWeekDefinition )
         {
@@ -86,8 +117,6 @@ public class WorkingDayServiceTest extends LuteceTestCase
         }
 
         assertEquals( 10, WorkingDayService.getMinDurationTimeSlotOfAListOfWorkingDay( listWorkingDay ) );
-
-        FormService.removeForm( nIdForm );
     }
 
     /**
@@ -96,17 +125,13 @@ public class WorkingDayServiceTest extends LuteceTestCase
     public void testGetMinDurationTimeSlotOfAWorkingDay( )
     {
         // Build the form
-        AppointmentFormDTO appointmentForm = FormServiceTest.buildAppointmentForm( );
-        appointmentForm.setDurationAppointments( 30 );
-        int nIdForm = FormService.createAppointmentForm( appointmentForm );
-        List<WeekDefinition> listWeekDefinition = WeekDefinitionService.findListWeekDefinition( nIdForm );
+        this.appointmentForm.setDurationAppointments( 30 );
+        List<WeekDefinition> listWeekDefinition = WeekDefinitionService.findListWeekDefinition( this.nIdForm );
         List<WorkingDay> listWorkingDay = WorkingDayService.findListWorkingDayByWeekDefinition( listWeekDefinition.get( 0 ).getIdWeekDefinition( ) );
 
         WorkingDay workingDayMonday = listWorkingDay.stream( ).filter( w -> w.getDayOfWeek( ) == DayOfWeek.MONDAY.getValue( ) ).findFirst( ).get( );
 
         assertEquals( 30, WorkingDayService.getMinDurationTimeSlotOfAWorkingDay( workingDayMonday ) );
-
-        FormService.removeForm( nIdForm );
     }
 
     /**
@@ -115,26 +140,22 @@ public class WorkingDayServiceTest extends LuteceTestCase
     public void testGetMinStartingTimeOfAListOfWorkingDay( )
     {
         // Build the form
-        AppointmentFormDTO appointmentForm = FormServiceTest.buildAppointmentForm( );
-        appointmentForm.setTimeStart( "09:00" );
-        int nIdForm = FormService.createAppointmentForm( appointmentForm );
+        this.appointmentForm.setTimeStart( TIME_4 );
 
         AppointmentFormDTO appointmentForm2 = FormServiceTest.buildAppointmentForm( );
-        appointmentForm2.setIdForm( nIdForm );
-        appointmentForm2.setTimeStart( "10:00" );
-        LocalDate dateOfModification = LocalDate.parse( "2018-06-20" );
+        appointmentForm2.setIdForm( this.nIdForm );
+        appointmentForm2.setTimeStart( TIME_6);
+        LocalDate dateOfModification = Constants.DATE_4;
         FormService.updateAdvancedParameters( appointmentForm2, dateOfModification );
 
-        List<WeekDefinition> listWeekDefinition = WeekDefinitionService.findListWeekDefinition( nIdForm );
+        List<WeekDefinition> listWeekDefinition = WeekDefinitionService.findListWeekDefinition( this.nIdForm );
         List<WorkingDay> listWorkingDay = new ArrayList<>( );
         for ( WeekDefinition weekDefinition : listWeekDefinition )
         {
             listWorkingDay.addAll( weekDefinition.getListWorkingDay( ) );
         }
 
-        assertEquals( LocalTime.parse( "09:00" ), WorkingDayService.getMinStartingTimeOfAListOfWorkingDay( listWorkingDay ) );
-
-        FormService.removeForm( nIdForm );
+        assertEquals( Constants.STARTING_TIME_3, WorkingDayService.getMinStartingTimeOfAListOfWorkingDay( listWorkingDay ) );
     }
 
     /**
@@ -143,17 +164,13 @@ public class WorkingDayServiceTest extends LuteceTestCase
     public void testGetMinStartingTimeOfAWorkingDay( )
     {
         // Build the form
-        AppointmentFormDTO appointmentForm = FormServiceTest.buildAppointmentForm( );
-        appointmentForm.setTimeStart( "09:00" );
-        int nIdForm = FormService.createAppointmentForm( appointmentForm );
-        List<WeekDefinition> listWeekDefinition = WeekDefinitionService.findListWeekDefinition( nIdForm );
+        this.appointmentForm.setTimeStart( TIME_4 );
+        List<WeekDefinition> listWeekDefinition = WeekDefinitionService.findListWeekDefinition( this.nIdForm );
         List<WorkingDay> listWorkingDay = WorkingDayService.findListWorkingDayByWeekDefinition( listWeekDefinition.get( 0 ).getIdWeekDefinition( ) );
 
         WorkingDay workingDayMonday = listWorkingDay.stream( ).filter( w -> w.getDayOfWeek( ) == DayOfWeek.MONDAY.getValue( ) ).findFirst( ).get( );
 
-        assertEquals( LocalTime.parse( "09:00" ), WorkingDayService.getMinStartingTimeOfAWorkingDay( workingDayMonday ) );
-
-        FormService.removeForm( nIdForm );
+        assertEquals( Constants.STARTING_TIME_3, WorkingDayService.getMinStartingTimeOfAWorkingDay( workingDayMonday ) );
     }
 
     /**
@@ -162,18 +179,31 @@ public class WorkingDayServiceTest extends LuteceTestCase
     public void testGetOpenDays( )
     {
         // Build the form
-        AppointmentFormDTO appointmentForm = FormServiceTest.buildAppointmentForm( );
-        appointmentForm.setIsOpenMonday( Boolean.TRUE );
-        appointmentForm.setIsOpenTuesday( Boolean.TRUE );
-        appointmentForm.setIsOpenWednesday( Boolean.TRUE );
-        appointmentForm.setIsOpenThursday( Boolean.TRUE );
-        appointmentForm.setIsOpenFriday( Boolean.TRUE );
-        appointmentForm.setIsOpenSaturday( Boolean.FALSE );
-        appointmentForm.setIsOpenSunday( Boolean.FALSE );
-        int nIdForm = FormService.createAppointmentForm( appointmentForm );
+        this.appointmentForm.setIsOpenMonday( Boolean.TRUE );
+        this.appointmentForm.setIsOpenTuesday( Boolean.TRUE );
+        this.appointmentForm.setIsOpenWednesday( Boolean.TRUE );
+        this.appointmentForm.setIsOpenThursday( Boolean.TRUE );
+        this.appointmentForm.setIsOpenFriday( Boolean.TRUE );
+        this.appointmentForm.setIsOpenSaturday( Boolean.FALSE );
+        this.appointmentForm.setIsOpenSunday( Boolean.FALSE );
+        assertEquals( 5, WorkingDayService.getOpenDays( this.appointmentForm ).size( ) );
+    }
 
-        assertEquals( 5, WorkingDayService.getOpenDays( appointmentForm ).size( ) );
+    @Override
+    protected void setUp() throws Exception {
+        super.setUp();
+        this.appointmentForm = FormServiceTest.buildAppointmentForm( );
+        this.nIdForm = FormService.createAppointmentForm( appointmentForm );
+    }
 
-        FormService.removeForm( nIdForm );
+    @Override
+    protected void tearDown() throws Exception {
+        super.tearDown();
+        //delete all the forms left over from tests
+        for (Form f : FormService.findAllForms()) {
+            FormService.removeForm(f.getIdForm());
+        }
+        this.appointmentForm = null;
+        this.nIdForm = 0;
     }
 }
