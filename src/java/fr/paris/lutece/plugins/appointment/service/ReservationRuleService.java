@@ -207,15 +207,17 @@ public final class ReservationRuleService
     public static void removeReservationRule( int nIdReservationRule )
     {
         ReservationRule rule = findReservationRuleById( nIdReservationRule );
-        for ( WorkingDay day : rule.getListWorkingDay( ) )
+        if( rule != null)
         {
-
-            TimeSlotHome.deleteByIdWorkingDay( day.getIdWorkingDay( ) );
-            WorkingDayHome.delete( day.getIdWorkingDay( ) );
-
+	        for ( WorkingDay day : rule.getListWorkingDay( ) )
+	        {
+	
+	            TimeSlotHome.deleteByIdWorkingDay( day.getIdWorkingDay( ) );
+	            WorkingDayHome.delete( day.getIdWorkingDay( ) );
+	
+	        }
+	        ReservationRuleHome.delete( rule.getIdReservationRule( ) );
         }
-        ReservationRuleHome.delete( rule.getIdReservationRule( ) );
-
     }
 
     /**
@@ -367,8 +369,11 @@ public final class ReservationRuleService
         {
             ReservationRule reservationRule = listReservationRule.stream( ).filter( p -> p.getIdReservationRule( ) == weekDefinition.getIdReservationRule( ) )
                     .findAny( ).orElse( null );
-            reservationRule.setListWorkingDay( WorkingDayService.findListWorkingDayByWeekDefinitionRule( reservationRule.getIdReservationRule( ) ) );
-            mapReservationRule.put( weekDefinition, reservationRule );
+            if( reservationRule != null )
+            {
+	            reservationRule.setListWorkingDay( WorkingDayService.findListWorkingDayByWeekDefinitionRule( reservationRule.getIdReservationRule( ) ) );
+	            mapReservationRule.put( weekDefinition, reservationRule );
+            }
 
         }
         return mapReservationRule;

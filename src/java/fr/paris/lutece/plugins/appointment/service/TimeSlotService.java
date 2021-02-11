@@ -297,7 +297,7 @@ public final class TimeSlotService
             // the new end of the current time slot
             if ( CollectionUtils.isNotEmpty( listTimeSlotToShift ) )
             {
-                TimeSlot nextTimeSlot = listTimeSlotToShift.stream( ).min( ( t1, t2 ) -> t1.getStartingTime( ).compareTo( t2.getStartingTime( ) ) ).get( );
+                TimeSlot nextTimeSlot = listTimeSlotToShift.stream( ).min( ( t1, t2 ) -> t1.getStartingTime( ).compareTo( t2.getStartingTime( ) ) ).orElse(listTimeSlotToShift.get( 0 ));
                 if ( timeSlot.getEndingTime( ).isAfter( nextTimeSlot.getStartingTime( ) ) )
                 {
                     timeToAdd = nextTimeSlot.getStartingTime( ).until( timeSlot.getEndingTime( ), ChronoUnit.MINUTES );

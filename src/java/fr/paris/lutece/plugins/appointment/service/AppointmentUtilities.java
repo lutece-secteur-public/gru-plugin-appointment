@@ -86,6 +86,7 @@ import fr.paris.lutece.plugins.genericattributes.util.GenericAttributesUtils;
 import fr.paris.lutece.portal.business.user.AdminUser;
 import fr.paris.lutece.portal.service.i18n.I18nService;
 import fr.paris.lutece.portal.service.rbac.RBACService;
+import fr.paris.lutece.portal.service.util.AppLogService;
 import fr.paris.lutece.portal.service.util.AppPropertiesService;
 import fr.paris.lutece.util.beanvalidation.BeanValidationUtil;
 
@@ -175,7 +176,8 @@ public final class AppointmentUtilities
      */
     public static void checkDateOfTheAppointmentIsNotBeforeNow( AppointmentDTO appointmentDTO, Locale locale, List<GenericAttributeError> listFormErrors )
     {
-        if ( getStartingDateTime( appointmentDTO ).toLocalDate( ).isBefore( LocalDate.now( ) ) )
+    	LocalDateTime startingDateTime= getStartingDateTime( appointmentDTO );
+    	if ( startingDateTime == null || startingDateTime.toLocalDate( ).isBefore( LocalDate.now( ) ) )
         {
             GenericAttributeError genAttError = new GenericAttributeError( );
             genAttError.setErrorMessage( I18nService.getLocalizedString( ERROR_MESSAGE_DATE_APPOINTMENT, locale ) );
@@ -213,7 +215,7 @@ public final class AppointmentUtilities
 
                     // Check the number of days between this appointment and
                     // the last appointment the user has taken
-                    LocalDate dateOfTheAppointment = getStartingDateTime( appointmentDTO ).toLocalDate( );
+                    LocalDateTime dateOfTheAppointment = getStartingDateTime( appointmentDTO );
                     if ( dateOfTheLastAppointment != null && Math
                             .abs( dateOfTheLastAppointment.toLocalDate( ).until( dateOfTheAppointment, ChronoUnit.DAYS ) ) <= nbDaysBetweenTwoAppointments )
                     {
@@ -359,7 +361,14 @@ public final class AppointmentUtilities
         if ( form.getNbMaxAppointmentsPerUser( ) > 0 && StringUtils.isNotEmpty( strEmail ) )
         {
             // Get the date of the future appointment
-            LocalDate dateOfTheAppointment = getStartingDateTime( appointmentDTO ).toLocalDate( );
+        	LocalDateTime startingDateTime= getStartingDateTime( appointmentDTO );
+        	if( startingDateTime == null ) 
+        	{
+                AppLogService.error( "Error checkNbMaxAppointmentsOnAGivenPeriod, startingDateTime is null" );
+        		return false;
+        	}
+            LocalDate dateOfTheAppointment = startingDateTime.toLocalDate( );
+
             AppointmentFilterDTO filter = new AppointmentFilterDTO( );
             filter.setEmail( strEmail );
             filter.setIdForm( form.getIdForm( ) );

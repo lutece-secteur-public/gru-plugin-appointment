@@ -275,7 +275,7 @@ public final class WorkingDayService
         for ( WorkingDay workingDay : listWorkingDay )
         {
             startingTimeTemp = getMinStartingTimeOfAWorkingDay( workingDay );
-            if ( minStartingTime == null || startingTimeTemp.isBefore( minStartingTime ) )
+            if ( minStartingTime == null || (startingTimeTemp != null && startingTimeTemp.isBefore( minStartingTime ) ))
             {
                 minStartingTime = startingTimeTemp;
             }
