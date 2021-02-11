@@ -319,7 +319,7 @@ $(function(){
 </#if>
 </#macro>
 
-<#macro appointmentTabs tab form context>
+<#macro appointmentTabs tab form context >
 <@commonsAppJS />
 <@row>
     <@columns>
@@ -335,9 +335,11 @@ $(function(){
 				<#else>
 					<#if !tab?contains("filter")>
 						<#if !tab?contains("typicalWeek")>
-						<div id="btn-comment-main">
-							<@btnComment /> 
-						</div>
+							<#if permission_add_comment?boolean>
+							<div id="btn-comment-main">
+								<@btnComment /> 
+							</div>
+							</#if>	
 						</#if>	
 					</#if>	
 					<#if tab !='typicalWeek' || tab !='year' || tab !='day'>
@@ -467,9 +469,11 @@ $( function(){
 		eventClick: function( calEvent, jsEvent, view ){
 		<#if showComments>
 			// Comments
-			if( calEvent.type = "comment" ){
+			<#if permission_moderate_comment?boolean>
+			if( calEvent.type = "comment" && calEvent.creator_user === '${permission_access_code}' ){
 				<@commentModal update=true />
 			}
+			</#if>
 		<#else>
 			// Typical week
 			location.href = eventUrl + calEvent.id;
