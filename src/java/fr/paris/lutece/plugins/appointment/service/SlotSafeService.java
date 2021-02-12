@@ -272,7 +272,7 @@ public final class SlotSafeService
             if ( slot != null && !bIsCancelled )
             {
 
-                int nNewPotentialRemainingPlaces = slot.getNbPotentialRemainingPlaces( ) + nbPotentialRemainingPlaces;
+                int nNewPotentialRemainingPlaces = Math.min( slot.getNbPotentialRemainingPlaces( ) + nbPotentialRemainingPlaces, slot.getNbRemainingPlaces( ) );
                 slot.setNbPotentialRemainingPlaces( nNewPotentialRemainingPlaces );
                 SlotHome.updatePotentialRemainingPlaces( nNewPotentialRemainingPlaces, nIdSlot );
                 SlotListenerManager.notifyListenersSlotChange( slot.getIdSlot( ) );
