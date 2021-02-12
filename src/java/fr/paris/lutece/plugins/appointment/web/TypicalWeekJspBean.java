@@ -559,8 +559,7 @@ public class TypicalWeekJspBean extends AbstractAppointmentFormAndSlotJspBean
                 Map<String, String> additionalParameters = new HashMap<>( );
                 additionalParameters.put( PARAMETER_ID_FORM, strIdForm );
                 additionalParameters.put( PARAMETER_ID_RULE, strIdReservationRule );
-                additionalParameters.put( PARAMETER_ID_TIME_SLOT, strIdTimeSlot );
-                return redirect( request, VIEW_MODIFY_TIME_SLOT, additionalParameters );
+                return redirect( request, VIEW_MANAGE_TYPICAL_WEEK, additionalParameters);
             }
             bEndingTimeHasChanged = true;
         }
@@ -595,8 +594,7 @@ public class TypicalWeekJspBean extends AbstractAppointmentFormAndSlotJspBean
                     Map<String, String> additionalParameters = new HashMap<>( );
                     additionalParameters.put( PARAMETER_ID_FORM, strIdForm );
                     additionalParameters.put( PARAMETER_ID_RULE, strIdReservationRule );
-                    additionalParameters.put( PARAMETER_ID_TIME_SLOT, strIdTimeSlot );
-                    return redirect( request, VIEW_MODIFY_TIME_SLOT, additionalParameters );
+                    return redirect( request, VIEW_MANAGE_TYPICAL_WEEK, additionalParameters);
                 }
                 // Get the slot whith appointment (the appointments that are not
                 // cancelled)
