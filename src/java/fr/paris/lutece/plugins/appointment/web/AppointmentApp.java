@@ -568,7 +568,7 @@ public class AppointmentApp extends MVCApplication
      * @throws UserNotSignedException
      */
     @View( VIEW_APPOINTMENT_FORM )
-    public synchronized XPage getViewAppointmentForm( HttpServletRequest request ) throws UserNotSignedException, AccessDeniedException
+    public XPage getViewAppointmentForm( HttpServletRequest request ) throws UserNotSignedException, AccessDeniedException
     {
         String strIdForm = request.getParameter( PARAMETER_ID_FORM );
         String strNbPlacesToTake = request.getParameter( PARAMETER_NB_PLACE_TO_TAKE );

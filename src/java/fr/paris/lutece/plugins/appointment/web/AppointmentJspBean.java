@@ -495,7 +495,7 @@ public class AppointmentJspBean extends MVCAdminJspBean
      * @throws AccessDeniedException
      */
     @View( value = VIEW_MANAGE_APPOINTMENTS )
-    public synchronized String getManageAppointments( HttpServletRequest request ) throws AccessDeniedException
+    public String getManageAppointments( HttpServletRequest request ) throws AccessDeniedException
     {
         String strIdForm = request.getParameter( PARAMETER_ID_FORM );
 
@@ -854,7 +854,7 @@ public class AppointmentJspBean extends MVCAdminJspBean
      *             If the user is not authorized to access this feature
      */
     @View( VIEW_CREATE_APPOINTMENT )
-    public synchronized String getViewCreateAppointment( HttpServletRequest request ) throws AccessDeniedException
+    public String getViewCreateAppointment( HttpServletRequest request ) throws AccessDeniedException
     {
         clearUploadFilesIfNeeded( request.getSession( ) );
         String strIdForm = request.getParameter( PARAMETER_ID_FORM );
@@ -1149,7 +1149,7 @@ public class AppointmentJspBean extends MVCAdminJspBean
      * @throws AccessDeniedException
      */
     @View( VIEW_CHANGE_DATE_APPOINTMENT )
-    public synchronized String getViewChangeDateAppointment( HttpServletRequest request ) throws AccessDeniedException
+    public String getViewChangeDateAppointment( HttpServletRequest request ) throws AccessDeniedException
     {
         String strIdForm = request.getParameter( PARAMETER_ID_FORM );
         Locale locale = getLocale( );
