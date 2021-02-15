@@ -85,6 +85,7 @@ import fr.paris.lutece.plugins.appointment.service.FormService;
 import fr.paris.lutece.plugins.appointment.service.ReservationRuleService;
 import fr.paris.lutece.plugins.appointment.service.SlotSafeService;
 import fr.paris.lutece.plugins.appointment.service.SlotService;
+import fr.paris.lutece.plugins.appointment.service.UserService;
 import fr.paris.lutece.plugins.appointment.service.Utilities;
 import fr.paris.lutece.plugins.appointment.service.WeekDefinitionService;
 import fr.paris.lutece.plugins.appointment.service.addon.AppointmentAddOnManager;
@@ -112,8 +113,10 @@ import fr.paris.lutece.portal.business.file.FileHome;
 import fr.paris.lutece.portal.business.physicalfile.PhysicalFile;
 import fr.paris.lutece.portal.business.physicalfile.PhysicalFileHome;
 import fr.paris.lutece.portal.business.user.AdminUser;
+import fr.paris.lutece.portal.business.user.AdminUserHome;
 import fr.paris.lutece.portal.service.admin.AccessDeniedException;
 import fr.paris.lutece.portal.service.admin.AdminAuthenticationService;
+import fr.paris.lutece.portal.service.admin.AdminUserService;
 import fr.paris.lutece.portal.service.i18n.I18nService;
 import fr.paris.lutece.portal.service.mailinglist.AdminMailingListService;
 import fr.paris.lutece.portal.service.message.AdminMessage;
@@ -248,7 +251,7 @@ public class AppointmentJspBean extends MVCAdminJspBean
     private static final String MARK_CUSTOM_FIELD_LIST = "customFieldList";
     private static final String MARK_IS_OVERBOOKING = "isOverbooking";
     private static final String MARK_MAILING_LIST = "mailing_list";
-
+    private static final String MARK_USER_CREATOR_NAME = "userCreatorName";
     private static final String JSP_MANAGE_APPOINTMENTS = "jsp/admin/plugins/appointment/ManageAppointments.jsp";
     private static final String ERROR_MESSAGE_SLOT_FULL = "appointment.message.error.slotFull";
 
@@ -735,6 +738,10 @@ public class AppointmentJspBean extends MVCAdminJspBean
         }
         Map<String, Object> model = getModel( );
         model.put( MARK_APPOINTMENT, appointmentDTO );
+        if( appointmentDTO.getAdminUserCreate() != null ) {
+        	
+            model.put( MARK_USER_CREATOR_NAME,  AdminUserHome.findUserByLogin( appointmentDTO.getAdminUserCreate( ) ));
+        }
         model.put( MARK_FORM_MESSAGES, FormMessageService.findFormMessageByIdForm( nIdForm ) );
         model.put( MARK_FORM, form );
         model.put( MARK_NB_ITEMS_PER_PAGE, Integer.toString( nItemsPerPage ) );
