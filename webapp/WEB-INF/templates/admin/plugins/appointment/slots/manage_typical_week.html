@@ -1,22 +1,17 @@
 <#include "/admin/plugins/appointment/appointmentform/modify_appointmentform_tabs_planning.html" />
-<link rel='stylesheet' href='css/plugins/appointment/bootstrap-datetimepicker.css' />
-<link rel='stylesheet' href='css/plugins/appointment/fullcalendar.css' />
+<link rel='stylesheet' href='css/plugins/appointment/fullcalendar.min.css' />
 <link rel='stylesheet' href='css/plugins/appointment/fullcalendar_ow_bo.css' />
-<script src="js/jquery/jquery.min.js"></script>
-<script src="js/plugins/appointment/moment.min.js"></script>
-<script src="js/plugins/appointment/bootstrap-datetimepicker.min.js"></script>
 <script src='js/plugins/appointment/fullcalendar.min.js' ></script>
-<script src='js/plugins/appointment/locale-all.js' ></script>
 <@row>
     <@columns>
         <@appointmentTabs tab="typicalWeek" appointmentform=appointmentform>
 				  <fieldset>
-            </br>
+            <br>
             <@tform class='form-inline' action='jsp/admin/plugins/appointment/ManageAppointmentSlots.jsp?view=manageTypicalWeek' id='listOfDates' params='enctype="multipart/form-data"'>
                 <input type="hidden" id="id_form" name="id_form" value="${appointmentform.idForm}"/>
                 <#if listDateOfModification??>
                     <label for="id_week_definition">#i18n{appointment.modifyAppointmentForm.listDateOfModification} :</label>
-                        <@select id='id_week-definition' name='id_week_definition'>
+                        <@select id='id_week_definition' name='id_week_definition'>
                             <#list listDateOfModification as item>
                                 <#if "${id_week_definition}"="${item.code}">
                                     <option selected="selected" value="${item.code}" >${item.name}</option>
@@ -29,7 +24,7 @@
                     <@button type='submit' name='action_confirmRemoveParameter' title='#i18n{portal.util.labelDelete}' buttonIcon='trash' size='' />
                 </#if>
             </@tform>
-            </br>
+            <br>
 						<@box collapsed=!error_modification??>
 								<#if !error_modification??>
 									<#assign appointmentTypicalWeekAdvancedIcon = 'plus' />
@@ -40,23 +35,29 @@
 									<@button style='btn-box-tool' params='data-widget="collapse"' buttonIcon='${appointmentTypicalWeekAdvancedIcon}' />
 								</@boxHeader>
                 <@boxBody>
-                    <@tform action='jsp/admin/plugins/appointment/ManageAppointmentSlots.jsp' params='enctype="multipart/form-data"'>
+                    <@tform id='formid' action='jsp/admin/plugins/appointment/ManageAppointmentSlots.jsp' params='enctype="multipart/form-data"'>
                         <input type="hidden" id="id_form" name="id_form" value="${appointmentform.idForm}"/>
-                        <@formGroup labelFor='time_start' labelKey='#i18n{appointment.createAppointmentForm.labelTimeStart}' helpKey='#i18n{appointment.createAppointmentForm.labelTimeStart.help}' mandatory=true>
+                        <input type="hidden" id="date_of_modification" name="date_of_modification">
+                        <input type="hidden" id="time_start" name="time_start">
+                        <input type="hidden" id="time_end" name="time_end">
+
+                        <@formGroup labelFor='time_start_user' labelKey='#i18n{appointment.createAppointmentForm.labelTimeStart}' helpKey='#i18n{appointment.createAppointmentForm.labelTimeStart.help}' mandatory=true>
                             <@inputGroup>
                                 <@inputGroupItem type='addon'>
                                     <@icon style='clock-o' />
                                 </@inputGroupItem>
-                                <@input type='text' name='time_start' id='time_start' value=appointmentform.timeStart!'' />
+                                <@input type='text' name='' class='datetimepicker' id='time_start_user' />
                             </@inputGroup>
+                            <@setupTimePicker idField='time_start_user' idServerField='time_start' serverTime=appointmentform.timeStart!'' />
                         </@formGroup>
-                        <@formGroup labelFor='time_end' labelKey='#i18n{appointment.createAppointmentForm.labelTimeEnd}' helpKey='#i18n{appointment.createAppointmentForm.labelTimeEnd.help}' mandatory=true>
+                        <@formGroup labelFor='time_end_user' labelKey='#i18n{appointment.createAppointmentForm.labelTimeEnd}' helpKey='#i18n{appointment.createAppointmentForm.labelTimeEnd.help}' mandatory=true>
                             <@inputGroup>
                                 <@inputGroupItem type='addon'>
                                   <@icon style='clock-o' />
                                 </@inputGroupItem>
-                                <@input type='text' name='time_end' id='time_end' value=appointmentform.timeEnd!'' />
+                                <@input type='text' name='' class='datetimepicker' id='time_end_user' />
                             </@inputGroup>
+                            <@setupTimePicker idField='time_end_user' idServerField='time_end' serverTime=appointmentform.timeEnd!'' />
                         </@formGroup>
                         <@formGroup labelFor='duration_appointments' labelKey='#i18n{appointment.createAppointmentForm.labelDurationAppointments}' helpKey='#i18n{appointment.createAppointmentForm.labelDurationAppointments.help}' mandatory=true>
                             <@input type='text' name='duration_appointments' id='duration_appointments' value=appointmentform.durationAppointments!'' params='onkeypress="return validateQty(event);"' maxlength=3 />
@@ -90,13 +91,14 @@
                             <@checkBox labelFor='is_open_sunday' labelKey='#i18n{appointment.label.OpenSunday}' name='is_open_sunday' id='is_open_sunday' value='true' checked=appointmentform.isOpenSunday!false />
                         </@formGroup>
                         <legend> &nbsp;&nbsp;#i18n{appointment.modifyAppointmentForm.startEditForm} </legend>
-                        <@formGroup labelFor='date_of_modification' labelKey='#i18n{appointment.modifyAppointmentForm.startDate}' helpKey='#i18n{appointment.modifyAppointmentForm.helpDateMin}' mandatory=true>
+                        <@formGroup labelFor='date_of_modification_user' labelKey='#i18n{appointment.modifyAppointmentForm.startDate}' helpKey='#i18n{appointment.modifyAppointmentForm.helpDateMin}' mandatory=true>
                             <@inputGroup>
                                 <@inputGroupItem type='addon'>
                                     <@icon style='calendar' />
                                 </@inputGroupItem>
-                                <@input type='text' name='date_of_modification' id='date_of_modification' value=appointmentform.dateOfModification!'' />
+                                <@input type='text' name='' class='datetimepicker' id='date_of_modification_user' />
                             </@inputGroup>
+                            <@setupDatePicker idField='date_of_modification_user' idServerField='date_of_modification' />
                         </@formGroup>
                         <@formGroup>
                             <@button type='submit' name='action_modifyAdvancedParameters' title='#i18n{portal.util.labelModify}' buttonIcon='check' size='' />
@@ -111,30 +113,22 @@
 			</@appointmentTabs>
     </@columns>
 </@row>
-<@getDatePickerBootstrap idField="date_of_modification" language=language />
 <script type="text/javascript">
-$('#date_of_modification').datepicker({
-        language:        "${language}",
-        startDate:         new Date(),
-        weekStart: 1,
-        todayBtn: true,
-        todayHighLight: true,
-        autoclose: true
-    });
-$(function () {
-    $('#datetimepicker').datetimepicker({
-        format: 'HH:mm',
-        stepping: 5
-    });
-    $('#time_start').datetimepicker({
-        format: 'HH:mm',
-        stepping: 5
-    });
-    $('#time_end').datetimepicker({
-        format: 'HH:mm',
-        stepping: 5
-    });
-});
+    // The backend returns dates for a single calendar week with Monday as the start of week.
+    // This causes wrap-around to adjacent calendar weeks when a different start of week is used with these dates.
+    // This method locates the displaced dates, and adjusts them back into the same day of the current week
+    function adjustDate( dateTimeString ) {
+        var lastWeek = moment().subtract( 1, 'weeks' ).week();
+        var nextWeek = moment().add( 1, 'weeks').week();
+        if ( moment( dateTimeString).week() ==  lastWeek ) {
+             return moment( dateTimeString ).add(  1, 'weeks' ).format( '${SERVER_DATETIME_FORMAT}' );
+        } else if ( moment( dateTimeString ).week() == nextWeek ) {
+             return moment( dateTimeString ).subtract( 1, 'weeks' ).format( '${SERVER_DATETIME_FORMAT}' );
+        } else {
+            return moment( dateTimeString ).format( '${SERVER_DATETIME_FORMAT}' );
+        }
+    };
+
 function validateQty(event) {
         var key = window.event ? event.keyCode : event.which;
     if (event.keyCode == 8 || event.keyCode == 9 || event.keyCode == 46
@@ -162,9 +156,9 @@ function validateQty(event) {
         <#if events??>
             <#list events as event>
                 {
-                    title : 'Capacit\u00e9 max : ' + '${event.maxCapacity}',
-                    start : '${event.startingDateTime}',
-                    end : '${event.endingDateTime}',
+                    title : '#i18n{appointment.manageCalendarSlots.maxCapacity} : ' +  '${event.maxCapacity}',
+                    start : adjustDate('${event.startingDateTime}'),
+                    end : adjustDate('${event.endingDateTime}'),
                     id : '${event.idTimeSlot}',
                     color : <#if event.isOpen>'transparent'<#else>'#bebebe'</#if>,
                     textColor: '#2c2c2d',
@@ -179,12 +173,12 @@ function validateQty(event) {
             displayEventTime: false,
             defaultView: 'agendaWeek',
             height: 'auto',
-            locale: 'fr',
+            locale: moment.locale(),
             theme: true,
             editable: false,
             header: false,
             columnFormat: columnFormat,
-            slotLabelFormat: 'H:mm',
+            slotLabelFormat: '${USER_TIME_FORMAT}',
             slotLabelInterval: slotDuration,
             slotDuration: slotDuration,
             allDaySlot: false,
@@ -205,12 +199,17 @@ function validateQty(event) {
                     placement : 'bottom',
                     html : true,
                     trigger : 'hover',
-                    content : '<center><b>' + event.start.format('HH:mm') + '</b> - <b>' + event.end.format('HH:mm')+'</b></center>'
+                    content : '<center><b>' + event.start.format('${USER_TIME_FORMAT}') + '</b> - <b>' + event.end.format('${USER_TIME_FORMAT}')+'</b></center>'
                 });
             },
             eventAfterAllRender: function(view) {
                 $('.fc-event').css('cursor', 'pointer');
             },
         });
+    });
+
+    // Localize display of dates in the select
+    $('#id_week_definition > option').each(function() {
+        $(this).text(moment($(this).text(), '${SERVER_DATE_FORMAT}', true).format('${USER_DATE_FORMAT}'));
     });
 </script>

@@ -1,9 +1,5 @@
-<link rel='stylesheet' href='css/plugins/appointment/bootstrap-datetimepicker.css' />
-<script src="js/jquery/jquery.min.js"></script>
-<script src="js/jquery/jquery-ui.min.js"></script>
-<script src="js/plugins/appointment/moment.min.js"></script>
-<script src="js/plugins/appointment/bootstrap-datetimepicker.min.js"></script>
-<script src="js/bootstrap-filestyle.min.js"></script>
+<#include "/admin/plugins/appointment/date_commons.html" />
+
 <@row>
 	<@tform id='formid' class='form-horizontal' method='post' action='jsp/admin/plugins/appointment/ManageAppointmentForms.jsp' params='enctype=\'multipart/form-data\''>
 		<@columns>
@@ -14,6 +10,11 @@
 					<legend class="hidden">#i18n{appointment.createAppointmentForm.title}</legend>
 					<@messages errors=errors />
 					<input type="hidden" id="id_form" name="id_form">
+					<input type="hidden" id="date_start_validity" name="date_start_validity">
+                    <input type="hidden" id="date_end_validity" name="date_end_validity">
+                    <input type="hidden" id="time_start" name="time_start">
+                    <input type="hidden" id="time_end" name="time_end">
+
 					<@formGroup labelFor='title' labelKey='#i18n{appointment.createAppointmentForm.labelTitle}' mandatory=true>
 						<@input type='text' name='title' id='title' value='${appointmentform.title!\'\'}' maxlength=255 />
 					</@formGroup>
@@ -23,22 +24,24 @@
 					<@formGroup labelFor='description' labelKey='#i18n{appointment.labelDescription}' mandatory=true>
 						<@input type='textarea' id='description' name='description' value='${appointmentform.description!\'\'}' maxlength=255 />
 					</@formGroup>
-					<@formGroup labelFor='time_start' labelKey='#i18n{appointment.createAppointmentForm.labelTimeStart}' helpKey='#i18n{appointment.createAppointmentForm.labelTimeStart.help}' mandatory=true>
+					<@formGroup labelFor='time_start_user' labelKey='#i18n{appointment.createAppointmentForm.labelTimeStart}' helpKey='#i18n{appointment.createAppointmentForm.labelTimeStart.help}' mandatory=true>
 						<@inputGroup>
-							<@input type='text' name='time_start' id='time_start' value=appointmentform.timeStart!'' />
+							<@input type='text' name='' class='datetimepicker' id='time_start_user' />
 							<@inputGroupItem type='addon'>
 								<@icon style='clock-o' />
 							</@inputGroupItem>
 						</@inputGroup>
+						<@setupTimePicker idField='time_start_user' idServerField='time_start' />
 					</@formGroup>
 					
-					<@formGroup labelFor='time_end' labelKey='#i18n{appointment.createAppointmentForm.labelTimeEnd}' helpKey='#i18n{appointment.createAppointmentForm.labelTimeEnd.help}' mandatory=true>
+					<@formGroup labelFor='time_end_user' labelKey='#i18n{appointment.createAppointmentForm.labelTimeEnd}' helpKey='#i18n{appointment.createAppointmentForm.labelTimeEnd.help}' mandatory=true>
 						<@inputGroup>
-							<@input type='text' name='time_end' id='time_end' value=appointmentform.timeEnd!'' />
+							<@input type='text' name='' class='datetimepicker' id='time_end_user' />
 							<@inputGroupItem type='addon'>
 								<@icon style='clock-o' />
 							</@inputGroupItem>
 						</@inputGroup>
+						<@setupTimePicker idField='time_end_user' idServerField='time_end' />
 					</@formGroup>
 					
 					<@formGroup labelFor='duration_appointments' labelKey='#i18n{appointment.createAppointmentForm.labelDurationAppointments}' helpKey='#i18n{appointment.createAppointmentForm.labelDurationAppointments.help}' mandatory=true>
@@ -49,24 +52,24 @@
 						<@input type='text' name='min_time_before_appointment' id='min_time_before_appointment' value=appointmentform.minTimeBeforeAppointment!'' params='onkeypress="return validateQty(event);"' maxlength=3 />
 					</@formGroup>
 					
-					<@formGroup labelFor='date_start_validity' labelKey='#i18n{appointment.createAppointmentForm.labelDateStartValidity}' helpKey='#i18n{appointment.createAppointmentForm.labelDateStartValidity.help}'>
+					<@formGroup labelFor='date_start_validity_user' labelKey='#i18n{appointment.createAppointmentForm.labelDateStartValidity}' helpKey='#i18n{appointment.createAppointmentForm.labelDateStartValidity.help}' mandatory=true>
 						<@inputGroup>
-							<@input type='text' name='date_start_validity' id='date_start_validity' value=appointmentform.dateStartValidity!'' />
+							<@input type='text' name='' class='datetimepicker' id='date_start_validity_user' />
 							<@inputGroupItem type='addon'>
 								<@icon style='calendar' />
 							</@inputGroupItem>
 						</@inputGroup>
-						<@getDatePickerBootstrap idField="date_start_validity" language=language />
+						<@setupDatePicker idField='date_start_validity_user' idServerField='date_start_validity'/>
 					</@formGroup>
 					
-					<@formGroup labelFor='date_end_validity' labelKey='#i18n{appointment.createAppointmentForm.labelDateEndValidity}' helpKey='#i18n{appointment.createAppointmentForm.labelDateEndValidity.help}'>
+					<@formGroup labelFor='date_end_validity_user' labelKey='#i18n{appointment.createAppointmentForm.labelDateEndValidity}' helpKey='#i18n{appointment.createAppointmentForm.labelDateEndValidity.help}' mandatory=true>
 						<@inputGroup>
-							<@input type='text' name='date_end_validity' id='date_end_validity' value=appointmentform.dateEndValidity!'' />
+							<@input type='text' name='' class='datetimepicker'  id='date_end_validity_user' />
 							<@inputGroupItem type='addon'>
 								<@icon style='calendar' />
 							</@inputGroupItem>
 						</@inputGroup>
-						<@getDatePickerBootstrap idField="date_end_validity" language=language />
+						<@setupDatePicker idField='date_end_validity_user' idServerField='date_end_validity' />
 					</@formGroup>
 					
 					<@formGroup labelFor='display_title_fo' labelKey='#i18n{appointment.label.displayTitleFo}' helpKey='#i18n{appointment.label.displayTitleFo.help}'>
@@ -176,7 +179,7 @@
 							<@inputGroup>
 								<@input type='file' id='image_resource' name='image_resource' params='accept="image/*"' />
 								<@inputGroupItem>
-									<@button color='btn-danger' params='onclick="$(\'#image_resource\').val(\'\')"' buttonIcon='times' title='Delete' size='' />
+									<@button color='btn-danger' params='onclick="$(\'#image_resource\').val(\'\')"' buttonIcon='times' title='#i18n{appointment.labelRemove}' size='' />
 								</@inputGroupItem>
 							</@inputGroup>
 						</@formGroup>
@@ -224,12 +227,12 @@
 										document.getElementsByTagName("head")[0].appendChild(loadresource);
 								}
 
-								$(window).load(function() {
+								$(window).on('load', function() {
 										var map = L.map('map_address').setView([48.85632, 2.33272], 12);
 										var markers_layer = L.featureGroup().addTo(map);
 										// create the tile layer with correct attribution
 										var osmUrl='http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png';
-										var osmAttrib='Map data © <a href="http://openstreetmap.org">OpenStreetMap</a> contributors';
+										var osmAttrib='Map data ï¿½ <a href="http://openstreetmap.org">OpenStreetMap</a> contributors';
 										var osm = new L.TileLayer(osmUrl, {minZoom: 8, maxZoom: 16, attribution: osmAttrib}).addTo(map);
 
 										var jAdresse = $('#address_address');
@@ -347,30 +350,4 @@
 	}
 	else return true;
 	};
-    $('#date_start_validity').datepicker({
-		    language:		"${language}",
-		    startDate: 		new Date(),
-		    weekStart: 1,
-		    todayBtn: true,
-		    todayHighLight: true,
-		    autoclose: true
-		});
-	$('#date_end_validity').datepicker({
-		    language:		"${language}",
-		    startDate: 		new Date(),
-		    weekStart: 1,
-		    todayBtn: true,
-		    todayHighLight: true,
-		    autoclose: true
-		});
-	$(function () {
-		$('#time_start').datetimepicker({
-		  format: 'HH:mm',
-		  stepping: 5
-	    });
-		$('#time_end').datetimepicker({
-		  format: 'HH:mm',
-		  stepping: 5
-	    });		
-	});
 </script>

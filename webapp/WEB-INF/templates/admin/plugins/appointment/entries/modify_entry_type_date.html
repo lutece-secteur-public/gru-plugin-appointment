@@ -1,3 +1,4 @@
+<#include "/admin/plugins/appointment/date_commons.html" />
 <#include "/admin/util/editor/editor.html" />
 <@row>
     <@columns>
@@ -6,14 +7,15 @@
 			<@boxBody>
 				<fieldset>
 				<legend class="hidden">#i18n{appointment.modifyEntry.titleQuestion} : '${form.title}'</legend>
-					<@tform action='jsp/admin/plugins/appointment/ManageAppointmentFormEntries.jsp'>
+					<@tform id='entrydateform' action='jsp/admin/plugins/appointment/ManageAppointmentFormEntries.jsp'>
 						<input type='hidden' name='id_entry' value='${entry.idEntry}' />
 						<input type='hidden' name='action' value='doModifyEntry' />
-						
+						<input type='hidden' id='date' name='date' />
+
 						<@formGroup labelKey='#i18n{appointment.createEntry.labelType}'>
 							<@staticText>
 								<@tag color='info'>
-									${entry.entryType.title}
+									#i18n{${entry.entryType.beanName}}
 								</@tag>
 							</@staticText>
 						</@formGroup>
@@ -26,15 +28,16 @@
 						<@formGroup labelFor='comment' labelKey='#i18n{appointment.comment.name}' helpKey='#i18n{appointment.createEntry.labelHelpMessageComment}'>
 							<@input type='textarea' name='comment' rows=5>${entry.comment}</@input>
 						</@formGroup>
-						<@formGroup labelFor='date' labelKey='#i18n{appointment.defaultValue.name}'>
+						<@formGroup labelFor='date_user' labelKey='#i18n{appointment.defaultValue.name}'>
 							<#list entry.fields as field>
 								<@inputGroup>
 									<@inputGroupItem type='addon'>
 										<@icon style='calendar' />
 									</@inputGroupItem>
-									<@input type='text' name='date' id='date' value='${field.valueTypeDate?if_exists}' />
+									<@input type='text' name='' class='datetimepicker' id='date_user' />
 								</@inputGroup>
 							</#list>
+							<@setupDatePicker idField="date_user" idServerField='date' serverDate=field.valueTypeDate!'' />
 						</@formGroup>
 						<@formGroup labelKey='#i18n{appointment.createEntry.labelMandatory}'>
 							<@checkBox labelFor='mandatory' labelKey='#i18n{appointment.createEntry.labelMandatory}' name='mandatory' id='mandatory' value='1' checked=entry.mandatory />
@@ -57,6 +60,3 @@
 </@row>
 
  <@initEditor />
-<script src="js/jquery/plugins/ui/jquery-ui-1.9.2.custom.min.js"></script>
-<script src="js/jquery/plugins/ui/ui.datepicker-fr.js"></script>
-<@getDatePicker idField="date" language=locale />

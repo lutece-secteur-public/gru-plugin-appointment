@@ -69,7 +69,7 @@
 					<#assign cpt=cpt+1>
 					<tr>
 						<td>${entry.title!}</td>
-						<td>${entry.entryType.title}</td>
+						<td>#i18n{${entry.entryType.beanName}}</td>
 						<td><#if entry.numberConditionalQuestion!=0>${entry.numberConditionalQuestion}</#if></td>
 						<td>
 							<@aButton href='jsp/admin/plugins/appointment/ManageAppointmentFormEntries.jsp?view=getModifyEntry&id_entry=${entry.idEntry}'  title='null' buttonIcon='edit' />

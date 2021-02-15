@@ -1,8 +1,4 @@
 <#include "/admin/plugins/appointment/appointment/manage_appointment_tabs.html" />
-<link href="css/datepicker.css" rel="stylesheet">
-<link rel='stylesheet' href='css/plugins/appointment/bootstrap-datetimepicker.css' />
-<script src="js/plugins/appointment/moment.min.js"></script>
-<script src="js/plugins/appointment/bootstrap-datetimepicker.min.js"></script>
 
 <@row>
     <@columns>
@@ -14,21 +10,25 @@
             <@tform name='form' id='form' action='jsp/admin/plugins/appointment/ManageAppointments.jsp'>
                 <input type='hidden' name='view' value='manageAppointments' />    
                 <input type='hidden' name='id_form' value='${form.idForm}' />
+				<input type='hidden' id='startingDateOfSearch' name='startingDateOfSearch'>
+           		<input type='hidden' id='endingDateOfSearch' name='endingDateOfSearch'>
+          		<input type='hidden' id='startingTimeOfSearch' name='startingTimeOfSearch'>
+               	<input type='hidden' id='endingTimeOfSearch' name='endingTimeOfSearch'>
 				<@box collapsed=true>
 					<@boxHeader title='#i18n{appointment.manageAppointments.labelSearch}'>
 						<@button style='btn-box-tool' params='data-widget="collapse"' buttonIcon='plus' />
 					</@boxHeader>
 					<@boxBody>
 
-						<@formGroup labelFor='lastName' labelKey='${formMessages.fieldLastNameTitle}'>
+						<@formGroup labelFor='lastName' labelKey='#i18n{appointment.manageAppointments.lastName}'>
 							<@input type='text' id='lastName' name='lastName' value='${filter.lastName!}' />
 						</@formGroup>
 						
-						<@formGroup labelFor='firstName' labelKey='${formMessages.fieldFirstNameTitle}'>
+						<@formGroup labelFor='firstName' labelKey='#i18n{appointment.manageAppointments.firstName}'>
 							<@input type='text' id='firstName' name='firstName' value='${filter.firstName!}'/>
 						</@formGroup>
 						
-						<@formGroup labelFor='email' labelKey='${formMessages.fieldEmailTitle}'>
+						<@formGroup labelFor='email' labelKey='#i18n{appointment.manageAppointments.email}'>
 							<@input type='text' id='email' name='email' value='${filter.email!}' />
 						</@formGroup>
 						
@@ -36,39 +36,43 @@
 							<@select name='status' id='status' items=listStatus default_value='${filter.status!}' />
 						</@formGroup>
 						
-                        <@formGroup labelFor='startingDateOfSearch' labelKey='#i18n{appointment.manageAppointments.startingDateOfSearch}'>
+                        <@formGroup labelFor='startingDateOfSearch_user' labelKey='#i18n{appointment.manageAppointments.startingDateOfSearch}'>
 							<@inputGroup>
-								<@input type='text' name='startingDateOfSearch' id='startingDateOfSearch' value='${filter.startingDateOfSearch!}' />
+								<@input type='text' name='' class='datetimepicker' id='startingDateOfSearch_user' />
 								<@inputGroupItem type='addon'>
 									<@icon style='calendar' />
 								</@inputGroupItem>
 							</@inputGroup>
+							<@setupDatePicker idField='startingDateOfSearch_user' idServerField='startingDateOfSearch' serverDate='${date_start_search_str!\'\'}' />
 						</@formGroup>
-						<@formGroup labelFor='startingTimeOfSearch' labelKey='#i18n{appointment.labelTo}'>
+						<@formGroup labelFor='startingTimeOfSearch_user' labelKey='#i18n{appointment.labelAt}'>
 							<@inputGroup>
-								<@input type='text' name='startingTimeOfSearch' id='startingTimeOfSearch' value='${filter.startingTimeOfSearch!\'\'}' />
+								<@input type='text' name='' class='datetimepicker' id='startingTimeOfSearch_user' />
 								<@inputGroupItem type='addon'>
 									<@icon style='clock-o' />
 								</@inputGroupItem>
 							</@inputGroup>
+							<@setupTimePicker idField='startingTimeOfSearch_user' idServerField='startingTimeOfSearch' serverTime='${filter.startingTimeOfSearch!\'\'}' />
 						</@formGroup>
 
-						<@formGroup labelFor='endingDateOfSearch' labelKey='#i18n{appointment.manageAppointments.endingDateOfSearch}'>
+						<@formGroup labelFor='endingDateOfSearch_user' labelKey='#i18n{appointment.manageAppointments.endingDateOfSearch}'>
 							<@inputGroup>
-								<@input type='text' name='endingDateOfSearch' id='endingDateOfSearch' value='${filter.endingDateOfSearch!}' />
+								<@input type='text' name='' class='datetimepicker' id='endingDateOfSearch_user' />
 								<@inputGroupItem type='addon'>
 									<@icon style='calendar' />
 								</@inputGroupItem>
 							</@inputGroup>
+							<@setupDatePicker idField='endingDateOfSearch_user' idServerField='endingDateOfSearch' serverDate='${date_end_search_str!\'\'}' />
 						</@formGroup>
 
-						<@formGroup labelFor='endingTimeOfSearch' labelKey='#i18n{appointment.labelTo}'>
+						<@formGroup labelFor='endingTimeOfSearch_user' labelKey='#i18n{appointment.labelAt}'>
 							<@inputGroup>
-								<@input type='text' name='endingTimeOfSearch' id='endingTimeOfSearch' value='${filter.endingTimeOfSearch!\'\'}' />
+								<@input type='text' name='' class='datetimepicker' id='endingTimeOfSearch_user' />
 								<@inputGroupItem type='addon'>
 									<@icon style='clock-o' />
 								</@inputGroupItem>
 							</@inputGroup>
+							<@setupTimePicker idField='endingTimeOfSearch_user' idServerField='endingTimeOfSearch' serverTime='${filter.endingTimeOfSearch!\'\'}' />
 						</@formGroup>
 						
 						<@actionButtons button1Name='Search' i18nValue1Key='appointment.manageAppointments.labelSearch' icon1='fa fa-search' button2Name='Reset' i18nValue2Key='appointment.displayAppointmentForm.labelReset' url2='jsp/admin/plugins/appointment/ManageAppointments.jsp?view=manageAppointments&id_form=${form.idForm}&reset=\'true\'' icon2='fa fa-refresh' />
@@ -189,19 +193,7 @@
 		</@appointmentTabs>
 	</@columns>
 </@row>
-<script src="js/jquery/plugins/ui/jquery-ui-1.9.2.custom.min.js"></script>
-<@getDatePickerBootstrap idField="dateAppointment" language=language />
 <script type="text/javascript">
-    $(function () {
-        $('#startingTimeOfSearch').datetimepicker({
-            format: 'HH:mm',
-            stepping: 1
-        });
-        $('#endingTimeOfSearch').datetimepicker({
-            format: 'HH:mm',
-            stepping: 1
-        });
-    });
     $('#allCheck').click(function() {
         var etat = this.checked;
         $("input[name='apmt']").each(function() {
@@ -217,18 +209,4 @@
             }
         });
     });
-    $('#startingDateOfSearch').datepicker({
-        language : "${language}",
-        weekStart : 1,
-        todayBtn : true,
-        todayHighLight : true,
-        autoclose : true
-    });
-    $('#endingDateOfSearch').datepicker({
-        language : "${language}",
-        weekStart : 1,
-        todayBtn : true,
-        todayHighLight : true,
-        autoclose : true
-    });    
 </script>

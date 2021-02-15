@@ -1,7 +1,4 @@
-<link rel='stylesheet' href='css/plugins/appointment/bootstrap-datetimepicker.css' />
-<script src="js/jquery/jquery.min.js"></script>
-<script src="js/plugins/appointment/moment.min.js" ></script>
-<script src="js/plugins/appointment/bootstrap-datetimepicker.min.js"></script>
+<#include "/admin/plugins/appointment/date_commons.html" />
 
 <@row>
 	<@columns>
@@ -13,7 +10,8 @@
 						<@messages errors=errors infos=infos/>					
 						<input type='hidden' name='action' value='doModifySlot' />
 						<input type='hidden' name='id_slot' value='${slot.idSlot}' />						
-						<input type='hidden' name='date_of_display' value='${date_of_display}' />						
+						<input type='hidden' name='date_of_display' value='${date_of_display}' />
+						<input type='hidden' id='ending_time' name='ending_time' />
 						<@formGroup labelKey='#i18n{appointment.modifySlot.labelDate}'>
 							<@staticText>${slot.date}</@staticText>
 						</@formGroup>
@@ -26,13 +24,14 @@
 						<@formGroup labelFor='#i18n{appointment.model.entity.appointmentform.attribute.timeStart}'>
 							<@staticText>${slot.startingTime}</@staticText>
 						</@formGroup>
-						<@formGroup labelFor='time_end' labelKey='#i18n{appointment.model.entity.appointmentform.attribute.timeEnd}' helpKey='#i18n{appointment.modifySlot.helpModifyEndSlot}' mandatory=true>
+						<@formGroup labelFor='time_end_user' labelKey='#i18n{appointment.model.entity.appointmentform.attribute.timeEnd}' helpKey='#i18n{appointment.modifySlot.helpModifyEndSlot}' mandatory=true>
 							<@inputGroup>
-								<@input type='text' name='ending_time' id='ending_time' value='${slot.endingTime!\'\'}' />
 								<@inputGroupItem type='addon'>
 									<@icon style='clock-o' />
 								</@inputGroupItem>
+								<@input type='text' id='ending_time_user' name='' class='datetimepicker' />
 							</@inputGroup>
+							<@setupTimePicker idField='ending_time_user' idServerField='ending_time' serverTime=slot.endingTime!'' />
 						</@formGroup>
 						<@formGroup labelFor='shift_slot'>
 							<@radioButton labelFor='shift_slot' labelKey='#i18n{appointment.modifySlot.notShiftSlot}' name='shift_slot' id='shift_slot' checked=true value='false' />
@@ -61,8 +60,4 @@
 	}
 	else return true;
 	};
-	$('#ending_time').datetimepicker({
-      format: 'HH:mm',
-      stepping: 5
-    });
 </script>

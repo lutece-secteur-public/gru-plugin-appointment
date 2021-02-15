@@ -1,3 +1,5 @@
+<#include "/admin/plugins/appointment/date_commons.html" />
+
 <@row>
 	<@columns>
 	<@messages infos=infos errors=errors />
@@ -8,14 +10,16 @@
 </@row>
 <#macro appointmentTabs tab appointmentform>
 	<@tabs>
-    <ul class="nav nav-tabs">
-   		<li <#if tab="typicalWeek">class="active"</#if>>
-			<a href="jsp/admin/plugins/appointment/ManageAppointmentSlots.jsp?view=manageTypicalWeek&id_form=${appointmentform.idForm}">
-				#i18n{appointment.typicalWeek.pageTitle}
+    <ul class="nav">
+		<li class="nav-item">
+        	<a  <#if tab="typicalWeek">class="nav-link active"<#else>class="nav-link"</#if>
+            		href="jsp/admin/plugins/appointment/ManageAppointmentSlots.jsp?view=manageTypicalWeek&id_form=${appointmentform.idForm}">
+   				#i18n{appointment.typicalWeek.pageTitle}
 			</a>
         </li>
-		<li <#if tab="specificWeek">class="active"</#if>>
-			<a href="jsp/admin/plugins/appointment/ManageAppointmentSlots.jsp?view=manageSpecificWeek&id_form=${appointmentform.idForm}">
+		<li class="nav-item">
+            <a <#if tab="specificWeek">class="nav-link active"<#else>class="nav-link"</#if>
+                    href="jsp/admin/plugins/appointment/ManageAppointmentSlots.jsp?view=manageSpecificWeek&id_form=${appointmentform.idForm}">
 				#i18n{appointment.specificWeek.pageTitle}
 			</a>
         </li>  	 				                          
@@ -26,9 +30,7 @@
 	</@tabs>
 </#macro>
 <#macro modifyAppointmentFormLeftColumn appointmentform >
-<script src="js/jquery/plugins/ui/​jquery-ui-1.9.2.custom.min.js"></script>
-<@getDatePickerBootstrap idField="date_start_validity" language=language />
-<@getDatePickerBootstrap idField="date_end_validity"   language=language />
+
 <script type="text/javascript">
 	function validateQty(event) {
 		var key = window.event ? event.keyCode : event.which;
@@ -42,19 +44,5 @@
 	}
 	else return true;
 	};
-	$('#date_start_validity').datepicker({
-    	language:		"${language}",
-    	weekStart: 1,
-    	todayBtn: true,
-    	todayHighLight: true,
-    	autoclose: true
-	});
-	$('#date_end_validity').datepicker({
-	    language:		"${language}",
-	    weekStart: 1,
-	    todayBtn: true,
-	    todayHighLight: true,
-	    autoclose: true
-	});
 </script>
 </#macro> 
