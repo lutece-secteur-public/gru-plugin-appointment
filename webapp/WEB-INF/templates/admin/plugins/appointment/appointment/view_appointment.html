@@ -45,6 +45,15 @@
 						<@staticText>
 							${appointment.dateOfTheAppointment} #i18n{appointment.labelFrom} ${appointment.startingTime} #i18n{appointment.labelTo} ${appointment.endingTime}
 						</@staticText>
+					</@formGroup>					
+					<@formGroup labelKey='#i18n{appointment.viewAppointmentFormMessages.labelAppointmentTakenBy}'>
+						<@staticText>
+							<#if appointment.adminUserCreate??>
+								#i18n{appointment.viewAppointmentFormMessages.labelAppointmentUserBO} ${appointment.userCreatorName!''}
+							<#else>
+								#i18n{appointment.viewAppointmentFormMessages.labelAppointmentUser}
+							</#if>
+						</@staticText>
 					</@formGroup>						
 					<@formGroup labelKey='#i18n{portal.util.labelActions}'  hideLabel=['all']>
 						<#if rightChangeDate?? && rightChangeDate && !appointment.isCancelled>
@@ -85,3 +94,6 @@
 		</@box>
 	</@columns>
 </@row>
+
+<#import "dump.ftl" as dumper>
+<pre><@dumper.dump .data_model /></pre>
