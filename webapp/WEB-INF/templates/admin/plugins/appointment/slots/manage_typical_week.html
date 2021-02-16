@@ -153,7 +153,7 @@
                 <@checkBox name='is_open' id='timeIsOpen' value='true' checked=true />
             </@formGroup>
             <@formGroup labelFor='maxCapacity' labelKey='#i18n{appointment.modifySlot.labelMaxCapacityForThisSlot}' mandatory=true>
-                <@input type='number' name='max_capacity' id='maxCapacity' value='' maxlength=3 />
+                <@input type='number' name='max_capacity' id='maxCapacity' value='' min=0 max=99 maxlength=3 />
             </@formGroup>
             <@formGroup labelKey='#i18n{appointment.model.entity.appointmentform.attribute.timeStart}'>
                 <@staticText id='timeStart'></@staticText>
@@ -221,7 +221,6 @@ var columnFormat = 'dddd';
 var events = [<#if events??>
 <#list events as event>
     <#assign maxCap = event.maxCapacity?number />
-    <#if maxCap = 0><#assign maxCap = 1></#if>
     <#assign realCap = appointmentform.capacityPerSlot?number />
     <#if realCap = 0><#assign realCap = 1></#if>
     <#assign nbFull = maxCap / realCap  * 100 >
@@ -292,17 +291,6 @@ $("#time_start_new").on("dp.change", function (e) {
 $('#ending_time').datetimepicker({
     format: 'HH:mm',
     stepping: 5
-});
-
-$('#new_cap').click(function(){
-    $('#newCapacity').attr('min','0');
-    if( $('#newCapacity').val() < 0 ){
-        $('#newCapacity').val(0);
-    }
-});
-
-$('#var_cap').click(function(){
-    $('#newCapacity').attr('min','-99');
 });
 
 /* Tab management                       */
