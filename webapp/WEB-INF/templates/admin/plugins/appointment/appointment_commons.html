@@ -649,7 +649,7 @@ $( function(){
 							dateFin=moment(event.validity_end).format('ddd DD/MM à ')
 						}
 						var fcTitle = element.find('.fc-title p');
-						fcTitle.prepend( '[ ' + dateDebut + event.start_time + ' / ' + dateFin + event.end_time + ' ] ' );
+						fcTitle.prepend( dateDebut + event.start_time + '/' + dateFin + event.end_time + ' ' );
 					}
 				} else {
 					json.content = "<center><b>" + event.start.format('HH:mm') + "</b> - <b>" + event.end.format('HH:mm')+"</b></center>";
