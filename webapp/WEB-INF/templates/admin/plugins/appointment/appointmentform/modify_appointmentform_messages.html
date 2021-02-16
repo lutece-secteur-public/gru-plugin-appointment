@@ -37,10 +37,10 @@
 					<@formGroup labelFor='fieldConfirmationEmailHelp' labelKey='#i18n{appointment.modifyAppointmentFormMessages.labelFieldEmailConfirmationHelp}'>
 						<@input type='text' maxlength=255 name='fieldConfirmationEmailHelp' value='${formMessage.fieldConfirmationEmailHelp}' />
 					</@formGroup>
-					<@formGroup labelFor='calendarReserveLabel' labelKey='#i18n{appointment.modifyAppointmentFormMessages.labelCalendarReserveLabel}'>
+					<@formGroup labelFor='calendarReserveLabel' labelKey='#i18n{appointment.modifyAppointmentFormMessages.labelCalendarReserveLabel}' mandatory=true>
 						<@input type='text' maxlength=255 name='calendarReserveLabel' value='${formMessage.calendarReserveLabel}' />
 					</@formGroup>
-					<@formGroup labelFor='calendarFullLabel' labelKey='#i18n{appointment.modifyAppointmentFormMessages.labelCalendarFullLabel}'>
+					<@formGroup labelFor='calendarFullLabel' labelKey='#i18n{appointment.modifyAppointmentFormMessages.labelCalendarFullLabel}' mandatory=true>
 						<@input type='text' maxlength=255 name='calendarFullLabel' value='${formMessage.calendarFullLabel}' />
 					</@formGroup>
 					<@formGroup labelFor='textAppointmentCreated' labelKey='#i18n{appointment.modifyAppointmentFormMessages.labelTextAppointmentCreated}' helpKey='#i18n{appointment.modifyAppointmentFormMessages.labelTextAppointmentCreatedHelp}'>
