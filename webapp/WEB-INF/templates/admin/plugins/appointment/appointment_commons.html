@@ -449,9 +449,11 @@ $( function(){
 		},
 		</#if>
 		header: <#if isTypical>false<#else>{left: 'prev',center: 'today, datePicker, title',right: 'next'}</#if>,
-		columnHeaderHtml: function(mom) {
-			return mom.format('dddd') + '</br>' + mom.format('LL');
-		},
+		<#if isTypical>
+		columnFormat : 'dddd',
+		<#else>
+		columnHeaderHtml: function(mom) { return mom.format('dddd') + '</br>' + mom.format('LL'); },
+		</#if>
 		slotLabelFormat: 'H:mm',
 		slotLabelInterval: slotDuration,
 		slotDuration: slotDuration,
