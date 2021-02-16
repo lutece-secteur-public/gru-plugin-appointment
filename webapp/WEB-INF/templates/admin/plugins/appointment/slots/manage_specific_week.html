@@ -120,7 +120,16 @@ var events = [
     <@getComments comment_events />
 </#if>
 ];
+$('#new_cap').click(function(){
+    $('#newCapacity').attr('min','0');
+    if( $('#newCapacity').val() < 0 ){
+        $('#newCapacity').val(0);
+    }
+});
 
+$('#var_cap').click(function(){
+    $('#newCapacity').attr('min','-99');
+});
 <@fullCalendarScript isSpecific=true >
     $('#timeEnd').datetimepicker({
         format: 'HH:mm',

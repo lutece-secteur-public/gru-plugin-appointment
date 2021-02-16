@@ -293,6 +293,17 @@ $('#ending_time').datetimepicker({
     stepping: 5
 });
 
+$('#new_cap').click(function(){
+    $('#newCapacity').attr('min','0');
+    if( $('#newCapacity').val() < 0 ){
+        $('#newCapacity').val(0);
+    }
+});
+
+$('#var_cap').click(function(){
+    $('#newCapacity').attr('min','-99');
+});
+
 /* Tab management                       */
 <#if id_reservation_rule?number=0>
     calendar.toggle();
