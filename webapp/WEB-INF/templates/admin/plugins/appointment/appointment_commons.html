@@ -319,7 +319,7 @@ $(function(){
 </#if>
 </#macro>
 
-<#macro appointmentTabs tab form context >
+<#macro appointmentTabs tab form context>
 <@commonsAppJS />
 <@row>
     <@columns>
@@ -335,11 +335,9 @@ $(function(){
 				<#else>
 					<#if !tab?contains("filter")>
 						<#if !tab?contains("typicalWeek")>
-							<#if permission_add_comment?boolean>
-							<div id="btn-comment-main">
-								<@btnComment /> 
-							</div>
-							</#if>	
+						<div id="btn-comment-main">
+							<@btnComment /> 
+						</div>
 						</#if>	
 					</#if>	
 					<#if tab !='typicalWeek' || tab !='year' || tab !='day'>
@@ -402,7 +400,7 @@ $( '#modify-comment' ).modal('show');
 </#list>
 </#macro>
 
-<#macro fullCalendarScript isSpecific=false showComments=true locale=locale>
+<#macro fullCalendarScript isSpecific=false isTypical=false showComments=true locale=locale>
 $( function(){
     var calendar = $('#calendar');
 	calendar.fullCalendar({
@@ -423,6 +421,7 @@ $( function(){
 		defaultView: 'agendaWeek',
 		locale: '${locale}',
 		editable: false,
+		<#if !isTypical>
 		customButtons: {
 			datePicker: {
 				text: '#i18n{appointment.appointmentCalendar.labelChooseDate}',
@@ -448,11 +447,8 @@ $( function(){
 				}
 			}
 		},
-		header: {
-			left: 'prev',
-			center: 'today, datePicker, title',
-			right: 'next'
-		},
+		</#if>
+		header: <#if isTypical>false<#else>{left: 'prev',center: 'today, datePicker, title',right: 'next'}</#if>,
 		columnHeaderHtml: function(mom) {
 			return mom.format('dddd') + '</br>' + mom.format('LL');
 		},
@@ -469,17 +465,16 @@ $( function(){
 		eventClick: function( calEvent, jsEvent, view ){
 		<#if showComments>
 			// Comments
-			<#if permission_moderate_comment?boolean>
-			if( calEvent.type = "comment" && calEvent.creator_user === '${permission_access_code}' ){
+			if( calEvent.type = "comment" ){
 				<@commentModal update=true />
 			}
-			</#if>
 		<#else>
 			// Typical week
 			location.href = eventUrl + calEvent.id;
 		</#if>
 		},
 		events: events,
+		<#if !isTypical>
 		viewRender: function(view, element) {
 			var minDate = moment(startingDateOfDisplay);
 			var maxDate = moment(endingDateOfDisplay);
@@ -500,12 +495,15 @@ $( function(){
 				$( '.fc-next-button' ).prop('disabled', false); 
 			}
 		},
+		</#if>
 		eventAfterAllRender: function( view ) {
 			$('.fc-event').css('cursor', 'pointer');
-			$('.fc-next-button').attr('class', 'fc-next-button btn btn-primary btn-sm');
-			$('.fc-prev-button').attr('class', 'fc-prev-button btn btn-primary btn-sm');
-			$('.fc-today-button').attr('class', 'fc-today-button btn btn-primary btn-sm');
-			$('.fc-datePicker-button').attr('class', 'fc-datePicker-button btn btn-primary btn-sm');
+			<#if !isTypical>
+				$('.fc-next-button').attr('class', 'fc-next-button btn btn-primary btn-sm');
+				$('.fc-prev-button').attr('class', 'fc-prev-button btn btn-primary btn-sm');
+				$('.fc-today-button').attr('class', 'fc-today-button btn btn-primary btn-sm');
+				$('.fc-datePicker-button').attr('class', 'fc-datePicker-button btn btn-primary btn-sm');
+			</#if>
 			$('.open-AddBookDialog').click( function( e ) {
 				e.preventDefault();
 				$('#starting_date_time').val($(this).data('starting_date_time'));
@@ -526,9 +524,7 @@ $( function(){
 			// Highlight comment from bg
 			$( '.fc-bgevent' ).hover(function(){
 				var classSel = $(this).attr('class'), bgColor=$(this).css('background-color');
-				<!-- var cColor = contrast(bgColor); -->
 				var commentSel = classSel.split(' ');
-				<!-- $( '#'+commentSel[0] ).css('background-color', bgColor ); -->
 				$( this ).css('background-color', 'orange' );
 				$( '#'+commentSel[0] ).css('background-color', 'orange' );
 				$( '#'+commentSel[0] + ' p').css('color', '#fff' );
@@ -549,11 +545,12 @@ $( function(){
 				return false;
 			});
 			</#if>
-			<#if isSpecific>
+
+			<#if isSpecific || isTypical >
 			/* Event selection if specific */ 
-			var eventIdx=0, eventData='',evtData='';
-			$( '.fc-content-skeleton .fc-event-container' ).not(':has(.fc-bgevent-container	)').not(":has(.comments)").not(":has(.btn-comments)").selectable({
-				filter: ".fc-time-grid-event.fc-v-event",
+			var eventIdx=0, eventData='',evtData='';        
+            $( ".fc-content-skeleton" ).not(":has(.btn-comments)").selectable({
+                filter: ".fc-time-grid-event.fc-v-event",
 				selecting: function( event, ui ) {
 					eventIdx++;
 				},
@@ -563,33 +560,51 @@ $( function(){
 				stop: function() {
 					$( '.ui-selected', this ).each( function( index ) {
 						index++;
-						if ( eventIdx > 1 ){
-							eventData += '{' + $(this).data('event') + '},' ;
-							if( index === eventIdx ){
-								evtData='[' + eventData.slice(0, -1) + ']'
-								$('#slotsData').val( evtData );
-								var evt = JSON.parse(evtData); 
-								$('#date_of_display_multi').val( moment( evt[0].startingDateTime).format('YYYY-MM-DD') );
+						<#if isSpecific>
+							if ( eventIdx > 1 ){
+								eventData += '{' + $(this).data('event') + '},' ;
+								const events =  JSON.stringify( eventData );
+								evtData='['+eventData.slice(0, -1)+']'
+								const evt = JSON.parse(evtData); 
+								$('#slotsData').val( evtData);
+								$('#date_of_display_multi').val( moment(evt[0].startingDateTime).format('YYYY-MM-DD') );
 								$('#updatePlanningMultiSlot').modal('show');
-							}	
-
-						} else {
-							eventData ='{' + $(this).data('event') + '}';                       
-							evtData= '['+eventData+']';
-                            const evt = JSON.parse(eventData);
-							$('#timeSlotData').val( evtData );
-                            const isOpen = JSON.parse( evt.isOpen );
-							$( '[name="is_open"]' ).prop( "checked", isOpen );
-                            $( '#idTimeSlot' ).val( evt.idSlot );
-                            $( '#idWorkingDay' ).val( evt.idWorkingDay );
-                            $( '#maxCapacity' ).val( evt.maxCapacity );
-                            $( '#timeStart' ).text( evt.startingTime );
-                            $( '#timeEnd' ).val( evt.endingTime );
-							$( '#dtSlot' ).text( moment(evt.startingDateTime).format('DD/MM/YYYY') );
-							$( '#date_of_display_slot' ).val( moment(evt.startingDateTime).format('YYYY-MM-DD') );
-                            $( '#updatePlanningSlot' ).modal('show');
-							
-						}
+							} else {
+								eventData ='{' + $(this).data('event') + '}';  
+								const events = JSON.stringify(eventData); 
+								evtData= '['+eventData+']';
+								$('#slotData').val( evtData );
+								const evt = JSON.parse(eventData); 
+								const isOpen = JSON.parse( evt.isOpen )
+								$('#is_open').prop( "checked", isOpen );
+								$('#maxCapacity').val( evt.maxCapacity );
+								$('#dtSlot').text( moment(evt.startingDateTime).format('DD/MM/YYYY') );
+								$('#date_of_display_slot').val( moment(evt.startingDateTime).format('YYYY-MM-DD') );
+								$('#timeStart').text( evt.startingTime );
+								$('#timeEnd').val( evt.endingTime );
+								$('#updatePlanningSlot').modal('show');
+							}
+						</#if>  
+						<#if isTypical>
+							if ( eventIdx > 1 ){
+								eventData += '{' + $(this).data('event') + '},' ;
+								const events =  JSON.stringify( eventData );
+								evtData='['+eventData.slice(0, -1)+']'
+								$('#timeSlotData').val( evtData );
+								$('#updatePlanningMultiSlot').modal('show');
+							} else {
+								eventData ='{' + $(this).data('event') + '}';                       
+								const evt = JSON.parse(eventData); 
+								$('#timeIsOpen').prop( "checked", evt.isOpen );
+								$('#idTimeSlot').val( evt.idTimeSlot );
+								$('#idWorkingDay').val( evt.idWorkingDay );
+								$('#maxCapacity').val( evt.maxCapacity );
+								$('#date_of_display_slotmaxCapacity').val( evt.maxCapacity );
+								$('#timeStart').text( evt.startingTime );
+								$('#timeEnd').val( evt.endingTime );
+								$('#updatePlanningSlot').modal('show');
+							}
+						</#if> 
 					});
 					eventData='';
 				}
@@ -603,6 +618,9 @@ $( function(){
 			
 			<#if isSpecific>
 			$(element).attr( 'data-event', '"idSlot":"' + event.id +'","startingDateTime":"' + event.start.toISOString()+ '","startingTime":"' + event.start.format('HH:mm') + '","endingDateTime":"' + event.end.toISOString() + '","endingTime":"' + event.end.format('HH:mm')+ '","isOpen":"' + event.isOpen + '","idForm":"' + event.idForm +'","date":"' + event.date + '","isSpecific":"' + event.isSpecific + '","maxCapacity":"' + event.maxCapacity + '"' );
+			</#if>  
+			<#if isTypical>
+			$(element).attr( 'data-event', '"idTimeSlot":"' + event.id +'","startingDateTime":"' + event.start.toISOString()+ '","startingTime":"' + event.start.format('HH:mm') + '","endingDateTime":"' + event.end.toISOString() + '","endingTime":"' + event.end.format('HH:mm')+ '","isOpen":"' + event.isOpen + '","idForm":"' + event.idForm +'","maxCapacity":"' + event.maxCapacity + '"' );
 			</#if>  
 			
 			if ( event.customStyle !='' ){
@@ -632,10 +650,10 @@ $( function(){
 						fcTitle.prepend( '[ ' + dateDebut + event.start_time + ' / ' + dateFin + event.end_time + ' ] ' );
 					}
 				} else {
-					json.content = "<center>" + event.start.format('ddd DD/MM') + "<b>" + event.start.format('HH:mm') + "</b> - <b>" + event.end.format('HH:mm')+"</b></center>";
+					json.content = "<center><b>" + event.start.format('HH:mm') + "</b> - <b>" + event.end.format('HH:mm')+"</b></center>";
 				}
 			<#else>
-				json.content = "<center>" + event.start.format('ddd DD/MM') + "<b>" + event.start.format('HH:mm') + "</b> - <b>" + event.end.format('HH:mm')+"</b></center>";
+				json.content = "<center><b>" + event.start.format('HH:mm') + "</b> - <b>" + event.end.format('HH:mm')+"</b></center>";
 			</#if>
 			$(element).popover( json );
 			
