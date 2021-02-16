@@ -9,19 +9,17 @@
         <@tform action='jsp/admin/plugins/appointment/ManageSpecificWeek.jsp'>						
             <@input type='hidden' name='action' value='doModifyListSlot' />
             <@input type='hidden' name='id_form' value='${appointmentform.idForm}' />
-            <@input type='hidden' id='timeSlotData' name='slotsData' value='' />
+            <@input type='hidden' id='slotData' name='slotsData' value='' />
             <@input type='hidden' id='idWorkingDay' name='workingDay' value='' />
             <@input type='hidden' id='capacity' name='capacity' value='new_cap' />
             <@input type='hidden' id='date_of_display_slot' name='date_of_display' value='${date_of_display}' />	
             <@formGroup labelKey='#i18n{appointment.modifySlot.labelDate}'>
                 <@staticText id="dtSlot"></@staticText>
             </@formGroup>
-            <@formGroup labelKey='#i18n{appointment.modifySlot.labelSlotStatus}' helpKey='#i18n{appointment.modifySlot.labelOpenHelp}'>
-                <@radioButton orientation='inline' labelFor='shift_slot_open' id='shift_slot_open' labelKey='#i18n{appointment.modifySlot.labelOpen}' name='is_open' checked=true value='true' />
-                <@radioButton orientation='inline' labelFor='shift_slot_close' id='shift_slot_close' labelKey='#i18n{appointment.modifySlot.labelClose}' name='is_open' value='false' />
-                <@radioButton orientation='inline' labelFor='shift_slot_null' id='shift_slot_null' labelKey='#i18n{appointment.modifySlot.labelNoValue}' name='is_open' value='false' />
+            <@formGroup labelFor='is_open' labelKey='#i18n{appointment.modifySlot.labelOpen}' helpKey='#i18n{appointment.modifySlot.labelOpenHelp}' >
+                <@checkBox name='is_open' id='is_open' value='true' checked=true />
             </@formGroup>
-            <@formGroup labelKey='#i18n{appointment.modifySlot.labelMaxCapacityForThisSlot}' mandatory=true>
+            <@formGroup labelFor='maxCapacity' labelKey='#i18n{appointment.modifySlot.labelMaxCapacityForThisSlot}' mandatory=true>
                 <@input type='number' id='maxCapacity' name='max_capacity' value='' maxlength=3 />	
             </@formGroup>
             <@formGroup labelKey='#i18n{appointment.model.entity.appointmentform.attribute.timeStart}'>
@@ -36,8 +34,8 @@
                 </@inputGroup>
             </@formGroup>
             <@formGroup labelFor='shift_slot'>
-                <@radioButton labelFor='shift_slot' labelKey='#i18n{appointment.modifySlot.notShiftSlot}' name='shift_slot' id='shift_slot_false' checked=true value='false' />
-                <@radioButton labelFor='shift_slot' labelKey='#i18n{appointment.modifySlot.shiftSlot}' name='shift_slot' id='shift_slot_true' value='true' />
+                <@radioButton labelFor='shift_slot_false' labelKey='#i18n{appointment.modifySlot.notShiftSlot}' name='shift_slot' id='shift_slot_false' checked=true value='false' />
+                <@radioButton labelFor='shift_slot_true' labelKey='#i18n{appointment.modifySlot.shiftSlot}' name='shift_slot' id='shift_slot_true' value='true' />
             </@formGroup>
             <@formGroup>
                 <@button type='submit' buttonIcon='check' name='modify' id='modify' title='#i18n{portal.util.labelModify}' />
@@ -60,13 +58,13 @@
                 <@radioButton orientation='inline' labelFor='shift_slot_null' id='shift_slot_null' labelKey='#i18n{appointment.modifySlot.labelNoValue}' name='is_open' value='' />
             </@formGroup>
             <@row>
-            <@columns>
-                <@formGroup labelFor='shift_slot'>
-                    <@radioButton labelFor='var_cap' labelKey='Variation de capacité' name='capacity' id='var_cap' checked=true value='var_cap' />
-                    <@radioButton labelFor='new_cap' labelKey='Nouvelle capacité' name='capacity' id='new_cap' value='new_cap' />
-                    <@input type='number' id='newCapacity' name='max_capacity' value='0' min=-99 max=99 />
-                </@formGroup>
-            </@columns>
+                <@columns>
+                    <@formGroup labelFor='shift_slot'>
+                        <@radioButton labelFor='var_cap' labelKey='Variation de capacité' name='capacity' id='var_cap' checked=true value='var_cap' />
+                        <@radioButton labelFor='new_cap' labelKey='Nouvelle capacité' name='capacity' id='new_cap' value='new_cap' />
+                        <@input type='number' id='newCapacity' name='max_capacity' value='0' min=-99 max=99 />
+                    </@formGroup>
+                </@columns>
             </@row>
             <@formGroup rows=1>
                 <@button type='submit' color='primary' title='Enregistrer' />
