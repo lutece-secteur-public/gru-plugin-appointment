@@ -17,7 +17,7 @@
         <genericattributes.version>2.1.2</genericattributes.version>
         <jiraComponentId>12273</jiraComponentId>
         <jiraProjectName>RENDEZVOUS</jiraProjectName>
-        <regularexpression.version>3.0.3</regularexpression.version>                        
+        <regularexpression.version>4.0.0</regularexpression.version>
         <workflow.version>5.0.0</workflow.version>
         <rest.version>3.1.0</rest.version>
     </properties>
