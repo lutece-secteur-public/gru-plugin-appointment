@@ -55,6 +55,7 @@ import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 
+import fr.paris.lutece.api.user.User;
 import fr.paris.lutece.plugins.appointment.business.appointment.Appointment;
 import fr.paris.lutece.plugins.appointment.business.comment.CommentHome;
 import fr.paris.lutece.plugins.appointment.business.display.Display;
@@ -67,6 +68,7 @@ import fr.paris.lutece.plugins.appointment.business.rule.ReservationRule;
 import fr.paris.lutece.plugins.appointment.business.slot.Period;
 import fr.paris.lutece.plugins.appointment.business.slot.Slot;
 import fr.paris.lutece.plugins.appointment.log.LogUtilities;
+import fr.paris.lutece.plugins.appointment.service.AppointmentResourceIdService;
 import fr.paris.lutece.plugins.appointment.service.AppointmentService;
 import fr.paris.lutece.plugins.appointment.service.AppointmentUtilities;
 import fr.paris.lutece.plugins.appointment.service.ClosingDayService;
@@ -78,7 +80,9 @@ import fr.paris.lutece.plugins.appointment.service.SlotService;
 import fr.paris.lutece.plugins.appointment.service.WeekDefinitionService;
 import fr.paris.lutece.plugins.appointment.service.WorkingDayService;
 import fr.paris.lutece.plugins.appointment.web.dto.AppointmentFormDTO;
+import fr.paris.lutece.portal.service.admin.AccessDeniedException;
 import fr.paris.lutece.portal.service.i18n.I18nService;
+import fr.paris.lutece.portal.service.rbac.RBACService;
 import fr.paris.lutece.portal.service.util.AppLogService;
 import fr.paris.lutece.portal.service.util.AppPropertiesService;
 import fr.paris.lutece.portal.util.mvc.admin.annotations.Controller;
@@ -170,12 +174,19 @@ public class SpecificWeekJspBean extends AbstractAppointmentFormAndSlotJspBean
      * @param request
      *            the request
      * @return the page
+     * @throws AccessDeniedException 
      */
     @View( defaultView = true, value = VIEW_MANAGE_SPECIFIC_WEEK )
-    public String getViewManageSpecificWeek( HttpServletRequest request )
+    public String getViewManageSpecificWeek( HttpServletRequest request ) throws AccessDeniedException
     {
         _slot = null;
-        int nIdForm = Integer.parseInt( request.getParameter( PARAMETER_ID_FORM ) );
+        String strIdForm=request.getParameter( PARAMETER_ID_FORM );
+        int nIdForm = Integer.parseInt( strIdForm );
+        if ( !RBACService.isAuthorized( AppointmentFormDTO.RESOURCE_TYPE, strIdForm, AppointmentResourceIdService.PERMISSION_MODIFY_ADVANCED_SETTING_FORM,
+                (User) getUser( ) ) )
+        {
+            throw new AccessDeniedException( AppointmentResourceIdService.PERMISSION_MODIFY_ADVANCED_SETTING_FORM );
+        }
         Form form = FormService.findFormLightByPrimaryKey( nIdForm );
         // Get the nb weeks to display
         Display display = DisplayService.findDisplayWithFormId( nIdForm );
@@ -236,12 +247,18 @@ public class SpecificWeekJspBean extends AbstractAppointmentFormAndSlotJspBean
      * @param request
      *            the request
      * @return the page
+     * @throws AccessDeniedException 
      */
     @View( VIEW_MODIFY_SLOT )
-    public String getViewModifySlot( HttpServletRequest request )
+    public String getViewModifySlot( HttpServletRequest request ) throws AccessDeniedException
     {
         String strIdForm = request.getParameter( PARAMETER_ID_FORM );
         int nIdForm = Integer.parseInt( strIdForm );
+        if ( !RBACService.isAuthorized( AppointmentFormDTO.RESOURCE_TYPE, strIdForm, AppointmentResourceIdService.PERMISSION_MODIFY_ADVANCED_SETTING_FORM,
+                (User) getUser( ) ) )
+        {
+            throw new AccessDeniedException( AppointmentResourceIdService.PERMISSION_MODIFY_ADVANCED_SETTING_FORM );
+        }
         if ( _slot == null )
         {
             int nIdSlot = Integer.parseInt( request.getParameter( PARAMETER_ID_SLOT ) );
@@ -265,6 +282,7 @@ public class SpecificWeekJspBean extends AbstractAppointmentFormAndSlotJspBean
         Map<String, Object> model = getModel( );
         model.put( PARAMETER_DATE_OF_DISPLAY, _slot.getDate( ) );
         model.put( MARK_SLOT, _slot );
+        model.put( PARAMETER_ID_FORM, strIdForm );
         return getPage( MESSAGE_MODIFY_SLOT_PAGE_TITLE, TEMPLATE_MODIFY_SLOT, model );
     }
 
@@ -274,9 +292,10 @@ public class SpecificWeekJspBean extends AbstractAppointmentFormAndSlotJspBean
      * @param request
      *            the request
      * @return to the page of the specific week
+     * @throws AccessDeniedException 
      */
     @Action( ACTION_DO_MODIFY_SLOT )
-    public String doModifySlot( HttpServletRequest request )
+    public String doModifySlot( HttpServletRequest request ) throws AccessDeniedException
     {
         boolean bOpeningHasChanged = false;
         String strIdSlot = request.getParameter( PARAMETER_ID_SLOT );
@@ -284,8 +303,13 @@ public class SpecificWeekJspBean extends AbstractAppointmentFormAndSlotJspBean
         boolean bIsOpen = Boolean.parseBoolean( request.getParameter( PARAMETER_IS_OPEN ) );
         int nMaxCapacity = Integer.parseInt( request.getParameter( PARAMETER_MAX_CAPACITY ) );
         boolean bEndingTimeHasChanged = false;
-
+        String strIdForm = request.getParameter( PARAMETER_ID_FORM );
         boolean bShiftSlot = Boolean.parseBoolean( request.getParameter( PARAMETER_SHIFT_SLOT ) );
+        if ( !RBACService.isAuthorized( AppointmentFormDTO.RESOURCE_TYPE, strIdForm, AppointmentResourceIdService.PERMISSION_MODIFY_ADVANCED_SETTING_FORM,
+                (User) getUser( ) ) )
+        {
+            throw new AccessDeniedException( AppointmentResourceIdService.PERMISSION_MODIFY_ADVANCED_SETTING_FORM );
+        }
         int nIdSlot = Integer.parseInt( strIdSlot );
         Lock lock = SlotSafeService.getLockOnSlot( nIdSlot );
         lock.lock( );
@@ -367,9 +391,10 @@ public class SpecificWeekJspBean extends AbstractAppointmentFormAndSlotJspBean
      * @param request
      *            the request
      * @return to the page of the specific week
+     * @throws AccessDeniedException 
      */
     @Action( ACTION_DO_MODIFY_LIST_SLOT )
-    public String doModifyListSlots( HttpServletRequest request )
+    public String doModifyListSlots( HttpServletRequest request ) throws AccessDeniedException
     {
         int nVarMaxCapacity = 0;
         int nMaxCapacity = -1;
@@ -385,7 +410,11 @@ public class SpecificWeekJspBean extends AbstractAppointmentFormAndSlotJspBean
         boolean bStateHasChanged= false;
         boolean bIsOpen = false;
         String strIsOpen= request.getParameter( PARAMETER_IS_OPEN );
-        
+        if ( !RBACService.isAuthorized( AppointmentFormDTO.RESOURCE_TYPE, strIdForm, AppointmentResourceIdService.PERMISSION_MODIFY_ADVANCED_SETTING_FORM,
+                (User) getUser( ) ) )
+        {
+            throw new AccessDeniedException( AppointmentResourceIdService.PERMISSION_MODIFY_ADVANCED_SETTING_FORM );
+        }
         if( strIsOpen == null  || strIsOpen.equalsIgnoreCase("true") || strIsOpen.equalsIgnoreCase("false")) {
         	
         	bStateHasChanged = true;

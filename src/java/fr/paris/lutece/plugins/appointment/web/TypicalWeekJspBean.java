@@ -175,15 +175,21 @@ public class TypicalWeekJspBean extends AbstractAppointmentFormAndSlotJspBean
      * @param request
      *            the request
      * @return the page
+     * @throws AccessDeniedException 
      */
     @View( value = VIEW_MANAGE_TYPICAL_WEEK )
-    public String getViewManageTypicalWeek( HttpServletRequest request )
+    public String getViewManageTypicalWeek( HttpServletRequest request ) throws AccessDeniedException
     {
         _timeSlot = null;
         boolean bCanUpdateAdvancedParam = true;
-        int nIdForm = Integer.parseInt( request.getParameter( PARAMETER_ID_FORM ) );
+        String strIdForm=request.getParameter( PARAMETER_ID_FORM );
+        int nIdForm = Integer.parseInt( strIdForm );
         String strIdReservationRule = request.getParameter( PARAMETER_ID_RULE );
-
+        if ( !RBACService.isAuthorized( AppointmentFormDTO.RESOURCE_TYPE, strIdForm, AppointmentResourceIdService.PERMISSION_MODIFY_ADVANCED_SETTING_FORM,
+                (User) getUser( ) ) )
+        {
+            throw new AccessDeniedException( AppointmentResourceIdService.PERMISSION_MODIFY_ADVANCED_SETTING_FORM );
+        }
         int nIdReservationRule = 0;
         if ( StringUtils.isNotEmpty( strIdReservationRule ) )
         {
@@ -500,15 +506,20 @@ public class TypicalWeekJspBean extends AbstractAppointmentFormAndSlotJspBean
      * @param request
      *            the request
      * @return to the page of the typical week
+     * @throws AccessDeniedException 
      */
     @Action( ACTION_DO_MODIFY_TIME_SLOT )
-    public String doModifyTimeSlot( HttpServletRequest request )
+    public String doModifyTimeSlot( HttpServletRequest request ) throws AccessDeniedException
     {
         String strIdForm = request.getParameter( PARAMETER_ID_FORM );
         int nIdForm = Integer.parseInt( strIdForm );
         String strIdReservationRule = request.getParameter( PARAMETER_ID_RULE );
         int nIdReservationRule = Integer.parseInt( strIdReservationRule );
-
+        if ( !RBACService.isAuthorized( AppointmentFormDTO.RESOURCE_TYPE, strIdForm, AppointmentResourceIdService.PERMISSION_MODIFY_ADVANCED_SETTING_FORM,
+                (User) getUser( ) ) )
+        {
+            throw new AccessDeniedException( AppointmentResourceIdService.PERMISSION_MODIFY_ADVANCED_SETTING_FORM );
+        }
         String strIdTimeSlot = request.getParameter( PARAMETER_ID_TIME_SLOT );
         int nIdTimeSlot = Integer.parseInt( strIdTimeSlot );
         TimeSlot oldTimeSlot = TimeSlotService.findTimeSlotById( nIdTimeSlot );
@@ -626,9 +637,10 @@ public class TypicalWeekJspBean extends AbstractAppointmentFormAndSlotJspBean
      * @param request
      *            the request
      * @return to the page of the typical week
+     * @throws AccessDeniedException 
      */
     @Action( ACTION_DO_MODIFY_LIST_TIME_SLOT )
-    public String doModifyListTimeSlot( HttpServletRequest request )
+    public String doModifyListTimeSlot( HttpServletRequest request ) throws AccessDeniedException
     {
         String strIdForm = request.getParameter( PARAMETER_ID_FORM );
         String strCap = request.getParameter( PARAMETER_CAPACITY_MOD );
@@ -637,7 +649,11 @@ public class TypicalWeekJspBean extends AbstractAppointmentFormAndSlotJspBean
         int nIdReservationRule = Integer.parseInt( strIdReservationRule );
         int nVarMaxCapacity = 0;
         int nMaxCapacity = -1;
-
+        if ( !RBACService.isAuthorized( AppointmentFormDTO.RESOURCE_TYPE, strIdForm, AppointmentResourceIdService.PERMISSION_MODIFY_ADVANCED_SETTING_FORM,
+                (User) getUser( ) ) )
+        {
+            throw new AccessDeniedException( AppointmentResourceIdService.PERMISSION_MODIFY_ADVANCED_SETTING_FORM );
+        }
         String strJson = request.getParameter( PARAMETER_TIME_SLOT_DATA );
         AppLogService.debug( "slot - Received strJson : " + strJson );
         ObjectMapper mapper = new ObjectMapper( );
@@ -667,7 +683,8 @@ public class TypicalWeekJspBean extends AbstractAppointmentFormAndSlotJspBean
         boolean bIsOpen = false;
         String strIsOpen= request.getParameter( PARAMETER_IS_OPEN );
         
-        if(strIsOpen.equalsIgnoreCase("true") || strIsOpen.equalsIgnoreCase("false")) {
+        if(strIsOpen.equalsIgnoreCase("true") || strIsOpen.equalsIgnoreCase("false")) 
+        {
         	
         	bStateHasChanged = true;
         	bIsOpen= Boolean.parseBoolean( strIsOpen );
@@ -909,7 +926,7 @@ public class TypicalWeekJspBean extends AbstractAppointmentFormAndSlotJspBean
                     if ( nVarMaxCapacity != 0 )
                     {
 
-                        nMaxCapacity = ( slotImpacted.getMaxCapacity( ) + nVarMaxCapacity ) >= 0 ? slotImpacted.getMaxCapacity( ) + nVarMaxCapacity : 0;
+                        nMaxCapacity = ( slotImpacted.getMaxCapacity( ) + nVarMaxCapacity ) >= 0 ? ( slotImpacted.getMaxCapacity( ) + nVarMaxCapacity ) : 0;
                         bMaxCapacityHasChanged = true;
 
                     }

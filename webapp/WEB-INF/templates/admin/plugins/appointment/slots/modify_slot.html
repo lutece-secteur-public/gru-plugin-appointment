@@ -12,7 +12,8 @@
 					<fieldset>					
 						<@messages errors=errors infos=infos/>					
 						<input type='hidden' name='action' value='doModifySlot' />
-						<input type='hidden' name='id_slot' value='${slot.idSlot}' />						
+						<input type='hidden' name='id_slot' value='${slot.idSlot}' />		
+						<input type='hidden' name='id_form' value='${id_form}' />										
 						<input type='hidden' name='date_of_display' value='${date_of_display}' />						
 						<@formGroup labelKey='#i18n{appointment.modifySlot.labelDate}'>
 							<@staticText>${slot.date}</@staticText>
