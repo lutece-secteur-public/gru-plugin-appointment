@@ -33,6 +33,7 @@
  */
 package fr.paris.lutece.plugins.appointment.business.slot;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -259,6 +260,16 @@ public final class SlotHome
 
         _dao.resetPotentialRemainingPlaces( _plugin );
 
+    }
+    /**
+     * Return the specific slot dates from the form
+     * @param nIdForm the id Form
+     * @param plugin the plugin
+     * @return list of date 
+     */
+    public static List<LocalDate> findSpecificSlotDates( int nIdForm ){
+    	
+    	return _dao.findSpecificSlotDates( nIdForm, _plugin );
     }
 
 }

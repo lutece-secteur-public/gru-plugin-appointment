@@ -35,6 +35,7 @@ package fr.paris.lutece.plugins.appointment.business.slot;
 
 import java.sql.Statement;
 import java.sql.Timestamp;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -75,6 +76,7 @@ public final class SlotDAO implements ISlotDAO
             + " INNER JOIN appointment_appointment appt ON (appt_slot.id_appointment = appt.id_appointment ) WHERE appt.id_appointment = ?";
 
     private static final String SQL_QUERY_SELECT_SLOT_WITH_APPOINTMNT_BY_ID_FORM_AND_DATE_RANGE = "SELECT distinct slot.id_slot, slot.starting_date_time, slot.ending_date_time, slot.is_open, slot.is_specific, slot.max_capacity, slot.nb_remaining_places, slot.nb_potential_remaining_places, slot.nb_places_taken, slot.id_form  from appointment_slot slot JOIN appointment_appointment_slot appt_slot on ( slot.id_slot = appt_slot.id_slot ) WHERE slot.id_form = ? AND slot.starting_date_time >= ? AND slot.ending_date_time <= ? ";
+    private static final String SQL_QUERY_SELECT_SPECIFIC_DATE_SLOT = "SELECT distinct DATE( starting_date_time) as date_value from appointment_slot where is_specific = 1 and id_form = ? ";
 
     @Override
     public void insert( Slot slot, Plugin plugin )
@@ -353,5 +355,21 @@ public final class SlotDAO implements ISlotDAO
         {
             daoUtil.executeUpdate( );
         }
+    }
+    
+    @Override
+    public List<LocalDate> findSpecificSlotDates( int nIdForm, Plugin plugin )
+    {
+        List<LocalDate> listDate = new ArrayList<>( );
+        try ( DAOUtil daoUtil = new DAOUtil( SQL_QUERY_SELECT_SPECIFIC_DATE_SLOT, plugin ) )
+        {
+            daoUtil.setInt( 1, nIdForm );
+            daoUtil.executeQuery( );
+            while ( daoUtil.next( ) )
+            {
+            	listDate.add( daoUtil.getDate( 1 ).toLocalDate() );
+            }
+        }
+        return listDate;
     }
 }

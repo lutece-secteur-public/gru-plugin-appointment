@@ -119,6 +119,8 @@ public class AppointmentAnnualCalendarJspBean extends AbstractAppointmentFormAnd
     private static final String MARK_ID_FORM = "id_form";
     private static final String MARK_LOCALE_TINY = "locale";
     private static final String MARK_START_YEAR = "start_year";
+    private static final String MARK_SPECIFIC_SLOT_DATES = "specificSlotDates";
+
     // Views
     private static final String VIEW_MANAGE_ANNUAL_CALENDAR = "manageAnnualCalendar";
     // Actions
@@ -163,6 +165,7 @@ public class AppointmentAnnualCalendarJspBean extends AbstractAppointmentFormAnd
         Map<String, Object> model = getModel( );
         model.put( MARK_LIST_WEEK_DEFINITION, listWeek );
         model.put( MARK_LIST_RESERVATION_RULE, listRule );
+        model.put( MARK_SPECIFIC_SLOT_DATES, SlotHome.findSpecificSlotDates( nIdForm ) );
         model.put( MARK_ID_FORM, nIdForm );
         model.put( MARK_START_YEAR, nStartYear );
         model.put( MARK_LOCALE_TINY, getLocale( ) );
