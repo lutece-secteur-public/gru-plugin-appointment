@@ -68,6 +68,7 @@
 <script src="js/admin/plugins/appointment/locales/js-year-calendar.fr.js"></script>
 
 <script>
+moment.locale( '${language}' );
 function isOlderThanToday( dtCompare ) {    
     var dateToday = new Date().setUTCHours( 0, 0, 0, 0); // Today
     var isOlder=dtCompare.setUTCHours( 24, 0, 0, 0) >= dateToday ? true : false; 
