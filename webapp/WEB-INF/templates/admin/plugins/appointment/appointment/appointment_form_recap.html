@@ -52,7 +52,7 @@
 						</#list>
 						<@formGroup labelKey='#i18n{appointment.dateAppointment.title}'>
 							<input type='hidden' name='appointmentDate' value='${appointment.dateOfTheAppointment} #i18n{appointment.labelFrom} ${appointment.slot.startingTime} #i18n{appointment.labelTo} ${appointment.slot.endingTime}' />
-								<@staticText>${appointment.dateOfTheAppointment} #i18n{appointment.labelFrom} ${appointment.slot.startingTime} #i18n{appointment.labelTo} ${appointment.slot.endingTime}</@staticText>
+								<@staticText id='appointment_label'></@staticText>
 						</@formGroup>
 						<@formGroup>
 							<@button type='submit' name='validate' id='validate' value='validate' buttonIcon='check' title='#i18n{portal.util.labelValidate}' />
@@ -68,3 +68,14 @@
 		</@box>
 	</@columns>
 </@row>
+
+<script type="text/javascript">
+    $(function() {
+		var date = moment('${appointment.dateOfTheAppointment}', '${SERVER_DATE_FORMAT}', true).format('${USER_DATE_FORMAT}');
+		var start = moment('${appointment.slot.startingTime}', '${SERVER_TIME_FORMAT}', true).format('${USER_TIME_FORMAT}');
+	    var end = moment('${appointment.slot.endingTime}', '${SERVER_TIME_FORMAT}', true).format('${USER_TIME_FORMAT}');
+		var label = date + ' #i18n{appointment.labelFrom} ' + start  + ' #i18n{appointment.labelTo} ' + end;
+
+		$('#appointment_label').text(label);
+	});
+</script>

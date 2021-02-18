@@ -1,3 +1,5 @@
+<#include "/admin/plugins/appointment/date_commons.html" />
+
 <div class="row">
 	<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
 		<legend>#i18n{appointment.myAppointments.name}</legend>
@@ -15,11 +17,9 @@
 						<td>
 							${appointment.appointmentForm.title}
 						</td>
-						<td>
-							${appointment.dateOfTheAppointment}
+						<td id='appointment_date_label_${appointment.idAppointment}'>
 						</td>
-						<td>
-							#i18n{appointment.labelFrom} ${appointment.startingTime} #i18n{appointment.labelTo} ${appointment.endingTime}							
+						<td id='appointment_time_label_${appointment.idAppointment}'>
 						</td>
 						<td>
 							<#if appointment.isCancelled>
@@ -47,3 +47,18 @@
 		</#if>
 	</div>
 </div>
+
+<script type="text/javascript">
+    $(function() {
+		<#list appointment_list as appointment >
+		    var date = moment('${appointment.dateOfTheAppointment}', '${SERVER_DATE_FORMAT}', true).format('${USER_DATE_FORMAT}');
+		    var start = moment('${appointment.startingTime}', '${SERVER_TIME_FORMAT}', true).format('${USER_TIME_FORMAT}');
+	        var end = moment('${appointment.endingTime}', '${SERVER_TIME_FORMAT}', true).format('${USER_TIME_FORMAT}');
+		    var date_label = date;
+		    var time_label = '#i18n{appointment.labelFrom} ' + start  + ' #i18n{appointment.labelTo} ' + end;
+
+			$('#appointment_date_label_${appointment.idAppointment}').text(date_label);
+			$('#appointment_time_label_${appointment.idAppointment}').text(time_label);
+		</#list>
+    });
+</script>

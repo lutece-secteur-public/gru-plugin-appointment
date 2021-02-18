@@ -1,3 +1,5 @@
+<#include "/admin/plugins/appointment/date_commons.html" />
+
 <@row class='calendar-row'>
 	<@columns>
 		<@box>
@@ -41,8 +43,7 @@
 							</#if>
 						</#list>
 						<@formGroup labelKey='#i18n{appointment.dateAppointment.title}'>
-							<@staticText>
-								${appointment.dateOfTheAppointment} #i18n{appointment.labelFrom} ${appointment.startingTime} #i18n{appointment.labelTo} ${appointment.endingTime}
+							<@staticText id="appointment_label">
 							</@staticText>
 						</@formGroup>						
 						<fieldset>
@@ -98,3 +99,13 @@
 	</@columns>
 </@row>
 
+<script type="text/javascript">
+    $(function() {
+		var date = moment('${appointment.dateOfTheAppointment}', '${SERVER_DATE_FORMAT}', true).format('${USER_DATE_FORMAT}');
+		var start = moment('${appointment.startingTime}', '${SERVER_TIME_FORMAT}', true).format('${USER_TIME_FORMAT}');
+	    var end = moment('${appointment.endingTime}', '${SERVER_TIME_FORMAT}', true).format('${USER_TIME_FORMAT}');
+		var label = date + ' #i18n{appointment.labelFrom} ' + start  + ' #i18n{appointment.labelTo} ' + end;
+
+		$('#appointment_label').text(label);
+	});
+</script>

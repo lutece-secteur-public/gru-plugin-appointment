@@ -22,7 +22,7 @@
 							<@input type='text' name='max_capacity' value='${slot.maxCapacity}' params='onkeypress="return validateQty(event);"' maxlength=3 />	
 						</@formGroup>
 						<@formGroup labelFor='#i18n{appointment.model.entity.appointmentform.attribute.timeStart}'>
-							<@staticText>${slot.startingTime}</@staticText>
+							<@staticText id='slot_start_label'></@staticText>
 						</@formGroup>
 						<@formGroup labelFor='time_end_user' labelKey='#i18n{appointment.model.entity.appointmentform.attribute.timeEnd}' helpKey='#i18n{appointment.modifySlot.helpModifyEndSlot}' mandatory=true>
 							<@inputGroup>
@@ -60,4 +60,10 @@
 	}
 	else return true;
 	};
+
+	$(function() {
+		var label = moment('${slot.startingTime}', '${SERVER_TIME_FORMAT}', true).format('${USER_TIME_FORMAT}');
+
+		$('#slot_start_label').text(label);
+	});
 </script>

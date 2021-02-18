@@ -1,3 +1,5 @@
+<#include "/admin/plugins/appointment/date_commons.html" />
+
 <div class="row nextStepTitleRow">
 	<div class="col-xs-12">
 		<div class="container">
@@ -40,7 +42,7 @@
 		<div class="container recap">
 			<div class="row">
 				<div class="col-xs-12 col-sm-9 col-md-9">
-					<p>#i18n{appointment.labelThe} ${appointment.dateOfTheAppointment} #i18n{appointment.labelFrom} ${appointment.slot.startingTime} #i18n{appointment.labelTo} ${appointment.slot.endingTime}</p>
+					<p id="appointment_label"></p>
 				</div>
 				<div class="col-xs-12 col-sm-4 col-md-3 stepRecapButtonMargin">
 					<a class="btn btn-primary btn-lg" href="jsp/site/Portal.jsp?page=appointment&view=getViewAppointmentCalendar&id_form=${form.idForm}&date_of_display=${date_of_display}#step2">
@@ -339,4 +341,13 @@ $(document).ready(function () {
          e.preventDefault();
       });
    });
+
+    $(function() {
+		var date = moment('${appointment.dateOfTheAppointment}', '${SERVER_DATE_FORMAT}', true).format('${USER_DATE_FORMAT}');
+		var start = moment('${appointment.slot.startingTime}', '${SERVER_TIME_FORMAT}', true).format('${USER_TIME_FORMAT}');
+	    var end = moment('${appointment.slot.endingTime}', '${SERVER_TIME_FORMAT}', true).format('${USER_TIME_FORMAT}');
+		var label = '#i18n{appointment.labelThe} ' + date + ' #i18n{appointment.labelFrom} ' + start  + ' #i18n{appointment.labelTo} ' + end;
+
+		$('#appointment_label').text(label);
+	});
 </script>

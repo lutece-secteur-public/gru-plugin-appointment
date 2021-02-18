@@ -1,3 +1,5 @@
+<#include "/admin/plugins/appointment/date_commons.html" />
+
 <#if noAppointmentWithThisReference??>
 	<p class="alert alert-info">#i18n{appointment.message.error.noAppointmentWithThisReference}</p>
 <#else>
@@ -43,7 +45,7 @@
 			<div class="container recap">
 				<div class="row">
 					<div class="col-xs-12 col-sm-9 col-md-9">
-						<p>#i18n{appointment.labelThe} ${dateAppointment} #i18n{appointment.labelFrom} ${startingTimeAppointment} #i18n{appointment.labelTo} ${endingTimeAppointment}</p>
+						<p id='appointment_label'></p>
 					</div>
 					<div class="col-xs-12 col-sm-4 col-md-3 stepRecapButtonMargin">
 					</div>
@@ -187,3 +189,14 @@
 		</div>
 	</div>
 </#if>
+
+<script type="text/javascript">
+    $(function() {
+		var date = moment('${dateAppointment}', '${SERVER_DATE_FORMAT}', true).format('${USER_DATE_FORMAT}');
+		var start = moment('${startingTimeAppointment}', '${SERVER_TIME_FORMAT}', true).format('${USER_TIME_FORMAT}');
+	    var end = moment('${endingTimeAppointment}', '${SERVER_TIME_FORMAT}', true).format('${USER_TIME_FORMAT}');
+		var label = '#i18n{appointment.labelThe} ' + date + ' #i18n{appointment.labelFrom} ' + start  + ' #i18n{appointment.labelTo} ' + end;
+
+		$('#appointment_label').text(label);
+	});
+</script>
