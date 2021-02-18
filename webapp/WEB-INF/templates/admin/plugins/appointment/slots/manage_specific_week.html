@@ -53,9 +53,9 @@
             <@input type='hidden' id='slotsData' name='slotsData' value='' />
             <@input type='hidden' id='date_of_display_multi' name='date_of_display' value='${date_of_display}' />
             <@formGroup labelKey='#i18n{appointment.modifySlot.labelSlotStatus}' helpKey='#i18n{appointment.modifySlot.labelOpenHelp}'>
-                <@radioButton orientation='inline' labelFor='shift_slot_open' id='shift_slot_open' labelKey='#i18n{appointment.modifySlot.labelOpen}' name='is_open' checked=true value='true' />
+                <@radioButton orientation='inline' labelFor='shift_slot_open' id='shift_slot_open' labelKey='#i18n{appointment.modifySlot.labelOpen}' name='is_open' value='true' />
                 <@radioButton orientation='inline' labelFor='shift_slot_close' id='shift_slot_close' labelKey='#i18n{appointment.modifySlot.labelClose}' name='is_open' value='false' />
-                <@radioButton orientation='inline' labelFor='shift_slot_null' id='shift_slot_null' labelKey='#i18n{appointment.modifySlot.labelNoValue}' name='is_open' value='' />
+                <@radioButton orientation='inline' labelFor='shift_slot_null' id='shift_slot_null' labelKey='#i18n{appointment.modifySlot.labelNoValue}' name='is_open' value='' checked=true  />
             </@formGroup>
             <@row>
                 <@columns>

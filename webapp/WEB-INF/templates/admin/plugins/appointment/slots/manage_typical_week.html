@@ -149,8 +149,8 @@
             <@input type="hidden" id="idWorkingDay" name="id_working_day" value="" />
             <@input type="hidden" id="timeForm" name="id_form" value="${appointmentform.idForm}" />
             <@input type="hidden" name="id_reservation_rule" value="${id_reservation_rule}" />
-			<@formGroup labelFor='is_open' labelKey='#i18n{appointment.modifySlot.labelOpen}' helpKey='#i18n{appointment.modifySlot.labelOpenHelp}' >
-                <@checkBox name='is_open' id='timeIsOpen' value='true' checked=true />
+			<@formGroup labelFor='timeIsOpen9' labelKey='#i18n{appointment.modifySlot.labelOpen}' helpKey='#i18n{appointment.modifySlot.labelOpenHelp}' >
+                <@checkBox name='is_open' id='timeIsOpen' value='true' />
             </@formGroup>
             <@formGroup labelFor='maxCapacity' labelKey='#i18n{appointment.modifySlot.labelMaxCapacityForThisSlot}' mandatory=true>
                 <@input type='number' name='max_capacity' id='maxCapacity' value='' min=0 max=99 maxlength=3 />
@@ -186,9 +186,9 @@
             <@input type="hidden" name="id_reservation_rule" value="${id_reservation_rule}" />
             <@input type="hidden" id="timeSlotData" name="timeSlotData" value="" />
             <@formGroup labelKey='#i18n{appointment.modifySlot.labelSlotStatus}' helpKey='#i18n{appointment.modifySlot.labelOpenHelp}'>
-                <@radioButton orientation='inline' labelFor='shift_slot_open' id='shift_slot_open' labelKey='#i18n{appointment.modifySlot.labelOpen}' name='is_open' checked=true value='true' />
+                <@radioButton orientation='inline' labelFor='shift_slot_open' id='shift_slot_open' labelKey='#i18n{appointment.modifySlot.labelOpen}' name='is_open' value='true' />
                 <@radioButton orientation='inline' labelFor='shift_slot_close' id='shift_slot_close' labelKey='#i18n{appointment.modifySlot.labelClose}' name='is_open' value='false' />
-                <@radioButton orientation='inline' labelFor='shift_slot_null' id='shift_slot_null' labelKey='#i18n{appointment.modifySlot.labelNoValue}' name='is_open' value='' />
+                <@radioButton orientation='inline' labelFor='shift_slot_null' id='shift_slot_null' labelKey='#i18n{appointment.modifySlot.labelNoValue}' name='is_open' value='' checked=true  />
             </@formGroup>
             <@row>
             <@columns>
