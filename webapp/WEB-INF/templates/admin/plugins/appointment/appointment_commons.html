@@ -457,6 +457,7 @@ $( function(){
 		slotLabelFormat: 'H:mm',
 		slotLabelInterval: slotDuration,
 		slotDuration: slotDuration,
+		selectable: true,
 		minTime: minTime,
 		maxTime: maxTime,
 		businessHours: {
@@ -597,7 +598,8 @@ $( function(){
 							} else {
 								eventData ='{' + $(this).data('event') + '}';                       
 								const evt = JSON.parse(eventData); 
-								$('#timeIsOpen').prop( "checked", evt.isOpen );
+								const isOpen = JSON.parse( evt.isOpen )
+								$('#timeIsOpen').prop( "checked", isOpen );
 								$('#idTimeSlot').val( evt.idTimeSlot );
 								$('#idWorkingDay').val( evt.idWorkingDay );
 								$('#maxCapacity').val( evt.maxCapacity );
