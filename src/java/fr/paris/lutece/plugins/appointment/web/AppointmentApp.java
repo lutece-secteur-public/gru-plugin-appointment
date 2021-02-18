@@ -1681,6 +1681,25 @@ public class AppointmentApp extends MVCApplication
         urlItem.addParameter( PARAMETER_REF_APPOINTMENT, appointment.getReference( ) );
         return urlItem.getUrl( );
     }
+    /**
+     * Get the URL
+     * 
+     * @param request
+     *            Get the URL to report an appointment in FO
+     * @param appointment
+     *            The appointment
+     * @return The URL to report the appointment
+     */
+    public static String getReportAppointmentUrl( AppointmentDTO appointment )
+    {
+        UrlItem urlItem = new UrlItem( AppPathService.getProdUrl( StringUtils.EMPTY ) + AppPathService.getPortalUrl( ) );
+        urlItem.addParameter( MVCUtils.PARAMETER_PAGE, XPAGE_NAME );
+        urlItem.addParameter( MVCUtils.PARAMETER_VIEW, VIEW_APPOINTMENT_CALENDAR );
+        urlItem.addParameter( PARAMETER_ID_FORM,  appointment.getIdForm( ) );
+        urlItem.addParameter( PARAMETER_NB_PLACE_TO_TAKE, appointment.getNbBookedSeats( ) );
+        urlItem.addParameter( PARAMETER_REF_APPOINTMENT, appointment.getReference( ) );
+        return urlItem.getUrl( );
+    }
 
     /**
      * Set the user infos to the appointment DTO

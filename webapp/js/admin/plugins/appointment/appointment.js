@@ -37,7 +37,7 @@ function rgbToYIQ({r, g, b}) {
 }
 
 function hexToRgb(hex) {
-  if (!hex || hex === undefined || hex === '') {
+  if ( hex === undefined || !hex || hex === '') {
     return undefined;
   }
 
