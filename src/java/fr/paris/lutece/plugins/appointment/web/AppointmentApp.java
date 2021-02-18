@@ -1517,20 +1517,19 @@ public class AppointmentApp extends MVCApplication
     public XPage getWorkflowActionForm( HttpServletRequest request ) throws UserNotSignedException
     {
         String strIdAction = request.getParameter( PARAMETER_ID_ACTION );
-        String strIdAppointment = request.getParameter( PARAMETER_ID_APPOINTMENT );
-        if ( StringUtils.isNotEmpty( strIdAction ) && StringUtils.isNumeric( strIdAction ) && StringUtils.isNotEmpty( strIdAppointment )
-                && StringUtils.isNumeric( strIdAppointment ) )
+        String refAppointment = request.getParameter( PARAMETER_REF_APPOINTMENT );
+        if ( StringUtils.isNotEmpty( strIdAction ) && StringUtils.isNumeric( strIdAction ) && StringUtils.isNotEmpty( refAppointment ) )
         {
             int nIdAction = Integer.parseInt( strIdAction );
-            int nIdAppointment = Integer.parseInt( strIdAppointment );
+            Appointment appointment = AppointmentService.findAppointmentByReference( refAppointment );
             if ( WorkflowService.getInstance( ).isDisplayTasksForm( nIdAction, getLocale( request ) ) )
             {
-                String strHtmlTasksForm = WorkflowService.getInstance( ).getDisplayTasksForm( nIdAppointment, Appointment.APPOINTMENT_RESOURCE_TYPE, nIdAction,
+                String strHtmlTasksForm = WorkflowService.getInstance( ).getDisplayTasksForm( appointment.getIdAppointment( ), Appointment.APPOINTMENT_RESOURCE_TYPE, nIdAction,
                         request, getLocale( request ), null );
                 Map<String, Object> model = getModel( );
                 model.put( MARK_TASKS_FORM, strHtmlTasksForm );
                 model.put( PARAMETER_ID_ACTION, nIdAction );
-                model.put( PARAMETER_ID_APPOINTMENT, nIdAppointment );
+                model.put( PARAMETER_REF_APPOINTMENT, refAppointment );
 
                 return getXPage( TEMPLATE_TASKS_FORM_WORKFLOW, getLocale( request ), model );
             }
@@ -1552,14 +1551,13 @@ public class AppointmentApp extends MVCApplication
     {
         LuteceUser luteceUser = SecurityService.getInstance( ).getRegisteredUser( request );
         String strIdAction = request.getParameter( PARAMETER_ID_ACTION );
-        String strIdAppointment = request.getParameter( PARAMETER_ID_APPOINTMENT );
-        if ( StringUtils.isNotEmpty( strIdAction ) && StringUtils.isNumeric( strIdAction ) && StringUtils.isNotEmpty( strIdAppointment )
-                && StringUtils.isNumeric( strIdAppointment ) )
+        String refAppointment = request.getParameter( PARAMETER_REF_APPOINTMENT );
+        if ( StringUtils.isNotEmpty( strIdAction ) && StringUtils.isNumeric( strIdAction ) && StringUtils.isNotEmpty( refAppointment ) )
         {
             int nIdAction = Integer.parseInt( strIdAction );
-            int nIdAppointment = Integer.parseInt( strIdAppointment );
-            Appointment appointment = AppointmentService.findAppointmentById( nIdAppointment );
-
+            Appointment appointment = AppointmentService.findAppointmentByReference( refAppointment );
+            int nIdAppointment = appointment.getIdAppointment( );
+            
             List<AppointmentSlot> listApptSlot = appointment.getListAppointmentSlot( );
             Slot slot = SlotService.findSlotById( listApptSlot.get( 0 ).getIdSlot( ) );
 
@@ -1617,7 +1615,7 @@ public class AppointmentApp extends MVCApplication
                         WorkflowService.getInstance( ).doProcessAction( nIdAppointment, Appointment.APPOINTMENT_RESOURCE_TYPE, nIdAction, slot.getIdForm( ),
                                 request, getLocale( request ), false, luteceUser );
                         AppointmentListenerManager.notifyAppointmentWFActionTriggered( nIdAppointment, nIdAction );
-
+ 
                     }
                     addInfo( MESSAGE_WF_ACTION_SUCESS, getLocale( request ) );
                 }
