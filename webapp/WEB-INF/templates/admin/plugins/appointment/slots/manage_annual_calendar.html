@@ -102,6 +102,8 @@ function deleteEvent(event) {
    location.href= 'jsp/admin/plugins/appointment/ManageAnnualCalendar.jsp?action=doRemoveWeekFromCalendar&id_week_definition='+event.idweekdef+'&id_form=${id_form}';
 }
 
+var specDates = [<#list specificSlotDates as sDate>'${sDate}',</#list>];
+
 $(function() {
     calendar = new Calendar('#calendar', { 
         language: 'fr',
@@ -150,6 +152,13 @@ $(function() {
         },
         dayContextMenu: function(e) {
             $(e.element).popover('hide');
+        },
+        customDayRenderer: function( e, date){
+            const cDay = moment( date ).format('YYYY-MM-DD');
+            const result = specDates.findIndex( yday => yday === cDay );
+            if( result != -1 ){
+                $(e).addClass( 'isSpecific' );
+            }
         },
         dataSource: [
             <#list listReservationRule as rule>
