@@ -1643,6 +1643,18 @@ public class AppointmentJspBean extends MVCAdminJspBean
             int nIdAppointment = Integer.parseInt( strIdAppointment );
             if ( WorkflowService.getInstance( ).isDisplayTasksForm( nIdAction, getLocale( ) ) )
             {
+            	 ITaskService taskService = SpringContextService.getBean( TaskService.BEAN_SERVICE );
+                 List<ITask> listActionTasks = taskService.getListTaskByIdAction( nIdAction, getLocale(  ) );
+             	if ( listActionTasks.stream().anyMatch(task-> task.getTaskType( ).getKey( ).equals( "taskReportAppointment" ) )  )
+                 {
+             		AppointmentDTO appointment =AppointmentService.buildAppointmentDTOFromIdAppointment( nIdAppointment );
+             		Map<String, String> additionalParameters = new HashMap<>( );
+                    additionalParameters.put( PARAMETER_ID_APPOINTMENT, strIdAppointment );
+                    additionalParameters.put( PARAMETER_NB_PLACE_TO_TAKE, String.valueOf( appointment.getNbBookedSeats( ) ));
+                    additionalParameters.put( PARAMETER_ID_FORM, String.valueOf( appointment.getIdForm( ) ));
+             		
+                    return redirect( request, VIEW_CALENDAR_MANAGE_APPOINTMENTS, additionalParameters);
+                 }
                 String strHtmlTasksForm = WorkflowService.getInstance( ).getDisplayTasksForm( nIdAppointment, Appointment.APPOINTMENT_RESOURCE_TYPE, nIdAction,
                         request, getLocale( ), null );
                 Map<String, Object> model = new HashMap<>( );

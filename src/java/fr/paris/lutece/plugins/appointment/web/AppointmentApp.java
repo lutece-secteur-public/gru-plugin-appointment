@@ -1521,9 +1521,19 @@ public class AppointmentApp extends MVCApplication
         if ( StringUtils.isNotEmpty( strIdAction ) && StringUtils.isNumeric( strIdAction ) && StringUtils.isNotEmpty( refAppointment ) )
         {
             int nIdAction = Integer.parseInt( strIdAction );
-            Appointment appointment = AppointmentService.findAppointmentByReference( refAppointment );
+            AppointmentDTO appointment = AppointmentService.buildAppointmentDTOFromRefAppointment( refAppointment );
             if ( WorkflowService.getInstance( ).isDisplayTasksForm( nIdAction, getLocale( request ) ) )
             {
+                ITaskService taskService = SpringContextService.getBean( TaskService.BEAN_SERVICE );
+                List<ITask> listActionTasks = taskService.getListTaskByIdAction( nIdAction, getLocale( request ) );
+            	if ( listActionTasks.stream().anyMatch(task-> task.getTaskType( ).getKey( ).equals( "taskReportAppointment" ) )  )
+                {
+            		Map<String, String> additionalParameters = new HashMap<>( );
+                    additionalParameters.put( PARAMETER_REF_APPOINTMENT, appointment.getReference( ) );
+                    additionalParameters.put( PARAMETER_NB_PLACE_TO_TAKE, String.valueOf( appointment.getNbBookedSeats( ) ));
+                    additionalParameters.put( PARAMETER_ID_FORM, String.valueOf( appointment.getIdForm( ) ));
+            		return redirect( request, VIEW_APPOINTMENT_CALENDAR, additionalParameters);
+                }
                 String strHtmlTasksForm = WorkflowService.getInstance( ).getDisplayTasksForm( appointment.getIdAppointment( ), Appointment.APPOINTMENT_RESOURCE_TYPE, nIdAction,
                         request, getLocale( request ), null );
                 Map<String, Object> model = getModel( );
