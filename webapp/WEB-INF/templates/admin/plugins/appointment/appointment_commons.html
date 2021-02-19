@@ -279,12 +279,14 @@ $(function(){
 </#macro>
 
 <#macro btnComment >
+<#if permission_add_comment?boolean>
 	<@button id='toggle-add-comment' style='none' class='btn btn-link' title='#i18n{appointment.create_comment.pageTitle}' hideTitle=[''] params=' data-toggle="modal" data-target="#commentModal" ' buttonNested=true>
 		<@iconStack class='fa-xs'>
 			<@icon prefix='' style='far fa-comment fa-stack-2x' />
 			<@icon prefix='' style='fas fa-plus fa-stack-1x' />
 		</@iconStack> 
 	</@button>
+</#if>
 </#macro>
 
 <#macro appointmentTabList tab form tabcontext>
@@ -468,7 +470,7 @@ $( function(){
 		eventClick: function( calEvent, jsEvent, view ){
 		<#if showComments>
 			// Comments
-			if( calEvent.type = "comment" ){
+			if( calEvent.type = "comment" && calEvent.creator_user === '${permission_access_code}' ){
 				<@commentModal update=true />
 			}
 		<#else>
@@ -552,7 +554,7 @@ $( function(){
 			<#if isSpecific || isTypical >
 			/* Event selection if specific */ 
 			var eventIdx=0, eventData='',evtData='';        
-            $( ".fc-content-skeleton" ).not(":has(.btn-comments)").selectable({
+            $( ".fc-content-skeleton" )<#if isSpecific>.not(":has(.comments)")</#if>.not(":has(.btn-comments)").selectable({
                 filter: ".fc-time-grid-event.fc-v-event",
 				selecting: function( event, ui ) {
 					eventIdx++;

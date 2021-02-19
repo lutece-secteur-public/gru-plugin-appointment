@@ -60,11 +60,15 @@
 	</@modalBody>
 </@modal>
 
+
+<script src="js/admin/plugins/appointment/moment.min.js"></script>
+<script src="js/admin/plugins/appointment/locale-all.js"></script>
+<script src="js/admin/plugins/appointment/bootstrap-datetimepicker.min.js"></script>
 <script src="js/admin/plugins/appointment/js-year-calendar.min.js"></script>
 <script src="js/admin/plugins/appointment/locales/js-year-calendar.fr.js"></script>
-<script src="js/admin/bootstrap-datepicker.min.js"></script>
-<script src="js/admin/locales/bootstrap-datepicker.fr.js" ></script>
+
 <script>
+moment.locale( '${language}' );
 function isOlderThanToday( dtCompare ) {    
     var dateToday = new Date().setUTCHours( 0, 0, 0, 0); // Today
     var isOlder=dtCompare.setUTCHours( 24, 0, 0, 0) >= dateToday ? true : false; 
@@ -85,14 +89,20 @@ function editEvent( event) {
     } else {
         $('#event-modal #delete').hide();
     }
-    $('#event-modal input[name="date_of_apply"]').datepicker({'language':'fr'}).datepicker('update', event ? event.startDate : '');
-    $('#event-modal input[name="ending_date_of_apply"]').datepicker({'language':'fr'}).datepicker('update', event ? event.endDate : '');
+    
+    $('#event-modal input[name="date_of_apply"]').val( moment( event.startDate ).format('L') );
+    $('#event-modal input[name="date_of_apply"]').datetimepicker({ locale: '${language}', format: 'L' });
+    $('#event-modal input[name="ending_date_of_apply"]').val( moment( event.endDate ).format('L') );
+    $('#event-modal input[name="ending_date_of_apply"]').datetimepicker({ locale: '${language}', format: 'L'});
     $('#event-modal').modal();
+}
 }
 
 function deleteEvent(event) {
    location.href= 'jsp/admin/plugins/appointment/ManageAnnualCalendar.jsp?action=doRemoveWeekFromCalendar&id_week_definition='+event.idweekdef+'&id_form=${id_form}';
 }
+
+var specDates = [<#list specificSlotDates as sDate>'${sDate}',</#list>];
 
 $(function() {
     calendar = new Calendar('#calendar', { 
@@ -142,6 +152,13 @@ $(function() {
         },
         dayContextMenu: function(e) {
             $(e.element).popover('hide');
+        },
+        customDayRenderer: function( e, date){
+            const cDay = moment( date ).format('YYYY-MM-DD');
+            const result = specDates.findIndex( yday => yday === cDay );
+            if( result != -1 ){
+                $(e).addClass( 'isSpecific' );
+            }
         },
         dataSource: [
             <#list listReservationRule as rule>

@@ -51,7 +51,13 @@ input[type="color"]:hover{
 
 .calendar-context-menu .item .content {
     min-height: auto;
- }
+}
+
+.isSpecific{
+    font-family:Arial, Helvetica, sans-serif;
+    font-weight: 700;
+    font-style: italic;
+}
 
 /* Form */
 .viewTextarea{
