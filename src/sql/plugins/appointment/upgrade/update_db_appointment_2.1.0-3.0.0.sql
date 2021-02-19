@@ -1,5 +1,6 @@
 ALTER TABLE appointment_form_rule  ADD bo_overbooking BOOLEAN NOT NULL DEFAULT FALSE;
 ALTER TABLE appointment_appointment DROP COLUMN id_slot;
+ALTER TABLE appointment_appointment ADD  COLUMN id_action_reported INT;
 ALTER TABLE appointment_form ADD COLUMN is_multislot_appointment BOOLEAN NOT NULL DEFAULT FALSE;
 -- -----------------------------------------------------
 -- Table appointment_appointment_slot

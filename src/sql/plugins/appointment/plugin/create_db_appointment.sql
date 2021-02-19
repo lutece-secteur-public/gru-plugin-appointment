@@ -111,6 +111,7 @@ CREATE TABLE IF NOT EXISTS appointment_appointment (
   nb_places INT DEFAULT 0 NOT NULL,
   is_cancelled BOOLEAN DEFAULT FALSE NOT NULL,
   id_action_cancelled INT,
+  id_action_reported INT,
   notification INT DEFAULT 0 NOT NULL,
   id_admin_user INT DEFAULT 0 NULL,
   date_appointment_create TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,

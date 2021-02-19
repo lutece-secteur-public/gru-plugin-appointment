@@ -62,10 +62,10 @@ import fr.paris.lutece.util.sql.DAOUtil;
 public final class AppointmentDAO implements IAppointmentDAO
 {
 
-    private static final String SQL_QUERY_INSERT = "INSERT INTO appointment_appointment (reference, nb_places, is_cancelled, id_action_cancelled, notification, id_admin_user, admin_access_code_create, id_user, date_appointment_create, is_surbooked) VALUES ( ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
-    private static final String SQL_QUERY_UPDATE = "UPDATE appointment_appointment SET reference = ?, nb_places = ?, is_cancelled = ?, id_action_cancelled = ?, notification = ?, id_admin_user = ?, admin_access_code_create = ?, id_user = ?, date_appointment_create = ? WHERE id_appointment = ?";
+    private static final String SQL_QUERY_INSERT = "INSERT INTO appointment_appointment (reference, nb_places, is_cancelled, id_action_cancelled, id_action_reported, notification, id_admin_user, admin_access_code_create, id_user, date_appointment_create, is_surbooked) VALUES ( ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+    private static final String SQL_QUERY_UPDATE = "UPDATE appointment_appointment SET reference = ?, nb_places = ?, is_cancelled = ?, id_action_cancelled = ?, id_action_reported = ?, notification = ?, id_admin_user = ?, admin_access_code_create = ?, id_user = ?, date_appointment_create = ? WHERE id_appointment = ?";
     private static final String SQL_QUERY_DELETE = "DELETE FROM appointment_appointment WHERE id_appointment = ?";
-    private static final String SQL_QUERY_SELECT_COLUMNS = "SELECT appointment.id_appointment, appointment.reference, appointment.nb_places, appointment.is_cancelled, appointment.id_action_cancelled, appointment.notification, appointment.id_admin_user, appointment.admin_access_code_create, appointment.id_user, appointment.date_appointment_create ";
+    private static final String SQL_QUERY_SELECT_COLUMNS = "SELECT appointment.id_appointment, appointment.reference, appointment.nb_places, appointment.is_cancelled, appointment.id_action_cancelled, appointment.id_action_reported, appointment.notification, appointment.id_admin_user, appointment.admin_access_code_create, appointment.id_user, appointment.date_appointment_create ";
     private static final String SQL_QUERY_SELECT = SQL_QUERY_SELECT_COLUMNS + "FROM appointment_appointment appointment WHERE id_appointment = ?";
     private static final String SQL_QUERY_SELECT_BY_ID_USER = SQL_QUERY_SELECT_COLUMNS + "FROM appointment_appointment appointment WHERE id_user = ?";
     private static final String SQL_QUERY_SELECT_BY_GUID_USER = SQL_QUERY_SELECT_COLUMNS
@@ -74,11 +74,11 @@ public final class AppointmentDAO implements IAppointmentDAO
             + ",appt_slot.nb_places FROM appointment_appointment appointment INNER JOIN appointment_appointment_slot appt_slot on ( appt_slot.id_appointment = appointment.id_appointment and appt_slot.id_slot= ? )";
     private static final String SQL_QUERY_SELECT_BY_REFERENCE = SQL_QUERY_SELECT_COLUMNS + "FROM appointment_appointment appointment WHERE reference = ?";
 
-    private static final String SQL_QUERY_SELECT_DISTINCT_COLUMNS = "SELECT DISTINCT appointment.id_appointment, appointment.reference, appointment.nb_places, appointment.is_cancelled, appointment.id_action_cancelled, appointment.notification, appointment.id_admin_user, appointment.admin_access_code_create, appointment.id_user, appointment.date_appointment_create FROM appointment_appointment appointment";
+    private static final String SQL_QUERY_SELECT_DISTINCT_COLUMNS = "SELECT DISTINCT appointment.id_appointment, appointment.reference, appointment.nb_places, appointment.is_cancelled, appointment.id_action_cancelled, appointment.id_action_reported, appointment.notification, appointment.id_admin_user, appointment.admin_access_code_create, appointment.id_user, appointment.date_appointment_create FROM appointment_appointment appointment";
     private static final String SQL_QUERY_SELECT_BY_ID_FORM = SQL_QUERY_SELECT_DISTINCT_COLUMNS
             + " INNER JOIN appointment_appointment_slot appt_slot on(appt_slot.id_appointment = appointment.id_appointment) INNER JOIN appointment_slot slot ON (appt_slot.id_slot = slot.id_slot) WHERE slot.id_form = ?";
     private static final String SQL_QUERY_SELECT_BY_FILTER = "SELECT "
-            + " app.id_appointment, app.reference, app.nb_places, app.is_cancelled, app.id_action_cancelled, app.notification, app.id_admin_user, app.admin_access_code_create, app.id_user, app.date_appointment_create, "
+            + " app.id_appointment, app.reference, app.nb_places, app.is_cancelled, app.id_action_cancelled, app.id_action_reported, app.notification, app.id_admin_user, app.admin_access_code_create, app.id_user, app.date_appointment_create, "
             + " user.id_user, user.guid, user.first_name, user.last_name, user.email, user.phone_number, "
             + " slot.id_slot, slot.starting_date_time, slot.ending_date_time, slot.is_open, slot.is_specific, slot.max_capacity, slot.nb_remaining_places, slot.nb_potential_remaining_places, slot.nb_places_taken, slot.id_form "
             + " FROM appointment_appointment app " + "INNER JOIN appointment_user user ON app.id_user = user.id_user "
@@ -341,8 +341,8 @@ public final class AppointmentDAO implements IAppointmentDAO
             {
                 Appointment appt = buildAppointment( daoUtil );
 
-                Slot slot = builSlot( daoUtil, 17 );
-                User user = buildUser( daoUtil, 11 );
+                Slot slot = builSlot( daoUtil, 18 );
+                User user = buildUser( daoUtil, 12 );
 
                 if ( isFirst || daoUtil.isLast( ) )
                 {
@@ -555,6 +555,7 @@ public final class AppointmentDAO implements IAppointmentDAO
         appointment.setNbPlaces( daoUtil.getInt( nIndex++ ) );
         appointment.setIsCancelled( daoUtil.getBoolean( nIndex++ ) );
         appointment.setIdActionCancelled( daoUtil.getInt( nIndex++ ) );
+        appointment.setIdActionReported( daoUtil.getInt( nIndex++ ) );
         appointment.setNotification( daoUtil.getInt( nIndex++ ) );
         appointment.setIdAdminUser( daoUtil.getInt( nIndex++ ) );
         appointment.setAdminUserCreate( daoUtil.getString( nIndex++ ) );
@@ -636,6 +637,7 @@ public final class AppointmentDAO implements IAppointmentDAO
         daoUtil.setInt( nIndex++, appointment.getNbPlaces( ) );
         daoUtil.setBoolean( nIndex++, appointment.getIsCancelled( ) );
         daoUtil.setInt( nIndex++, appointment.getIdActionCancelled( ) );
+        daoUtil.setInt( nIndex++, appointment.getIdActionReported( ) );
         daoUtil.setInt( nIndex++, appointment.getNotification( ) );
         daoUtil.setInt( nIndex++, appointment.getIdAdminUser( ) );
         daoUtil.setString( nIndex++, appointment.getAdminUserCreate( ) );

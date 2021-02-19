@@ -83,6 +83,11 @@ public class Appointment extends User
      * Id for a cancelled appointment
      */
     private int _nIdActionCancelled;
+    
+    /**
+     * Id for a reported appointment
+     */
+    private int _nIdActionReported;
 
     /**
      * The rank for the notification (0 : no notification)
@@ -205,6 +210,26 @@ public class Appointment extends User
     public void setIdActionCancelled( int nIdActionCancelled )
     {
         this._nIdActionCancelled = nIdActionCancelled;
+    }
+    /**
+     * Get the id for the reported appointment
+     * 
+     * @return the id
+     */
+    public int getIdActionReported( )
+    {
+        return _nIdActionReported;
+    }
+
+    /**
+     * Set the id for the reported action
+     * 
+     * @param nIdActionReported
+     *            the id to set
+     */
+    public void setIdActionReported( int nIdActionReported )
+    {
+        this._nIdActionReported = nIdActionReported;
     }
 
     /**

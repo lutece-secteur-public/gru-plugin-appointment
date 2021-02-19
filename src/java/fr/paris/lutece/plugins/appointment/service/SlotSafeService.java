@@ -66,6 +66,7 @@ import fr.paris.lutece.plugins.appointment.business.slot.SlotHome;
 import fr.paris.lutece.plugins.appointment.business.user.User;
 import fr.paris.lutece.plugins.appointment.exception.AppointmentSavedException;
 import fr.paris.lutece.plugins.appointment.exception.SlotFullException;
+import fr.paris.lutece.plugins.appointment.service.listeners.AppointmentListenerManager;
 import fr.paris.lutece.plugins.appointment.service.listeners.SlotListenerManager;
 import fr.paris.lutece.plugins.appointment.web.dto.AppointmentDTO;
 import fr.paris.lutece.plugins.genericattributes.business.Response;
@@ -331,7 +332,7 @@ public final class SlotSafeService
     {
         boolean bIsUpdate = false;
         List<Lock> listLock = new ArrayList<>( );
-
+        boolean isReport= appointmentDTO.getIdAppointment( ) != 0;
         if ( appointmentDTO.getIsSaved( ) )
         {
 
@@ -365,6 +366,14 @@ public final class SlotSafeService
             {
                 WorkflowService.getInstance( ).getState( appointment.getIdAppointment( ), Appointment.APPOINTMENT_RESOURCE_TYPE, form.getIdWorkflow( ),
                         form.getIdForm( ) );
+
+                if( isReport && appointment.getIdActionReported( ) != 0 ) 
+                {
+                	 WorkflowService.getInstance( ).doProcessAction( appointment.getIdAppointment( ), Appointment.APPOINTMENT_RESOURCE_TYPE,
+                             appointment.getIdActionReported( ), form.getIdForm( ), request, request.getLocale( ), false, null );
+                     AppointmentListenerManager.notifyAppointmentWFActionTriggered( appointment.getIdAppointment( ), appointment.getIdActionReported( ) );
+           
+                }
                 WorkflowService.getInstance( ).executeActionAutomatic( appointment.getIdAppointment( ), Appointment.APPOINTMENT_RESOURCE_TYPE,
                         form.getIdWorkflow( ), form.getIdForm( ), null );
             }

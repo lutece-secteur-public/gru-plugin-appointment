@@ -1329,7 +1329,7 @@ public class AppointmentApp extends MVCApplication
                 // Check if the appointment is passed
                 if ( appointment.getIdActionCancelled( ) > 0 )
                 {
-                    boolean automaticUpdate = AdminUserService.getAdminUser( request ) == null;
+                    boolean automaticUpdate = SecurityService.getInstance( ).getRegisteredUser( request ) == null;
                     try
                     {
                         WorkflowService.getInstance( ).doProcessAction( appointment.getIdAppointment( ), Appointment.APPOINTMENT_RESOURCE_TYPE,
