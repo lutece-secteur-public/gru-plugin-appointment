@@ -98,7 +98,6 @@ import fr.paris.lutece.plugins.workflowcore.service.task.TaskService;
 import fr.paris.lutece.portal.business.file.FileHome;
 import fr.paris.lutece.portal.business.physicalfile.PhysicalFileHome;
 import fr.paris.lutece.portal.service.admin.AccessDeniedException;
-import fr.paris.lutece.portal.service.admin.AdminUserService;
 import fr.paris.lutece.portal.service.captcha.CaptchaSecurityService;
 import fr.paris.lutece.portal.service.i18n.I18nService;
 import fr.paris.lutece.portal.service.image.ImageResource;
@@ -267,6 +266,7 @@ public class AppointmentApp extends MVCApplication
     private static final String ERROR_MESSAGE_NO_STARTING_VALIDITY_DATE = "appointment.validation.appointment.noStartingValidityDate";
     private static final String ERROR_MESSAGE_FORM_NO_MORE_VALID = "appointment.validation.appointment.formNoMoreValid";
     private static final String ERROR_MESSAGE_NO_AVAILABLE_SLOT = "appointment.validation.appointment.noAvailableSlot";
+    private static final String ERROR_MESSAGE_REPORT_APPOINTMENT = "appointment.message.error.report.appointment";
 
     // Messages
     private static final String MESSAGE_CANCEL_APPOINTMENT_PAGE_TITLE = "appointment.cancelAppointment.pageTitle";
@@ -277,7 +277,6 @@ public class AppointmentApp extends MVCApplication
     private static final String PROPERTY_USER_ATTRIBUTE_LAST_NAME = "appointment.userAttribute.lastName";
     private static final String PROPERTY_USER_ATTRIBUTE_PREFERED_NAME = "appointment.userAttribute.preferred_username";
     private static final String PROPERTY_USER_ATTRIBUTE_EMAIL = "appointment.userAttribute.email";
-
     private static final String AGENDA_WEEK = "agendaWeek";
     private static final String BASIC_WEEK = "basicWeek";
     private static final String AGENDA_DAY = "agendaDay";
@@ -332,9 +331,18 @@ public class AppointmentApp extends MVCApplication
         if ( StringUtils.isNotEmpty( refAppointment ) )
         {
             // If we want to change the date of an appointment
-            _validatedAppointment = AppointmentService.buildAppointmentDTOFromRefAppointment( refAppointment );
-            AppointmentService.addAppointmentResponses( _validatedAppointment );
-            nbPlacesToTake = Integer.toString( _validatedAppointment.getNbBookedSeats( ) );
+        	AppointmentDTO appointmentDTO= AppointmentService.buildAppointmentDTOFromRefAppointment( refAppointment );
+        	if( appointmentDTO.getIsCancelled( ) || appointmentDTO.getStartingDateTime().isBefore(LocalDateTime.now( )) )
+        	{
+        		addError( ERROR_MESSAGE_REPORT_APPOINTMENT, locale);
+                bError = true;
+        	}
+        	else 
+        	{        
+        		_validatedAppointment = appointmentDTO;           
+        		AppointmentService.addAppointmentResponses( _validatedAppointment );
+        		nbPlacesToTake = Integer.toString( _validatedAppointment.getNbBookedSeats( ) );
+        	}
         }
         LocalDate startingDateOfDisplay = LocalDate.now( );
         if ( startingValidityDate != null && startingValidityDate.isAfter( startingDateOfDisplay ) )
@@ -1521,12 +1529,12 @@ public class AppointmentApp extends MVCApplication
         if ( StringUtils.isNotEmpty( strIdAction ) && StringUtils.isNumeric( strIdAction ) && StringUtils.isNotEmpty( refAppointment ) )
         {
             int nIdAction = Integer.parseInt( strIdAction );
-            AppointmentDTO appointment = AppointmentService.buildAppointmentDTOFromRefAppointment( refAppointment );
             if ( WorkflowService.getInstance( ).isDisplayTasksForm( nIdAction, getLocale( request ) ) )
             {
+                AppointmentDTO appointment = AppointmentService.buildAppointmentDTOFromRefAppointment( refAppointment );
                 ITaskService taskService = SpringContextService.getBean( TaskService.BEAN_SERVICE );
                 List<ITask> listActionTasks = taskService.getListTaskByIdAction( nIdAction, getLocale( request ) );
-            	if ( listActionTasks.stream().anyMatch(task-> task.getTaskType( ).getKey( ).equals( "taskReportAppointment" ) )  )
+            	if ( listActionTasks.stream().anyMatch(task-> task.getTaskType( ).getKey( ).equals( "taskReportAppointment" ) ) )
                 {
             		Map<String, String> additionalParameters = new HashMap<>( );
                     additionalParameters.put( PARAMETER_REF_APPOINTMENT, appointment.getReference( ) );

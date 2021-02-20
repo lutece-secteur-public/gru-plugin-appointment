@@ -293,6 +293,8 @@ public class AppointmentJspBean extends MVCAdminJspBean
     private static final String ERROR_MESSAGE_NO_STARTING_VALIDITY_DATE = "appointment.validation.appointment.noStartingValidityDate";
     private static final String ERROR_MESSAGE_FORM_NO_MORE_VALID = "appointment.validation.appointment.formNoMoreValid";
     private static final String MESSAGE_UNVAILABLE_SLOT = "appointment.slot.unvailable";
+    private static final String ERROR_MESSAGE_REPORT_APPOINTMENT = "appointment.message.error.report.appointment";
+
 
     // Constants
     private static final String DEFAULT_CURRENT_PAGE = "1";
@@ -338,19 +340,29 @@ public class AppointmentJspBean extends MVCAdminJspBean
         cleanSession( request.getSession( ) );
         String strIdAppointment = request.getParameter( PARAMETER_ID_APPOINTMENT );
         String nbPlacesToTake = request.getParameter( PARAMETER_NB_PLACE_TO_TAKE );
+        boolean bError = false;
+
         if ( StringUtils.isNotEmpty( strIdAppointment ) )
         {
             // If we want to change the date of an appointment
             int nIdAppointment = Integer.parseInt( strIdAppointment );
-            _validatedAppointment = AppointmentService.buildAppointmentDTOFromIdAppointment( nIdAppointment );
-            AppointmentService.addAppointmentResponses( _validatedAppointment );
-            nbPlacesToTake = Integer.toString( _validatedAppointment.getNbBookedSeats( ) );
+            AppointmentDTO appointmentDTO = AppointmentService.buildAppointmentDTOFromIdAppointment( nIdAppointment );
+            if( appointmentDTO.getIsCancelled( ) )
+        	{
+        		addError( ERROR_MESSAGE_REPORT_APPOINTMENT, getLocale( ) );
+                bError = true;
+        	}
+        	else 
+        	{
+        		_validatedAppointment= appointmentDTO;
+        		AppointmentService.addAppointmentResponses( _validatedAppointment );
+        		nbPlacesToTake = Integer.toString( _validatedAppointment.getNbBookedSeats( ) );
+        	}
         }
         int nIdForm = Integer.parseInt( strIdForm );
         Form form = FormService.findFormLightByPrimaryKey( nIdForm );
         AppointmentFormDTO appointmentForm = FormService.buildAppointmentForm( nIdForm, 0 );
 
-        boolean bError = false;
         if ( !form.getIsActive( ) )
         {
             addError( ERROR_MESSAGE_FORM_NOT_ACTIVE, getLocale( ) );
