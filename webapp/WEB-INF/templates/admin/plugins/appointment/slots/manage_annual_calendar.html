@@ -96,7 +96,6 @@ function editEvent( event) {
     $('#event-modal input[name="ending_date_of_apply"]').datetimepicker({ locale: '${language}', format: 'L'});
     $('#event-modal').modal();
 }
-}
 
 function deleteEvent(event) {
    location.href= 'jsp/admin/plugins/appointment/ManageAnnualCalendar.jsp?action=doRemoveWeekFromCalendar&id_week_definition='+event.idweekdef+'&id_form=${id_form}';

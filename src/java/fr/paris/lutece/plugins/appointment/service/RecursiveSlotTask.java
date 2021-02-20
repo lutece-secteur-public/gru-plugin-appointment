@@ -353,6 +353,7 @@ public class RecursiveSlotTask extends RecursiveTask<List<Slot>>
             dateToCompare = dateTemp;
             // Find the closest date of apply of reservation rule with the given
             // date
+            reservationRuleToApply = null;
             closestweeDef = Utilities.getClosestWeekDefinitionInPast( listDateReservationRule, dateToCompare );
             if ( closestweeDef != null )
             {
