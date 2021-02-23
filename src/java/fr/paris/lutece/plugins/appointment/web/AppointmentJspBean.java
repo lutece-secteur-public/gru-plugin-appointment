@@ -249,7 +249,7 @@ public class AppointmentJspBean extends MVCAdminJspBean
     private static final String MARK_CUSTOM_FIELD_LIST = "customFieldList";
     private static final String MARK_IS_OVERBOOKING = "isOverbooking";
     private static final String MARK_MAILING_LIST = "mailing_list";
-    private static final String MARK_USER_CREATOR_NAME = "userCreatorName";
+    private static final String MARK_USER_CREATOR = "userCreator";
     private static final String JSP_MANAGE_APPOINTMENTS = "jsp/admin/plugins/appointment/ManageAppointments.jsp";
     private static final String ERROR_MESSAGE_SLOT_FULL = "appointment.message.error.slotFull";
 
@@ -750,7 +750,7 @@ public class AppointmentJspBean extends MVCAdminJspBean
         model.put( MARK_APPOINTMENT, appointmentDTO );
         if( appointmentDTO.getAdminUserCreate() != null ) {
         	
-            model.put( MARK_USER_CREATOR_NAME,  AdminUserHome.findUserByLogin( appointmentDTO.getAdminUserCreate( ) ));
+            model.put( MARK_USER_CREATOR,  AdminUserHome.findUserByLogin( appointmentDTO.getAdminUserCreate( ) ));
         }
         model.put( MARK_FORM_MESSAGES, FormMessageService.findFormMessageByIdForm( nIdForm ) );
         model.put( MARK_FORM, form );

@@ -49,7 +49,7 @@
 					<@formGroup labelKey='#i18n{appointment.viewAppointmentFormMessages.labelAppointmentTakenBy}'>
 						<@staticText>
 							<#if appointment.adminUserCreate??>
-								#i18n{appointment.viewAppointmentFormMessages.labelAppointmentUserBO} ${appointment.userCreatorName!''}
+								#i18n{appointment.viewAppointmentFormMessages.labelAppointmentUserBO} <#if userCreator ??>${userCreator.lastName!''} ${userCreator.firstName!''}</#if>
 							<#else>
 								#i18n{appointment.viewAppointmentFormMessages.labelAppointmentUser}
 							</#if>
