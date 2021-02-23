@@ -71,6 +71,8 @@ import fr.paris.lutece.plugins.appointment.service.listeners.SlotListenerManager
 import fr.paris.lutece.plugins.appointment.web.dto.AppointmentDTO;
 import fr.paris.lutece.plugins.genericattributes.business.Response;
 import fr.paris.lutece.plugins.genericattributes.business.ResponseHome;
+import fr.paris.lutece.portal.business.user.AdminUser;
+import fr.paris.lutece.portal.service.admin.AdminUserService;
 import fr.paris.lutece.portal.service.util.AppLogService;
 import fr.paris.lutece.portal.service.workflow.WorkflowService;
 import fr.paris.lutece.util.sql.TransactionManager;
@@ -370,7 +372,7 @@ public final class SlotSafeService
                 if( isReport && appointment.getIdActionReported( ) != 0 ) 
                 {
                 	 WorkflowService.getInstance( ).doProcessAction( appointment.getIdAppointment( ), Appointment.APPOINTMENT_RESOURCE_TYPE,
-                             appointment.getIdActionReported( ), form.getIdForm( ), request, request.getLocale( ), false, null );
+                             appointment.getIdActionReported( ), form.getIdForm( ), request, request.getLocale( ), true , null );
                      AppointmentListenerManager.notifyAppointmentWFActionTriggered( appointment.getIdAppointment( ), appointment.getIdActionReported( ) );
            
                 }
