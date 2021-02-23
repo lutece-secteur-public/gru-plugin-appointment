@@ -656,52 +656,22 @@ public class AppointmentApp extends MVCApplication
             }
 
         }
-
-        AppointmentDTO oldAppointmentDTO = null;
-        if ( _notValidatedAppointment == null )
+       
+        if ( _notValidatedAppointment == null  )
         {
-            // Try to get the validated appointment in session
-            // (in case the user click on back button in the recap view (or
-            // modification)
-
-            if ( _validatedAppointment != null )
-            {
-                _notValidatedAppointment = _validatedAppointment;
+        	if(  _validatedAppointment != null ) {
+        		
+        		 // Try to get the validated appointment in session
+                // (in case the user click on back button in the recap view (or
+                // modification)
+            	_notValidatedAppointment = _validatedAppointment;
                 _validatedAppointment = null;
-
-                if ( !bModificationForm && listSlot != null && isEquals( _notValidatedAppointment.getSlot( ), listSlot ) )
-
-                {
-                    oldAppointmentDTO = _notValidatedAppointment;
-                }
-            }
-        }
-        else
-        {
-            // Appointment DTO not validated in session
-            // Need to verify if the slot has not changed
-            if ( !bModificationForm && listSlot != null && isEquals( _notValidatedAppointment.getSlot( ), listSlot ) )
-
-            {
-                oldAppointmentDTO = _notValidatedAppointment;
-            }
-        }
-
-        if ( _notValidatedAppointment == null || oldAppointmentDTO != null )
-        {
-            // Need to get back the informations the user has entered
-            _notValidatedAppointment = new AppointmentDTO( );
-            if ( oldAppointmentDTO != null && oldAppointmentDTO.getIdForm( ) == nIdForm )
-            {
-                _notValidatedAppointment.setFirstName( oldAppointmentDTO.getFirstName( ) );
-                _notValidatedAppointment.setLastName( oldAppointmentDTO.getLastName( ) );
-                _notValidatedAppointment.setEmail( oldAppointmentDTO.getEmail( ) );
-                _notValidatedAppointment.setPhoneNumber( oldAppointmentDTO.getPhoneNumber( ) );
-                _notValidatedAppointment.setNbBookedSeats( oldAppointmentDTO.getNbBookedSeats( ) );
-                _notValidatedAppointment.setListResponse( oldAppointmentDTO.getListResponse( ) );
-                _notValidatedAppointment.setMapResponsesByIdEntry( oldAppointmentDTO.getMapResponsesByIdEntry( ) );
-                _notValidatedAppointment.setIdForm( oldAppointmentDTO.getIdForm( ) );
-            }
+        	}
+        	else 
+        	{
+        		// Need to get back the informations the user has entered
+        		_notValidatedAppointment = new AppointmentDTO( );
+        	}
         }
         if ( !bModificationForm )
         {
@@ -1794,25 +1764,5 @@ public class AppointmentApp extends MVCApplication
                 throw new UserNotSignedException( );
             }
         }
-    }
-
-    private boolean isEquals( List<Slot> listSlot1, List<Slot> listSlot2 )
-    {
-
-        if ( listSlot1.size( ) == listSlot2.size( ) )
-        {
-            return false;
-        }
-
-        for ( Slot slot : listSlot1 )
-        {
-
-            if ( listSlot2.stream( ).noneMatch( s -> s.getIdSlot( ) == slot.getIdSlot( ) ) )
-            {
-                return false;
-            }
-        }
-
-        return true;
     }
 }

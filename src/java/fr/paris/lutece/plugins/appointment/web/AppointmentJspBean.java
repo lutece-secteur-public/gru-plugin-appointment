@@ -933,63 +933,33 @@ public class AppointmentJspBean extends MVCAdminJspBean
             }
         }
 
-        AppointmentDTO oldAppointmentDTO = null;
         // Get the not validated appointment in session if it exists
 
         if ( _notValidatedAppointment == null )
         {
-            // Try to get the validated appointment in session
-            // (in case the user click on back button in the recap view (or
-            // modification)
-            _notValidatedAppointment = _validatedAppointment;
-            if ( _notValidatedAppointment != null )
-            {
-                _validatedAppointment = null;
-                if ( !bModificationForm && listSlot != null && isEquals( _notValidatedAppointment.getSlot( ), listSlot ) )
+        	
+        	if( _validatedAppointment != null ) {
 
-                {
-                    oldAppointmentDTO = _notValidatedAppointment;
-                }
-            }
+                // Try to get the validated appointment in session
+                // (in case the user click on back button in the recap view (or
+                // modification)
+        		_notValidatedAppointment = _validatedAppointment;
+        		_validatedAppointment = null;  
+        	}
+        	else
+        	{
+        		 // Need to get back the informations the user has entered
+                _notValidatedAppointment = new AppointmentDTO( );
+               
+        	}           
         }
-        else
-        {
-            // Appointment DTO not validated in session
-            // Need to verify if the slot has not changed
-            if ( !bModificationForm && listSlot != null && isEquals( _notValidatedAppointment.getSlot( ), listSlot ) )
-
-            {
-                oldAppointmentDTO = _notValidatedAppointment;
-            }
-            else
-                if ( _nNbPlacesToTake == 0 && bModificationForm )
-                {
-
-                    _nNbPlacesToTake = _notValidatedAppointment.getNbBookedSeats( );
-
-                }
+        else if ( _nNbPlacesToTake == 0 && bModificationForm )
+        {              
+                _nNbPlacesToTake = _notValidatedAppointment.getNbBookedSeats( );
         }
-
-        if ( _notValidatedAppointment == null || oldAppointmentDTO != null )
-        {
-            // Need to get back the informations the user has entered
-            _notValidatedAppointment = new AppointmentDTO( );
-            if ( oldAppointmentDTO != null && oldAppointmentDTO.getIdForm( ) == nIdForm )
-            {
-                _notValidatedAppointment.setFirstName( oldAppointmentDTO.getFirstName( ) );
-                _notValidatedAppointment.setLastName( oldAppointmentDTO.getLastName( ) );
-                _notValidatedAppointment.setEmail( oldAppointmentDTO.getEmail( ) );
-                _notValidatedAppointment.setPhoneNumber( oldAppointmentDTO.getPhoneNumber( ) );
-                _notValidatedAppointment.setNbBookedSeats( oldAppointmentDTO.getNbBookedSeats( ) );
-                _notValidatedAppointment.setListResponse( oldAppointmentDTO.getListResponse( ) );
-                _notValidatedAppointment.setMapResponsesByIdEntry( oldAppointmentDTO.getMapResponsesByIdEntry( ) );
-            }
-        }
-
         if ( !bModificationForm )
         {
-
-            boolean bool = true;
+           boolean bool = true;
             _notValidatedAppointment.setSlot( null );
             _notValidatedAppointment.setIdForm( nIdForm );
             _notValidatedAppointment.setNbMaxPotentialBookedSeats( 0 );
@@ -1343,10 +1313,10 @@ public class AppointmentJspBean extends MVCAdminJspBean
         // If it's a modification need to get the old number of booked seats
         // if the reservation is on the same slot, if not, the check has been
         // already done before
-        if ( _validatedAppointment.getIdAppointment( ) != 0 )
+        /*   if ( _validatedAppointment.getIdAppointment( ) != 0 )
         {
             // If it's a modification of the date of the appointment
-            if ( isEquals( _validatedAppointment.getSlot( ), listSlot ) )
+          if ( isEquals( _validatedAppointment.getSlot( ), listSlot ) )
             {
                 List<String> listMessages = AppointmentListenerManager.notifyListenersAppointmentDateChanged( _validatedAppointment.getIdAppointment( ),
                         _validatedAppointment.getListAppointmentSlot( ).stream( ).map( AppointmentSlot::getIdSlot ).collect( Collectors.toList( ) ),
@@ -1365,7 +1335,7 @@ public class AppointmentJspBean extends MVCAdminJspBean
                 return redirect( request, VIEW_CALENDAR_MANAGE_APPOINTMENTS, PARAMETER_ID_FORM, _validatedAppointment.getIdForm( ) );
             }
         }
-        else
+        else*/
             if ( _validatedAppointment.getNbBookedSeats( ) > nbRemainingPlaces && !overbookingAllowed )
             {
                 addInfo( ERROR_MESSAGE_SLOT_FULL, getLocale( ) );
@@ -1821,48 +1791,6 @@ public class AppointmentJspBean extends MVCAdminJspBean
         refListStatus.addItem( 0, I18nService.getLocalizedString( RESERVED, getLocale( ) ) );
         refListStatus.addItem( 1, I18nService.getLocalizedString( UNRESERVED, getLocale( ) ) );
         return refListStatus;
-    }
-
-    private boolean isEquals( List<Slot> listSlot1, List<Slot> listSlot2 )
-    {
-
-        if ( listSlot1.size( ) == listSlot2.size( ) )
-        {
-            return false;
-        }
-
-        for ( Slot slot : listSlot1 )
-        {
-
-            if ( listSlot2.stream( ).noneMatch( s -> s.getIdSlot( ) == slot.getIdSlot( ) ) )
-            {
-
-                return false;
-            }
-        }
-
-        return true;
-    }
-
-    private boolean isEqualSlot( List<AppointmentSlot> listApptSlot, List<Slot> listSlot2 )
-    {
-
-        if ( listApptSlot.size( ) == listSlot2.size( ) )
-        {
-            return false;
-        }
-
-        for ( AppointmentSlot slt : listApptSlot )
-        {
-
-            if ( listSlot2.stream( ).noneMatch( s -> s.getIdSlot( ) == slt.getIdSlot( ) ) )
-            {
-
-                return false;
-            }
-        }
-
-        return true;
     }
 
 }
