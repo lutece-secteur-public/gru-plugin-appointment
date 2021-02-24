@@ -1308,40 +1308,12 @@ public class AppointmentJspBean extends MVCAdminJspBean
             nbRemainingPlaces = nbRemainingPlaces + slot.getNbRemainingPlaces( );
             listSlot.add( slot );
 
-        }
-
-        // If it's a modification need to get the old number of booked seats
-        // if the reservation is on the same slot, if not, the check has been
-        // already done before
-        /*   if ( _validatedAppointment.getIdAppointment( ) != 0 )
+        }      
+        if ( _validatedAppointment.getNbBookedSeats( ) > nbRemainingPlaces && !overbookingAllowed )
         {
-            // If it's a modification of the date of the appointment
-          if ( isEquals( _validatedAppointment.getSlot( ), listSlot ) )
-            {
-                List<String> listMessages = AppointmentListenerManager.notifyListenersAppointmentDateChanged( _validatedAppointment.getIdAppointment( ),
-                        _validatedAppointment.getListAppointmentSlot( ).stream( ).map( AppointmentSlot::getIdSlot ).collect( Collectors.toList( ) ),
-                        getLocale( ) );
-                for ( String strMessage : listMessages )
-                {
-                    addInfo( strMessage );
-                }
-            }
-            Appointment oldAppointment = AppointmentService.findAppointmentById( _validatedAppointment.getIdAppointment( ) );
-
-            if ( isEqualSlot( oldAppointment.getListAppointmentSlot( ), _validatedAppointment.getSlot( ) )
-                    && _validatedAppointment.getNbBookedSeats( ) > ( nbRemainingPlaces + oldAppointment.getNbPlaces( ) ) && !overbookingAllowed )
-            {
-                addError( ERROR_MESSAGE_SLOT_FULL, getLocale( ) );
-                return redirect( request, VIEW_CALENDAR_MANAGE_APPOINTMENTS, PARAMETER_ID_FORM, _validatedAppointment.getIdForm( ) );
-            }
-        }
-        else*/
-            if ( _validatedAppointment.getNbBookedSeats( ) > nbRemainingPlaces && !overbookingAllowed )
-            {
                 addInfo( ERROR_MESSAGE_SLOT_FULL, getLocale( ) );
                 return redirect( request, VIEW_CALENDAR_MANAGE_APPOINTMENTS, PARAMETER_ID_FORM, _validatedAppointment.getIdForm( ) );
-            }
-
+        }
         int nIdAppointment;
         if ( _validatedAppointment.getIdAppointment( ) == 0 )
         {

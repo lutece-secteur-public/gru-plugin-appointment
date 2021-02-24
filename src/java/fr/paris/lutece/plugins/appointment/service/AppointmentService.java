@@ -51,6 +51,7 @@ import fr.paris.lutece.plugins.appointment.business.slot.Slot;
 import fr.paris.lutece.plugins.appointment.business.user.User;
 import fr.paris.lutece.plugins.appointment.business.user.UserHome;
 import fr.paris.lutece.plugins.appointment.service.listeners.AppointmentListenerManager;
+import fr.paris.lutece.plugins.appointment.service.listeners.SlotListenerManager;
 import fr.paris.lutece.plugins.appointment.web.dto.AppointmentDTO;
 import fr.paris.lutece.plugins.appointment.web.dto.AppointmentFilterDTO;
 
@@ -171,7 +172,7 @@ public final class AppointmentService
      *            the slot
      * @return the appointment created
      */
-    public static Appointment buildAndCreateAppointment( AppointmentDTO appointmentDTO, User user )
+    static Appointment buildAndCreateAppointment( AppointmentDTO appointmentDTO, User user )
     {
         Appointment appointment = new Appointment( );
         if ( appointmentDTO.getIdAppointment( ) != 0 )
@@ -208,12 +209,10 @@ public final class AppointmentService
             }
             appointment.setReference( strReference );
             appointment = AppointmentHome.update( appointment );
-            AppointmentListenerManager.notifyListenersAppointmentCreated( appointment.getIdAppointment( ) );
         }
         else
         {
             appointment = AppointmentHome.update( appointment );
-            AppointmentListenerManager.notifyListenersAppointmentUpdated( appointment.getIdAppointment( ) );
 
         }
         return appointment;
@@ -365,6 +364,11 @@ public final class AppointmentService
             AppointmentService.deleteAppointment( appointmentToDelete );
             UserHome.delete( appointmentToDelete.getIdUser( ) );
             TransactionManager.commitTransaction( AppointmentPlugin.getPlugin( ) );
+            AppointmentListenerManager.notifyListenersAppointmentRemoval( nIdAppointment );
+            for(AppointmentSlot appSlot : appointmentToDelete.getListAppointmentSlot( ) )
+            {
+            	SlotListenerManager.notifyListenersSlotChange( appSlot.getIdSlot( ) );
+            }
         }
         catch( Exception e )
         {
@@ -398,8 +402,6 @@ public final class AppointmentService
     private static void deleteAppointment( Appointment appointment )
     {
         AppointmentHome.delete( appointment.getIdAppointment( ) );
-        AppointmentListenerManager.notifyListenersAppointmentRemoval( appointment.getIdAppointment( ) );
-
     }
 
     /**
@@ -446,7 +448,7 @@ public final class AppointmentService
      */
     public static void updateAppointment( Appointment appointment )
     {
-
+    	boolean statusUpdated= false;
         // Get the old appointment in db
         Appointment oldAppointment = AppointmentService.findAppointmentById( appointment.getIdAppointment( ) );
         // If the update concerns a cancellation of the appointment
@@ -460,6 +462,7 @@ public final class AppointmentService
                     // Need to update the nb remaining places of the related slot
                     SlotSafeService.updateRemaningPlacesWithAppointmentMovedDeletedOrCanceled( appSlot.getNbPlaces( ), appSlot.getIdSlot( ) );
                 }
+                statusUpdated= true;
             }
             else if( oldAppointment.getIsCancelled( ) && !appointment.getIsCancelled( ))
             {
@@ -468,9 +471,18 @@ public final class AppointmentService
                     // Need to update the nb remaining places of the related slot
                     SlotSafeService.updateRemaningPlacesWithAppointmentReactivated( appSlot.getNbPlaces( ), appSlot.getIdSlot( ) );
                 }
+                statusUpdated= true;
             }
             AppointmentHome.update( appointment );
             TransactionManager.commitTransaction( AppointmentPlugin.getPlugin( ) );
+            AppointmentListenerManager.notifyListenersAppointmentUpdated( appointment.getIdAppointment( ) );
+            if( statusUpdated ) 
+            {
+	            for(AppointmentSlot appSlot : appointment.getListAppointmentSlot( ) )
+	            {
+	            	SlotListenerManager.notifyListenersSlotChange( appSlot.getIdSlot( ) );
+	            } 
+            }
         }
         catch( Exception e )
         {
@@ -478,7 +490,6 @@ public final class AppointmentService
             AppLogService.error( "Error update appointment " + e.getMessage( ), e );
             throw new AppException( e.getMessage( ), e );
         }
-        AppointmentListenerManager.notifyListenersAppointmentUpdated( appointment.getIdAppointment( ) );
 
     }
 

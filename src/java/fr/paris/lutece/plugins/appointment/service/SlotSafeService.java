@@ -40,10 +40,13 @@ import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.TimeUnit;
@@ -71,8 +74,6 @@ import fr.paris.lutece.plugins.appointment.service.listeners.SlotListenerManager
 import fr.paris.lutece.plugins.appointment.web.dto.AppointmentDTO;
 import fr.paris.lutece.plugins.genericattributes.business.Response;
 import fr.paris.lutece.plugins.genericattributes.business.ResponseHome;
-import fr.paris.lutece.portal.business.user.AdminUser;
-import fr.paris.lutece.portal.service.admin.AdminUserService;
 import fr.paris.lutece.portal.service.util.AppLogService;
 import fr.paris.lutece.portal.service.workflow.WorkflowService;
 import fr.paris.lutece.util.sql.TransactionManager;
@@ -332,62 +333,44 @@ public final class SlotSafeService
      */
     public static int saveAppointment( AppointmentDTO appointmentDTO, HttpServletRequest request )
     {
-        boolean bIsUpdate = false;
         List<Lock> listLock = new ArrayList<>( );
+        Locale locale = (request != null)? request.getLocale():null;
+        User user = appointmentDTO.getUser( );
+        //cahange date appointment
         boolean isReport= appointmentDTO.getIdAppointment( ) != 0;
         if ( appointmentDTO.getIsSaved( ) )
         {
-
             throw new AppointmentSavedException( "Appointment is already saved " );
         }
-
         AppointmentService.buildListAppointmentSlot( appointmentDTO );
         TransactionManager.beginTransaction( AppointmentPlugin.getPlugin( ) );
         try
         {
-            User user = UserService.saveUser( appointmentDTO );
+            if( !isReport ) 
+            {            	            	       	
+            	user= UserService.saveUser( appointmentDTO );
+            }
             lockSlot( appointmentDTO, listLock );
-            saveSlots( appointmentDTO, bIsUpdate );
+            Set<Integer> listSlotUpdated =saveSlots( appointmentDTO );
             // Create or update the appointment
             Appointment appointment = AppointmentService.buildAndCreateAppointment( appointmentDTO, user );
-            if ( appointmentDTO.getIdAppointment( ) != 0 )
-            {
-                AppointmentResponseService.removeResponsesByIdAppointment( appointment.getIdAppointment( ) );
-            }
-            if ( CollectionUtils.isNotEmpty( appointmentDTO.getListResponse( ) ) )
+            if ( !isReport && CollectionUtils.isNotEmpty( appointmentDTO.getListResponse( ) ) )
             {
                 for ( Response response : appointmentDTO.getListResponse( ) )
                 {
                     ResponseHome.create( response );
                     AppointmentResponseService.insertAppointmentResponse( appointment.getIdAppointment( ), response.getIdResponse( ) );
                 }
-            }
-
-            Form form = FormService.findFormLightByPrimaryKey( appointmentDTO.getIdForm( ) );
-            if ( form.getIdWorkflow( ) > 0 )
-            {
-                WorkflowService.getInstance( ).getState( appointment.getIdAppointment( ), Appointment.APPOINTMENT_RESOURCE_TYPE, form.getIdWorkflow( ),
-                        form.getIdForm( ) );
-
-                if( isReport && appointment.getIdActionReported( ) != 0 ) 
-                {
-                	 WorkflowService.getInstance( ).doProcessAction( appointment.getIdAppointment( ), Appointment.APPOINTMENT_RESOURCE_TYPE,
-                             appointment.getIdActionReported( ), form.getIdForm( ), request, request.getLocale( ), true , null );
-                     AppointmentListenerManager.notifyAppointmentWFActionTriggered( appointment.getIdAppointment( ), appointment.getIdActionReported( ) );
-           
-                }
-                WorkflowService.getInstance( ).executeActionAutomatic( appointment.getIdAppointment( ), Appointment.APPOINTMENT_RESOURCE_TYPE,
-                        form.getIdWorkflow( ), form.getIdForm( ), null );
-            }
-
-            TransactionManager.commitTransaction( AppointmentPlugin.getPlugin( ) );
+            }            
+            processeActionWorkflow( appointment, request, locale, appointmentDTO.getIdForm( ), isReport );
+            TransactionManager.commitTransaction( AppointmentPlugin.getPlugin( ) );           
             appointmentDTO.setIdAppointment( appointment.getIdAppointment( ) );
             appointmentDTO.setIsSaved( true );
+            notifyListner( appointment, listSlotUpdated ,isReport, locale); 
             if ( request != null )
             {
                 for ( AppointmentSlot apptSlot : appointmentDTO.getListAppointmentSlot( ) )
                 {
-
                     AppointmentUtilities.cancelTaskTimer( request, apptSlot.getIdSlot( ) );
                 }
             }
@@ -402,14 +385,68 @@ public final class SlotSafeService
         }
         finally
         {
-
             for ( Lock lk : listLock )
             {
                 lk.unlock( );
             }
         }
     }
+   
+    /**
+     * notify Appointment/Slot Listner
+     * @param appointment the appointment 
+     * @param listSlotUpdated the list slot updated to notify 
+     * @param isReport, true if it is a postponement of appointment
+     * @param locale the locale
+     */
+    private static void notifyListner(Appointment appointment, Set<Integer> listSlotUpdated, boolean isReport, Locale locale) 
+    {
+    
+    	for(int idSlot: listSlotUpdated) {
+    		SlotListenerManager.notifyListenersSlotChange( idSlot );
+    	}
+    	if( isReport )
+        {
+        	AppointmentListenerManager.notifyListenersAppointmentDateChanged( appointment.getIdAppointment( ),
+        			appointment.getListAppointmentSlot( ).stream( ).map( AppointmentSlot::getIdSlot ).collect( Collectors.toList( ) ),
+        			locale);	
+           if( appointment.getIdActionReported( ) != 0 ) 
+           {
+        	   AppointmentListenerManager.notifyAppointmentWFActionTriggered( appointment.getIdAppointment( ), appointment.getIdActionReported( ) );
+           }
 
+        }
+        else 
+        {	
+            AppointmentListenerManager.notifyListenersAppointmentCreated( appointment.getIdAppointment( ) );
+        }
+    }
+    /**
+     * Process Action workflow
+     * @param appointment the appointment
+     * @param request the request
+     * @param locale the locale
+     * @param nIdFom the id appointment form
+     * @param isReport true if it is a postponement of appointment
+     */
+    private static void processeActionWorkflow( Appointment appointment, HttpServletRequest request, Locale locale, int nIdFom, boolean isReport ) {
+    	
+    	 Form form = FormService.findFormLightByPrimaryKey( nIdFom );
+         if ( form.getIdWorkflow( ) > 0 )
+         {
+             WorkflowService.getInstance( ).getState( appointment.getIdAppointment( ), Appointment.APPOINTMENT_RESOURCE_TYPE, form.getIdWorkflow( ),
+                     form.getIdForm( ) );
+
+             if( isReport && appointment.getIdActionReported( ) != 0 ) 
+             {
+             	 WorkflowService.getInstance( ).doProcessAction( appointment.getIdAppointment( ), Appointment.APPOINTMENT_RESOURCE_TYPE,
+                          appointment.getIdActionReported( ), form.getIdForm( ), request, locale, true , null );
+        
+             }
+             WorkflowService.getInstance( ).executeActionAutomatic( appointment.getIdAppointment( ), Appointment.APPOINTMENT_RESOURCE_TYPE,
+                     form.getIdWorkflow( ), form.getIdForm( ), null );
+         }
+    }
     /**
      * Set the new number of remaining places (and potential) when an appointment is deleted or cancelled This new value must take in account the capacity of
      * the slot, in case of the slot was already over booked
@@ -419,7 +456,7 @@ public final class SlotSafeService
      * @param slot
      *            the related slot
      */
-    public static void updateRemaningPlacesWithAppointmentMovedDeletedOrCanceled( int nbPlaces, int nIdSlot )
+    static void updateRemaningPlacesWithAppointmentMovedDeletedOrCanceled( int nbPlaces, int nIdSlot )
     {
         // The capacity of the slot (that can be less than the number of places
         // taken on the slot --> overbook)
@@ -451,7 +488,7 @@ public final class SlotSafeService
                 slot.setNbRemainingPlaces( nNewRemainingPlaces );
                 slot.setNbPotentialRemainingPlaces( nNewPotentialRemainingPlaces );
                 slot.setNbPlacestaken( nNewPlacesTaken );
-                updateSlot( slot );
+                SlotHome.update( slot );
             }
         }
         finally
@@ -468,7 +505,7 @@ public final class SlotSafeService
      * @param nbPlaces the nb places taken of the appointment on the slot
      * @param nIdSlot the id slot to update
      */
-    public static void updateRemaningPlacesWithAppointmentReactivated( int nbPlaces, int nIdSlot )
+    static void updateRemaningPlacesWithAppointmentReactivated( int nbPlaces, int nIdSlot )
     {
         // The capacity of the slot (that can be less than the number of places
         // taken on the slot --> overbook)
@@ -482,7 +519,7 @@ public final class SlotSafeService
                 slot.setNbRemainingPlaces( slot.getNbRemainingPlaces( ) - nbPlaces  );
                 slot.setNbPotentialRemainingPlaces( slot.getNbPotentialRemainingPlaces( ) - nbPlaces );
                 slot.setNbPlacestaken( slot.getNbPlacesTaken( ) + nbPlaces );
-                updateSlot( slot );
+                SlotHome.update( slot );
             }
         }
         finally
@@ -968,13 +1005,13 @@ public final class SlotSafeService
      *            the boolean if is an update
      * @return list slot updated
      */
-    private static List<Slot> saveSlots( AppointmentDTO appointmentDTO, boolean bIsUpdate )
+    private static Set<Integer> saveSlots( AppointmentDTO appointmentDTO )
     {
 
         List<Slot> listSlotToUpdate = appointmentDTO.getSlot( );
         Appointment oldAppointment = null;
-        List<Slot> listSlot = new ArrayList<>( );
-
+        Set<Integer> listSlot = new HashSet<>( );
+        boolean oldSlotIsUpdated= false;
         if ( appointmentDTO.getIdAppointment( ) != 0 )
         {
             oldAppointment = AppointmentService.findAppointmentById( appointmentDTO.getIdAppointment( ) );
@@ -1017,7 +1054,7 @@ public final class SlotSafeService
                     }
 
                 // if it's an update for modification of the date of the appointment
-                if ( !bIsUpdate && appointmentDTO.getIdAppointment( ) != 0
+                if ( !oldSlotIsUpdated  && appointmentDTO.getIdAppointment( ) != 0
                         && oldAppointment.getListAppointmentSlot( ).stream( ).noneMatch( p -> p.getIdSlot( ) == appSlot.getIdSlot( ) ) )
                 {
 
@@ -1026,10 +1063,9 @@ public final class SlotSafeService
                     {
 
                         updateRemaningPlacesWithAppointmentMovedDeletedOrCanceled( appointmentSlot.getNbPlaces( ), appointmentSlot.getIdSlot( ) );
+                        listSlot.add( appointmentSlot.getIdSlot( ) );
                     }
-                    // Need to remove the workflow resource to reload again the workflow
-                    // at the first step
-                    bIsUpdate = true;
+                    oldSlotIsUpdated =true;
                 }
 
                 // Update of the remaining places of the slot
@@ -1070,9 +1106,10 @@ public final class SlotSafeService
 
                     throw new SlotFullException( "case of overbooking" );
                 }
+             
+                SlotHome.update( slt );                
+                listSlot.add( slt.getIdSlot( ) );
 
-                listSlot.add( slt );
-                saveSlot( slt );
             }
 
             return listSlot;
