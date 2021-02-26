@@ -985,41 +985,6 @@ public class AppointmentApp extends MVCApplication
             addError( ERROR_MESSAGE_CAPTCHA, getLocale( request ) );
             return redirect( request, VIEW_DISPLAY_RECAP_APPOINTMENT, PARAMETER_ID_FORM, _validatedAppointment.getIdForm( ) );
         }
-        List<Slot> listSlot = new ArrayList<>( );
-        int nbRemainingPlaces = 0;
-        for ( Slot slt : _validatedAppointment.getSlot( ) )
-        {
-            Slot slot = null;
-            // Reload the slot from the database
-            // The slot could have been taken since the beginning of the entry of
-            // the form
-            if ( slt.getIdSlot( ) != 0 )
-            {
-                slot = SlotService.findSlotById( slt.getIdSlot( ) );
-            }
-            else
-            {
-                HashMap<LocalDateTime, Slot> mapSlot = SlotService.buildMapSlotsByIdFormAndDateRangeWithDateForKey( _validatedAppointment.getIdForm( ),
-                        slt.getStartingDateTime( ), slt.getEndingDateTime( ) );
-                if ( !mapSlot.isEmpty( ) )
-                {
-                    slot = mapSlot.get( slt.getStartingDateTime( ) );
-                }
-                else
-                {
-                    slot = slt;
-                }
-            }
-            nbRemainingPlaces = nbRemainingPlaces + slot.getNbRemainingPlaces( );
-            listSlot.add( slot );
-
-        }
-        if ( _validatedAppointment.getNbBookedSeats( ) > nbRemainingPlaces )
-        {
-            addInfo( ERROR_MESSAGE_SLOT_FULL, getLocale( request ) );
-            return redirect( request, VIEW_APPOINTMENT_CALENDAR, PARAMETER_ID_FORM, _validatedAppointment.getIdForm( ), PARAMETER_NB_PLACE_TO_TAKE, _nNbPlacesToTake  );
-        }
-        _validatedAppointment.setSlot( listSlot );
         int nIdAppointment;
         try
         {
@@ -1035,7 +1000,6 @@ public class AppointmentApp extends MVCApplication
         }
         catch( AppointmentSavedException e )
         {
-
             nIdAppointment = _validatedAppointment.getIdAppointment( );
             AppLogService.error( "Error Save appointment: " + e.getMessage( ), e );
         }
@@ -1045,7 +1009,6 @@ public class AppointmentApp extends MVCApplication
         _nNbPlacesToTake = 0;
         int nIdForm = _validatedAppointment.getIdForm( );
         _validatedAppointment = null;
-
         String anchor = request.getParameter( PARAMETER_ANCHOR );
         if ( StringUtils.isNotEmpty( anchor ) )
         {

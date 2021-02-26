@@ -1277,54 +1277,13 @@ public class AppointmentJspBean extends MVCAdminJspBean
         {
             throw new AccessDeniedException( AppointmentResourceIdService.PERMISSION_CREATE_APPOINTMENT );
         }
-
-        List<Slot> listSlot = new ArrayList<>( );
-        int nbRemainingPlaces = 0;
-        for ( Slot slt : _validatedAppointment.getSlot( ) )
-        {
-
-            Slot slot = null;
-            // Reload the slot from the database
-            // The slot could have been taken since the beginning of the entry of
-            // the form
-            if ( slt.getIdSlot( ) != 0 )
-            {
-                slot = SlotService.findSlotById( slt.getIdSlot( ) );
-            }
-
-            else
-            {
-                HashMap<LocalDateTime, Slot> mapSlot = SlotService.buildMapSlotsByIdFormAndDateRangeWithDateForKey( _validatedAppointment.getIdForm( ),
-                        slt.getStartingDateTime( ), slt.getEndingDateTime( ) );
-                if ( !mapSlot.isEmpty( ) )
-                {
-                    slot = mapSlot.get( slt.getStartingDateTime( ) );
-                }
-                else
-                {
-                    slot = slt;
-                }
-            }
-            nbRemainingPlaces = nbRemainingPlaces + slot.getNbRemainingPlaces( );
-            listSlot.add( slot );
-
-        }      
-        if ( _validatedAppointment.getNbBookedSeats( ) > nbRemainingPlaces && !overbookingAllowed )
-        {
-                addInfo( ERROR_MESSAGE_SLOT_FULL, getLocale( ) );
-                return redirect( request, VIEW_CALENDAR_MANAGE_APPOINTMENTS, PARAMETER_ID_FORM, _validatedAppointment.getIdForm( ) );
-        }
         int nIdAppointment;
         if ( _validatedAppointment.getIdAppointment( ) == 0 )
         {
             // set the admin user who is creating the appointment
             AdminUser adminLuteceUser = AdminAuthenticationService.getInstance( ).getRegisteredUser( request );
             _validatedAppointment.setAdminUserCreate( adminLuteceUser.getAccessCode( ) );
-        }
-        if( _validatedAppointment.getNbBookedSeats( ) > nbRemainingPlaces && overbookingAllowed )
-        {
-            _validatedAppointment.setIsSurbooked( true );
-        }
+        }     
         try
         {
             _validatedAppointment.setOverbookingAllowed( overbookingAllowed );
