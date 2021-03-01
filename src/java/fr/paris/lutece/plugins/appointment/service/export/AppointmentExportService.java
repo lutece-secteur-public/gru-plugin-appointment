@@ -54,6 +54,8 @@ import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
 import fr.paris.lutece.plugins.appointment.business.appointment.Appointment;
+import fr.paris.lutece.plugins.appointment.business.category.Category;
+import fr.paris.lutece.plugins.appointment.business.category.CategoryHome;
 import fr.paris.lutece.plugins.appointment.business.form.Form;
 import fr.paris.lutece.plugins.appointment.business.form.FormHome;
 import fr.paris.lutece.plugins.appointment.service.AppointmentResponseService;
@@ -80,6 +82,7 @@ public final class AppointmentExportService
 {
 
     private static final String KEY_RESOURCE_TYPE = "appointment.appointment.name";
+    private static final String KEY_COLUMN_FORM_CATEGORY = "appointment.manageAppointments.columnFormCategory";
     private static final String KEY_COLUMN_FORM_TITLE = "appointment.manageAppointments.columnFormTitle";
     private static final String KEY_COLUMN_LAST_NAME = "appointment.manageAppointments.columnLastName";
     private static final String KEY_COLUMN_FIRST_NAME = "appointment.manageAppointments.columnFirstName";
@@ -96,7 +99,7 @@ public final class AppointmentExportService
 
     private static final String CONSTANT_COMMA = ",";
 
-    private static final List<String> DEFAULT_COLUMN_LIST = Arrays.asList( KEY_COLUMN_FORM_TITLE, KEY_COLUMN_LAST_NAME, KEY_COLUMN_FIRST_NAME, KEY_COLUMN_EMAIL,
+    private static final List<String> DEFAULT_COLUMN_LIST = Arrays.asList( KEY_COLUMN_FORM_CATEGORY, KEY_COLUMN_FORM_TITLE, KEY_COLUMN_LAST_NAME, KEY_COLUMN_FIRST_NAME, KEY_COLUMN_EMAIL,
             KEY_COLUMN_DATE_APPOINTMENT, KEY_TIME_START, KEY_TIME_END, KEY_COLUMN_ADMIN, KEY_COLUMN_STATUS, KEY_COLUMN_STATE, KEY_COLUMN_NB_BOOKED_SEATS,
             KEY_DATE_APPOINT_TAKEN, KEY_HOUR_APPOINT_TAKEN );
 
@@ -233,6 +236,16 @@ public final class AppointmentExportService
     private static final void addDefaultColumnValues( AppointmentDTO appointmentDTO, Form form, List<String> defaultColumnList, List<Object> strWriter,
             StateService stateService, Locale locale )
     {
+        if ( defaultColumnList.contains( KEY_COLUMN_FORM_CATEGORY ) )
+        {
+            Category category = CategoryHome.findByPrimaryKey( form.getIdCategory( ) );
+            String catStr = "";
+            if ( category != null )
+            {
+                catStr = category.getLabel( );
+            }
+            strWriter.add( catStr );
+        }
         if ( defaultColumnList.contains( KEY_COLUMN_FORM_TITLE ) )
         {
             strWriter.add( form.getTitle( ) );
