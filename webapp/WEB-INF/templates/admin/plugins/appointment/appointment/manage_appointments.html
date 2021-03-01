@@ -1,10 +1,5 @@
 <#include "/admin/plugins/appointment/appointment/appointment_export.html" />
-<!-- 
-<link href="css/datepicker.css" rel="stylesheet">
-<link rel='stylesheet' href='css/plugins/appointment/bootstrap-datetimepicker.css' />
-<script src="js/plugins/appointment/moment.min.js"></script>
-<script src="js/plugins/appointment/bootstrap-datetimepicker.min.js"></script> 
--->
+
 <@row>
     <@columns>
 		<@appointmentTabs tab='filter' form=form context='app' >
@@ -192,7 +187,7 @@
 		</@appointmentTabs>
 	</@columns>
 </@row>
-<script src="js/jquery/plugins/ui/jquery-ui-1.9.2.custom.min.js"></script>
+
 <@getDatePickerBootstrap idField="dateAppointment" language=language />
 <script type="text/javascript">
     $(function () {
