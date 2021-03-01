@@ -62,6 +62,7 @@ import org.apache.commons.lang.StringUtils;
 import fr.paris.lutece.plugins.appointment.business.appointment.Appointment;
 import fr.paris.lutece.plugins.appointment.business.appointment.AppointmentSlot;
 import fr.paris.lutece.plugins.appointment.business.category.Category;
+import fr.paris.lutece.plugins.appointment.business.form.FormHome;
 import fr.paris.lutece.plugins.appointment.business.planning.TimeSlot;
 import fr.paris.lutece.plugins.appointment.business.planning.WeekDefinition;
 import fr.paris.lutece.plugins.appointment.business.planning.WorkingDay;
@@ -437,6 +438,7 @@ public final class AppointmentUtilities
         	Category category= CategoryService.findCategoryById(form.getIdCategory( ));
         	if( category != null && category.getNbMaxAppointmentsPerUser( ) > 0 ) 
         	{
+        		List<Integer> listForms = FormHome.findByCategory(category.getIdCategory( )).stream( ).map( frm -> frm.getIdForm() ).collect( Collectors.toList( ) );
         		LocalDateTime now= LocalDateTime.now( );
 	            // Get the date of the future appointment
 	            AppointmentFilterDTO filter = new AppointmentFilterDTO( );
@@ -445,6 +447,8 @@ public final class AppointmentUtilities
 	            filter.setStartingDateOfSearch( Date.valueOf( now.toLocalDate( ) ) );
 	            filter.setStartingTimeOfSearch(now.toLocalTime( ).toString( ));
 	            List<AppointmentDTO> listAppointmentsDTO = AppointmentService.findListAppointmentsDTOByFilter( filter );
+	            //delete appointments that do not belong to the selected category
+	            listAppointmentsDTO.removeIf(appt -> !listForms.contains( appt.getIdForm( )));
 	            // If we modify an appointment, we remove the
 	            // appointment that we currently edit
 	            if ( appointmentDTO.getIdAppointment( ) != 0 )
