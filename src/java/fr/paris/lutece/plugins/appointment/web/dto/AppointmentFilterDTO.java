@@ -39,7 +39,7 @@ import java.util.List;
 
 import fr.paris.lutece.plugins.appointment.business.user.User;
 
-public final class AppointmentFilterDTO extends User
+public class AppointmentFilterDTO extends User
 {
 
     /**
