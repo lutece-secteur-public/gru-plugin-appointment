@@ -853,7 +853,7 @@ public class AppointmentJspBean extends MVCAdminJspBean
                     .collect( Collectors.toList( ) );
         }
 
-        ExcelAppointmentGenerator generator = new ExcelAppointmentGenerator( strIdForm, defaultColumnList, locale, listAppointmentsDTO, customColumnList );
+        ExcelAppointmentGenerator generator = new ExcelAppointmentGenerator( defaultColumnList, locale, listAppointmentsDTO, customColumnList );
 
         TemporaryFileGeneratorService.getInstance( ).generateFile( generator, getUser( ) );
         addInfo( "appointment.export.async.message", getLocale( ) );

@@ -59,20 +59,18 @@ public class ExcelAppointmentGenerator implements IFileGenerator
 
     private final String _fileName;
     private final String _fileDescription;
-    private final String _strIdForm;
     private final List<String> _defaultColumnList;
     private final Locale _locale;
     private final List<AppointmentDTO> _listAppointmentsDTO;
     private final List<Integer> _entryList;
 
-    public ExcelAppointmentGenerator( String strIdForm, List<String> defaultColumnList, Locale locale, List<AppointmentDTO> listAppointmentsDTO,
+    public ExcelAppointmentGenerator( List<String> defaultColumnList, Locale locale, List<AppointmentDTO> listAppointmentsDTO,
             List<Integer> entryList )
     {
         super( );
         _fileName = new SimpleDateFormat( "yyyyMMdd-hhmm" ).format( Calendar.getInstance( locale ).getTime( ) ) + "_"
                 + I18nService.getLocalizedString( KEY_RESOURCE_TYPE, locale );
         _fileDescription = I18nService.getLocalizedString( KEY_FILE_DESCRIPTION, locale );
-        this._strIdForm = strIdForm;
         this._defaultColumnList = new ArrayList<>( defaultColumnList );
         this._locale = locale;
         this._listAppointmentsDTO = new ArrayList<>( listAppointmentsDTO );
@@ -83,7 +81,7 @@ public class ExcelAppointmentGenerator implements IFileGenerator
     public Path generateFile( ) throws IOException
     {
         Path excelFile = Paths.get( TMP_DIR, _fileName + EXCEL_FILE_EXTENSION );
-        AppointmentExportService.buildExcelFileWithAppointments( _strIdForm, _defaultColumnList, _entryList, excelFile, _locale, _listAppointmentsDTO );
+        AppointmentExportService.buildExcelFileWithAppointments( _defaultColumnList, _entryList, excelFile, _locale, _listAppointmentsDTO );
         return excelFile;
     }
 

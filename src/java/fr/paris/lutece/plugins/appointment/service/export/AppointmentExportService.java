@@ -40,9 +40,10 @@ import java.nio.file.Path;
 import java.sql.Date;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 import org.apache.commons.collections.CollectionUtils;
@@ -53,12 +54,12 @@ import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
 import fr.paris.lutece.plugins.appointment.business.appointment.Appointment;
+import fr.paris.lutece.plugins.appointment.business.form.Form;
+import fr.paris.lutece.plugins.appointment.business.form.FormHome;
 import fr.paris.lutece.plugins.appointment.service.AppointmentResponseService;
-import fr.paris.lutece.plugins.appointment.service.FormService;
 import fr.paris.lutece.plugins.appointment.service.Utilities;
 import fr.paris.lutece.plugins.appointment.service.entrytype.EntryTypeGroup;
 import fr.paris.lutece.plugins.appointment.web.dto.AppointmentDTO;
-import fr.paris.lutece.plugins.appointment.web.dto.AppointmentFormDTO;
 import fr.paris.lutece.plugins.genericattributes.business.Entry;
 import fr.paris.lutece.plugins.genericattributes.business.EntryFilter;
 import fr.paris.lutece.plugins.genericattributes.business.EntryHome;
@@ -79,6 +80,7 @@ public final class AppointmentExportService
 {
 
     private static final String KEY_RESOURCE_TYPE = "appointment.appointment.name";
+    private static final String KEY_COLUMN_FORM_TITLE = "appointment.manageAppointments.columnFormTitle";
     private static final String KEY_COLUMN_LAST_NAME = "appointment.manageAppointments.columnLastName";
     private static final String KEY_COLUMN_FIRST_NAME = "appointment.manageAppointments.columnFirstName";
     private static final String KEY_COLUMN_EMAIL = "appointment.manageAppointments.columnEmail";
@@ -94,7 +96,7 @@ public final class AppointmentExportService
 
     private static final String CONSTANT_COMMA = ",";
 
-    private static final List<String> DEFAULT_COLUMN_LIST = Arrays.asList( KEY_COLUMN_LAST_NAME, KEY_COLUMN_FIRST_NAME, KEY_COLUMN_EMAIL,
+    private static final List<String> DEFAULT_COLUMN_LIST = Arrays.asList( KEY_COLUMN_FORM_TITLE, KEY_COLUMN_LAST_NAME, KEY_COLUMN_FIRST_NAME, KEY_COLUMN_EMAIL,
             KEY_COLUMN_DATE_APPOINTMENT, KEY_TIME_START, KEY_TIME_END, KEY_COLUMN_ADMIN, KEY_COLUMN_STATUS, KEY_COLUMN_STATE, KEY_COLUMN_NB_BOOKED_SEATS,
             KEY_DATE_APPOINT_TAKEN, KEY_HOUR_APPOINT_TAKEN );
 
@@ -105,8 +107,6 @@ public final class AppointmentExportService
     /**
      * Build the excel fil of the list of the appointments found in the manage appointment viw by filter
      * 
-     * @param strIdForm
-     *            the form id
      * @param excelFile
      *            the excel file to write
      * @param defaultColumnList
@@ -118,22 +118,15 @@ public final class AppointmentExportService
      * @param listAppointmentsDTO
      *            the list of the appointments to input in the excel file
      */
-    public static void buildExcelFileWithAppointments( String strIdForm, List<String> defaultColumnList, List<Integer> entryList, Path excelFile, Locale locale,
+    public static void buildExcelFileWithAppointments( List<String> defaultColumnList, List<Integer> entryList, Path excelFile, Locale locale,
             List<AppointmentDTO> listAppointmentsDTO )
     {
-        AppointmentFormDTO tmpForm = FormService.buildAppointmentFormLight( Integer.parseInt( strIdForm ) );
         List<List<Object>> linesValues = new ArrayList<>( );
         EntryFilter entryFilter = new EntryFilter( );
-        entryFilter.setIdResource( Integer.valueOf( strIdForm ) );
         List<Entry> listEntry = EntryHome.getEntryList( entryFilter ).stream( ).filter( e -> entryList.contains( e.getIdEntry( ) ) ).map( Entry::getIdEntry )
                 .map( EntryHome::findByPrimaryKey ).collect( Collectors.toList( ) );
 
-        if ( tmpForm == null )
-        {
-            return;
-        }
 
-        linesValues.add( Collections.singletonList( tmpForm.getTitle( ) ) );
         linesValues.add( createHeaderContent( defaultColumnList, listEntry, locale ) );
 
         if ( listAppointmentsDTO != null )
@@ -143,9 +136,11 @@ public final class AppointmentExportService
             {
                 stateService = SpringContextService.getBean( StateService.BEAN_SERVICE );
             }
+            Map<Integer, Form> formMap = new HashMap<>( );
             for ( AppointmentDTO appointmentDTO : listAppointmentsDTO )
             {
-                linesValues.add( createLineContent( appointmentDTO, tmpForm.getIdWorkflow( ), defaultColumnList, listEntry, stateService, locale ) );
+                Form form = formMap.computeIfAbsent( appointmentDTO.getIdForm( ), FormHome::findByPrimaryKey );
+                linesValues.add( createLineContent( appointmentDTO, form, defaultColumnList, listEntry, stateService, locale ) );
             }
         }
         writeWorkbook( linesValues, excelFile, locale );
@@ -211,11 +206,11 @@ public final class AppointmentExportService
         return strInfos;
     }
 
-    private static final List<Object> createLineContent( AppointmentDTO appointmentDTO, int idWorkflow, List<String> defaultColumnList, List<Entry> listEntry,
+    private static final List<Object> createLineContent( AppointmentDTO appointmentDTO, Form form, List<String> defaultColumnList, List<Entry> listEntry,
             StateService stateService, Locale locale )
     {
         List<Object> strWriter = new ArrayList<>( );
-        addDefaultColumnValues( appointmentDTO, idWorkflow, defaultColumnList, strWriter, stateService, locale );
+        addDefaultColumnValues( appointmentDTO, form, defaultColumnList, strWriter, stateService, locale );
 
         List<Integer> listIdResponse = AppointmentResponseService.findListIdResponse( appointmentDTO.getIdAppointment( ) );
         List<Response> listResponses = new ArrayList<>( );
@@ -235,9 +230,13 @@ public final class AppointmentExportService
         return strWriter;
     }
 
-    private static final void addDefaultColumnValues( AppointmentDTO appointmentDTO, int idWorkflow, List<String> defaultColumnList, List<Object> strWriter,
+    private static final void addDefaultColumnValues( AppointmentDTO appointmentDTO, Form form, List<String> defaultColumnList, List<Object> strWriter,
             StateService stateService, Locale locale )
     {
+        if ( defaultColumnList.contains( KEY_COLUMN_FORM_TITLE ) )
+        {
+            strWriter.add( form.getTitle( ) );
+        }
         if ( defaultColumnList.contains( KEY_COLUMN_LAST_NAME ) )
         {
             strWriter.add( appointmentDTO.getLastName( ) );
@@ -272,7 +271,7 @@ public final class AppointmentExportService
         }
         if ( defaultColumnList.contains( KEY_COLUMN_STATE ) )
         {
-            strWriter.add( getStateValue( appointmentDTO, idWorkflow, stateService ) );
+            strWriter.add( getStateValue( appointmentDTO, form.getIdWorkflow( ), stateService ) );
         }
         if ( defaultColumnList.contains( KEY_COLUMN_NB_BOOKED_SEATS ) )
         {
