@@ -71,6 +71,7 @@ import fr.paris.lutece.plugins.appointment.exception.AppointmentSavedException;
 import fr.paris.lutece.plugins.appointment.exception.SlotFullException;
 import fr.paris.lutece.plugins.appointment.service.listeners.AppointmentListenerManager;
 import fr.paris.lutece.plugins.appointment.service.listeners.SlotListenerManager;
+import fr.paris.lutece.plugins.appointment.service.lock.SlotEditTask;
 import fr.paris.lutece.plugins.appointment.web.dto.AppointmentDTO;
 import fr.paris.lutece.plugins.genericattributes.business.Response;
 import fr.paris.lutece.plugins.genericattributes.business.ResponseHome;
@@ -257,28 +258,21 @@ public final class SlotSafeService
 
     /**
      * Update potential remaining places
-     * 
-     * @param nbPotentialRemainingPlaces
-     *            the nbPotentialRemainingPlaces
-     * @param nIdSlot
-     *            the is Slot
-     * @param bIsCancelled
-     *            the state of the task timer
+     * @param task the task timer
      */
-    public static void incrementPotentialRemainingPlaces( int nbPotentialRemainingPlaces, int nIdSlot, boolean bIsCancelled )
+    public static void incrementPotentialRemainingPlaces( SlotEditTask task )
     {
-
-        Lock lock = getLockOnSlot( nIdSlot );
+        Lock lock = getLockOnSlot( task.getIdSlot( ) );
         lock.lock( );
         try
         {
-            Slot slot = SlotService.findSlotById( nIdSlot );
-            if ( slot != null && !bIsCancelled )
+            Slot slot = SlotService.findSlotById( task.getIdSlot( ) );
+            if ( slot != null && !task.isCancelled( ) )
             {
 
-                int nNewPotentialRemainingPlaces = Math.min( slot.getNbPotentialRemainingPlaces( ) + nbPotentialRemainingPlaces, slot.getNbRemainingPlaces( ) );
+                int nNewPotentialRemainingPlaces = Math.min( slot.getNbPotentialRemainingPlaces( ) + task.getNbPlacesTaken( ), slot.getNbRemainingPlaces( ) );
                 slot.setNbPotentialRemainingPlaces( nNewPotentialRemainingPlaces );
-                SlotHome.updatePotentialRemainingPlaces( nNewPotentialRemainingPlaces, nIdSlot );
+                SlotHome.updatePotentialRemainingPlaces( nNewPotentialRemainingPlaces, slot.getIdSlot( ) );
                 SlotListenerManager.notifyListenersSlotChange( slot.getIdSlot( ) );
 
             }
@@ -968,87 +962,82 @@ public final class SlotSafeService
      * @param appointmentDTO
      *            the appointmentDTO
      * @return list id slot updated
+     * @throws InterruptedException 
      */
-    private static Set<Integer> saveSlots( AppointmentDTO appointmentDTO, List<Lock> listLock )
+    private static Set<Integer> saveSlots( AppointmentDTO appointmentDTO, List<Lock> listLock ) throws InterruptedException
     {
-        Appointment oldAppointment = null;
+    	Appointment oldAppointment = null;
         List<Slot>  listOldSlot = new ArrayList< >();
         List<Slot>  listSlotToUpdate = new ArrayList< >(); 
         int nbSumRemainingPlaces= 0;
-        try
+        // if it's an update for modification of the date of the appointment
+        if ( appointmentDTO.getIdAppointment( ) != 0 )
         {
-        	// if it's an update for modification of the date of the appointment
-            if ( appointmentDTO.getIdAppointment( ) != 0 )
-            {
-                oldAppointment = AppointmentService.findAppointmentById( appointmentDTO.getIdAppointment( ) );
-                // Need to update the old slot
-                for ( AppointmentSlot appointmentSlot : oldAppointment.getListAppointmentSlot( ) )
-                {
-                	Lock lock = getLockOnSlot( appointmentSlot.getIdSlot( ) );
-                    if ( lock.tryLock( 2, TimeUnit.SECONDS ) )
-                    {
-                        listLock.add( lock );
-                    }
-                    else
-                    {
-                        throw new SlotFullException( "ERROR SLOT LOCKED" );
-                    }
-                    Slot slt = SlotService.findSlotById( appointmentSlot.getIdSlot( ) );
-                	slt = updateRemaningPlacesWithAppointmentMoved( appointmentSlot.getNbPlaces( ) ,slt );
-                	listOldSlot.add( slt );
-                }
+            oldAppointment = AppointmentService.findAppointmentById( appointmentDTO.getIdAppointment( ) );
+            if( oldAppointment.getIsCancelled( ) ) 
+            {	
+            	throw new SlotFullException( "ERROR APPOINTMENT CANCELLED " );
             }
-            
-            for ( AppointmentSlot appSlot : appointmentDTO.getListAppointmentSlot( ) )
-            {            	            	 
-                Slot slt = null;            
-                //if it's an update for modification of the date of the appointment we load the slots in the listOldSlot  because are updated already
-             if( appointmentDTO.getIdAppointment( ) != 0 && listOldSlot.stream().anyMatch( slot -> slot.getIdSlot() == appSlot.getIdSlot()) ) 
-             {
-            	 
-                	slt=  listOldSlot.stream().filter( slot -> slot.getIdSlot() == appSlot.getIdSlot()).findFirst().orElse( null );
-                	listOldSlot.removeIf( slot -> slot.getIdSlot() == appSlot.getIdSlot() );
-              }
-              else
-              {              
-                	Lock lock = getLockOnSlot( appSlot.getIdSlot( ) );
-                    if ( lock.tryLock( 2, TimeUnit.SECONDS ) )
-                    {
-                        listLock.add( lock );
-                    }
-                    else
-                    {
-                        throw new SlotFullException( "ERROR SLOT LOCKED" );
-                    }
-                    slt = SlotService.findSlotById( appSlot.getIdSlot( ) );            
-               }          
-               if (  slt == null || ( ( appSlot.getNbPlaces( ) > slt.getNbRemainingPlaces( ) && !appointmentDTO.getOverbookingAllowed( ) )
-                   || slt.getEndingDateTime( ).isBefore( LocalDateTime.now( ) )  ))
-
-               {
-                     AppLogService.error( "ERROR SLOT FULL, ID SLOT: " + appSlot.getIdSlot( ) );
-                     throw new SlotFullException( "ERROR SLOT FULL " );
-               }               
-                nbSumRemainingPlaces= nbSumRemainingPlaces + slt.getNbRemainingPlaces( );
-                // Update of the remaining places of the slot and appointmentDTO if over booking Allowed
-                updateRemaningPlacesAndappointmentDTO(appSlot.getNbPlaces( ), slt, appointmentDTO );      
-                listSlotToUpdate.add( slt );
-            }          
-            //this test is for form with the possibility of taking several appointments on the same slot 
-            if( appointmentDTO.getNbBookedSeats( ) >  nbSumRemainingPlaces && !appointmentDTO.getOverbookingAllowed( )) 
-            {        
-            	  AppLogService.error( "ERROR SLOT FULL" );
-                  throw new SlotFullException( "ERROR SLOT FULL" );
-            }          
-            listSlotToUpdate.addAll( listOldSlot );
-            return updateListSlots( listSlotToUpdate );
+            // Need to update the old slot
+            for ( AppointmentSlot appointmentSlot : oldAppointment.getListAppointmentSlot( ) )
+            {
+            	Lock lock = getLockOnSlot( appointmentSlot.getIdSlot( ) );
+                if ( lock.tryLock( 2, TimeUnit.SECONDS ) )
+                {
+                    listLock.add( lock );
+                }
+                else
+                {
+                    throw new SlotFullException( "ERROR SLOT LOCKED" );
+                }
+                Slot slt = SlotService.findSlotById( appointmentSlot.getIdSlot( ) );
+            	slt = updateRemaningPlacesWithAppointmentMoved( appointmentSlot.getNbPlaces( ) ,slt );
+            	listOldSlot.add( slt );
+            }
         }
-        catch( Exception e )
-        {
-            AppLogService.error( "Error Save slot " + e.getMessage( ), e );
-            throw new SlotFullException( e.getMessage( ), e );
-
-        }
+        
+        for ( AppointmentSlot appSlot : appointmentDTO.getListAppointmentSlot( ) )
+        {            	            	 
+	         Slot slt = null;            
+	            //if it's an update for modification of the date of the appointment we load the slots in the listOldSlot  because are updated already
+	         if( appointmentDTO.getIdAppointment( ) != 0 && listOldSlot.stream().anyMatch( slot -> slot.getIdSlot() == appSlot.getIdSlot()) ) 
+	         {
+	            	slt=  listOldSlot.stream().filter( slot -> slot.getIdSlot() == appSlot.getIdSlot()).findFirst().orElse( null );
+	            	listOldSlot.removeIf( slot -> slot.getIdSlot() == appSlot.getIdSlot() );
+	          }
+	          else
+	          {              
+	            	Lock lock = getLockOnSlot( appSlot.getIdSlot( ) );
+	                if ( lock.tryLock( 2, TimeUnit.SECONDS ) )
+	                {
+	                    listLock.add( lock );
+	                }
+	                else
+	                {
+	                    throw new SlotFullException( "ERROR SLOT LOCKED" );
+	                }
+	                slt = SlotService.findSlotById( appSlot.getIdSlot( ) );            
+	           }          
+	           if (  slt == null || ( ( appSlot.getNbPlaces( ) > slt.getNbRemainingPlaces( ) && !appointmentDTO.getOverbookingAllowed( ) )
+	               || slt.getEndingDateTime( ).isBefore( LocalDateTime.now( ) )  ))
+	
+	           {
+	                 AppLogService.error( "ERROR SLOT FULL, ID SLOT: " + appSlot.getIdSlot( ) );
+	                 throw new SlotFullException( "ERROR SLOT FULL " );
+	           }               
+	           nbSumRemainingPlaces= nbSumRemainingPlaces + slt.getNbRemainingPlaces( );
+	           // Update of the remaining places of the slot and appointmentDTO if over booking Allowed
+	           updateRemaningPlacesAndappointmentDTO(appSlot.getNbPlaces( ), slt, appointmentDTO );      
+	           listSlotToUpdate.add( slt );
+        }          
+        //this test is for form with the possibility of taking several appointments on the same slot 
+        if( appointmentDTO.getNbBookedSeats( ) >  nbSumRemainingPlaces && !appointmentDTO.getOverbookingAllowed( )) 
+        {        
+        	  AppLogService.error( "ERROR SLOT FULL" );
+              throw new SlotFullException( "ERROR SLOT FULL" );
+        }          
+        listSlotToUpdate.addAll( listOldSlot );
+        return updateListSlots( listSlotToUpdate );
        
     }
       

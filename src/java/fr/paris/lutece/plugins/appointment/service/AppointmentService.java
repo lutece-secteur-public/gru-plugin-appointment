@@ -212,7 +212,7 @@ public final class AppointmentService
         }
         else
         {
-            appointment = AppointmentHome.update( appointment );
+            AppointmentHome.updateAppointmentDate( appointment );
 
         }
         return appointment;
@@ -457,7 +457,7 @@ public final class AppointmentService
         {
             if ( !oldAppointment.getIsCancelled( ) && appointment.getIsCancelled( ) )
             {
-                for ( AppointmentSlot appSlot : appointment.getListAppointmentSlot( ) )
+                for ( AppointmentSlot appSlot : oldAppointment.getListAppointmentSlot( ) )
                 {
                     // Need to update the nb remaining places of the related slot
                     SlotSafeService.updateRemaningPlacesWithAppointmentMovedDeletedOrCanceled( appSlot.getNbPlaces( ), appSlot.getIdSlot( ) );
@@ -466,7 +466,7 @@ public final class AppointmentService
             }
             else if( oldAppointment.getIsCancelled( ) && !appointment.getIsCancelled( ))
             {
-            	for ( AppointmentSlot appSlot : appointment.getListAppointmentSlot( ) )
+            	for ( AppointmentSlot appSlot : oldAppointment.getListAppointmentSlot( ) )
                 {
                     // Need to update the nb remaining places of the related slot
                     SlotSafeService.updateRemaningPlacesWithAppointmentReactivated( appSlot.getNbPlaces( ), appSlot.getIdSlot( ) );
@@ -478,7 +478,7 @@ public final class AppointmentService
             AppointmentListenerManager.notifyListenersAppointmentUpdated( appointment.getIdAppointment( ) );
             if( statusUpdated ) 
             {
-	            for(AppointmentSlot appSlot : appointment.getListAppointmentSlot( ) )
+	            for(AppointmentSlot appSlot : oldAppointment.getListAppointmentSlot( ) )
 	            {
 	            	SlotListenerManager.notifyListenersSlotChange( appSlot.getIdSlot( ) );
 	            } 

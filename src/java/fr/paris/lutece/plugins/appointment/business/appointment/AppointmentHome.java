@@ -74,7 +74,7 @@ public final class AppointmentHome
 
         return appointment;
     }
-
+ 
     /**
      * Update of the Appointment which is specified in parameter
      * 
@@ -88,7 +88,15 @@ public final class AppointmentHome
 
         return appointment;
     }
-
+    /**
+     * Update date appointment, update AppointmentSlot
+     * @param appointment the appointment
+     * @param plugin the plugin
+     */
+    public static void updateAppointmentDate( Appointment appointment )
+    {
+    	_dao.updateAppointmentDate( appointment, _plugin);
+    }
     /**
      * Delete the Appointment whose identifier is specified in parameter
      * 

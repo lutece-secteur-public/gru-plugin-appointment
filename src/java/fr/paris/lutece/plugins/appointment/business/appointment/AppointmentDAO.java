@@ -178,6 +178,11 @@ public final class AppointmentDAO implements IAppointmentDAO
         {
             daoUtil.executeUpdate( );
         }
+    } 
+    @Override
+    public void updateAppointmentDate( Appointment appointment, Plugin plugin )
+    {
+        
         if ( appointment.getListAppointmentSlot( ) != null && !appointment.getListAppointmentSlot( ).isEmpty( ) )
         {
             deleteAppointmentSlot( appointment.getIdAppointment( ), plugin );
@@ -187,7 +192,7 @@ public final class AppointmentDAO implements IAppointmentDAO
             }
         }
     }
-
+    
     @Override
     public void delete( int nIdAppointment, Plugin plugin )
     {

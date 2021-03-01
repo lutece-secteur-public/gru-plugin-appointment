@@ -68,6 +68,13 @@ public interface IAppointmentDAO
     void update( Appointment appointment, Plugin plugin );
 
     /**
+     * Update date appointment, update AppointmentSlot
+     * @param appointment the appointment
+     * @param plugin the plugin
+     */
+    void updateAppointmentDate( Appointment appointment, Plugin plugin );
+
+    /**
      * Delete a record from the table
      * 
      * @param nIdAppointment

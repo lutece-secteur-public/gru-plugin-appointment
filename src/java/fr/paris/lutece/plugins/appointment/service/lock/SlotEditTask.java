@@ -74,7 +74,7 @@ public final class SlotEditTask extends TimerTask implements Serializable
     @Override
     public void run( )
     {
-        SlotSafeService.incrementPotentialRemainingPlaces( _nbPlacesTaken, _idSlot, _bIsCancelled );
+        SlotSafeService.incrementPotentialRemainingPlaces( this );
         this.cancel( );
         _bIsCancelled = true;
 
