@@ -77,14 +77,22 @@ public class CommentNotificationJspBean extends MVCAdminJspBean
     public static final String JSP_URL_MANAGE_CALENDAR_TEMPLATE = CONTROLLER_PATH + CONTROLLER_JSP;
     // templates
     private static final String TEMPLATE_NOTIFICATION_CONFIG = "/admin/plugins/appointment/notification/task_notification_config.html";
+    private static final String TEMPLATE_MANAGE_NOTIFICATION_CONFIG = "/admin/plugins/appointment/notification/manage_notification_config.html";
+
     // Marks
     private static final String MARK_CONFIG = "config";
+    private static final String MARK_LIST_CONFIG = "list_config";
+
+    //Parameters
+    private static final String PARAMETER_TYPE = "type";
+
     // Messages
     private static final String INFO_COMMENT_UPDATED = "appointment.info.comment.updated";
     // Properties
     private static final String PROPERTY_PAGE_TITLE_MANAGE_COMMENTS = "task_notify_appointment_comment_config.title";
     // View
     private static final String VIEW_NOTIFIACTION_CONFIG = "notificationConfig";
+    private static final String VIEW_MODIFY_NOTIFIACTION_CONFIG = "modifyNotificationCommentConfig";
     // Actions
     private static final String ACTION_DO_UPDATE_NOTIFICATION_CONFIG = "updateNotificationCommentConfig";
     // Session variables
@@ -101,15 +109,36 @@ public class CommentNotificationJspBean extends MVCAdminJspBean
     @View( value = VIEW_NOTIFIACTION_CONFIG, defaultView = true )
     public String getNotificationCommentConfig( HttpServletRequest request ) throws AccessDeniedException
     {
+    	_commentNotificationConfig = null;
     	if ( !RBACService.isAuthorized( AppointmentFormDTO.RESOURCE_TYPE_CREATE, "0", AppointmentResourceIdService.PERMISSION_MODIFY_FORM,
                 (User) AdminUserService.getAdminUser( request ) ) )
         {
             throw new AccessDeniedException( AppointmentResourceIdService.PERMISSION_MODIFY_FORM );
         }
-        if ( _commentNotificationConfig == null )
+    
+        Map<String, Object> model =getModel();
+        model.put( MARK_LIST_CONFIG, CommentNotificationHome.loadCommentNotificationConfig( ) );
+        return getPage( PROPERTY_PAGE_TITLE_MANAGE_COMMENTS, TEMPLATE_MANAGE_NOTIFICATION_CONFIG, model );
+
+    }
+    /**
+     * Get the page to edite comment notification.
+     * 
+     * @param request
+     *            The request
+     * @return The HTML code to display
+     * @throws AccessDeniedException 
+     */
+    @View( value = VIEW_MODIFY_NOTIFIACTION_CONFIG  )
+    public String getModifyNotificationCommentConfig( HttpServletRequest request ) throws AccessDeniedException
+    {
+    	String type= request.getParameter( PARAMETER_TYPE );
+    	if ( !RBACService.isAuthorized( AppointmentFormDTO.RESOURCE_TYPE_CREATE, "0", AppointmentResourceIdService.PERMISSION_MODIFY_FORM,
+                (User) AdminUserService.getAdminUser( request ) ) )
         {
-        	_commentNotificationConfig = CommentNotificationHome.loadCommentNotificationConfig();
+            throw new AccessDeniedException( AppointmentResourceIdService.PERMISSION_MODIFY_FORM );
         }
+        _commentNotificationConfig = CommentNotificationHome.loadCommentNotificationConfigByType( type );        
         Map<String, Object> model =getModel();
         model.put( MARK_CONFIG, _commentNotificationConfig );
         return getPage( PROPERTY_PAGE_TITLE_MANAGE_COMMENTS, TEMPLATE_NOTIFICATION_CONFIG, model );

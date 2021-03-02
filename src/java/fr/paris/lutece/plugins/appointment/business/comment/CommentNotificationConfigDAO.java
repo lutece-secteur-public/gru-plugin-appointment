@@ -33,7 +33,8 @@
  */
 package fr.paris.lutece.plugins.appointment.business.comment;
 
-import java.sql.Statement;
+import java.util.ArrayList;
+import java.util.List;
 
 import fr.paris.lutece.portal.service.plugin.Plugin;
 import fr.paris.lutece.util.sql.DAOUtil;
@@ -45,8 +46,10 @@ import fr.paris.lutece.util.sql.DAOUtil;
  */
 public class CommentNotificationConfigDAO implements ICommentNotificationConfigDAO
 {
-    private static final String SQL_QUERY_FIND_BY_PRIMARY_KEY = "SELECT sender_name,subject,message FROM appointment_comment_notification_cf";
-    private static final String SQL_QUERY_UPDATE = "UPDATE appointment_comment_notification_cf SET sender_name=?,subject=?,message=?";
+    private static final String SQL_QUERY_FIND = "SELECT notify_type, sender_name,subject,message FROM appointment_comment_notification_cf";
+    private static final String SQL_QUERY_FIND_BY_TYPE = "SELECT notify_type, sender_name,subject,message FROM appointment_comment_notification_cf WHERE notify_type= ? ";
+
+    private static final String SQL_QUERY_UPDATE = "UPDATE appointment_comment_notification_cf SET sender_name=?,subject=?,message=? WHERE notify_type= ? ";
 
    
 
@@ -64,6 +67,7 @@ public class CommentNotificationConfigDAO implements ICommentNotificationConfigD
             daoUtil.setString( ++nPos, config.getSubject( ) );
             daoUtil.setString( ++nPos, config.getMessage( ) );
 
+            daoUtil.setString( ++nPos, config.getType().name( ));
             daoUtil.executeUpdate( );
         }
     }
@@ -72,23 +76,49 @@ public class CommentNotificationConfigDAO implements ICommentNotificationConfigD
      * {@inheritDoc}
      */
     @Override
-    public CommentNotificationConfig load( Plugin plugin )
+    public CommentNotificationConfig loadByType( String strType, Plugin plugin )
     {
         CommentNotificationConfig config = null;
-        try ( DAOUtil daoUtil = new DAOUtil( SQL_QUERY_FIND_BY_PRIMARY_KEY, plugin ) )
+        try ( DAOUtil daoUtil = new DAOUtil( SQL_QUERY_FIND_BY_TYPE, plugin ) )
         {
+        	daoUtil.setString(1 , strType );
             daoUtil.executeQuery( );
 
             if ( daoUtil.next( ) )
             {
                 int nPos = 0;
                 config = new CommentNotificationConfig( );
+                config.setType( CommentNotificationConfig.NotificationType.valueOf( (daoUtil.getString( ++nPos ) )));
                 config.setSenderName( daoUtil.getString( ++nPos ) );
                 config.setSubject( daoUtil.getString( ++nPos ) );
                 config.setMessage( daoUtil.getString( ++nPos ) );
             }
         }
         return config;
+    }
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public List<CommentNotificationConfig> load( Plugin plugin )
+    {
+    	List<CommentNotificationConfig> listCommentNotificationConfig= new ArrayList< >();
+        try ( DAOUtil daoUtil = new DAOUtil( SQL_QUERY_FIND, plugin ) )
+        {
+            daoUtil.executeQuery( );
+
+            while ( daoUtil.next( ) )
+            {
+                int nPos = 0;
+                CommentNotificationConfig config = new CommentNotificationConfig( );
+                config.setType( CommentNotificationConfig.NotificationType.valueOf( (daoUtil.getString( ++nPos ) )));
+                config.setSenderName( daoUtil.getString( ++nPos ) );
+                config.setSubject( daoUtil.getString( ++nPos ) );
+                config.setMessage( daoUtil.getString( ++nPos ) );
+                listCommentNotificationConfig.add( config );
+            }
+        }
+        return listCommentNotificationConfig;
     }
 
 }

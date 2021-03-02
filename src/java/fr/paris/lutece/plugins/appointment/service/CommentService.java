@@ -43,6 +43,7 @@ import java.util.Map;
 import fr.paris.lutece.plugins.appointment.business.comment.Comment;
 import fr.paris.lutece.plugins.appointment.business.comment.CommentHome;
 import fr.paris.lutece.plugins.appointment.business.comment.CommentNotificationConfig;
+import fr.paris.lutece.plugins.appointment.business.comment.CommentNotificationConfig.NotificationType;
 import fr.paris.lutece.plugins.appointment.business.comment.CommentNotificationHome;
 import fr.paris.lutece.plugins.appointment.business.form.Form;
 import fr.paris.lutece.portal.business.mailinglist.Recipient;
@@ -114,7 +115,7 @@ public class CommentService
     public static Comment createAndNotifyMailingList( Comment comment, int idMailingList, Locale locale  )
     {
     	CommentHome.create( comment  );
-    	sendNotification( comment,  idMailingList, locale );
+    	sendNotification( comment,  idMailingList, NotificationType.CREATE, locale );
     	
         return comment;
     }
@@ -132,7 +133,7 @@ public class CommentService
     public static Comment updateAndNotifyMailingList( Comment comment,int idMailingList, Locale locale )
     {
     	CommentHome.update( comment  );
-    	sendNotification( comment,  idMailingList, locale );
+    	sendNotification( comment,  idMailingList, NotificationType.UPDATE, locale );
 
         return comment;
     }
@@ -148,7 +149,7 @@ public class CommentService
     public static void removeAndNotifyMailingList( int nKey,int idMailingList, Locale locale )
     {
     	Comment comment= CommentHome.findByPrimaryKey(nKey);
-    	sendNotification( comment,  idMailingList, locale );
+    	sendNotification( comment,  idMailingList, NotificationType.DELETE, locale );
 
     	CommentHome.remove( nKey );
     }
@@ -160,10 +161,10 @@ public class CommentService
      * 			the mailing list id to notify
      * @param locale
      */
-    public static void sendNotification( Comment comment,  int idMailingList, Locale locale )
+    public static void sendNotification( Comment comment,  int idMailingList, NotificationType type, Locale locale )
     {
     	
-    	CommentNotificationConfig config = CommentNotificationHome.loadCommentNotificationConfig();
+    	CommentNotificationConfig config = CommentNotificationHome.loadCommentNotificationConfigByType( type.name() );
 
     	if( config!= null && idMailingList != -1 )
     	{

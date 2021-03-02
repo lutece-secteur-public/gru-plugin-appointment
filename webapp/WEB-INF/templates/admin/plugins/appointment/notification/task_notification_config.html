@@ -1,6 +1,6 @@
 <#include "/admin/util/editor/editor.html" />
 <fieldset>
-	<legend> #i18n{appointment.task_notify_appointment_comment_config.title}</legend>
+	<legend> #i18n{appointment.task_notify_appointment_comment_config.title} ${config.type}</legend>
 	<@messages errors=errors infos=infos />
 	<@tform id='formid' class='form-horizontal' method='post' action='jsp/admin/plugins/appointment/NotificationCommentConfig.jsp' params='enctype=\'multipart/form-data\''>
 	

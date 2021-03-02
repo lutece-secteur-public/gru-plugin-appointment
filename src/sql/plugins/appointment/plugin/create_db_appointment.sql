@@ -393,7 +393,8 @@ CONSTRAINT fk_appointment_comment FOREIGN KEY (id_form)
 -- Table structure for table appointment_notification_cf --
 -- -----------------------------------------------------------
 CREATE TABLE appointment_comment_notification_cf
-(
+(	
+	notify_type VARCHAR(45) NOT NULL,
 	sender_name VARCHAR(255) DEFAULT NULL, 
 	subject VARCHAR(255) DEFAULT NULL, 
 	message LONG VARCHAR DEFAULT NULL

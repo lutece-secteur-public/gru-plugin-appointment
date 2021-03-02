@@ -38,11 +38,14 @@ CONSTRAINT fk_appointment_comment FOREIGN KEY (id_form) REFERENCES appointment_f
 );
 CREATE TABLE appointment_comment_notification_cf
 (
+	notify_type VARCHAR(45) NOT NULL,
 	sender_name VARCHAR(255) DEFAULT NULL, 
 	subject VARCHAR(255) DEFAULT NULL, 
 	message LONG VARCHAR DEFAULT NULL
 );
-INSERT INTO appointment_comment_notification_cf values ('noreplay','Notification comment appointment',' ');
+INSERT INTO appointment_comment_notification_cf values ('CREATE', 'noreplay','Notification comment appointment',' ');
+INSERT INTO appointment_comment_notification_cf values ('DELETE', 'noreplay','Notification comment appointment',' ');
+INSERT INTO appointment_comment_notification_cf values ('UPDATE', 'noreplay','Notification comment appointment',' ');
 ALTER TABLE appointment_form ADD role_fo varchar(255);
 SET FOREIGN_KEY_CHECKS = 0;
 ALTER TABLE appointment_appointment MODIFY id_appointment INT NOT NULL;

@@ -43,13 +43,45 @@ import java.io.Serializable;
 public class CommentNotificationConfig implements Serializable
 {
     /**
-	 * 
+	 * Variables declarations 
 	 */
 	private static final long serialVersionUID = -6494118423858717180L;
+	
+	private NotificationType _type;
 	private String _strSubject;
     private String _strMessage;
     private String _strSenderName;
 
+    /**
+     * Enum to specify if the notification type of the comment
+     */
+    public enum NotificationType
+    {
+        CREATE,
+        UPDATE,
+        DELETE
+        
+        
+    }
+    
+
+    /**
+     * Returns the Type
+     * @return The Type
+     */ 
+     public NotificationType getType()
+     {
+         return _type;
+     }
+ 
+    /**
+     * Sets the Type
+     * @param type The Type
+     */ 
+     public void setType( NotificationType type )
+     {
+    	 _type = type;
+     }
     
     /**
      *

@@ -1,0 +1,30 @@
+<#include "../comment/manageappointmentcomment_tabs.html" />
+<@tabs2 tab="comment" />
+<@box>
+    <@boxHeader title='#i18n{appointment.task_notify_appointment_comment_config.title}' boxTools=true>		
+    </@boxHeader>
+    <@boxBody>    
+    <div class="clearfix"></div>
+    <@table>
+        <tr>
+
+            <th>Type</th>
+            
+        </tr>
+        <@tableHeadBodySeparator />
+            <#list list_config as config >
+        <tr>
+            <input type="hidden" id="id" name="id"/>
+            <td>
+			${config.type}
+			</td>
+           
+        <td>					
+			<@aButton href='jsp/admin/plugins/appointment/NotificationCommentConfig.jsp?view=modifyNotificationCommentConfig&type=${config.type}' title='#i18n{portal.util.labelModify}' buttonIcon='edit' size='sm' hideTitle=['all']  />
+
+        </td>
+        </tr>
+        </#list>
+    </@table>
+  </@boxBody>
+</@box>

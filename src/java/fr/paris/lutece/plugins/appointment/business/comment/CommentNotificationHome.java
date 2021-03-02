@@ -33,6 +33,9 @@
  */
 package fr.paris.lutece.plugins.appointment.business.comment;
 
+import java.util.List;
+
+import fr.paris.lutece.plugins.appointment.business.comment.CommentNotificationConfig.NotificationType;
 import fr.paris.lutece.plugins.appointment.service.AppointmentPlugin;
 import fr.paris.lutece.portal.service.plugin.Plugin;
 import fr.paris.lutece.portal.service.plugin.PluginService;
@@ -60,7 +63,8 @@ public final class CommentNotificationHome
      * @param config
      *            instance of the CommentNotificationConfig object to update    
      */
-    public static void update( CommentNotificationConfig config ) {
+    public static void update( CommentNotificationConfig config ) 
+    {
     	
     	_dao.store(config, _plugin);
     }
@@ -70,10 +74,23 @@ public final class CommentNotificationHome
      * 
      * @return the CommentNotificationConfig Object
      */
-    public static CommentNotificationConfig loadCommentNotificationConfig(  ) {
+    public static List<CommentNotificationConfig> loadCommentNotificationConfig(  ) 
+    {
     	
     	return _dao.load( _plugin );
     }
+    /**
+     * Load the CommentNotificationConfig Object by type
+     * 
+     * @return the CommentNotificationConfig Object
+     */
+    public static CommentNotificationConfig loadCommentNotificationConfigByType( String strType  ) 
+    {
+    	
+    	return _dao.loadByType( strType, _plugin );
+    }
+
+   
 
 
 }
