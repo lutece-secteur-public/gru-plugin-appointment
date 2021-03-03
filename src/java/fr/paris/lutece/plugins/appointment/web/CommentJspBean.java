@@ -129,7 +129,6 @@ public class CommentJspBean extends AbstractAppointmentFormAndSlotJspBean
     private static final String INFO_COMMENT_UPDATED = "appointment.info.comment.updated";
     private static final String INFO_COMMENT_REMOVED = "appointment.info.comment.removed";
     private static final String INFO_COMMENT_ERROR = "appointment.info.comment.error";
-    private static final String INFO_COMMENT_RIGHTS = "info.comment.rights";
 
     // Session variable to store working values
     private Comment _comment;
@@ -224,7 +223,7 @@ public class CommentJspBean extends AbstractAppointmentFormAndSlotJspBean
         }
 
         // Check constraints
-        if ( !validateBean( _comment, VALIDATION_ATTRIBUTES_PREFIX ) )
+        if ( !validateBean( _comment, VALIDATION_ATTRIBUTES_PREFIX ) || !validateDateStartEndValidity( _comment ))
         {
             addError( INFO_COMMENT_ERROR, getLocale( ) );
 
@@ -312,7 +311,7 @@ public class CommentJspBean extends AbstractAppointmentFormAndSlotJspBean
         }
 
         // Check constraints
-        if ( !validateBean( _comment, VALIDATION_ATTRIBUTES_PREFIX ) )
+        if ( !validateBean( _comment, VALIDATION_ATTRIBUTES_PREFIX ) || !validateDateStartEndValidity( _comment ) )
         {
             addError( INFO_COMMENT_ERROR, getLocale( ) );
         }
@@ -404,5 +403,15 @@ public class CommentJspBean extends AbstractAppointmentFormAndSlotJspBean
 
         return template.getHtml( );
     }
+    /**
+     * Validate Comment date
+     * @param comment the comment
+     * @return boolean
+     */
+    public boolean validateDateStartEndValidity( Comment comment ) 
+    {
+    	return !( comment.getStartingValidityDate().isAfter(comment.getEndingValidityDate( )) 
+    			|| ( comment.getStartingValidityTime() != null && comment.getStartingValidityTime().isAfter(comment.getEndingValidityTime( ))));
 
+    }
 }
