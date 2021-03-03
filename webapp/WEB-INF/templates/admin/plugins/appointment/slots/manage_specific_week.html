@@ -95,7 +95,7 @@ var events = [
         <#if realCap = 0><#assign realCap = 1></#if>
         <#assign nbFull = maxCap / realCap  * 100 >
         <#assign eventTitle='${maxCap} / ${realCap}'>
-        <#assign strCustomColor><#if event.isOpen & ( maxCap > realCap )>rgba(255,165,0,1)<#elseif event.isOpen &  ( maxCap <= realCap )>rgba(222,222,222,1)<#else>rgba(255,0,0,1)</#if></#assign>
+        <#assign strCustomColor><#if event.isOpen & ( maxCap > realCap )>rgba(255,165,0,1)<#elseif event.isOpen &  ( maxCap <= realCap )>rgba(204,235,255,1)<#else>rgba(255,0,0,1)</#if></#assign>
          {
             title   : '${event.maxCapacity} / ${appointmentform.capacityPerSlot} ' + <#if event.isSpecific>' (*)'<#else>''</#if>,
             start   : '${event.startingDateTime}',
