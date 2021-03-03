@@ -5,100 +5,99 @@
 </@row>
 
 <@getCommentModal 'commentModal' '#i18n{appointment.create_comment.pageTitle}' "comment" "startingValidityDate" "endingValidityDate" "idStartingTime" "idEndingTime" "doAddComment" id_form mailing_list />
-
 <@getCommentModal 'modify-comment' '#i18n{appointment.modify_comment.pageTitle}' "comment" "modifyStartingValidityDate" "modifyEndingValidityDate" "idModifyStartingTime" "idModifyEndingTime" "doModifyComment" id_form mailing_list />
 
 <script>
-    <#assign typeClass=''>
-    var bgOpenColor = '#fff;'
-    var bgClosedColor = '#bebebe;'
-    var slotDuration = '${min_duration}';
-    var minTime = '${min_time}';
-    var maxTime = '${max_time}';
-    var dow = [<#if dow??><#list dow as day>'${day}',</#list></#if>];
-    var defaultDate = '${date_of_display}';
-    var startingDateOfDisplay = '${starting_date_of_display}';
-    var endingDateOfDisplay = '${ending_date_of_display}';
-    var strStartingDateOfDisplay = '${str_starting_date_of_display}';
-    var strEndingDateOfDisplay = '${str_ending_date_of_display}';
-    var idForm = '${id_form}';
-    var columnFormat = 'dddd DD/MM/YYYY';
-    var eventUrl = 'jsp/admin/plugins/appointment/ManageAppointments.jsp?view=';
-    var events = [
-        <#if events??>
-            <#list events as event>
-                <#assign nbAppointments = event.nbPlacesTaken>
-                <#assign maxCap = event.maxCapacity?number>
-				<#if maxCap = 0><#assign maxCap = 1></#if>
-                <#assign nbFull = nbAppointments / maxCap * 100 >
-                <#assign eventTitle='${nbAppointments} / ${maxCap}'>
-                <#if modifDateAppointment>
-                    <#assign eventCreate=''>
-                <#elseif event.isOpen & !event.isPassed & overbookingAllowed && (event.nbRemainingPlaces = event.nbPotentialRemainingPlaces)>
-                    <#assign eventCreate='createAppointment&id_form=${event.idForm}&id_slot=${event.idSlot}&starting_date_time=${event.startingDateTime}&ending_date_time=${event.endingDateTime}&is_open=${event.isOpen?c}&is_specific=${event.isSpecific?c}&max_capacity=${maxCap}'>
-                <#elseif event.isOpen & !event.isPassed & (event.nbRemainingPlaces > 0) & (event.nbRemainingPlaces = event.nbPotentialRemainingPlaces)>
+<#assign typeClass=''>
+var bgOpenColor = '#fff;'
+var bgClosedColor = '#bebebe;'
+var slotDuration = '${min_duration}';
+var minTime = '${min_time}';
+var maxTime = '${max_time}';
+var dow = [<#if dow??><#list dow as day>'${day}',</#list></#if>];
+var defaultDate = '${date_of_display}';
+var startingDateOfDisplay = '${starting_date_of_display}';
+var endingDateOfDisplay = '${ending_date_of_display}';
+var strStartingDateOfDisplay = '${str_starting_date_of_display}';
+var strEndingDateOfDisplay = '${str_ending_date_of_display}';
+var idForm = '${id_form}';
+var columnFormat = 'dddd DD/MM/YYYY';
+var eventUrl = 'jsp/admin/plugins/appointment/ManageAppointments.jsp?view=';
+var events = [
+    <#if events??>
+        <#list events as event>
+            <#assign nbAppointments = event.nbPlacesTaken>
+            <#assign maxCap = event.maxCapacity?number>
+            <#if maxCap = 0><#assign maxCap = 1></#if>
+            <#assign nbFull = nbAppointments / maxCap * 100 >
+            <#assign eventTitle='${nbAppointments} / ${maxCap}'>
+            <#if modifDateAppointment>
+                <#assign eventCreate=''>
+            <#elseif event.isOpen & !event.isPassed & overbookingAllowed && (event.nbRemainingPlaces = event.nbPotentialRemainingPlaces)>
+                <#assign eventCreate='createAppointment&id_form=${event.idForm}&id_slot=${event.idSlot}&starting_date_time=${event.startingDateTime}&ending_date_time=${event.endingDateTime}&is_open=${event.isOpen?c}&is_specific=${event.isSpecific?c}&max_capacity=${maxCap}'>
+            <#elseif event.isOpen & !event.isPassed & (event.nbRemainingPlaces > 0) & (event.nbRemainingPlaces = event.nbPotentialRemainingPlaces)>
+                <#assign eventCreate='createAppointment&id_form=${event.idForm}&id_slot=${event.idSlot}&starting_date_time=${event.startingDateTime}&ending_date_time=${event.endingDateTime}&is_open=${event.isOpen?c}&is_specific=${event.isSpecific?c}&max_capacity=${maxCap}'>                            
+            <#elseif event.isOpen & (event.nbRemainingPlaces = 0)>
+                <#assign eventCreate=''>                            
+            <#elseif event.isOpen & (event.nbRemainingPlaces > 0) & (event.nbPotentialRemainingPlaces = 0)>
+                <#assign eventCreate=''>
+            <#elseif event.isOpen & !event.isPassed & (event.nbRemainingPlaces > 0) & (event.nbPotentialRemainingPlaces > 0) & (event.nbRemainingPlaces > event.nbPotentialRemainingPlaces)>
                     <#assign eventCreate='createAppointment&id_form=${event.idForm}&id_slot=${event.idSlot}&starting_date_time=${event.startingDateTime}&ending_date_time=${event.endingDateTime}&is_open=${event.isOpen?c}&is_specific=${event.isSpecific?c}&max_capacity=${maxCap}'>                            
-                <#elseif event.isOpen & (event.nbRemainingPlaces = 0)>
-                    <#assign eventCreate=''>                            
-                <#elseif event.isOpen & (event.nbRemainingPlaces > 0) & (event.nbPotentialRemainingPlaces = 0)>
-                    <#assign eventCreate=''>
-                <#elseif event.isOpen & !event.isPassed & (event.nbRemainingPlaces > 0) & (event.nbPotentialRemainingPlaces > 0) & (event.nbRemainingPlaces > event.nbPotentialRemainingPlaces)>
-                     <#assign eventCreate='createAppointment&id_form=${event.idForm}&id_slot=${event.idSlot}&starting_date_time=${event.startingDateTime}&ending_date_time=${event.endingDateTime}&is_open=${event.isOpen?c}&is_specific=${event.isSpecific?c}&max_capacity=${maxCap}'>                            
-                <#elseif event.isOpen>
-                   <#assign eventCreate=''>
-                <#elseif !event.isOpen & ((maxCap - event.nbRemainingPlaces) > 0)>
-                    <#assign eventCreate=''>
-                <#else>
-                    <#assign eventCreate=''>
-                </#if>
-                <#assign strEventClass><#if event.isOpen & !event.isPassed & (nbAppointments > event.maxCapacity)>overbooked ${typeClass}<#elseif event.isOpen & !event.isPassed & (event.nbRemainingPlaces > 0) & (event.nbPotentialRemainingPlaces = 0)>filled ${typeClass}<#elseif event.isOpen & !event.isPassed & (event.nbRemainingPlaces = 0)>filled ${typeClass}</#if></#assign>
-                <#assign strCustomColor><#if event.isOpen & !event.isPassed & (nbAppointments > event.maxCapacity)>rgba(255,165,0,1)<#elseif event.isOpen & !event.isPassed & (event.nbRemainingPlaces > 0) & (event.nbPotentialRemainingPlaces = 0)>rgba(255,0,0,1)<#elseif event.isOpen & !event.isPassed & (event.nbRemainingPlaces = 0)>rgba(255,0,0,1)<#else>rgba(204,235,255,1)</#if></#assign>
-                {
-                    "title" :   <#if modifDateAppointment>"<a href=" + eventUrl + "viewChangeDateAppointment&id_form=${event.idForm}&id_slot=${event.idSlot}&starting_date_time=${event.startingDateTime}&ending_date_time=${event.endingDateTime}&is_open=${event.isOpen?c}&is_specific=${event.isSpecific?c}&max_capacity=${event.maxCapacity}>${nbAppointments} / ${event.maxCapacity}</a>"
-                                <#elseif event.isOpen & !event.isPassed & overbookingAllowed && (event.nbRemainingPlaces = event.nbPotentialRemainingPlaces)>
+            <#elseif event.isOpen>
+                <#assign eventCreate=''>
+            <#elseif !event.isOpen & ((maxCap - event.nbRemainingPlaces) > 0)>
+                <#assign eventCreate=''>
+            <#else>
+                <#assign eventCreate=''>
+            </#if>
+            <#assign strEventClass><#if event.isOpen & !event.isPassed & (nbAppointments > event.maxCapacity)>overbooked ${typeClass}<#elseif event.isOpen & !event.isPassed & (event.nbRemainingPlaces > 0) & (event.nbPotentialRemainingPlaces = 0)>filled ${typeClass}<#elseif event.isOpen & !event.isPassed & (event.nbRemainingPlaces = 0)>filled ${typeClass}</#if></#assign>
+            <#assign strCustomColor><#if event.isOpen & !event.isPassed & (nbAppointments > event.maxCapacity)>rgba(255,165,0,1)<#elseif event.isOpen & !event.isPassed & (event.nbRemainingPlaces > 0) & (event.nbPotentialRemainingPlaces = 0)>rgba(255,0,0,1)<#elseif event.isOpen & !event.isPassed & (event.nbRemainingPlaces = 0)>rgba(255,0,0,1)<#else>rgba(204,235,255,1)</#if></#assign>
+            {
+                "title" :   <#if modifDateAppointment>"<a href=" + eventUrl + "viewChangeDateAppointment&id_form=${event.idForm}&id_slot=${event.idSlot}&starting_date_time=${event.startingDateTime}&ending_date_time=${event.endingDateTime}&is_open=${event.isOpen?c}&is_specific=${event.isSpecific?c}&max_capacity=${event.maxCapacity}>${nbAppointments} / ${event.maxCapacity}</a>"
+                            <#elseif event.isOpen & !event.isPassed & overbookingAllowed && (event.nbRemainingPlaces = event.nbPotentialRemainingPlaces)>
+                            "<a href=" + eventUrl + "manageAppointments&id_form=${event.idForm}&starting_date_time=${event.startingDateTime}&ending_date_time=${event.endingDateTime}>${nbAppointments} / ${event.maxCapacity}</a>"
+                                + "&nbsp;"
+                                + "<a href=" + eventUrl + "createAppointment&id_form=${event.idForm}&id_slot=${event.idSlot}&starting_date_time=${event.startingDateTime}&ending_date_time=${event.endingDateTime}&is_open=${event.isOpen?c}&is_specific=${event.isSpecific?c}&max_capacity=${event.maxCapacity}\"><span class=\"badge badge-primary\"><i class=\"fa fa-plus\"></i></span></a>"
+                            <#elseif event.isOpen & !event.isPassed & (event.nbRemainingPlaces > 0) & (event.nbRemainingPlaces = event.nbPotentialRemainingPlaces)>
                                 "<a href=" + eventUrl + "manageAppointments&id_form=${event.idForm}&starting_date_time=${event.startingDateTime}&ending_date_time=${event.endingDateTime}>${nbAppointments} / ${event.maxCapacity}</a>"
-                                 + "&nbsp;"
-                                 + "<a href=" + eventUrl + "createAppointment&id_form=${event.idForm}&id_slot=${event.idSlot}&starting_date_time=${event.startingDateTime}&ending_date_time=${event.endingDateTime}&is_open=${event.isOpen?c}&is_specific=${event.isSpecific?c}&max_capacity=${event.maxCapacity}\"><span class=\"badge badge-primary\"><i class=\"fa fa-plus\"></i></span></a>"
-                                <#elseif event.isOpen & !event.isPassed & (event.nbRemainingPlaces > 0) & (event.nbRemainingPlaces = event.nbPotentialRemainingPlaces)>
-                                 "<a href=" + eventUrl + "manageAppointments&id_form=${event.idForm}&starting_date_time=${event.startingDateTime}&ending_date_time=${event.endingDateTime}>${nbAppointments} / ${event.maxCapacity}</a>"
-                                 + "&nbsp;"
-                                 + "<a href=" + eventUrl + "createAppointment&id_form=${event.idForm}&id_slot=${event.idSlot}&starting_date_time=${event.startingDateTime}&ending_date_time=${event.endingDateTime}&is_open=${event.isOpen?c}&is_specific=${event.isSpecific?c}&max_capacity=${event.maxCapacity}\"><span class=\"badge badge-primary\"><i class=\"fa fa-plus\"></i></span></a>"
-                                <#elseif event.isOpen & (event.nbRemainingPlaces = 0)>
-                                 "<a href=" + eventUrl + "manageAppointments&id_form=${event.idForm}&starting_date_time=${event.startingDateTime}&ending_date_time=${event.endingDateTime}>${nbAppointments} / ${event.maxCapacity}</a>"
-                                <#elseif event.isOpen & (event.nbRemainingPlaces > 0) & (event.nbPotentialRemainingPlaces = 0)>'#i18n{appointment.manageCalendarSlots.labelEditFull}'
-                                <#elseif event.isOpen & !event.isPassed & (event.nbRemainingPlaces > 0) & (event.nbPotentialRemainingPlaces > 0) & (event.nbRemainingPlaces > event.nbPotentialRemainingPlaces)>
-                                 "<a href=" + eventUrl + "manageAppointments&id_form=${event.idForm}&starting_date_time=${event.startingDateTime}&ending_date_time=${event.endingDateTime}>${nbAppointments} / ${event.maxCapacity}</a>"
-                                 + "&nbsp;"
-                                 + "#i18n{appointment.manageCalendarSlots.labelEdit}"
-                                 + "&nbsp;"
-                                 + "<a href=" + eventUrl + "createAppointment&id_form=${event.idForm}&id_slot=${event.idSlot}&starting_date_time=${event.startingDateTime}&ending_date_time=${event.endingDateTime}&is_open=${event.isOpen?c}&is_specific=${event.isSpecific?c}&max_capacity=${event.maxCapacity}\"><span class=\"badge badge-primary\"><i class=\"fa fa-plus\"></i></span></a>"
-                                <#elseif event.isOpen>
-                                 "<a href=" + eventUrl + "manageAppointments&id_form=${event.idForm}&starting_date_time=${event.startingDateTime}&ending_date_time=${event.endingDateTime}>${nbAppointments} / ${event.maxCapacity}</a>"
-                                <#elseif !event.isOpen & ((event.maxCapacity - event.nbRemainingPlaces) > 0)>'<a href=' + eventUrl + 'manageAppointments&id_form=${event.idForm}&starting_date_time=${event.startingDateTime}&ending_date_time=${event.endingDateTime}>${nbAppointments} / ${event.maxCapacity}</a>'
-                                <#else>"<a href=" + eventUrl + "manageAppointments&id_form=${event.idForm}&starting_date_time=${event.startingDateTime}&ending_date_time=${event.endingDateTime}></a>"</#if>,
-                    "start"         :  '${event.startingDateTime}',
-                    "end"           : '${event.endingDateTime}',
-                    "id"            : '${event.idSlot}',
-                    "textColor"     :  <#if event.isOpen & !event.isPassed & (nbAppointments > maxCap)>'#000'<#else>'#2c2c2d'</#if>,
-                    "createUrl"     : '<#if eventCreate !='' && nbAppointments !=0>jsp/admin/plugins/appointment/ManageAppointments.jsp?view=${eventCreate}</#if>',
-                    "customClass"   : 'fc-custom ${strEventClass!}',
-                    "customStyle"   : <#if event.isOpen & !event.isPassed>'linear-gradient( 90deg, ${strCustomColor} 0%, ${strCustomColor} ${nbFull?floor}%, rgba(255,255,255,1) ${nbFull?floor}% )',<#else>'',</#if>
-                    "backgroundColor" : <#if event.isOpen & !event.isPassed & (nbAppointments > maxCap)>bgOpenColor
-                                        <#elseif event.isOpen & !event.isPassed & (event.nbRemainingPlaces > 0) & (event.nbRemainingPlaces = event.nbPotentialRemainingPlaces)>bgOpenColor
-                                        <#elseif event.isOpen & !event.isPassed & (event.nbRemainingPlaces > 0) & (event.nbPotentialRemainingPlaces = 0)>bgOpenColor
-                                        <#elseif event.isOpen & !event.isPassed & (event.nbRemainingPlaces = 0)>bgOpenColor
-                                        <#elseif event.isOpen & event.isPassed>bgClosedColor<#else>bgClosedColor</#if>,
-                    "borderColor"   : bgClosedColor,
-                    "type"          : "appointment"
-                },
-            </#list>
-        </#if>
-		<#if comment_events??>
-            <@getComments comment_events />
-        </#if>
-    ];
+                                + "&nbsp;"
+                                + "<a href=" + eventUrl + "createAppointment&id_form=${event.idForm}&id_slot=${event.idSlot}&starting_date_time=${event.startingDateTime}&ending_date_time=${event.endingDateTime}&is_open=${event.isOpen?c}&is_specific=${event.isSpecific?c}&max_capacity=${event.maxCapacity}\"><span class=\"badge badge-primary\"><i class=\"fa fa-plus\"></i></span></a>"
+                            <#elseif event.isOpen & (event.nbRemainingPlaces = 0)>
+                                "<a href=" + eventUrl + "manageAppointments&id_form=${event.idForm}&starting_date_time=${event.startingDateTime}&ending_date_time=${event.endingDateTime}>${nbAppointments} / ${event.maxCapacity}</a>"
+                            <#elseif event.isOpen & (event.nbRemainingPlaces > 0) & (event.nbPotentialRemainingPlaces = 0)>'#i18n{appointment.manageCalendarSlots.labelEditFull}'
+                            <#elseif event.isOpen & !event.isPassed & (event.nbRemainingPlaces > 0) & (event.nbPotentialRemainingPlaces > 0) & (event.nbRemainingPlaces > event.nbPotentialRemainingPlaces)>
+                                "<a href=" + eventUrl + "manageAppointments&id_form=${event.idForm}&starting_date_time=${event.startingDateTime}&ending_date_time=${event.endingDateTime}>${nbAppointments} / ${event.maxCapacity}</a>"
+                                + "&nbsp;"
+                                + "#i18n{appointment.manageCalendarSlots.labelEdit}"
+                                + "&nbsp;"
+                                + "<a href=" + eventUrl + "createAppointment&id_form=${event.idForm}&id_slot=${event.idSlot}&starting_date_time=${event.startingDateTime}&ending_date_time=${event.endingDateTime}&is_open=${event.isOpen?c}&is_specific=${event.isSpecific?c}&max_capacity=${event.maxCapacity}\"><span class=\"badge badge-primary\"><i class=\"fa fa-plus\"></i></span></a>"
+                            <#elseif event.isOpen>
+                                "<a href=" + eventUrl + "manageAppointments&id_form=${event.idForm}&starting_date_time=${event.startingDateTime}&ending_date_time=${event.endingDateTime}>${nbAppointments} / ${event.maxCapacity}</a>"
+                            <#elseif !event.isOpen & ((event.maxCapacity - event.nbRemainingPlaces) > 0)>'<a href=' + eventUrl + 'manageAppointments&id_form=${event.idForm}&starting_date_time=${event.startingDateTime}&ending_date_time=${event.endingDateTime}>${nbAppointments} / ${event.maxCapacity}</a>'
+                            <#else>"<a href=" + eventUrl + "manageAppointments&id_form=${event.idForm}&starting_date_time=${event.startingDateTime}&ending_date_time=${event.endingDateTime}></a>"</#if>,
+                "start"         :  '${event.startingDateTime}',
+                "end"           : '${event.endingDateTime}',
+                "id"            : '${event.idSlot}',
+                "textColor"     :  <#if event.isOpen & !event.isPassed & (nbAppointments > maxCap)>'#000'<#else>'#2c2c2d'</#if>,
+                "createUrl"     : '<#if eventCreate !='' && nbAppointments !=0>jsp/admin/plugins/appointment/ManageAppointments.jsp?view=${eventCreate}</#if>',
+                "customClass"   : 'fc-custom ${strEventClass!}',
+                "customStyle"   : <#if event.isOpen & !event.isPassed>'linear-gradient( 90deg, ${strCustomColor} 0%, ${strCustomColor} ${nbFull?floor}%, rgba(255,255,255,1) ${nbFull?floor}% )',<#else>'',</#if>
+                "backgroundColor" : <#if event.isOpen & !event.isPassed & (nbAppointments > maxCap)>bgOpenColor
+                                    <#elseif event.isOpen & !event.isPassed & (event.nbRemainingPlaces > 0) & (event.nbRemainingPlaces = event.nbPotentialRemainingPlaces)>bgOpenColor
+                                    <#elseif event.isOpen & !event.isPassed & (event.nbRemainingPlaces > 0) & (event.nbPotentialRemainingPlaces = 0)>bgOpenColor
+                                    <#elseif event.isOpen & !event.isPassed & (event.nbRemainingPlaces = 0)>bgOpenColor
+                                    <#elseif event.isOpen & event.isPassed>bgClosedColor<#else>bgClosedColor</#if>,
+                "borderColor"   : bgClosedColor,
+                "type"          : "appointment"
+            },
+        </#list>
+    </#if>
+    <#if comment_events??>
+        <@getComments comment_events />
+    </#if>
+];
 
-   <@fullCalendarScript />
+<@fullCalendarScript selectable=false />
 </script>
 <#include "/admin/util/editor/editor.html" />
 <@initEditor type='comment' />

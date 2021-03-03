@@ -352,6 +352,7 @@ $(function(){
 </@row>
 <script>
 <@headerTitle form=form />
+localStorage.setItem( 'appointmentContext', '${context}' );
 </script>
 </#macro>
 
@@ -402,7 +403,7 @@ $( '#modify-comment' ).modal('show');
 </#list>
 </#macro>
 
-<#macro fullCalendarScript isSpecific=false isTypical=false showComments=true locale=locale>
+<#macro fullCalendarScript selectable=true isSpecific=false isTypical=false showComments=true locale=locale>
 $( function(){
     var calendar = $('#calendar');
 	calendar.fullCalendar({
@@ -455,6 +456,41 @@ $( function(){
 		columnFormat : 'dddd',
 		<#else>
 		columnHeaderHtml: function(mom) { return mom.format('dddd') + '</br>' + mom.format('LL'); },
+		</#if>
+		<#if selectable>
+			selectable: true,
+			selectHelper: true,
+			select: function( startDate, endDate  ) {
+				var selIdx=0, selData='', evData=''; 
+				var selected=$('.fc-event-container .fc-time-grid-event.fc-v-event.fc-event.fc-start.fc-end.fc-custom.ui-selectee');
+				selected.each( function(  ){ 
+					var evt='{' + $(this).data('event') + '}';
+					const event = JSON.parse(evt); 
+					if(  moment( event.startingDateTime ).isSameOrAfter( startDate.format() ) && moment( event.endingDateTime ).isSameOrBefore( endDate.format() ) ){
+						selData += JSON.stringify( event ) + ',' ;
+						selIdx++;
+					} 
+				}) ;
+				if ( selIdx > 1 ){
+					evtData='['+ selData.slice(0, -1) + ']';
+					const evt = JSON.parse(evtData); 
+					$('#slotsData').val(evtData);
+					$('#date_of_display_multi').val( moment(evt[0].startingDateTime).format('YYYY-MM-DD') );
+					$('#updatePlanningMultiSlot').modal('show');
+				} else {
+					evtData=selData.slice(0, -1) ;
+					const evt = JSON.parse(evtData); 
+					$('#slotData').val( '['+evtData+']' );
+					const isOpen = JSON.parse( evt.isOpen )
+					$('#is_open').prop( "checked", isOpen );
+					$('#maxCapacity').val( evt.maxCapacity );
+					$('#dtSlot').text( moment(evt.startingDateTime).format('DD/MM/YYYY') );
+					$('#date_of_display_slot').val( moment(evt.startingDateTime).format('YYYY-MM-DD') );
+					$('#timeStart').text( evt.startingTime );
+					$('#timeEnd').val( evt.endingTime );
+					$('#updatePlanningSlot').modal('show');
+				}
+			},
 		</#if>
 		slotLabelFormat: 'H:mm',
 		slotLabelInterval: slotDuration,
@@ -622,12 +658,14 @@ $( function(){
 			var $title = element.find( '.fc-title' ), createSlot='';
 			$(element).addClass( event.customClass );
 			
+			if( event.type !== 'comment' ){
 			<#if isSpecific>
-			$(element).attr( 'data-event', '"idSlot":"' + event.id +'","startingDateTime":"' + event.start.toISOString()+ '","startingTime":"' + event.start.format('HH:mm') + '","endingDateTime":"' + event.end.toISOString() + '","endingTime":"' + event.end.format('HH:mm')+ '","isOpen":"' + event.isOpen + '","idForm":"' + event.idForm +'","date":"' + event.date + '","isSpecific":"' + event.isSpecific + '","maxCapacity":"' + event.maxCapacity + '"' );
+				$(element).attr( 'data-event', '"idSlot":"' + event.id +'","startingDateTime":"' + event.start.toISOString()+ '","startingTime":"' + event.start.format('HH:mm') + '","endingDateTime":"' + event.end.toISOString() + '","endingTime":"' + event.end.format('HH:mm')+ '","isOpen":"' + event.isOpen + '","idForm":"' + event.idForm +'","date":"' + event.date + '","isSpecific":"' + event.isSpecific + '","maxCapacity":"' + event.maxCapacity + '"' );
 			</#if>  
 			<#if isTypical>
-			$(element).attr( 'data-event', '"idTimeSlot":"' + event.id +'","startingDateTime":"' + event.start.toISOString()+ '","startingTime":"' + event.start.format('HH:mm') + '","endingDateTime":"' + event.end.toISOString() + '","endingTime":"' + event.end.format('HH:mm')+ '","isOpen":"' + event.isOpen + '","idForm":"' + event.idForm +'","maxCapacity":"' + event.maxCapacity + '"' );
+				$(element).attr( 'data-event', '"idTimeSlot":"' + event.id +'","startingDateTime":"' + event.start.toISOString()+ '","startingTime":"' + event.start.format('HH:mm') + '","endingDateTime":"' + event.end.toISOString() + '","endingTime":"' + event.end.format('HH:mm')+ '","isOpen":"' + event.isOpen + '","idForm":"' + event.idForm +'","maxCapacity":"' + event.maxCapacity + '"' );
 			</#if>  
+			} 
 			
 			if ( event.customStyle !='' ){
 				$(element).css( 'background', event.customStyle );
