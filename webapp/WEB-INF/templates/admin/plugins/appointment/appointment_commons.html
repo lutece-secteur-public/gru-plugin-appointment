@@ -202,7 +202,7 @@ $('.content-header h1').html("<a href=\"jsp/admin/plugins/appointment/ManageAppo
 			</@row>
 			<@row>
 				<@columns offsetSm=1 sm=4>
-					<@formGroup labelFor='endingValidityDate' labelKey='#i18n{appointment.create_comment.labelEndingValidityDate}' mandatory=true rows=2>
+					<@formGroup labelFor=idEndingDate labelKey='#i18n{appointment.create_comment.labelEndingValidityDate}' helpKey='#i18n{appointment.create_comment.labelEndingValidityDate}' mandatory=true rows=2>
 						<@inputGroup class='date'>
 							<@input type='text' name='endingValidityDate' id=idEndingDate />
 							<@inputGroupItem type='text'>
@@ -248,6 +248,8 @@ $('.content-header h1').html("<a href=\"jsp/admin/plugins/appointment/ManageAppo
 
 <script>
 $(function(){
+	$('#${idEndingDate}_help').html('');
+
 	$('#${idStartingDate}').datetimepicker({locale: '${locale}', format: 'DD/MM/YYYY'});
 	$('#${idStartingDate}').val( moment().format('DD/MM/YYYY') );
 	$('#${idEndingDate}').datetimepicker({locale: '${locale}', format: 'DD/MM/YYYY', useCurrent: false});
@@ -255,6 +257,14 @@ $(function(){
 	$('#${idStartingTime}').datetimepicker({format: 'HH:mm', stepping: 5});
 	$('#${idEndingTime}').datetimepicker({format: 'HH:mm', stepping: 5});
 	
+	/* Set current date */
+	$('#${modalId}').on('shown.bs.modal', function(){
+		var workingDate=sessionStorage.getItem( 'appCurrentDate');
+		$('#${idStartingDate}').val( workingDate );
+		$('#${idEndingDate}').val( workingDate );
+		localStorage.setItem( 'commentContext', workingDate );
+  	});
+
 	$("#${idStartingDate}").on("dp.change", function (e) {
 		$('#${idEndingDate}').data("DateTimePicker").minDate(e.date);
 	});
@@ -268,11 +278,19 @@ $(function(){
 	}
 
 	$( '[name="action_${action}"]' ).click( function(e){
+		var dStart=$('#${idStartingDate}').val(),dEnd=$('#${idEndingDate}').val();
+		if( moment(dEnd).isBefore( dStart ) ){
+			$('#${idEndingDate}').parents('.form-group').addClass('has-error');
+			$('#${idEndingDate}_help').html('La date de fin ne peut être supérieure à la date de début !');
+			e.preventDefault();
+		}
 		if( tinyMCE.activeEditor.getContent().trim().length === 0 ){
 			$('#${idComment}').parents('.form-group').addClass('has-error');
 			$('#${idComment}_help').html('<span class="color-danger">Vous devez saisir un texte !</span>');
 			e.preventDefault();
 		}
+
+		
 	});
 });
 </script>
@@ -374,29 +392,29 @@ $( '#modify-comment' ).modal('show');
 <#macro getComments comments_list>
 <#list comments_list as comment_event>
 {
-	title : "${comment_event.comment?replace('\n', '')?replace('\r', '')?replace('\rn', '')?replace('\'', '&apos;')?replace('\"', '\\"')}",
-	start : "${comment_event.startingValidityDate}T${comment_event.startingValidityTime!}",
-	end : "${comment_event.calendarAllDaySlotEnd}T${comment_event.endingValidityTime!}",
-	validity_end : "${comment_event.endingValidityDate}",
-	start_time : "${comment_event.startingValidityTime!}",
-	end_time : "${comment_event.endingValidityTime!}",
-	id : "${comment_event.id}",
-	creator_user : "${comment_event.creatorUserName!''}",
-	creation_date : "${comment_event.creationDate?date.xs!''}",
-	type : "comment",
-	allDay : true
+	"title" : "${comment_event.comment?replace('\n', '')?replace('\r', '')?replace('\rn', '')?replace('\'', '&apos;')?replace('\"', '\\"')}",
+	"start" : "${comment_event.startingValidityDate}T${comment_event.startingValidityTime!}",
+	"end" : "${comment_event.calendarAllDaySlotEnd}T${comment_event.endingValidityTime!}",
+	"validity_end" : "${comment_event.endingValidityDate}",
+	"start_time" : "${comment_event.startingValidityTime!}",
+	"end_time" : "${comment_event.endingValidityTime!}",
+	"id" : "${comment_event.id}",
+	"creator_user" : "${comment_event.creatorUserName!''}",
+	"creation_date" : "${comment_event.creationDate?date.xs!''}",
+	"type" : "comment",
+	"allDay" : true,
 },
 <#assign aDateTime = .now>
 <#if comment_event.startingValidityTime?? && comment_event.endingValidityTime??>
 	<#if ( comment_event.startingValidityTime != '00:00' && comment_event.endingValidityTime != '00:00' )>
 	{
-		start : "${comment_event.startingValidityDate}T${comment_event.startingValidityTime!}",
-		end : "${comment_event.endingValidityDate}T${comment_event.endingValidityTime!}",
-		type : "hour_comment",
-		backgroundColor : 'rgb(233, 250, 0 )',
-		className : ["comment-${comment_event.id!}"],
-		rendering : "background",
-		allDay : false
+		"start" : "${comment_event.startingValidityDate}T${comment_event.startingValidityTime!}",
+		"end" : "${comment_event.endingValidityDate}T${comment_event.endingValidityTime!}",
+		"type" : "hour_comment",
+		"backgroundColor" : 'rgb(233, 250, 0 )',
+		"className" : ["comment-${comment_event.id!}"],
+		"rendering" : "background",
+		"allDay" : false,
 	},
 	</#if>
 </#if>
@@ -452,11 +470,10 @@ $( function(){
 		},
 		</#if>
 		header: <#if isTypical>false<#else>{left: 'prev',center: 'today, datePicker, title',right: 'next'}</#if>,
-		<#if isTypical>
-		columnFormat : 'dddd',
-		<#else>
-		columnHeaderHtml: function(mom) { return mom.format('dddd') + '</br>' + mom.format('LL'); },
-		</#if>
+		<#if isTypical>columnFormat : 'dddd',<#else>columnHeaderHtml: function(mom) { return mom.format('dddd') + '</br>' + mom.format('LL'); },</#if>
+		slotLabelFormat: 'H:mm',
+		slotLabelInterval: slotDuration,
+		slotDuration: slotDuration,
 		<#if selectable>
 			selectable: true,
 			selectHelper: true,
@@ -492,10 +509,6 @@ $( function(){
 				}
 			},
 		</#if>
-		slotLabelFormat: 'H:mm',
-		slotLabelInterval: slotDuration,
-		slotDuration: slotDuration,
-		selectable: true,
 		minTime: minTime,
 		maxTime: maxTime,
 		businessHours: {
@@ -538,6 +551,8 @@ $( function(){
 		},
 		</#if>
 		eventAfterAllRender: function( view ) {
+			sessionStorage.setItem( 'appCurrentDate', moment(view.start).format('DD/MM/YYYY') );
+			
 			$('.fc-event').css('cursor', 'pointer');
 			<#if !isTypical>
 				$('.fc-next-button').attr('class', 'fc-next-button btn btn-primary btn-sm');
@@ -657,7 +672,11 @@ $( function(){
 		eventRender: function( event, element, view ) {
 			var $title = element.find( '.fc-title' ), createSlot='';
 			$(element).addClass( event.customClass );
-			
+			if ( event.customStyle !='' ){
+				$(element).css( 'background', event.customStyle );
+			}
+			$title.html( $title.text() );
+
 			if( event.type !== 'comment' ){
 			<#if isSpecific>
 				$(element).attr( 'data-event', '"idSlot":"' + event.id +'","startingDateTime":"' + event.start.toISOString()+ '","startingTime":"' + event.start.format('HH:mm') + '","endingDateTime":"' + event.end.toISOString() + '","endingTime":"' + event.end.format('HH:mm')+ '","isOpen":"' + event.isOpen + '","idForm":"' + event.idForm +'","date":"' + event.date + '","isSpecific":"' + event.isSpecific + '","maxCapacity":"' + event.maxCapacity + '"' );
@@ -665,12 +684,7 @@ $( function(){
 			<#if isTypical>
 				$(element).attr( 'data-event', '"idTimeSlot":"' + event.id +'","startingDateTime":"' + event.start.toISOString()+ '","startingTime":"' + event.start.format('HH:mm') + '","endingDateTime":"' + event.end.toISOString() + '","endingTime":"' + event.end.format('HH:mm')+ '","isOpen":"' + event.isOpen + '","idForm":"' + event.idForm +'","maxCapacity":"' + event.maxCapacity + '"' );
 			</#if>  
-			} 
-			
-			if ( event.customStyle !='' ){
-				$(element).css( 'background', event.customStyle );
 			}
-			$title.html( $title.text() );
 
 			var json = { "container": "body", "placement" : "bottom", "html" : true, "trigger" : "hover" };
 			
@@ -703,6 +717,12 @@ $( function(){
 			
 		}
 	});
+	/* If comment creation set currentDate from "commentContext" localstorage */
+	const dtCurrent=localStorage.getItem('commentContext');
+	if(  dtCurrent !='' ){
+		localStorage.removeItem( 'commentContext' );
+		calendar.fullCalendar( 'gotoDate', moment(dtCurrent,'DD-MM-YYYY'));
+	}
 	<#nested>
 });
 </#macro>
