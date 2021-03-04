@@ -64,3 +64,22 @@ function contrast(colorHex, threshold = 128) {
 
   return rgbToYIQ(rgb) >= threshold ? '#000' : '#fff';
 }
+
+function setLabelComment( event ){
+  var labelEvent='';
+  if ( moment( moment(event.start).format('YYYY-MM-DD') ).isSame( moment( event.validity_end ).format('YYYY-MM-DD') ) ){
+    if(  event.start_time == '00:00' &&  event.end_time == '00:00' ){
+      labelEvent='Le ' +  moment(event.start).format('ddd DD/MM');
+    } else {
+      labelEvent='Le ' +  moment(event.start).format('ddd DD/MM') + ' ' + event.start_time + ' ' + event.end_time;
+    }
+  } else {
+    moment.locale("${locale}");
+    if(  event.start_time == '00:00' &&  event.end_time == '00:00' ){
+      labelEvent = 'Du ' +  moment(event.start).format('ddd DD/MM') + ' au '+ moment(event.validity_end).format('ddd DD/MM');
+    } else {
+      labelEvent = 'Du ' +  moment(event.start).format('ddd DD/MM') + ' ' + event.start_time + ' au '+ moment(event.validity_end).format('ddd DD/MM') + ' ' + event.end_time;
+    }
+  }
+  return labelEvent
+}

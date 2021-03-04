@@ -672,7 +672,7 @@ $( function(){
 			</#if>
 		},
 		eventRender: function( event, element, view ) {
-			var $title = element.find( '.fc-title' ), createSlot='';
+			var $title = element.find( '.fc-title' ), createSlot='', labelEventDate='';
 			$(element).addClass( event.customClass );
 			if ( event.customStyle !='' ){
 				$(element).css( 'background', event.customStyle );
@@ -693,12 +693,10 @@ $( function(){
 			<#if showComments>
 				if( event.type == 'comment' ){
 					$(element).addClass('comments').attr( 'id', 'comment-' + event.id ).attr( 'data-json', '{"id_comment":"' + event.id + '", "comment_text":"' + event.title.replace(/"/g,'\\"') + '", "comment_start":"' + event.start.format('YYYY-MM-DD') + '", "comment_start_time":"' + event.start_time + '", "comment_end":"' + event.validity_end + '", "comment_end_time\":"' + event.end_time + '"}' );
-					if ( event.validity_end == null || event.validity_end == undefined ){
-						labelEventDate='Le ' + event.start.format('ddd DD/MM');
-					} else {
-						moment.locale("${locale}");
-						labelEventDate = 'Du ' + event.start.format('ddd DD/MM') + ' ' + event.start_time + ' au '+ moment(event.validity_end).format('ddd DD/MM') + ' ' + event.end_time;
-					}
+					
+					/* Add comment render */
+					labelEventDate=setLabelComment( event );
+
 					json.content = '<p>' + labelEventDate +'</p><p>Créé par <em>' + event.creator_user + '</em> le <date>' + event.creation_date + '</date><hr>'+ event.title + '</p>'  ;
 					var dateDebut='', dateFin='';
 					if ( ! ( event.start_time == null || event.start_time == undefined || event.start_time == '00:00' ) ){
