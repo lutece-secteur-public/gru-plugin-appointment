@@ -4,12 +4,16 @@
 		<@modalHeader modalTitle='#i18n{appointment.export.modal.title}' />
 		<@modalBody>
 			<@formGroup>
+				<#assign cpt=1>
 				<#list defaultFieldList as defaultField>
-					<@checkBox name='selectedDefaultFieldList' id='selectedDefaultFieldList' value=defaultField.code labelKey=defaultField.name checked=true /> 
+					<@checkBox name='selectedDefaultFieldList' id="defaultField_${cpt}" value=defaultField.code labelKey=defaultField.name checked=true /> 
+					<#assign cpt=cpt+1>
 				</#list>
 				<hr />
+				<#assign cpt=1>
 				<#list customFieldList as customField>
-					<@checkBox name='selectedCustomFieldList' id='selectedCustomFieldList' value=customField.code labelKey=customField.name checked=true /> 
+					<@checkBox name='selectedCustomFieldList' id="customField_${cpt}" value=customField.code labelKey=customField.name checked=true /> 
+					<#assign cpt=cpt+1>
 				</#list>
 			</@formGroup>
 		</@modalBody>
