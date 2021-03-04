@@ -257,6 +257,7 @@ $(function(){
 	$('#${idStartingTime}').datetimepicker({format: 'HH:mm', stepping: 5});
 	$('#${idEndingTime}').datetimepicker({format: 'HH:mm', stepping: 5});
 	
+	<#if action !='commentUpdate'>
 	/* Set current date */
 	$('#${modalId}').on('shown.bs.modal', function(){
 		var workingDate=sessionStorage.getItem( 'appCurrentDate');
@@ -264,6 +265,7 @@ $(function(){
 		$('#${idEndingDate}').val( workingDate );
 		localStorage.setItem( 'commentContext', workingDate );
   	});
+	</#if>
 
 	$("#${idStartingDate}").on("dp.change", function (e) {
 		$('#${idEndingDate}').data("DateTimePicker").minDate(e.date);
