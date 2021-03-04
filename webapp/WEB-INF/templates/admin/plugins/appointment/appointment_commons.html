@@ -257,7 +257,7 @@ $(function(){
 	$('#${idStartingTime}').datetimepicker({format: 'HH:mm', stepping: 5});
 	$('#${idEndingTime}').datetimepicker({format: 'HH:mm', stepping: 5});
 	
-	<#if action !='commentUpdate'>
+	<#if action !='doModifyComment'>
 	/* Set current date */
 	$('#${modalId}').on('shown.bs.modal', function(){
 		var workingDate=sessionStorage.getItem( 'appCurrentDate');
