@@ -24,6 +24,9 @@ var idForm = '${id_form}';
 var columnFormat = 'dddd DD/MM/YYYY';
 var eventUrl = 'jsp/admin/plugins/appointment/ManageAppointments.jsp?view=';
 var events = [
+    <#if comment_events??>
+        <@getComments comment_events />
+    </#if>
     <#if events??>
         <#list events as event>
             <#assign nbAppointments = event.nbPlacesTaken>
@@ -91,9 +94,6 @@ var events = [
                 "type"          : "appointment"
             },
         </#list>
-    </#if>
-    <#if comment_events??>
-        <@getComments comment_events />
     </#if>
 ];
 
