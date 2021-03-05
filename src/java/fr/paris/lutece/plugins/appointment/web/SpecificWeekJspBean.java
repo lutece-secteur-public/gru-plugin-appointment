@@ -57,7 +57,6 @@ import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 
 import fr.paris.lutece.api.user.User;
 import fr.paris.lutece.plugins.appointment.business.appointment.Appointment;
-import fr.paris.lutece.plugins.appointment.business.comment.CommentHome;
 import fr.paris.lutece.plugins.appointment.business.display.Display;
 import fr.paris.lutece.plugins.appointment.business.form.Form;
 import fr.paris.lutece.plugins.appointment.business.planning.ClosingDay;
@@ -236,7 +235,7 @@ public class SpecificWeekJspBean extends AbstractAppointmentFormAndSlotJspBean
         model.put( PARAMETER_MAX_TIME, maxEndingTime );
         model.put( PARAMETER_MIN_DURATION, LocalTime.MIN.plusMinutes( AppointmentUtilities.THIRTY_MINUTES ) );
         model.put( PARAMETER_ID_FORM, nIdForm );
-        model.put( PARAMETER_EVENTS_COMMENTS, CommentService.finListComments( Date.valueOf( dateOfDisplay ), Date.valueOf( endingDateOfDisplay ), nIdForm ) );
+        model.put( PARAMETER_EVENTS_COMMENTS, CommentService.buildCommentDTO( CommentService.finListComments( Date.valueOf( dateOfDisplay ), Date.valueOf( endingDateOfDisplay ), nIdForm ) ));
         addElementsToModel( _appointmentForm, getUser( ), getLocale( ), model );
         model.put( MARK_LOCALE_TINY, getLocale( ) );
         return getPage( MESSAGE_SPECIFIC_WEEK_PAGE_TITLE, TEMPLATE_MANAGE_SPECIFIC_WEEK, model );
