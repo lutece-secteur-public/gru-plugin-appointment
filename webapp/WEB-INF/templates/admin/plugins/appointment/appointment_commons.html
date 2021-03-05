@@ -379,6 +379,7 @@ localStorage.setItem( 'appointmentContext', '${context}' );
 <#macro commentModal update=false >
 <#if update>
 	var formValues = JSON.parse( $(this).attr( 'data-json' ) );
+	localStorage.setItem( 'commentContext', moment(formValues.comment_start).format('DD/MM/YYYY') );
 	tinyMCE.activeEditor.setContent( formValues.comment_text );
 	$( '#modify-comment input[name="id_comment"]' ).val( formValues.id_comment );
 	$( '#modify-comment input[name="startingValidityDate"]' ).val( moment(formValues.comment_start).format('DD/MM/YYYY') );
@@ -695,7 +696,7 @@ $( function(){
 					$(element).addClass('comments').attr( 'id', 'comment-' + event.id ).attr( 'data-json', '{"id_comment":"' + event.id + '", "comment_text":"' + event.title.replace(/"/g,'\\"') + '", "comment_start":"' + event.start.format('YYYY-MM-DD') + '", "comment_start_time":"' + event.start_time + '", "comment_end":"' + event.validity_end + '", "comment_end_time\":"' + event.end_time + '"}' );
 					
 					/* Add comment render */
-					labelEventDate=setLabelComment( event );
+					labelEventDate=setLabelComment( event, '${locale}' );
 
 					json.content = '<p>' + labelEventDate +'</p><p>Créé par <em>' + event.creator_user + '</em> le <date>' + event.creation_date + '</date><hr>'+ event.title + '</p>'  ;
 					var dateDebut='', dateFin='';
