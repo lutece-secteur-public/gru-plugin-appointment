@@ -16,6 +16,7 @@
             <th>#i18n{appointment.manage_comments.columnIdForm}</th>
             <th>#i18n{appointment.manage_comments.columnStartingValidityDate}</th>
             <th>#i18n{appointment.manage_comments.columnEndingValidityDate}</th>
+            <th>#i18n{appointment.manage_comments.columnUserCreator}</th>
             <th>#i18n{appointment.manage_comments.columnComment}</th>
             <th>#i18n{portal.util.labelActions}</th>
         </tr>
@@ -24,13 +25,16 @@
         <tr>
             <input type="hidden" id="id" name="id"/>
             <td>
-			${comment.idForm}
+			${comment.formTitle!}
 			</td>
             <td>
-			${comment.startingValidityDate}
+			${comment.startingValidityDate} ${comment.startingValidityTime!}
 			</td>
             <td>
-			${comment.endingValidityDate}
+			${comment.endingValidityDate} ${comment.endingValidityTime!}
+			</td>
+			<td>
+			${comment.userFirstName!} ${comment.userLastName!}
 			</td>
             <td>
 			${comment.comment}

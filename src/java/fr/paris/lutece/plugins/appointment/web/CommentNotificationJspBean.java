@@ -35,14 +35,9 @@ package fr.paris.lutece.plugins.appointment.web;
 
 import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
-import fr.paris.lutece.api.user.User;
 import fr.paris.lutece.plugins.appointment.business.comment.CommentNotificationConfig;
 import fr.paris.lutece.plugins.appointment.business.comment.CommentNotificationHome;
-import fr.paris.lutece.plugins.appointment.service.AppointmentResourceIdService;
-import fr.paris.lutece.plugins.appointment.web.dto.AppointmentFormDTO;
 import fr.paris.lutece.portal.service.admin.AccessDeniedException;
-import fr.paris.lutece.portal.service.admin.AdminUserService;
-import fr.paris.lutece.portal.service.rbac.RBACService;
 import fr.paris.lutece.portal.util.mvc.admin.MVCAdminJspBean;
 import fr.paris.lutece.portal.util.mvc.admin.annotations.Controller;
 import fr.paris.lutece.portal.util.mvc.commons.annotations.Action;
@@ -109,13 +104,7 @@ public class CommentNotificationJspBean extends MVCAdminJspBean
     @View( value = VIEW_NOTIFIACTION_CONFIG, defaultView = true )
     public String getNotificationCommentConfig( HttpServletRequest request ) throws AccessDeniedException
     {
-    	_commentNotificationConfig = null;
-    	if ( !RBACService.isAuthorized( AppointmentFormDTO.RESOURCE_TYPE_CREATE, "0", AppointmentResourceIdService.PERMISSION_MODIFY_FORM,
-                (User) AdminUserService.getAdminUser( request ) ) )
-        {
-            throw new AccessDeniedException( AppointmentResourceIdService.PERMISSION_MODIFY_FORM );
-        }
-    
+    	_commentNotificationConfig = null;    	
         Map<String, Object> model =getModel();
         model.put( MARK_LIST_CONFIG, CommentNotificationHome.loadCommentNotificationConfig( ) );
         return getPage( PROPERTY_PAGE_TITLE_MANAGE_COMMENTS, TEMPLATE_MANAGE_NOTIFICATION_CONFIG, model );
@@ -132,12 +121,7 @@ public class CommentNotificationJspBean extends MVCAdminJspBean
     @View( value = VIEW_MODIFY_NOTIFIACTION_CONFIG  )
     public String getModifyNotificationCommentConfig( HttpServletRequest request ) throws AccessDeniedException
     {
-    	String type= request.getParameter( PARAMETER_TYPE );
-    	if ( !RBACService.isAuthorized( AppointmentFormDTO.RESOURCE_TYPE_CREATE, "0", AppointmentResourceIdService.PERMISSION_MODIFY_FORM,
-                (User) AdminUserService.getAdminUser( request ) ) )
-        {
-            throw new AccessDeniedException( AppointmentResourceIdService.PERMISSION_MODIFY_FORM );
-        }
+    	String type= request.getParameter( PARAMETER_TYPE );    	
         _commentNotificationConfig = CommentNotificationHome.loadCommentNotificationConfigByType( type );        
         Map<String, Object> model =getModel();
         model.put( MARK_CONFIG, _commentNotificationConfig );
@@ -155,11 +139,6 @@ public class CommentNotificationJspBean extends MVCAdminJspBean
     @Action( ACTION_DO_UPDATE_NOTIFICATION_CONFIG )
     public String doUpdateNotificationCommentConfig( HttpServletRequest request ) throws AccessDeniedException
     {
-    	if ( !RBACService.isAuthorized( AppointmentFormDTO.RESOURCE_TYPE_CREATE, "0", AppointmentResourceIdService.PERMISSION_MODIFY_FORM,
-                (User) AdminUserService.getAdminUser( request ) ) )
-        {
-            throw new AccessDeniedException( AppointmentResourceIdService.PERMISSION_MODIFY_FORM );
-        }
         populate( _commentNotificationConfig, request );
         CommentNotificationHome.update(_commentNotificationConfig);
         addInfo( INFO_COMMENT_UPDATED, getLocale( ) );

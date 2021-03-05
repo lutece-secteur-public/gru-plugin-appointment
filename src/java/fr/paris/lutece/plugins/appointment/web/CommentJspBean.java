@@ -48,7 +48,9 @@ import fr.paris.lutece.plugins.appointment.business.comment.Comment;
 import fr.paris.lutece.plugins.appointment.business.comment.CommentHome;
 import fr.paris.lutece.plugins.appointment.service.AppointmentResourceIdService;
 import fr.paris.lutece.plugins.appointment.service.CommentService;
+import fr.paris.lutece.plugins.appointment.service.FormService;
 import fr.paris.lutece.plugins.appointment.web.dto.AppointmentFormDTO;
+import fr.paris.lutece.plugins.appointment.web.dto.CommentDTO;
 import fr.paris.lutece.portal.service.admin.AccessDeniedException;
 import fr.paris.lutece.portal.service.mailinglist.AdminMailingListService;
 import fr.paris.lutece.portal.service.message.AdminMessage;
@@ -144,7 +146,7 @@ public class CommentJspBean extends AbstractAppointmentFormAndSlotJspBean
     public String getManageComment( HttpServletRequest request )
     {
         _comment = null;
-        List<Comment> listComments = CommentHome.getCommentsList( );
+        List<CommentDTO> listComments = CommentService.buildCommentDTO( CommentHome.getCommentsList( ) );
         Map<String, Object> model = getPaginatedListModel( request, MARK_COMMENT_LIST, listComments, JSP_MANAGE_COMMENTS );
 
         return getPage( PROPERTY_PAGE_TITLE_MANAGE_COMMENTS, TEMPLATE_MANAGE_COMMENT, model );

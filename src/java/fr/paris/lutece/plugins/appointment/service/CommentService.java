@@ -34,6 +34,7 @@
 package fr.paris.lutece.plugins.appointment.service;
 
 import java.sql.Date;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
@@ -48,6 +49,7 @@ import fr.paris.lutece.plugins.appointment.business.comment.CommentNotificationC
 import fr.paris.lutece.plugins.appointment.business.comment.CommentNotificationConfig.NotificationType;
 import fr.paris.lutece.plugins.appointment.business.comment.CommentNotificationHome;
 import fr.paris.lutece.plugins.appointment.business.form.Form;
+import fr.paris.lutece.plugins.appointment.web.dto.CommentDTO;
 import fr.paris.lutece.portal.business.mailinglist.Recipient;
 import fr.paris.lutece.portal.business.user.AdminUser;
 import fr.paris.lutece.portal.business.user.AdminUserHome;
@@ -188,6 +190,43 @@ public class CommentService
             }
     	}
                  
+    }
+    
+    public static List<CommentDTO> buildCommentDTO( List<Comment> listComment ){
+    	
+    	List<CommentDTO> listComments= new ArrayList<>( );
+    	List<Form> listFom= FormService.findAllForms( );
+    	Collection<AdminUser> listAdminUser= AdminUserHome.findUserList( );
+    	AdminUser user = null;
+    	Form frm = null;
+    	for( Comment comment: listComment) 
+    	{
+    		CommentDTO commentDTO= new CommentDTO();
+    		commentDTO.setId(comment.getId( ));
+    		commentDTO.setComment(comment.getComment( ));
+    		commentDTO.setCreationDate(comment.getCreationDate());
+    		commentDTO.setCreatorUserName(comment.getCreatorUserName( ));
+    		commentDTO.setEndingValidityDate(comment.getEndingValidityDate( ));
+    		commentDTO.setEndingValidityTime(comment.getEndingValidityTime( ));
+    		commentDTO.setIdForm(comment.getIdForm( ));
+    		commentDTO.setStartingValidityDate(comment.getStartingValidityDate( ));
+    		commentDTO.setStartingValidityTime(comment.getStartingValidityTime( ));
+    		
+    		frm= listFom.stream().filter( form -> form.getIdForm()==comment.getIdForm( )).findAny().orElse( null );
+    		user= listAdminUser.stream().filter(usr ->usr.getAccessCode().equals(comment.getCreatorUserName( ))).findAny().orElse( null );
+    		if(frm != null) 
+    		{
+    			commentDTO.setFormTitle(frm.getTitle( ));
+    		}
+    		if( user != null) 
+    		{
+    			commentDTO.setUserFirstName(user.getFirstName( ));
+    			commentDTO.setUserLastName(user.getLastName( ));
+    		}
+    		listComments.add( commentDTO );
+    	}
+    	
+    	return listComments;
     }
     /**
      * Get a model to generate email content for a given comment and a given task.
