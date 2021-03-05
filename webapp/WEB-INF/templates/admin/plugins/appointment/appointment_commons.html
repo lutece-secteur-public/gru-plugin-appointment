@@ -520,7 +520,8 @@ $( function(){
 		eventClick: function( calEvent, jsEvent, view ){
 		<#if showComments>
 			// Comments
-			if( calEvent.type = "comment" && calEvent.creator_user === '${permission_access_code}' ){
+			var isCommentModerator=${permission_moderate_comment};
+			if( calEvent.type = "comment" && ( calEvent.creator_user === '${permission_access_code}' || isCommentModerator ) ){
 				<@commentModal update=true />
 			}
 		<#else>
