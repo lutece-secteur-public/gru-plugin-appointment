@@ -410,7 +410,7 @@ public class CommentJspBean extends AbstractAppointmentFormAndSlotJspBean
     public boolean validateDateStartEndValidity( Comment comment ) 
     {
     	return !( comment.getStartingValidityDate().isAfter(comment.getEndingValidityDate( )) 
-    			|| ( comment.getStartingValidityTime() != null && comment.getStartingValidityTime().isAfter(comment.getEndingValidityTime( ))));
+    			|| ( comment.getStartingValidityDate().isEqual(comment.getEndingValidityDate( ) ) && comment.getStartingValidityTime() != null && comment.getStartingValidityTime().isAfter(comment.getEndingValidityTime( ))));
 
     }
 }
