@@ -41,6 +41,7 @@ import java.util.stream.Collectors;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 
 import fr.paris.lutece.plugins.appointment.business.appointment.Appointment;
@@ -54,9 +55,11 @@ import fr.paris.lutece.plugins.appointment.service.listeners.AppointmentListener
 import fr.paris.lutece.plugins.appointment.service.listeners.SlotListenerManager;
 import fr.paris.lutece.plugins.appointment.web.dto.AppointmentDTO;
 import fr.paris.lutece.plugins.appointment.web.dto.AppointmentFilterDTO;
-
+import fr.paris.lutece.plugins.genericattributes.business.Response;
+import fr.paris.lutece.plugins.genericattributes.business.ResponseHome;
 import fr.paris.lutece.portal.business.user.AdminUser;
 import fr.paris.lutece.portal.business.user.AdminUserHome;
+import fr.paris.lutece.portal.service.admin.AdminUserService;
 import fr.paris.lutece.portal.service.util.AppException;
 import fr.paris.lutece.portal.service.util.AppLogService;
 import fr.paris.lutece.portal.service.util.AppPropertiesService;
@@ -440,6 +443,27 @@ public final class AppointmentService
         return buildAppointmentDTO( appointment );
     }
 
+    /**
+     * Update an appointment DTO in database
+     * @param nIdappointment the id appointment
+     * @param user the user
+     * @param listResponse the listResponse 
+     * @param deleteBoOnly  if the action is Bo only
+     */
+    public static void updateAppointmentDTO( int nIdappointment, User user, List<Response> listResponse, boolean deleteBoOnly   )
+    {
+        UserHome.update( user );
+        AppointmentResponseService.removeResponsesByIdAppointmentAndBoOnly( nIdappointment , deleteBoOnly );
+        if ( CollectionUtils.isNotEmpty( listResponse ) )
+        {
+            for ( Response response : listResponse )
+            {
+                ResponseHome.create( response );
+                AppointmentResponseService.insertAppointmentResponse( nIdappointment, response.getIdResponse( ) );
+            }
+        }
+        AppointmentListenerManager.notifyListenersAppointmentUpdated( nIdappointment );
+    }
     /**
      * Update an appointment in database
      * 
