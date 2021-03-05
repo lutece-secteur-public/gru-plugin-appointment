@@ -314,8 +314,11 @@ public class CommentJspBean extends AbstractAppointmentFormAndSlotJspBean
         {
             addError( INFO_COMMENT_ERROR, getLocale( ) );
         }
-        CommentService.updateAndNotifyMailingList(_comment, nIdMailingList, getLocale( ));
-        addInfo( INFO_COMMENT_UPDATED, getLocale( ) );
+        else
+        {
+        	CommentService.updateAndNotifyMailingList(_comment, nIdMailingList, getLocale( ));
+        	addInfo( INFO_COMMENT_UPDATED, getLocale( ) );
+        }
             
         if ( StringUtils.isNotBlank( strReferer ) )
         {
