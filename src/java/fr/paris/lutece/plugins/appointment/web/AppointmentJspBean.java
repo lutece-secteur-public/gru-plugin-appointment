@@ -77,6 +77,7 @@ import fr.paris.lutece.plugins.appointment.service.AppointmentResourceIdService;
 import fr.paris.lutece.plugins.appointment.service.AppointmentResponseService;
 import fr.paris.lutece.plugins.appointment.service.AppointmentService;
 import fr.paris.lutece.plugins.appointment.service.AppointmentUtilities;
+import fr.paris.lutece.plugins.appointment.service.CommentService;
 import fr.paris.lutece.plugins.appointment.service.DisplayService;
 import fr.paris.lutece.plugins.appointment.service.EntryService;
 import fr.paris.lutece.plugins.appointment.service.FormMessageService;
@@ -464,7 +465,7 @@ public class AppointmentJspBean extends MVCAdminJspBean
         model.put( PARAMETER_DAY_OF_WEEK, listDayOfWeek );
         model.put( PARAMETER_EVENTS, listSlot );
         model.put( PARAMETER_EVENTS_COMMENTS,
-                CommentHome.selectCommentsList( Date.valueOf( startingDateOfDisplay ), Date.valueOf( endingDateOfDisplay ), nIdForm ) );
+        		CommentService.finListComments( Date.valueOf( startingDateOfDisplay ), Date.valueOf( endingDateOfDisplay ), nIdForm ) );
         model.put( PARAMETER_MIN_TIME, minStartingTime );
         model.put( PARAMETER_MAX_TIME, maxEndingTime );
         model.put( PARAMETER_MIN_DURATION, LocalTime.MIN.plusMinutes( AppointmentUtilities.THIRTY_MINUTES ) );
