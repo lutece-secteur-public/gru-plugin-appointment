@@ -79,7 +79,6 @@ public class CommentJspBean extends AbstractAppointmentFormAndSlotJspBean
     /**
      * JSP of this JSP Bean
      */
-    public static final String JSP_MANAGE_APPOINTMENT_SLOTS = "ManageAppointmentSlots.jsp";
     public static final String JSP_MANAGE_COMMENTS = "Comments.jsp";
 
     // Templates
@@ -121,7 +120,7 @@ public class CommentJspBean extends AbstractAppointmentFormAndSlotJspBean
     private static final String ACTION_CONFIRM_REMOVE_COMMENT = "confirmRemoveComment";
 
     // Properties
-    private static final String PROPERTY_PAGE_TITLE_MANAGE_COMMENTS = "appointment-comment.manage_comments.pageTitle";
+    private static final String PROPERTY_PAGE_TITLE_MANAGE_COMMENTS = "appointment.manage_comments.pageTitle";
     private static final String MESSAGE_CONFIRM_REMOVE_COMMENT = "appointment.message.confirmRemoveComment";
 
     // Infos
@@ -146,7 +145,7 @@ public class CommentJspBean extends AbstractAppointmentFormAndSlotJspBean
     {
         _comment = null;
         List<Comment> listComments = CommentHome.getCommentsList( );
-        Map<String, Object> model = getPaginatedListModel( request, MARK_COMMENT_LIST, listComments, JSP_MANAGE_APPOINTMENT_SLOTS );
+        Map<String, Object> model = getPaginatedListModel( request, MARK_COMMENT_LIST, listComments, JSP_MANAGE_COMMENTS );
 
         return getPage( PROPERTY_PAGE_TITLE_MANAGE_COMMENTS, TEMPLATE_MANAGE_COMMENT, model );
     }
@@ -347,8 +346,8 @@ public class CommentJspBean extends AbstractAppointmentFormAndSlotJspBean
         }
         UrlItem url = new UrlItem( getActionUrl( ACTION_DO_REMOVE_COMMENT ) );
         url.addParameter( PARAMETER_ID_COMMENT, nId );
-        url.addParameter( REFERER, request.getHeader( REFERER ) );
         url.addParameter( PARAMETER_ID_MAILING_LIST, request.getParameter( PARAMETER_ID_MAILING_LIST ) );
+        url.addParameter( REFERER, request.getHeader( REFERER ) );
 
         String strMessageUrl = AdminMessageService.getMessageUrl( request, MESSAGE_CONFIRM_REMOVE_COMMENT, url.getUrl( ), AdminMessage.TYPE_CONFIRMATION );
 

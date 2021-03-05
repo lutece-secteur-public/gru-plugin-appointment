@@ -168,7 +168,6 @@ $('.content-header h1').html("<a href=\"jsp/admin/plugins/appointment/ManageAppo
 	<@modalHeader modalTitle='#i18n{appointment.create_comment.pageTitle}' />
 	<@modalBody>
 		<@tform action='jsp/admin/plugins/appointment/Comments.jsp' id='commentUpdate'>
-    	<@input type='hidden' name='action' value='${action!}' />
 		<@input type='hidden' name='id_form' value='${idForm!}' />
 		<@input type='hidden' name='id_comment' id='id_comment' />
 		<@row>
@@ -238,7 +237,8 @@ $('.content-header h1').html("<a href=\"jsp/admin/plugins/appointment/ManageAppo
 			<@row>
 				<@columns offsetSm=1 sm=10 params=' style="display:flex;justify-content: space-around" '>
 					<@button type='submit' name='action_${action}' buttonIcon='save' title='#i18n{portal.util.labelValidate}' /> 
-					<@aButton color='danger' id='commentDelete' href='jsp/admin/plugins/appointment/Comments.jsp?action=confirmRemoveComment&idMailingList=0&id_comment=' buttonIcon='trash' title='#i18n{portal.util.labelDelete}' class="btn btn-danger" />
+					<@button type='submit' id='commentDelete'  name='action_confirmRemoveComment' buttonIcon='trash' title='#i18n{portal.util.labelDelete}'  class='btn btn-danger' /> 
+					
 					<@button type='button' params='data-dismiss="modal"' title='#i18n{portal.util.labelCancel}' buttonIcon='times' color='default' />
 				</@columns>
 			</@row>
@@ -386,8 +386,6 @@ localStorage.setItem( 'appointmentContext', '${context}' );
 	$( '#modify-comment input[name="endingValidityDate"]' ).val( moment(formValues.comment_end).format('DD/MM/YYYY')  );
 	$( '#modify-comment input[name="startingValidityTime"]' ).val( formValues.comment_start_time );
 	$( '#modify-comment input[name="endingValidityTime"]' ).val( formValues.comment_end_time );
-	var fAction=$( '#commentDelete' ).attr( 'href' );
-	$( '#modify-comment #commentDelete' ).attr( 'href', fAction + formValues.id_comment );
 </#if>
 $( '#modify-comment' ).modal('show');
 </#macro> 
