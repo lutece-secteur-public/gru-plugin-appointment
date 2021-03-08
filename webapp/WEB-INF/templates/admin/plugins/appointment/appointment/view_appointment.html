@@ -55,10 +55,7 @@
 							</#if>
 						</@staticText>
 					</@formGroup>						
-					<@formGroup labelKey='#i18n{portal.util.labelActions}'  hideLabel=['all']>
-						<#if rightChangeDate?? && rightChangeDate && !appointment.isCancelled>
-							<@aButton href='jsp/admin/plugins/appointment/ManageAppointments.jsp?view=viewCalendarManageAppointment&id_form=${form.idForm}&id_appointment=${appointment.idAppointment}&nbPlacesToTake=${appointment.nbBookedSeats!}' title='#i18n{appointment.manageAppointments.labelModifyDateAppointment}' hideTitle=['xs'] buttonIcon='calendar' /> 
-						</#if>							
+					<@formGroup labelKey='#i18n{portal.util.labelActions}'  hideLabel=['all']>							
 						<#if appointment.listWorkflowActions?? && appointment.listWorkflowActions?size &gt; 0>
 							<#list appointment.listWorkflowActions as action>
 								<@aButton href='jsp/admin/plugins/appointment/ManageAppointments.jsp?view=viewWorkflowActionForm&id_action=${action.id}&amp;id_appointment=${appointment.idAppointment}'>
