@@ -400,6 +400,7 @@ $( '#modify-comment' ).modal('show');
 	"start_time" : "${comment_event.startingValidityTime!}",
 	"end_time" : "${comment_event.endingValidityTime!}",
 	"id" : "${comment_event.id}",
+	"creator_name" : "${comment_event.userLastName!''} ${comment_event.userFirstName!''}",
 	"creator_user" : "${comment_event.creatorUserName!''}",
 	"creation_date" : "${comment_event.creationDate?date.xs!''}",
 	"type" : "comment",
@@ -696,8 +697,8 @@ $( function(){
 					
 					/* Add comment render */
 					labelEventDate=setLabelComment( event, '${locale}' );
-
-					json.content = '<p>' + labelEventDate +'</p><p>Créé par <em>' + event.creator_user + '</em> le <date>' + event.creation_date + '</date><hr>'+ event.title + '</p>'  ;
+					var creator = event.creator_name.trim() !== '' ? event.creator_name : event.creator_user;
+					json.content = '<p>' + labelEventDate +'</p><p>Créé par <em>' + creator + '</em> le <date>' + event.creation_date + '</date><hr>'+ event.title + '</p>'  ;
 					var dateDebut='', dateFin='';
 					if ( ! ( event.start_time == null || event.start_time == undefined || event.start_time == '00:00' ) ){
 						if( event.start.format('DDMM') != moment(event.validity_end).format('DDMM') ){
