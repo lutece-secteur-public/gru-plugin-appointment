@@ -55,9 +55,12 @@ input[type="color"]:hover{
 
 .isSpecific{
     font-family:Arial, Helvetica, sans-serif;
-    font-weight: 700;
-    font-style: italic;
-}
+    /* font-weight: 700;
+    font-style: italic;*/
+    background-color: #DDD !important;
+    border-radius: 50% !important;
+    padding: 2px !important;
+} 
 
 /* Form */
 .viewTextarea{
