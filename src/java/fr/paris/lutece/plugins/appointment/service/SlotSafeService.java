@@ -76,7 +76,6 @@ import fr.paris.lutece.plugins.appointment.web.dto.AppointmentDTO;
 import fr.paris.lutece.plugins.genericattributes.business.Response;
 import fr.paris.lutece.plugins.genericattributes.business.ResponseHome;
 import fr.paris.lutece.portal.business.user.AdminUser;
-import fr.paris.lutece.portal.service.admin.AdminAuthenticationService;
 import fr.paris.lutece.portal.service.admin.AdminUserService;
 import fr.paris.lutece.portal.service.util.AppLogService;
 import fr.paris.lutece.portal.service.workflow.WorkflowService;
@@ -440,8 +439,6 @@ public final class SlotSafeService
                           appointment.getIdActionReported( ), form.getIdForm( ), request, locale, adminUser == null , adminUser );
         
              }
-             WorkflowService.getInstance( ).executeActionAutomatic( appointment.getIdAppointment( ), Appointment.APPOINTMENT_RESOURCE_TYPE,
-                     form.getIdWorkflow( ), form.getIdForm( ), null );
          }
     }
     /**
@@ -986,7 +983,7 @@ public final class SlotSafeService
             for ( AppointmentSlot appointmentSlot : oldAppointment.getListAppointmentSlot( ) )
             {
             	Lock lock = getLockOnSlot( appointmentSlot.getIdSlot( ) );
-                if ( lock.tryLock( 2, TimeUnit.SECONDS ) )
+                if ( lock.tryLock( 3, TimeUnit.SECONDS ) )
                 {
                     listLock.add( lock );
                 }
@@ -1012,7 +1009,7 @@ public final class SlotSafeService
 	          else
 	          {              
 	            	Lock lock = getLockOnSlot( appSlot.getIdSlot( ) );
-	                if ( lock.tryLock( 2, TimeUnit.SECONDS ) )
+	                if ( lock.tryLock( 3, TimeUnit.SECONDS ) )
 	                {
 	                    listLock.add( lock );
 	                }

@@ -206,6 +206,18 @@ public final class AppointmentHome
     {
         return _dao.findByFilter( appointmentFilter, _plugin );
     }
+    /**
+     * Find a list of appointments by id category and mail
+     * @param nIdCategory the id category
+     * @param mail the mail
+     * @return list of appointments
+     */
+    public static List<Appointment> findByMailAndCategory(int nIdCategory, String mail )
+    {
+        return _dao.findByCategoryAndMail(nIdCategory, mail, _plugin);
+    }
+    
+    
     
     /**
      * returns a list of all appointment ids.

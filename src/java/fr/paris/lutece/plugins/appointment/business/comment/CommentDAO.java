@@ -52,6 +52,7 @@ public final class CommentDAO implements ICommentDAO
     private static final String SQL_QUERY_SELECT = "SELECT id_comment, id_form, starting_validity_date, starting_validity_time, ending_validity_date, ending_validity_time, comment, comment_creation_date, comment_user_creator FROM appointment_comment WHERE id_comment = ?";
     private static final String SQL_QUERY_INSERT = "INSERT INTO appointment_comment ( id_form, starting_validity_date, starting_validity_time, ending_validity_date, ending_validity_time, comment, comment_creation_date, comment_user_creator ) VALUES ( ?, ?, ?, ?, ?, ?, ?, ? ) ";
     private static final String SQL_QUERY_DELETE = "DELETE FROM appointment_comment WHERE id_comment = ? ";
+    private static final String SQL_QUERY_DELETE_BY_ID_FORM = "DELETE FROM appointment_comment WHERE id_form = ? ";
     private static final String SQL_QUERY_UPDATE = "UPDATE appointment_comment SET id_comment = ?, id_form = ?, starting_validity_date = ?, starting_validity_time = ?, ending_validity_date = ?, ending_validity_time = ?, comment = ?, comment_creation_date = ?, comment_user_creator = ? WHERE id_comment = ?";
     private static final String SQL_QUERY_SELECTALL = "SELECT id_comment, id_form, starting_validity_date, starting_validity_time, ending_validity_date, ending_validity_time, comment, comment_creation_date, comment_user_creator FROM appointment_comment";
     private static final String SQL_QUERY_SELECTALL_ID = "SELECT id_comment FROM appointment_comment";
@@ -148,6 +149,18 @@ public final class CommentDAO implements ICommentDAO
         try ( DAOUtil daoUtil = new DAOUtil( SQL_QUERY_DELETE, plugin ) )
         {
             daoUtil.setInt( 1, nKey );
+            daoUtil.executeUpdate( );
+        }
+    }
+    /**
+     * {@inheritDoc }
+     */
+    @Override
+    public void deleteByIdFom( int nIdFom, Plugin plugin )
+    {
+        try ( DAOUtil daoUtil = new DAOUtil( SQL_QUERY_DELETE_BY_ID_FORM, plugin ) )
+        {
+            daoUtil.setInt( 1, nIdFom );
             daoUtil.executeUpdate( );
         }
     }

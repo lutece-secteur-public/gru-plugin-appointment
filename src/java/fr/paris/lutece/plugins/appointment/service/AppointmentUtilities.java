@@ -438,17 +438,9 @@ public final class AppointmentUtilities
         	Category category= CategoryService.findCategoryById(form.getIdCategory( ));
         	if( category != null && category.getNbMaxAppointmentsPerUser( ) > 0 ) 
         	{
-        		List<Integer> listForms = FormHome.findByCategory(category.getIdCategory( )).stream( ).map( frm -> frm.getIdForm() ).collect( Collectors.toList( ) );
-        		LocalDateTime now= LocalDateTime.now( );
-	            // Get the date of the future appointment
-	            AppointmentFilterDTO filter = new AppointmentFilterDTO( );
-	            filter.setEmail( strEmail );
-	            filter.setStatus( 0 );
-	            filter.setStartingDateOfSearch( Date.valueOf( now.toLocalDate( ) ) );
-	            filter.setStartingTimeOfSearch(now.toLocalTime( ).toString( ));
-	            List<AppointmentDTO> listAppointmentsDTO = AppointmentService.findListAppointmentsDTOByFilter( filter );
-	            //delete appointments that do not belong to the selected category
-	            listAppointmentsDTO.removeIf(appt -> !listForms.contains( appt.getIdForm( )));
+        		LocalDateTime now= LocalDateTime.now( );	         
+        		List<AppointmentDTO> listAppointmentsDTO = AppointmentService.findAppointmentByMailAndCategory(category.getIdCategory(), strEmail);
+        		listAppointmentsDTO.removeIf(appt -> appt.getEndingDateTime().isBefore(now) || appt.getIsCancelled( ));
 	            // If we modify an appointment, we remove the
 	            // appointment that we currently edit
 	            if ( appointmentDTO.getIdAppointment( ) != 0 )

@@ -96,6 +96,16 @@ public final class CommentHome
     {
         _dao.delete( nKey, _plugin );
     }
+    /**
+     * Remove the comments whose identifier of form is specified in parameter
+     * 
+     * @param nIdForm
+     *            The form Id
+     */
+    public static void removeByIdFom( int nIdForm )
+    {
+        _dao.deleteByIdFom( nIdForm, _plugin );
+    }
 
     /**
      * Returns an instance of a comment whose identifier is specified in parameter

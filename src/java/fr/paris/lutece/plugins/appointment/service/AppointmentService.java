@@ -261,6 +261,21 @@ public final class AppointmentService
         }
         return listAppointmentsDTO;
     }
+   /**
+    * Find a list of appointments by id category and mail
+    * @param nIdCategory the id category
+    * @param mail the mail
+    * @return list of appointments
+    */
+    public static List<AppointmentDTO> findAppointmentByMailAndCategory( int nIdCategory, String mail )
+    {
+        List<AppointmentDTO> listAppointmentsDTO = new ArrayList<>( );
+        for ( Appointment appointment : AppointmentHome.findByMailAndCategory(nIdCategory, mail ))
+        {
+            listAppointmentsDTO.add( buildAppointmentDTO( appointment ) );
+        }
+        return listAppointmentsDTO;
+    }
 
     /**
      * Find a list of appointments matching the filter
