@@ -399,7 +399,7 @@ $( '#modify-comment' ).modal('show');
 	"validity_end" : "${comment_event.endingValidityDate}",
 	"start_time" : "${comment_event.startingValidityTime!}",
 	"end_time" : "${comment_event.endingValidityTime!}",
-	"id" : "${comment_event.id}",
+	"id" : "C${comment_event.id}",
 	"creator_name" : "${comment_event.userLastName!''} ${comment_event.userFirstName!''}",
 	"creator_user" : "${comment_event.creatorUserName!''}",
 	"creation_date" : "${comment_event.creationDate?date.xs!''}",
