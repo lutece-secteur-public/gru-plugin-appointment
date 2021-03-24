@@ -45,9 +45,10 @@ input[type="color"]:hover{
 }
 
 /* Year Calendar */
-.calendar{
-    overflow: hidden;
+#calendar.calendar{
+    min-height: 105vh;
 }
+
 
 .calendar-context-menu .item .content {
     min-height: auto;
