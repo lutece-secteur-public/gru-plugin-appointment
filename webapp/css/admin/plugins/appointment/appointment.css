@@ -49,6 +49,9 @@ input[type="color"]:hover{
     min-height: 105vh;
 }
 
+.calendar .months-container .month-container {
+    height: 230px;
+}
 
 .calendar-context-menu .item .content {
     min-height: auto;
