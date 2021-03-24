@@ -252,10 +252,25 @@ $(function(){
 
 	$('#${idStartingDate}').datetimepicker({locale: '${locale}', format: 'DD/MM/YYYY'});
 	$('#${idStartingDate}').val( moment().format('DD/MM/YYYY') );
+	$('#${idStartingDate}Group').click(function(event){
+		$('#${idStartingDate}').data("DateTimePicker").show();
+	});
+
 	$('#${idEndingDate}').datetimepicker({locale: '${locale}', format: 'DD/MM/YYYY', useCurrent: false});
 	$('#${idEndingDate}').val( moment().format('DD/MM/YYYY') );
+	$('#${idEndingDate}Group').click(function(event){
+		$('#${idEndingDate}').data("DateTimePicker").show();
+	});
+
 	$('#${idStartingTime}').datetimepicker({format: 'HH:mm', stepping: 5});
+	$('#${idStartingTime}Group').click(function(event){
+		$('#${idStartingTime}').data("DateTimePicker").show();
+	});
+
 	$('#${idEndingTime}').datetimepicker({format: 'HH:mm', stepping: 5});
+	$('#${idEndingTime}Group').click(function(event){
+		$('#${idEndingTime}').data("DateTimePicker").show();
+	});
 	
 	<#if action !='doModifyComment'>
 	/* Set current date */
