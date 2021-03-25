@@ -1,54 +1,34 @@
-
-<#include "manageappointmentcomment_tabs.html" />
-<@tabs2 tab="comment" />
-
-<@box>
-	<@boxHeader title='#i18n{appointment.manage_comment.title}' boxTools=true>
-		
-	</@boxHeader>
-	<@boxBody>    
-    <@messages infos=infos />
-    <@paginationAdmin paginator=paginator combo=1 />
-    <div class="clearfix"></div>
-    <@table>
-        <tr>
-            <input type="hidden" id="id" name="id"/>
-            <th>#i18n{appointment.manage_comments.columnIdForm}</th>
-            <th>#i18n{appointment.manage_comments.columnStartingValidityDate}</th>
-            <th>#i18n{appointment.manage_comments.columnEndingValidityDate}</th>
-            <th>#i18n{appointment.manage_comments.columnUserCreator}</th>
-            <th>#i18n{appointment.manage_comments.columnComment}</th>
-            <th>#i18n{portal.util.labelActions}</th>
-        </tr>
-        <@tableHeadBodySeparator />
+<@tabs>
+    <@tabsComment tab='comment' />
+    <@tabContent>
+        <@messages infos=infos />
+        <@table>
+            <tr>
+                <th>#i18n{appointment.manage_comments.columnIdForm}</th>
+                <th>#i18n{appointment.manage_comments.columnStartingValidityDate}</th>
+                <th>#i18n{appointment.manage_comments.columnEndingValidityDate}</th>
+                <th>#i18n{appointment.manage_comments.columnUserCreator}</th>
+                <th>#i18n{appointment.manage_comments.columnComment}</th>
+                <th>#i18n{portal.util.labelActions}</th>
+            </tr>
+            <@tableHeadBodySeparator />
             <#list comment_list as comment >
-        <tr>
-            <input type="hidden" id="id" name="id"/>
-            <td>
-			${comment.formTitle!}
-			</td>
-            <td>
-			${comment.startingValidityDate} ${comment.startingValidityTime!}
-			</td>
-            <td>
-			${comment.endingValidityDate} ${comment.endingValidityTime!}
-			</td>
-			<td>
-			${comment.userFirstName!} ${comment.userLastName!}
-			</td>
-            <td>
-			${comment.comment}
-			</td>
-        <td>
-						
-			<@aButton href='jsp/admin/plugins/appointment/Comments.jsp?action=confirmRemoveComment&id_comment=${comment.id}&idMailingList=-1' title='#i18n{portal.util.labelDelete}' buttonIcon='trash' hideTitle=['all'] color='btn-danger'  />
-
-        </td>
-        </tr>
-        </#list>
-    </@table>
-
-    <@paginationAdmin paginator=paginator />
-
-  </@boxBody>
-</@box>
+            <tr>
+                <td>${comment.formTitle!} </td>
+                <td>${comment.startingValidityDate} ${comment.startingValidityTime!}</td>
+                <td>${comment.endingValidityDate} ${comment.endingValidityTime!}</td>
+                <td>${comment.userFirstName!} ${comment.userLastName!}</td>
+                <td>${comment.comment}</td>
+                <td>
+                    <@aButton href='jsp/admin/plugins/appointment/Comments.jsp?action=confirmRemoveComment&id_comment=${comment.id}&idMailingList=-1' title='#i18n{portal.util.labelDelete}' buttonIcon='trash' hideTitle=['all'] color='btn-danger'  />
+                </td>
+            </tr>
+            </#list>
+        </@table>
+        <@paginationAdmin paginator=paginator combo=1 />
+    </@tabContent>
+</@tabs>
+<script>
+/* Add Form title */
+$('.content-header h1').html("<a href=\"jsp/admin/plugins/appointment/Comments.jsp?plugin_name=appointment\" title=\"#i18n{appointment.manage_comments.pageTitle}\">#i18n{appointment.manage_comments.pageTitle}</a>");
+</script>

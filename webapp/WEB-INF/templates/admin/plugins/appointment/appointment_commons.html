@@ -323,6 +323,15 @@ $(function(){
 </#if>
 </#macro>
 
+<#macro tabsComment tab>
+<@tabList params=' style="margin-top:15px"'>
+	<#if tab='comment'><#assign active = true /><#else><#assign active = false /></#if>
+	<@tabLink href='jsp/admin/plugins/appointment/Comments.jsp?view=manageComment' title='#i18n{appointment.manage_comments.title}' active=active />
+	<#if tab='notif'><#assign active = true /><#else><#assign active = false /></#if>
+	<@tabLink href='jsp/admin/plugins/appointment/NotificationCommentConfig.jsp?view=notificationConfig' title='#i18n{appointment.task_notify_appointment_comment_config.title}' active=active />
+</@tabList>
+</#macro>
+
 <#macro appointmentTabList tab form tabcontext>
 <#if tabcontext='slot'>
 	<#if tab='day'><#assign active = true /><#else><#assign active = false /></#if>
