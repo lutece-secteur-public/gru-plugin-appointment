@@ -82,6 +82,10 @@
     border-color:rgb(233, 250, 0);
 }
 
+.comments.allday{
+    background-color: #fff;
+}
+
 .comments:hover{
     font-weight: 700;
 }
