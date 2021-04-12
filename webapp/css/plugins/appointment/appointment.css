@@ -285,8 +285,10 @@ td.appointment-row40 {
 /* */
  .messageContainer:empty{ display: none }
 
- /* RENDEZVOUS-637 : Imrove sensitive front zone for datepicker */
- .datepicker-dropdown.datepicker-orient-top::after ,
- .datepicker-dropdown.datepicker-orient-top::before {
-	height: 8px;
+/* RENDEZVOUS-637 : Imrove sensitive front zone for datepicker */
+.datepicker-dropdown.datepicker-orient-bottom::after ,
+.datepicker-dropdown.datepicker-orient-bottom::before, 
+.datepicker-dropdown.datepicker-orient-top::after,
+.datepicker-dropdown.datepicker-orient-top::before {
+	height: 8px !important;
 }
