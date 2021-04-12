@@ -7,6 +7,9 @@
             <div id="calendar"></div>
         </@columns>
         <@columns sm=2>
+			<@p params=' style="border-bottom: 1px solid #000;margin-bottom: 15px; padding:15px 0"'>
+                <span style="border-radius:50%;background-color:#DDD;width:8px; height:5px;padding:2px 4px">13</span> #i18n{appointment.annual.label.daySpecifity}
+            </@p>
             <@ul class="list-unstyled">
                 <#list listReservationRule as rule>
                     <@li>
@@ -16,9 +19,7 @@
                     </@li>
                 </#list>
             </@ul>
-            <@p params=' style="border-top: 1px solid #000;margin-top: 15px; padding:15px 0"'>
-                <span style="border-radius:50%;background-color:#DDD;width:8px; height:5px;padding:2px 4px">13</span> #i18n{appointment.annual.label.daySpecifity}
-            </@p>
+           
         </@columns>
     </@row>
 </@appointmentTabs>
