@@ -404,7 +404,7 @@ localStorage.setItem( 'appointmentContext', '${context}' );
 	var formValues = JSON.parse( $(this).attr( 'data-json' ) );
 	localStorage.setItem( 'commentContext', moment(formValues.comment_start).format('DD/MM/YYYY') );
 	tinyMCE.activeEditor.setContent( formValues.comment_text );
-	$( '#modify-comment input[name="id_comment"]' ).val( formValues.id_comment );
+	$( '#modify-comment input[name="id_comment"]' ).val( formValues.id_comment.slice(1) );
 	$( '#modify-comment input[name="startingValidityDate"]' ).val( moment(formValues.comment_start).format('DD/MM/YYYY') );
 	$( '#modify-comment input[name="endingValidityDate"]' ).val( moment(formValues.comment_end).format('DD/MM/YYYY')  );
 	$( '#modify-comment input[name="startingValidityTime"]' ).val( formValues.comment_start_time );
