@@ -6,91 +6,95 @@
 			<@tform name='form' id='form' action='jsp/admin/plugins/appointment/ManageAppointments.jsp'>
 				<@input type='hidden' name='view' value='manageAppointments' />    
 				<@input type='hidden' name='id_form' value='${form.idForm}' />
-				<@div align='right'>
+				<@div align='right' params=' style="margin-bottom: 15px;"'>
 					<@button style='card-control collapse' buttonTargetId='#searchAppointment' title='#i18n{appointment.manageAppointments.labelSearch}' hideTitle=['xs','sm'] buttonIcon='search' />
 					<#if rightDelete?? && rightDelete>
 						<@button type='submit' id='eraseAll' name='eraseAll' value='eraseAll' disabled=true buttonIcon='trash' title='#i18n{appointment.permission.label.deleteMassAppointment}' color='danger' />
 					</#if>
 					<@aButton params='data-toggle="modal" data-target="#export_modal"' buttonIcon='download' title='#i18n{appointment.permission.label.exportMassAppointment}' />
 				</@div>
-				<@fieldSet legend='#i18n{appointment.manageAppointments.labelSearch}' fieldsetId='searchAppointment'>
-					<@row>
-						<@columns sm=2>
-							<@formGroup labelFor='lastName' labelKey='${formMessages.fieldLastNameTitle}' rows=2>
-								<@input type='text' id='lastName' name='lastName' value='${filter.lastName!}' />
-							</@formGroup>
-						</@columns>
-						<@columns sm=2>
-							<@formGroup labelFor='firstName' labelKey='${formMessages.fieldFirstNameTitle}' rows=2>
-								<@input type='text' id='firstName' name='firstName' value='${filter.firstName!}'/>
-							</@formGroup>
-						</@columns>
-						<@columns  sm=2>
-							<@formGroup labelFor='email' labelKey='${formMessages.fieldEmailTitle}'  rows=2>
-								<@input type='text' id='email' name='email' value='${filter.email!}' />
-							</@formGroup>
-						</@columns>
-						<@columns sm=1>
-							<@formGroup labelFor='status' labelKey='#i18n{appointment.labelStatus}'  rows=2>
-								<@select name='status' id='status' items=listStatus default_value='${filter.status!}' />
-							</@formGroup>
-						</@columns>
-						<@columns sm=3>
-							<@formGroup labelKey='' rows=2>
-								<@actionButtons button1Name='Search' i18nValue1Key='appointment.manageAppointments.labelSearch' icon1='fa fa-search' button2Name='Reset' i18nValue2Key='appointment.displayAppointmentForm.labelReset' url2='jsp/admin/plugins/appointment/ManageAppointments.jsp?view=manageAppointments&id_form=${form.idForm}&reset=\'true\'' icon2='fa fa-refresh' />
-							</@formGroup>
-						</@columns>
-					</@row>
-					<@row>
-						<@columns sm=2>
-							<@formGroup labelFor='startingDateOfSearch' labelKey='#i18n{appointment.manageAppointments.startingDateOfSearch}'  rows=2>
-								<@inputGroup>
-									<@input type='text' name='startingDateOfSearch' id='startingDateOfSearch' value='${filter.startingDateOfSearch!}' />
-									<@inputGroupItem type='text'>
-										<@icon style='calendar' />
-									</@inputGroupItem>
-								</@inputGroup>
-							</@formGroup>
-						</@columns>
-						<@columns sm=2>
-							<@formGroup labelFor='startingTimeOfSearch' labelKey='#i18n{appointment.labelTo}' rows=2>
-								<@inputGroup>
-									<@input type='text' name='startingTimeOfSearch' id='startingTimeOfSearch' value='${filter.startingTimeOfSearch!\'\'}' />
-									<@inputGroupItem type='text'>
-										<@icon style='clock-o' />
-									</@inputGroupItem>
-								</@inputGroup>
-							</@formGroup>
-						</@columns>
-						<@columns sm=2>
-							<@formGroup labelFor='endingDateOfSearch' labelKey='#i18n{appointment.manageAppointments.endingDateOfSearch}'  rows=2>
-								<@inputGroup>
-									<@input type='text' name='endingDateOfSearch' id='endingDateOfSearch' value='${filter.endingDateOfSearch!}' />
-									<@inputGroupItem type='text'>
-										<@icon style='calendar' />
-									</@inputGroupItem>
-								</@inputGroup>
-							</@formGroup>
-						</@columns>
-						<@columns sm=2>
-							<@formGroup labelFor='endingTimeOfSearch' labelKey='#i18n{appointment.labelTo}'  rows=2>
-								<@inputGroup>
-									<@input type='text' name='endingTimeOfSearch' id='endingTimeOfSearch' value='${filter.endingTimeOfSearch!\'\'}' />
-									<@inputGroupItem type='text'>
-										<@icon style='clock-o' />
-									</@inputGroupItem>
-								</@inputGroup>
-							</@formGroup>
-						</@columns>
-					</@row>
-					<!-- button title : title='#i18n{appointment.manageAppointments.labelSearch}' -->
-					<!-- aButton title : title='#i18n{appointment.displayAppointmentForm.labelReset}' -->
-					<hr>
-				</@fieldSet>
+				<@div class='jumbotron' id='searchAppointment'>
+				<@div class='container'>
+					<@fieldSet legend='#i18n{appointment.manageAppointments.labelSearch}'>
+						<@row>
+							<@columns sm=3>
+								<@formGroup labelFor='lastName' labelKey='${formMessages.fieldLastNameTitle}' rows=2>
+									<@input type='text' id='lastName' name='lastName' value='${filter.lastName!}' />
+								</@formGroup>
+							</@columns>
+							<@columns sm=2>
+								<@formGroup labelFor='firstName' labelKey='${formMessages.fieldFirstNameTitle}' rows=2>
+									<@input type='text' id='firstName' name='firstName' value='${filter.firstName!}'/>
+								</@formGroup>
+							</@columns>
+							<@columns sm=3>
+								<@formGroup labelFor='email' labelKey='${formMessages.fieldEmailTitle}'  rows=2>
+									<@input type='text' id='email' name='email' value='${filter.email!}' />
+								</@formGroup>
+							</@columns>
+							<@columns sm=2>
+								<@formGroup labelFor='status' labelKey='#i18n{appointment.labelStatus}'  rows=2>
+									<@select name='status' id='status' items=listStatus default_value='${filter.status!}' />
+								</@formGroup>
+							</@columns>
+							
+						</@row>
+						<@row>
+							<@columns sm=2>
+								<@formGroup labelFor='startingDateOfSearch' labelKey='#i18n{appointment.manageAppointments.startingDateOfSearch}'  rows=2>
+									<@inputGroup>
+										<@input type='text' name='startingDateOfSearch' id='startingDateOfSearch' value='${filter.startingDateOfSearch!}' />
+										<@inputGroupItem type='text'>
+											<@icon style='calendar' />
+										</@inputGroupItem>
+									</@inputGroup>
+								</@formGroup>
+							</@columns>
+							<@columns sm=2>
+								<@formGroup labelFor='startingTimeOfSearch' labelKey='#i18n{appointment.labelTo}' rows=2>
+									<@inputGroup>
+										<@input type='text' name='startingTimeOfSearch' id='startingTimeOfSearch' value='${filter.startingTimeOfSearch!\'\'}' />
+										<@inputGroupItem type='text'>
+											<@icon style='clock-o' />
+										</@inputGroupItem>
+									</@inputGroup>
+								</@formGroup>
+							</@columns>
+							<@columns sm=2>
+								<@formGroup labelFor='endingDateOfSearch' labelKey='#i18n{appointment.manageAppointments.endingDateOfSearch}'  rows=2>
+									<@inputGroup>
+										<@input type='text' name='endingDateOfSearch' id='endingDateOfSearch' value='${filter.endingDateOfSearch!}' />
+										<@inputGroupItem type='text'>
+											<@icon style='calendar' />
+										</@inputGroupItem>
+									</@inputGroup>
+								</@formGroup>
+							</@columns>
+							<@columns sm=2>
+								<@formGroup labelFor='endingTimeOfSearch' labelKey='#i18n{appointment.labelTo}'  rows=2>
+									<@inputGroup>
+										<@input type='text' name='endingTimeOfSearch' id='endingTimeOfSearch' value='${filter.endingTimeOfSearch!\'\'}' />
+										<@inputGroupItem type='text'>
+											<@icon style='clock-o' />
+										</@inputGroupItem>
+									</@inputGroup>
+								</@formGroup>
+							</@columns>
+						</@row>
+						<@row>
+							<@columns>
+								<@button name='Search' type='submit' title='#i18n{appointment.manageAppointments.labelSearch}' buttonIcon='search' /> 
+								<@aButton href='jsp/admin/plugins/appointment/ManageAppointments.jsp?view=manageAppointments&id_form=${form.idForm}&reset=\'true\'' title='#i18n{appointment.displayAppointmentForm.labelReset}' name='Reset' buttonIcon='undo' /> 
+							</@columns>
+						</@row>
+						</@fieldSet>
+					</@div>
+				</@div>
+				<#--
 				<@div align='right'>
 					<@paginationAdmin paginator=paginator form=0 />
 				</@div>
-				
+				-->
 				<#if appointment_list?? && appointment_list?size &gt; 0>
 					<@table>
 						<tr>
