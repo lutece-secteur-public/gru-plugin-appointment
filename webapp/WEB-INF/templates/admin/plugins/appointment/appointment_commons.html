@@ -605,25 +605,28 @@ $( function(){
 
 			// Highlight comment from bg
 			$( '.fc-bgevent' ).hover(function(){
-				var classSel = $(this).attr('class'), bgColor=$(this).css('background-color');
-				var commentSel = classSel.split(' ');
 				$( this ).css('background-color', 'orange' );
-				$( '#'+commentSel[0] ).css('background-color', 'orange' );
-				$( '#'+commentSel[0] + ' p').css('color', '#fff' );
+				var classSel = $(this).attr('class'), bgColor=$(this).css('background-color'),
+				commentSel = classSel.split(' '),
+				c = '#' + commentSel[0].replace('-','-C');
+				$( c ).css('background-color', 'orange' );
+				$( c ).css('color', '#fff' );
 				return false;
 			}, function(){
-				var classSel = $(this).attr('class');
-				var commentSel = classSel.split(' ');
 				$( this ).css('background-color', 'rgb(233, 250, 0)' );
-				$( '#'+commentSel[0] ).css('background-color', 'rgb(233, 250, 0)' )
-				$( '#'+commentSel[0] + ' p').css('color', '#000' );
+				var classSel = $(this).attr('class'),
+				commentSel = classSel.split(' '),
+				c = '#' + commentSel[0].replace('-','-C');
+				$( c ).css('background-color', 'rgb(233, 250, 0)' )
+				$( c ).css('color', '#000' );
 			});
 
 			// Show comment popover
 			$('.fc-bgevent').click(function(e){
-				var classSel = $(this).attr('class');
-				var commentSel = classSel.split(' ');
-				$('#'+commentSel[0]).popover("toggle");
+				var classSel = $(this).attr('class'),
+				commentSel = classSel.split(' '),
+				c = '#' + commentSel[0].replace('-','-C');
+				$ (c ).popover("toggle");
 				return false;
 			});
 			</#if>
