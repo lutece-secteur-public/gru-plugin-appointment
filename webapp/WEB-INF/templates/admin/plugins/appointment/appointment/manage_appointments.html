@@ -13,8 +13,8 @@
 					</#if>
 					<@aButton params='data-toggle="modal" data-target="#export_modal"' buttonIcon='download' title='#i18n{appointment.permission.label.exportMassAppointment}' />
 				</@div>
-				<@div class='jumbotron' id='searchAppointment'>
-				<@div class='container'>
+				<@div class='container' id='searchAppointment'>
+				
 					<@fieldSet legend='#i18n{appointment.manageAppointments.labelSearch}'>
 						<@row>
 							<@columns sm=3>
@@ -87,14 +87,10 @@
 								<@aButton href='jsp/admin/plugins/appointment/ManageAppointments.jsp?view=manageAppointments&id_form=${form.idForm}&reset=\'true\'' title='#i18n{appointment.displayAppointmentForm.labelReset}' name='Reset' buttonIcon='undo' /> 
 							</@columns>
 						</@row>
-						</@fieldSet>
-					</@div>
+					</@fieldSet>
+					
 				</@div>
-				<#--
-				<@div align='right'>
-					<@paginationAdmin paginator=paginator form=0 />
-				</@div>
-				-->
+				
 				<#if appointment_list?? && appointment_list?size &gt; 0>
 					<@table>
 						<tr>
