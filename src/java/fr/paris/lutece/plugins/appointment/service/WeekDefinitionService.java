@@ -84,7 +84,7 @@ public final class WeekDefinitionService
         WeekDefinition weekDefinition = new WeekDefinition( );
         fillInWeekDefinition( weekDefinition, nIdReservationRule, dateOfApply, endingDateOfApply );
         WeekDefinitionHome.create( weekDefinition );
-        WeekDefinitionManagerListener.notifyListenersWeekDefinitionAssigned( weekDefinition.getIdWeekDefinition( ) );
+        //WeekDefinitionManagerListener.notifyListenersWeekDefinitionAssigned( weekDefinition.getIdWeekDefinition( ) );
         return weekDefinition;
     }
 
@@ -94,10 +94,10 @@ public final class WeekDefinitionService
      * @param nIdWeekDefinition
      *            the id of the week definition to delete
      */
-    public static void removeWeekDefinition( int nIdWeekDefinition )
+    public static void removeWeekDefinition( WeekDefinition weekDefinition )
     {
-        WeekDefinitionHome.delete( nIdWeekDefinition );
-        WeekDefinitionManagerListener.notifyListenersWeekDefinitionUnassigned( nIdWeekDefinition );
+        WeekDefinitionHome.delete( weekDefinition.getIdWeekDefinition( ) );
+        WeekDefinitionManagerListener.notifyListenersWeekDefinitionUnassigned( weekDefinition );
     }
 
     /**
@@ -110,7 +110,7 @@ public final class WeekDefinitionService
     public static WeekDefinition saveWeekDefinition( WeekDefinition weekDefinition )
     {
         WeekDefinitionHome.create( weekDefinition );
-        WeekDefinitionManagerListener.notifyListenersWeekDefinitionAssigned( weekDefinition.getIdWeekDefinition( ) );
+        WeekDefinitionManagerListener.notifyListenersWeekDefinitionAssigned( weekDefinition );
         return weekDefinition;
     }
 
@@ -143,7 +143,25 @@ public final class WeekDefinitionService
         return WeekDefinitionHome.findByIdForm( nIdForm );
 
     }
-
+    /**
+     * Find a week definition of a form by date of apply
+     * @param nIdForm the id form
+     * @param startingDate the starting date 
+     * @param endingDate the ending date
+     * @return the list of week definition
+     */
+    public static List<WeekDefinition> findWeekDefinitionByDateOfApply( int nIdForm, LocalDate startingDate,  LocalDate endingDate )
+    {
+        List<WeekDefinition> listWeekDefinition = WeekDefinitionService.findListWeekDefinition( nIdForm );
+        // Filter on the list of week definition on the starting date and the ending date of display
+         listWeekDefinition = listWeekDefinition.stream( )
+                 .filter( w -> (  w.getEndingDateOfApply( ).isEqual( startingDate ) || w.getEndingDateOfApply( ).isAfter( startingDate ) )
+                         && ( w.getDateOfApply( ).isBefore( endingDate )
+                                 || w.getDateOfApply( ).isEqual( endingDate ) ) )
+                 .collect( Collectors.toList( ) );
+    
+    	return listWeekDefinition;
+    }
     /**
      * Find a week definition of a form and a date of apply
      * 
@@ -507,6 +525,7 @@ public final class WeekDefinitionService
         }
 
         assignWeekDefintion( listWeekToRemove, buildListWeekToEdit, nIdForm );
+        WeekDefinitionManagerListener.notifyListenersWeekDefinitionAssigned( newWeek );
     }
 
     private static void assignWeekDefintion( List<WeekDefinition> listWeekTodRemove, List<WeekDefinition> listWeekToEdit, int nIdForm )
@@ -530,7 +549,7 @@ public final class WeekDefinitionService
                 WeekDefinitionHome.create( week );
             }
             TransactionManager.commitTransaction( AppointmentPlugin.getPlugin( ) );
-            WeekDefinitionManagerListener.notifyListenersListWeekDefinitionChanged( nIdForm );
+           // WeekDefinitionManagerListener.notifyListenersListWeekDefinitionChanged( nIdForm, listWeekToEdit );
         }
         catch( Exception e )
         {

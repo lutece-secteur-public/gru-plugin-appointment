@@ -220,6 +220,7 @@ public final class FormService
             entry.setIdResource( nIdNewForm );
             EntryHome.copy( entry );
         }
+        FormListenerManager.notifyListenersFormCreation( nIdForm );
         return nIdNewForm;
     }
 
@@ -264,6 +265,7 @@ public final class FormService
             WorkingDayService.generateWorkingDayAndListTimeSlot( reservationRule.getIdReservationRule( ), dayOfWeek, startingTime, endingTime, nDuration,
                     nMaxCapacity );
         }
+        FormListenerManager.notifyListenersFormCreation( nIdForm );
         return nIdForm;
     }
 
@@ -276,11 +278,11 @@ public final class FormService
      */
     public static void updateGlobalParameters( AppointmentFormDTO appointmentForm )
     {
-        Form form = FormService.updateForm( appointmentForm );
-        int nIdForm = form.getIdForm( );
+        int nIdForm = appointmentForm.getIdForm( );
         DisplayService.updateDisplay( appointmentForm, nIdForm );
         LocalizationService.updateLocalization( appointmentForm, nIdForm );
         FormRuleService.updateFormRule( appointmentForm, nIdForm );
+        FormService.updateForm( appointmentForm );
     }
 
     /**
@@ -642,12 +644,11 @@ public final class FormService
      *            the appointmentForm DTO
      * @return the Form created
      */
-    public static Form createForm( AppointmentFormDTO appointmentForm )
+    private static Form createForm( AppointmentFormDTO appointmentForm )
     {
         Form form = new Form( );
         fillInFormWithAppointmentForm( form, appointmentForm );
         FormHome.create( form );
-        FormListenerManager.notifyListenersFormCreation( form.getIdForm( ) );
         return form;
     }
 

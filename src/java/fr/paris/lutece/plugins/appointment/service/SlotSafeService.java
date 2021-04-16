@@ -434,7 +434,7 @@ public final class SlotSafeService
 
              if( isReport && appointment.getIdActionReported( ) != 0 ) 
              {
-                 AdminUser adminUser = AdminUserService.getAdminUser( request );
+                 AdminUser adminUser = (request != null) ?AdminUserService.getAdminUser( request ):null;
              	 WorkflowService.getInstance( ).doProcessAction( appointment.getIdAppointment( ), Appointment.APPOINTMENT_RESOURCE_TYPE,
                           appointment.getIdActionReported( ), form.getIdForm( ), request, locale, adminUser == null , adminUser );
         
@@ -554,6 +554,7 @@ public final class SlotSafeService
                 // slot
                 updateSlotWithShift( slot, previousEndingTime );
             }
+            SlotListenerManager.notifySlotEndingTimeHasChanged( slot.getIdSlot( ), slot.getIdForm(),  slot.getEndingDateTime( ) );
         }
         else
         {
