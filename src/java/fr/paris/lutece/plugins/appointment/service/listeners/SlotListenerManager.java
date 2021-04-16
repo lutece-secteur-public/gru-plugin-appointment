@@ -33,6 +33,9 @@
  */
 package fr.paris.lutece.plugins.appointment.service.listeners;
 
+import java.time.LocalDateTime;
+
+import fr.paris.lutece.plugins.appointment.business.slot.Slot;
 import fr.paris.lutece.portal.service.spring.SpringContextService;
 
 public final class SlotListenerManager
@@ -82,15 +85,35 @@ public final class SlotListenerManager
     /**
      * Notify listeners that a Slot is about to be removed
      * 
-     * @param nIdSlot
-     *            The id of the Slot that will be removed
+     * @param slot
+     *            The slot that will be removed
      */
-    public static void notifyListenersSlotRemoval( int nIdSlot )
+    public static void notifyListenersSlotRemoval( Slot slot )
     {
         new Thread( ( ) -> {
             for ( ISlotListener slotListener : SpringContextService.getBeansOfType( ISlotListener.class ) )
             {
-                slotListener.notifySlotRemoval( nIdSlot );
+                slotListener.notifySlotRemoval( slot );
+            }
+        } ).start( );
+    }
+
+    /**
+     * Notify the listener that a date of ending slot has changed 
+     * 
+     * @param nIdSlot
+     *            the id of the slot
+     * * @param nIdFom
+     * 			  the id form
+     * @param endingDateTime
+     * 				the ending date time 
+     */
+    public static void notifySlotEndingTimeHasChanged( int nIdSlot, int nIdForm, LocalDateTime endingDateTime  )
+    {
+        new Thread( ( ) -> {
+            for ( ISlotListener slotListener : SpringContextService.getBeansOfType( ISlotListener.class ) )
+            {
+                slotListener.notifySlotEndingTimeHasChanged( nIdSlot, nIdForm, endingDateTime );
             }
         } ).start( );
     }

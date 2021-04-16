@@ -33,6 +33,10 @@
  */
 package fr.paris.lutece.plugins.appointment.service.listeners;
 
+import java.time.LocalDateTime;
+
+import fr.paris.lutece.plugins.appointment.business.slot.Slot;
+
 /**
  * Interface for listeners that should be notified when slot has been changed, created or removed. <b>The listener must be a Spring bean.</b>
  * 
@@ -61,9 +65,23 @@ public interface ISlotListener
     /**
      * Notify the listener that a slot has been deleted
      * 
+     * @param slot
+     *            the slot
+     */
+    void notifySlotRemoval( Slot slot );
+
+    /**
+    * Notify the listener that a date of ending slot has changed 
+     * 
      * @param nIdSlot
      *            the id of the slot
+     * * @param nIdFom
+     * 			  the id form
+     * @param endingDateTime
+     * 				the ending date time 
      */
-    void notifySlotRemoval( int nIdSlot );
+    
+    void notifySlotEndingTimeHasChanged( int nIdSlot, int nIdFom, LocalDateTime endingDateTime );
+    
 
 }

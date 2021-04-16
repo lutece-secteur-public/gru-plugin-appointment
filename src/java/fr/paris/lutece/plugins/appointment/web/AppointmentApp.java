@@ -49,6 +49,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.StringJoiner;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -60,11 +61,9 @@ import fr.paris.lutece.plugins.appointment.business.appointment.Appointment;
 import fr.paris.lutece.plugins.appointment.business.appointment.AppointmentSlot;
 import fr.paris.lutece.plugins.appointment.business.calendar.CalendarTemplate;
 import fr.paris.lutece.plugins.appointment.business.calendar.CalendarTemplateHome;
-import fr.paris.lutece.plugins.appointment.business.display.Display;
 import fr.paris.lutece.plugins.appointment.business.form.Form;
 import fr.paris.lutece.plugins.appointment.business.message.FormMessage;
 import fr.paris.lutece.plugins.appointment.business.planning.WeekDefinition;
-import fr.paris.lutece.plugins.appointment.business.rule.FormRule;
 import fr.paris.lutece.plugins.appointment.business.rule.ReservationRule;
 import fr.paris.lutece.plugins.appointment.business.slot.Slot;
 import fr.paris.lutece.plugins.appointment.exception.AppointmentSavedException;
@@ -73,10 +72,8 @@ import fr.paris.lutece.plugins.appointment.log.LogUtilities;
 import fr.paris.lutece.plugins.appointment.service.AppointmentResponseService;
 import fr.paris.lutece.plugins.appointment.service.AppointmentService;
 import fr.paris.lutece.plugins.appointment.service.AppointmentUtilities;
-import fr.paris.lutece.plugins.appointment.service.DisplayService;
 import fr.paris.lutece.plugins.appointment.service.EntryService;
 import fr.paris.lutece.plugins.appointment.service.FormMessageService;
-import fr.paris.lutece.plugins.appointment.service.FormRuleService;
 import fr.paris.lutece.plugins.appointment.service.FormService;
 import fr.paris.lutece.plugins.appointment.service.ReservationRuleService;
 import fr.paris.lutece.plugins.appointment.service.SlotSafeService;
@@ -310,24 +307,16 @@ public class AppointmentApp extends MVCApplication
         String nbPlacesToTake = request.getParameter( PARAMETER_NB_PLACE_TO_TAKE );
         String refAppointment = request.getParameter( PARAMETER_REF_APPOINTMENT );
 
-        Form form = FormService.findFormLightByPrimaryKey( nIdForm );
-        _appointmentForm = FormService.buildAppointmentForm( nIdForm, 0 );
+        _appointmentForm = FormService.buildAppointmentFormWithoutReservationRule( nIdForm );
         boolean bError = false;
-        if ( !form.getIsActive( ) )
+        if ( !_appointmentForm.getIsActive( ) )
         {
             addError( ERROR_MESSAGE_FORM_NOT_ACTIVE, locale );
             bError = true;
         }
         checkMyLuteceAuthentication( _appointmentForm, request );
         FormMessage formMessages = FormMessageService.findFormMessageByIdForm( nIdForm );
-        // Check if the date of display and the endDateOfDisplay are in the
-        // validity date range of the form
-        LocalDate startingValidityDate = form.getStartingValidityDate( );
-        if ( startingValidityDate == null )
-        {
-            addError( ERROR_MESSAGE_NO_STARTING_VALIDITY_DATE, locale );
-            bError = true;
-        }
+        
         if ( StringUtils.isNotEmpty( refAppointment ) )
         {
             // If we want to change the date of an appointment
@@ -345,13 +334,24 @@ public class AppointmentApp extends MVCApplication
         	}
         }
         LocalDate startingDateOfDisplay = LocalDate.now( );
+        //Check if the date of display and the endDateOfDisplay are in the
+        // validity date range of the form
+        LocalDate startingValidityDate = null;
+        if ( _appointmentForm.getDateStartValidity() == null )
+        {
+            addError( ERROR_MESSAGE_NO_STARTING_VALIDITY_DATE, locale );
+            bError = true;
+        }
+        else
+        {
+        	startingValidityDate = _appointmentForm.getDateStartValidity().toLocalDate();
+        }
         if ( startingValidityDate != null && startingValidityDate.isAfter( startingDateOfDisplay ) )
         {
             startingDateOfDisplay = startingValidityDate;
         }
-        Display display = DisplayService.findDisplayWithFormId( nIdForm );
         // Get the nb weeks to display
-        int nNbWeeksToDisplay = display.getNbWeeksToDisplay( );
+        int nNbWeeksToDisplay = _appointmentForm.getNbWeeksToDisplay( );
         // Calculate the ending date of display with the nb weeks to display
         // since today
         // We calculate the number of weeks including the current week, so it
@@ -363,9 +363,10 @@ public class AppointmentApp extends MVCApplication
         // the form
         // assign the ending date of display with the ending validity date of
         // the form
-        LocalDate endingValidityDate = form.getEndingValidityDate( );
-        if ( endingValidityDate != null )
+        LocalDate endingValidityDate = null;
+        if ( _appointmentForm.getDateEndValidity() != null )
         {
+        	endingValidityDate = _appointmentForm.getDateEndValidity().toLocalDate();
             if ( endingDateOfDisplay.isAfter( endingValidityDate ) )
             {
                 endingDateOfDisplay = endingValidityDate;
@@ -384,20 +385,8 @@ public class AppointmentApp extends MVCApplication
             dateOfDisplay = LocalDate.parse( strDateOfDisplay );
         }
         // Get all the week definitions
-        List<WeekDefinition> listWeekDefinition = WeekDefinitionService.findListWeekDefinition( nIdForm );
-        // Filter on the list of weekdefinition on the starting date and the
-        // ending date of display
-        if ( listWeekDefinition.size( ) > 1 )
-        {
-            WeekDefinition weekDefinitionClosest = WeekDefinitionService.findWeekDefinitionByIdFormAndClosestToDateOfApply( nIdForm, startingDateOfDisplay );
-            LocalDate dateOfClosestWeekDefinition = weekDefinitionClosest.getDateOfApply( );
-            LocalDate maxEndingDateOfWeekDefinition = endingDateOfDisplay;
-            listWeekDefinition = listWeekDefinition.stream( )
-                    .filter( w -> ( w.getDateOfApply( ).isEqual( dateOfClosestWeekDefinition ) || w.getDateOfApply( ).isAfter( dateOfClosestWeekDefinition ) )
-                            && ( w.getDateOfApply( ).isBefore( maxEndingDateOfWeekDefinition )
-                                    || w.getDateOfApply( ).isEqual( maxEndingDateOfWeekDefinition ) ) )
-                    .collect( Collectors.toList( ) );
-        }
+        List<WeekDefinition> listWeekDefinition = WeekDefinitionService.findWeekDefinitionByDateOfApply( nIdForm, startingDateOfDisplay,  endingDateOfDisplay );
+               
         Map<WeekDefinition, ReservationRule> mapReservationRule = ReservationRuleService.findAllReservationRule( nIdForm, listWeekDefinition );
         List<ReservationRule> listReservationRules = new ArrayList<>( mapReservationRule.values( ) );
         // Get the min time of all the week definitions
@@ -424,10 +413,8 @@ public class AppointmentApp extends MVCApplication
                 _nNbPlacesToTake = 0;
                 listSlots = SlotService.buildListSlot( nIdForm, mapReservationRule, startingDateOfDisplay, endingDateOfDisplay );
             }
-            // Get the min time from now before a user can take an appointment
-            // (in hours)
-            FormRule formRule = FormRuleService.findFormRuleWithFormId( nIdForm );
-            int minTimeBeforeAppointment = formRule.getMinTimeBeforeAppointment( );
+            // Get the min time from now before a user can take an appointment (in hours)
+            int minTimeBeforeAppointment = _appointmentForm.getMinTimeBeforeAppointment( );
             LocalDateTime dateTimeBeforeAppointment = LocalDateTime.now( ).plusHours( minTimeBeforeAppointment );
             // Filter the list of slots
             if ( CollectionUtils.isNotEmpty( listSlots ) )
@@ -488,30 +475,10 @@ public class AppointmentApp extends MVCApplication
             MVCMessage message = new MVCMessage( formMessages.getCalendarDescription( ) );
             listInfos.add( message );
         }
-
-        // Get the min and max date of the open days (for the week navigation on
-        // open days calendar templates)
-        Set<Integer> setOpenDays = WeekDefinitionService.getOpenDaysOfWeek( listReservationRules );
-        LocalDate minDateOfOpenDay = LocalDate.now( ).with( DayOfWeek.of( setOpenDays.stream( ).min( Comparator.naturalOrder( ) ).orElse( 1 ) ) );
-        LocalDate maxDateOfOpenDay = endingDateOfDisplay.with( DayOfWeek.of( setOpenDays.stream( ).max( Comparator.naturalOrder( ) ).orElse( 1 ) ) );
-        model.put( PARAMETER_MIN_DATE_OF_OPEN_DAY, minDateOfOpenDay );
-        model.put( PARAMETER_MAX_DATE_OF_OPEN_DAY, maxDateOfOpenDay );
-        model.put( MARK_FORM, _appointmentForm );
-        model.put( PARAMETER_ID_FORM, nIdForm );
-        model.put( MARK_FORM_MESSAGES, formMessages );
-        model.put( PARAMETER_ENDING_DATE_OF_DISPLAY, endingDateOfDisplay );
-        model.put( PARAMETER_STR_ENDING_DATE_OF_DISPLAY, endingDateOfDisplay.format( Utilities.getFormatter( ) ) );
-        model.put( PARAMETER_DATE_OF_DISPLAY, dateOfDisplay );
-        model.put( PARAMETER_DAY_OF_WEEK, listStrBase0OpenDaysOfWeek );
-        model.put( PARAMETER_MIN_TIME, AppointmentUtilities.getMinTimeToDisplay( minStartingTime ) );
-        model.put( PARAMETER_MAX_TIME, AppointmentUtilities.getMaxTimeToDisplay( maxEndingTime ) );
-        model.put( PARAMETER_MIN_DURATION, LocalTime.MIN.plusMinutes( AppointmentUtilities.THIRTY_MINUTES ) );
-        CalendarTemplate calendarTemplate = CalendarTemplateHome.findByPrimaryKey( display.getIdCalendarTemplate( ) );
-        List<String> listHiddenDays = new ArrayList<>( );
-        for ( int i = 0; i < 7; i++ )
-        {
-            listHiddenDays.add( Integer.toString( i ) );
-        }
+        
+        CalendarTemplate calendarTemplate = CalendarTemplateHome.findByPrimaryKey( _appointmentForm.getCalendarTemplateId( ) );
+        List<String> listHiddenDays = Stream.of("0","1","2","3","4","5","6").collect(Collectors.toList());
+        
         /**
          * Calculate the hidden days and set the view (Day and week) with the type of calendar
          */
@@ -553,18 +520,30 @@ public class AppointmentApp extends MVCApplication
                 weekView = AGENDA_WEEK;
                 break;
         }
+        // Get the min and max date of the open days (for the week navigation on
+        // open days calendar templates)
+        Set<Integer> setOpenDays = WeekDefinitionService.getOpenDaysOfWeek( listReservationRules );
+        model.put( PARAMETER_MIN_DATE_OF_OPEN_DAY, LocalDate.now( ).with( DayOfWeek.of( setOpenDays.stream( ).min( Comparator.naturalOrder( ) ).orElse( 1 ) ) ) );
+        model.put( PARAMETER_MAX_DATE_OF_OPEN_DAY, endingDateOfDisplay.with( DayOfWeek.of( setOpenDays.stream( ).max( Comparator.naturalOrder( ) ).orElse( 1 ) ) ) );
+        
+        model.put( MARK_FORM, _appointmentForm );
+        model.put( PARAMETER_ID_FORM, nIdForm );
+        model.put( MARK_FORM_MESSAGES, formMessages );
+        model.put( PARAMETER_ENDING_DATE_OF_DISPLAY, endingDateOfDisplay );
+        model.put( PARAMETER_STR_ENDING_DATE_OF_DISPLAY, endingDateOfDisplay.format( Utilities.getFormatter( ) ) );
+        model.put( PARAMETER_DATE_OF_DISPLAY, dateOfDisplay );
+        model.put( PARAMETER_DAY_OF_WEEK, listStrBase0OpenDaysOfWeek );
+        model.put( PARAMETER_MIN_TIME, AppointmentUtilities.getMinTimeToDisplay( minStartingTime ) );
+        model.put( PARAMETER_MAX_TIME, AppointmentUtilities.getMaxTimeToDisplay( maxEndingTime ) );
+        model.put( PARAMETER_MIN_DURATION, LocalTime.MIN.plusMinutes( AppointmentUtilities.THIRTY_MINUTES ) );
+        
         model.put( PARAMETER_EVENTS, listSlots );
         model.put( PARAMETER_HIDDEN_DAYS, listHiddenDays );
         model.put( PARAMETER_DAY_VIEW, dayView );
         model.put( PARAMETER_WEEK_VIEW, weekView );
-        HtmlTemplate template = AppTemplateService.getTemplate( calendarTemplate.getTemplatePath( ), locale, model );
-        XPage xpage = new XPage( );
-        xpage.setContent( template.getHtml( ) );
-        xpage.setPathLabel(
 
-                getDefaultPagePath( locale ) );
-        xpage.setTitle( getDefaultPageTitle( locale ) );
-        return xpage;
+        return getXPage( calendarTemplate.getTemplatePath( ), locale, model );
+
     }
 
     /**
@@ -589,18 +568,16 @@ public class AppointmentApp extends MVCApplication
         }
         if ( strNbPlacesToTake != null )
         {
-
             _nNbPlacesToTake = Integer.parseInt( strNbPlacesToTake );
         }
 
         int nIdForm = Integer.parseInt( strIdForm );
         if ( _appointmentForm == null || _appointmentForm.getIdForm( ) != nIdForm )
         {
-            _appointmentForm = FormService.buildAppointmentForm( nIdForm, 0 );
+            _appointmentForm = FormService.buildAppointmentFormWithoutReservationRule( nIdForm );
         }
         if ( !_appointmentForm.getIsActive( ) )
         {
-
             addError( ERROR_MESSAGE_FORM_NOT_ACTIVE, getLocale( request ) );
             return redirect( request, VIEW_APPOINTMENT_CALENDAR, PARAMETER_ID_FORM, nIdForm, PARAMETER_NB_PLACE_TO_TAKE, _nNbPlacesToTake  );
         }
@@ -639,6 +616,11 @@ public class AppointmentApp extends MVCApplication
 
             int nNbConsecutiveSlot = ( _nNbPlacesToTake == 0 ) ? 1 : _nNbPlacesToTake;
             LocalDateTime startingDateTime = LocalDateTime.parse( request.getParameter( PARAMETER_STARTING_DATE_TIME ) );
+            if( !isAuthorizedDate( startingDateTime , getLocale( request ) )) {
+            	
+            	addError( ERROR_MESSAGE_SLOT_FULL, getLocale( request ) );
+                return redirect( request, VIEW_APPOINTMENT_CALENDAR, PARAMETER_ID_FORM, nIdForm, PARAMETER_NB_PLACE_TO_TAKE, _nNbPlacesToTake );
+            }
             // Get all the week definitions
             List<WeekDefinition> listWeekDefinition = WeekDefinitionService.findListWeekDefinition( nIdForm );
             Map<WeekDefinition, ReservationRule> mapReservationRule = ReservationRuleService.findAllReservationRule( nIdForm, listWeekDefinition );
@@ -648,7 +630,7 @@ public class AppointmentApp extends MVCApplication
                     s -> ( ( startingDateTime.compareTo( s.getStartingDateTime( ) ) <= 0 ) && ( s.getNbRemainingPlaces( ) > 0 ) && ( s.getIsOpen( ) ) ) )
                     .limit( nNbConsecutiveSlot ).collect( Collectors.toList( ) );
 
-            if ( listSlot == null || listSlot.stream( ).noneMatch( slot -> slot.getStartingDateTime( ).isEqual( startingDateTime ) )
+               if ( listSlot == null || listSlot.stream( ).noneMatch( slot -> slot.getStartingDateTime( ).isEqual( startingDateTime ) )
                     || ( _nNbPlacesToTake > 0 && listSlot.size( ) != _nNbPlacesToTake ) || !AppointmentUtilities.isConsecutiveSlots( listSlot ) )
             {
                 addError( ERROR_MESSAGE_SLOT_FULL, getLocale( request ) );
@@ -707,13 +689,11 @@ public class AppointmentApp extends MVCApplication
                 if ( bool )
                 {
                     _notValidatedAppointment.setDateOfTheAppointment( slot.getDate( ).format( Utilities.getFormatter( ) ) );
-                    LuteceUser user = SecurityService.getInstance( ).getRegisteredUser( request );
-                    if ( user != null )
+                    if ( SecurityService.getInstance( ).getRegisteredUser( request ) != null )
                     {
                         setUserInfo( request, _notValidatedAppointment );
                     }
-                    ReservationRule reservationRule = ReservationRuleService.findReservationRuleByIdFormAndClosestToDateOfApply( nIdForm, slot.getDate( ) );
-                    FormService.fillAppointmentFormWithReservationRulePart( _appointmentForm, reservationRule );
+                    FormService.fillAppointmentFormWithReservationRulePart( _appointmentForm, ReservationRuleService.findReservationRuleByIdFormAndClosestToDateOfApply( nIdForm, slot.getDate( ) ) );
                     bool = false;
                 }
                 AppointmentUtilities.putTimerInSession( request, slot.getIdSlot( ), _notValidatedAppointment, _appointmentForm.getMaxPeoplePerAppointment( ) );
@@ -726,10 +706,8 @@ public class AppointmentApp extends MVCApplication
         }
         else
         {
-            // Modification of the Form only
-            String strModificationForm = request.getParameter( PARAMETER_MODIFICATION_FORM );
-            // Need to redirect for the anchor
-            if ( StringUtils.isEmpty( strModificationForm ) )
+            // Modification of the Form only, Need to redirect for the anchor
+            if ( StringUtils.isEmpty( request.getParameter( PARAMETER_MODIFICATION_FORM ) ) )
             {
                 LinkedHashMap<String, String> additionalParameters = new LinkedHashMap<>( );
                 additionalParameters.put( PARAMETER_ID_FORM, strIdForm );
@@ -1086,18 +1064,18 @@ public class AppointmentApp extends MVCApplication
     public XPage getViewChangeDateAppointment( HttpServletRequest request )
     {
         String strIdForm = request.getParameter( PARAMETER_ID_FORM );
+        LocalDateTime startingDateTime = LocalDateTime.parse( request.getParameter( PARAMETER_STARTING_DATE_TIME ) );
         Locale locale = getLocale( request );
         int nIdForm = Integer.parseInt( strIdForm );
         Form form = FormService.findFormLightByPrimaryKey( nIdForm );
-        if ( !form.getIsActive( ) || _validatedAppointment.getStartingDateTime( ).isBefore( LocalDateTime.now( ) ) )
+        
+        if ( !form.getIsActive( ) || _validatedAppointment.getStartingDateTime( ).isBefore( LocalDateTime.now( ) ) || !isAuthorizedDate( startingDateTime , locale) )
         {
-
             _validatedAppointment = null;
             addError( ERROR_MESSAGE_FORM_NOT_ACTIVE, getLocale( request ) );
             return redirect( request, VIEW_APPOINTMENT_CALENDAR, PARAMETER_ID_FORM, form.getIdForm( ), PARAMETER_NB_PLACE_TO_TAKE, _nNbPlacesToTake  );
         }
         int nNbConsecutiveSlot = ( _nNbPlacesToTake == 0 ) ? 1 : _nNbPlacesToTake;
-        LocalDateTime startingDateTime = LocalDateTime.parse( request.getParameter( PARAMETER_STARTING_DATE_TIME ) );
         List<WeekDefinition> listWeekDefinition = WeekDefinitionService.findListWeekDefinition( nIdForm );
         Map<WeekDefinition, ReservationRule> mapReservationRule = ReservationRuleService.findAllReservationRule( nIdForm, listWeekDefinition );
         List<Slot> listSlot = SlotService.buildListSlot( nIdForm, mapReservationRule, startingDateTime.toLocalDate( ), startingDateTime.toLocalDate( ) );
@@ -1727,5 +1705,26 @@ public class AppointmentApp extends MVCApplication
                 throw new UserNotSignedException( );
             }
         }
+    }
+    /**
+     * Check if the date are in the validity date display range of the form
+     * @param date the starting date of slot
+     * @param locale the locale
+     * @return true if the starting date of slot is displayed on FO
+     */
+    private boolean isAuthorizedDate( LocalDateTime date, Locale locale ) {
+    	 // Get the min time from now before a user can take an appointment (in hours)
+        LocalDateTime startingDateOfDisplay = LocalDateTime.now( ).plusHours( _appointmentForm.getMinTimeBeforeAppointment( ) );
+            // validity date range of the form         
+        LocalDateTime startingValidityDate = _appointmentForm.getDateStartValidity().toLocalDate().atStartOfDay( );  
+        if ( startingValidityDate.isAfter( startingDateOfDisplay ) )
+        {
+        	startingDateOfDisplay = startingValidityDate;
+        }
+        // Calculate the ending date of display with the nb weeks to display since today
+        // We calculate the number of weeks including the current week, so it and will end to the (n) next sunday
+        LocalDate endingDateOfDisplay =  startingDateOfDisplay.toLocalDate().with( WeekFields.of( locale ).dayOfWeek( ) , DayOfWeek.SUNDAY.getValue( ) ).plusWeeks( (long) _appointmentForm.getNbWeeksToDisplay( ) - 1 );
+        return !( date.toLocalDate( ).isAfter( endingDateOfDisplay ) || date.isBefore(startingDateOfDisplay ));
+        	
     }
 }

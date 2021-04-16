@@ -459,7 +459,7 @@ public final class SlotService
         {
             SlotSafeService.removeSlotInMemory( slotToDelete.getIdSlot( ) );
             SlotHome.delete( slotToDelete.getIdSlot( ) );
-            SlotListenerManager.notifyListenersSlotRemoval( slotToDelete.getIdSlot( ) );
+            SlotListenerManager.notifyListenersSlotRemoval( slotToDelete );
         }
 
     }
@@ -475,7 +475,7 @@ public final class SlotService
         int nIdSlot = slot.getIdSlot( );
         SlotSafeService.removeSlotInMemory( nIdSlot );
         SlotHome.delete( nIdSlot );
-        SlotListenerManager.notifyListenersSlotRemoval( nIdSlot );
+        SlotListenerManager.notifyListenersSlotRemoval( slot );
     }
 
     /**

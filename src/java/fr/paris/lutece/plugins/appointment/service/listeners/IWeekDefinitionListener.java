@@ -33,6 +33,10 @@
  */
 package fr.paris.lutece.plugins.appointment.service.listeners;
 
+import java.util.List;
+
+import fr.paris.lutece.plugins.appointment.business.planning.WeekDefinition;
+
 /**
  * Interface for listeners that should be notified when week definition has been changed or removed. <b>The listener must be a Spring bean.</b>
  * 
@@ -44,25 +48,26 @@ public interface IWeekDefinitionListener
     /**
      * Notify the listener that a week definition has been assigned
      * 
-     * @param nIdWeekDefinition
-     *            The id of the weekDefinition
+     * @param weekDefinition
+     *            The weekDefinition assigned
      */
-    void notifyWeekAssigned( int nIdWeekDefinition );
+    void notifyWeekAssigned( WeekDefinition weekDefinition );
 
     /**
      * Notify the listener that a week definition has been Unassigned from the calendar
      * 
-     * @param nIdWeekDefinition
-     *            The id of the weekDefinition
+     * @param weekDefinition
+     *            The weekDefinition unsssigned
      */
-    void notifyWeekUnassigned( int nIdWeekDefinition );
+    void notifyWeekUnassigned( WeekDefinition weekDefinition );
 
     /**
      * Notify the listener that a list of week definition has been changed (assign and unassign)
      * 
      * @param nIdForm
      *            The id of the form
+     * @param listWeek the list of week
      */
-    void notifyListWeeksChanged( int nIdForm );
+    void notifyListWeeksChanged( int nIdForm, List<WeekDefinition> listWeek );
 
 }

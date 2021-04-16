@@ -62,7 +62,6 @@ import org.apache.commons.lang3.StringUtils;
 import fr.paris.lutece.api.user.User;
 import fr.paris.lutece.plugins.appointment.business.appointment.Appointment;
 import fr.paris.lutece.plugins.appointment.business.appointment.AppointmentSlot;
-import fr.paris.lutece.plugins.appointment.business.display.Display;
 import fr.paris.lutece.plugins.appointment.business.form.Form;
 import fr.paris.lutece.plugins.appointment.business.message.FormMessage;
 import fr.paris.lutece.plugins.appointment.business.planning.WeekDefinition;
@@ -77,7 +76,6 @@ import fr.paris.lutece.plugins.appointment.service.AppointmentResponseService;
 import fr.paris.lutece.plugins.appointment.service.AppointmentService;
 import fr.paris.lutece.plugins.appointment.service.AppointmentUtilities;
 import fr.paris.lutece.plugins.appointment.service.CommentService;
-import fr.paris.lutece.plugins.appointment.service.DisplayService;
 import fr.paris.lutece.plugins.appointment.service.EntryService;
 import fr.paris.lutece.plugins.appointment.service.FormMessageService;
 import fr.paris.lutece.plugins.appointment.service.FormRuleService;
@@ -345,8 +343,7 @@ public class AppointmentJspBean extends MVCAdminJspBean
         if ( StringUtils.isNotEmpty( strIdAppointment ) )
         {
             // If we want to change the date of an appointment
-            int nIdAppointment = Integer.parseInt( strIdAppointment );
-            AppointmentDTO appointmentDTO = AppointmentService.buildAppointmentDTOFromIdAppointment( nIdAppointment );
+            AppointmentDTO appointmentDTO = AppointmentService.buildAppointmentDTOFromIdAppointment( Integer.parseInt( strIdAppointment ) );
             if( appointmentDTO.getIsCancelled( ) )
         	{
         		addError( ERROR_MESSAGE_REPORT_APPOINTMENT, getLocale( ) );
@@ -360,38 +357,34 @@ public class AppointmentJspBean extends MVCAdminJspBean
         	}
         }
         int nIdForm = Integer.parseInt( strIdForm );
-        Form form = FormService.findFormLightByPrimaryKey( nIdForm );
-        AppointmentFormDTO appointmentForm = FormService.buildAppointmentForm( nIdForm, 0 );
+        AppointmentFormDTO appointmentForm = FormService.buildAppointmentFormWithoutReservationRule( nIdForm );
 
-        if ( !form.getIsActive( ) )
+        if ( !appointmentForm.getIsActive( ) )
         {
             addError( ERROR_MESSAGE_FORM_NOT_ACTIVE, getLocale( ) );
             bError = true;
         }
-        FormMessage formMessages = FormMessageService.findFormMessageByIdForm( nIdForm );
         // Check if the date of display and the endDateOfDisplay are in the
         // validity date range of the form
-        LocalDate startingValidityDate = form.getStartingValidityDate( );
-        if ( startingValidityDate == null )
+        if ( appointmentForm.getDateStartValidity( ) == null )
         {
             addError( ERROR_MESSAGE_NO_STARTING_VALIDITY_DATE, getLocale( ) );
             bError = true;
         }
-        Display display = DisplayService.findDisplayWithFormId( nIdForm );
-        int nNbWeeksToDisplay = AppPropertiesService.getPropertyInt( PROPERTY_NB_WEEKS_TO_DISPLAY_IN_BO, display.getNbWeeksToDisplay( ) );
+        
+        int nNbWeeksToDisplay = AppPropertiesService.getPropertyInt( PROPERTY_NB_WEEKS_TO_DISPLAY_IN_BO, appointmentForm.getNbWeeksToDisplay( ) );
         LocalDate startingDateOfDisplay = LocalDate.now( ).minusWeeks( nNbWeeksToDisplay );
         LocalDate endingDateOfDisplay = LocalDate.now( ).plusWeeks( nNbWeeksToDisplay );
-        LocalDate endingValidityDate = form.getEndingValidityDate( );
-        if ( endingValidityDate != null )
+        if (  appointmentForm.getDateEndValidity( ) != null )
         {
             if ( startingDateOfDisplay.isAfter( endingDateOfDisplay ) )
             {
                 addError( ERROR_MESSAGE_FORM_NO_MORE_VALID, getLocale( ) );
                 bError = true;
             }
-            if ( endingDateOfDisplay.isAfter( endingValidityDate ) )
+            if ( endingDateOfDisplay.isAfter( appointmentForm.getDateEndValidity( ).toLocalDate( ) ) )
             {
-                endingDateOfDisplay = endingValidityDate;
+                endingDateOfDisplay = appointmentForm.getDateEndValidity( ).toLocalDate( );
             }
         }
         String strDateOfDisplay = request.getParameter( PARAMETER_DATE_OF_DISPLAY );
@@ -455,7 +448,7 @@ public class AppointmentJspBean extends MVCAdminJspBean
 
         model.put( MARK_FORM, appointmentForm );
         model.put( PARAMETER_ID_FORM, nIdForm );
-        model.put( MARK_FORM_MESSAGES, formMessages );
+        model.put( MARK_FORM_MESSAGES, FormMessageService.findFormMessageByIdForm( nIdForm ) );
         model.put( PARAMETER_STARTING_DATE_OF_DISPLAY, startingDateOfDisplay );
         model.put( PARAMETER_STR_STARTING_DATE_OF_DISPLAY, startingDateOfDisplay.format( Utilities.getFormatter( ) ) );
         model.put( PARAMETER_ENDING_DATE_OF_DISPLAY, endingDateOfDisplay );
@@ -1558,7 +1551,8 @@ public class AppointmentJspBean extends MVCAdminJspBean
             {
             	 ITaskService taskService = SpringContextService.getBean( TaskService.BEAN_SERVICE );
                  List<ITask> listActionTasks = taskService.getListTaskByIdAction( nIdAction, getLocale(  ) );
-             	if ( listActionTasks.stream().anyMatch(task-> task.getTaskType( ).getKey( ).equals( "taskReportAppointment" ) )  )
+             	if ( listActionTasks.stream().anyMatch(task-> task.getTaskType( ).getKey( ).equals( "taskReportAppointment" ) ) 
+             		/*&& WorkflowService.getInstance( ).canProcessAction( nIdAppointment, Appointment.APPOINTMENT_RESOURCE_TYPE, nIdAction, nExternalParentId, request, false, null )*/)
                  {
              		AppointmentDTO appointment =AppointmentService.buildAppointmentDTOFromIdAppointment( nIdAppointment );
              		Map<String, String> additionalParameters = new HashMap<>( );

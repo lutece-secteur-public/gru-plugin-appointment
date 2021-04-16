@@ -808,7 +808,7 @@ public class TypicalWeekJspBean extends AbstractAppointmentFormAndSlotJspBean
         if ( CollectionUtils.isNotEmpty( listTimeSlot ) && CollectionUtils.isNotEmpty( listWeekDefinition ) )
         {
 
-            WeekDefinitionManagerListener.notifyListenersListWeekDefinitionChanged( nIdForm );
+            WeekDefinitionManagerListener.notifyListenersListWeekDefinitionChanged( nIdForm, listWeekDefinition );
         }
 
         addInfo( MESSAGE_INFO_SLOT_UPDATED, getLocale( ) );

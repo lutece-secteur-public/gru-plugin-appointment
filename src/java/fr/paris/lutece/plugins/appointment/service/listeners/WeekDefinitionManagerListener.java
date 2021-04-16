@@ -33,6 +33,9 @@
  */
 package fr.paris.lutece.plugins.appointment.service.listeners;
 
+import java.util.List;
+
+import fr.paris.lutece.plugins.appointment.business.planning.WeekDefinition;
 import fr.paris.lutece.portal.service.spring.SpringContextService;
 
 public final class WeekDefinitionManagerListener
@@ -49,15 +52,15 @@ public final class WeekDefinitionManagerListener
     /**
      * Notify listeners that a week definition has been created
      * 
-     * @param nIdWeekDefinition
-     *            The id of the week definition that has been assigned
+     * @param weekDefinition
+     *            The  week definition that has been assigned
      */
-    public static void notifyListenersWeekDefinitionAssigned( int nIdWeekDefinition )
+    public static void notifyListenersWeekDefinitionAssigned( WeekDefinition weekDefinition )
     {
         new Thread( ( ) -> {
             for ( IWeekDefinitionListener weekDefinitionListener : SpringContextService.getBeansOfType( IWeekDefinitionListener.class ) )
             {
-                weekDefinitionListener.notifyWeekAssigned( nIdWeekDefinition );
+                weekDefinitionListener.notifyWeekAssigned( weekDefinition );
             }
         } ).start( );
     }
@@ -67,13 +70,14 @@ public final class WeekDefinitionManagerListener
      * 
      * @param nIdForm
      *            The id of the form where the Week Definition has been changed
+     * @param listWeek the list of week
      */
-    public static void notifyListenersListWeekDefinitionChanged( int nIdForm )
+    public static void notifyListenersListWeekDefinitionChanged( int nIdForm, List<WeekDefinition> listWeek  )
     {
         new Thread( ( ) -> {
             for ( IWeekDefinitionListener weekDefinitionListener : SpringContextService.getBeansOfType( IWeekDefinitionListener.class ) )
             {
-                weekDefinitionListener.notifyListWeeksChanged( nIdForm );
+                weekDefinitionListener.notifyListWeeksChanged( nIdForm, listWeek );
             }
         } ).start( );
     }
@@ -81,15 +85,15 @@ public final class WeekDefinitionManagerListener
     /**
      * Notify listeners that a Week Definition is about to be removed
      * 
-     * @param nIdWeekDefinition
-     *            The id of the week definition that has been assigned
+     * @param weekDefinition
+     *            The week definition that has been assigned
      */
-    public static void notifyListenersWeekDefinitionUnassigned( int nIdWeekDefinition )
+    public static void notifyListenersWeekDefinitionUnassigned( WeekDefinition weekDefinition)
     {
         new Thread( ( ) -> {
             for ( IWeekDefinitionListener weekDefinitionListener : SpringContextService.getBeansOfType( IWeekDefinitionListener.class ) )
             {
-                weekDefinitionListener.notifyWeekUnassigned( nIdWeekDefinition );
+                weekDefinitionListener.notifyWeekUnassigned( weekDefinition );
             }
         } ).start( );
     }

@@ -232,7 +232,7 @@ public final class TimeSlotService
         if ( CollectionUtils.isNotEmpty( listWeek ) )
         {
 
-            WeekDefinitionManagerListener.notifyListenersListWeekDefinitionChanged( reservationRule.getIdForm( ) );
+            WeekDefinitionManagerListener.notifyListenersListWeekDefinitionChanged( reservationRule.getIdForm( ), listWeek );
         }
     }
 

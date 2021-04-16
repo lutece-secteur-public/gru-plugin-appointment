@@ -191,10 +191,11 @@ public final class ReservationRuleService
             WorkingDayService.generateWorkingDayAndListTimeSlot( reservationRule.getIdReservationRule( ), dayOfWeek, startingHour, endingHour, nDuration,
                     nMaxCapacity );
         }
-        if ( CollectionUtils.isNotEmpty( WeekDefinitionService.findByReservationRule( appointmentForm.getIdReservationRule( ) ) ) )
+        List<WeekDefinition> listWeek= WeekDefinitionService.findByReservationRule( appointmentForm.getIdReservationRule( ) ) ;
+        if ( CollectionUtils.isNotEmpty(listWeek ) )
         {
 
-            WeekDefinitionManagerListener.notifyListenersListWeekDefinitionChanged( appointmentForm.getIdForm( ) );
+            WeekDefinitionManagerListener.notifyListenersListWeekDefinitionChanged( appointmentForm.getIdForm( ), listWeek );
         }
     }
 
