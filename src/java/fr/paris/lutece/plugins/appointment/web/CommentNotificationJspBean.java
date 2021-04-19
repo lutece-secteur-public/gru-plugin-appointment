@@ -50,14 +50,11 @@ import fr.paris.lutece.portal.util.mvc.commons.annotations.View;
  * @author Laurent Payen
  *
  */
-@Controller( controllerJsp = CommentNotificationJspBean.CONTROLLER_JSP, controllerPath = CommentNotificationJspBean.CONTROLLER_PATH, right = CommentNotificationJspBean.RIGHT_MANAGE_NOTIFICATION )
+@Controller( controllerJsp = CommentNotificationJspBean.CONTROLLER_JSP, controllerPath = CommentNotificationJspBean.CONTROLLER_PATH, right = CommentJspBean.RIGHT_MANAGECOMMENTTFORM  )
 public class CommentNotificationJspBean extends MVCAdminJspBean
 {
 	private static final long serialVersionUID = 1995349998868975731L;
-	/**
-     * Right to manage appointment calendar templates
-     */
-    public static final String RIGHT_MANAGE_NOTIFICATION = "APPOINTMENT_FORM_MANAGEMENT";
+
     /**
      * Folder of the JSP of this controller
      */
@@ -102,7 +99,7 @@ public class CommentNotificationJspBean extends MVCAdminJspBean
      * @throws AccessDeniedException 
      */
     @View( value = VIEW_NOTIFIACTION_CONFIG, defaultView = true )
-    public String getNotificationCommentConfig( HttpServletRequest request ) throws AccessDeniedException
+    public String getNotificationCommentConfig( HttpServletRequest request )
     {
     	_commentNotificationConfig = null;    	
         Map<String, Object> model =getModel();
@@ -119,7 +116,7 @@ public class CommentNotificationJspBean extends MVCAdminJspBean
      * @throws AccessDeniedException 
      */
     @View( value = VIEW_MODIFY_NOTIFIACTION_CONFIG  )
-    public String getModifyNotificationCommentConfig( HttpServletRequest request ) throws AccessDeniedException
+    public String getModifyNotificationCommentConfig( HttpServletRequest request )
     {
     	String type= request.getParameter( PARAMETER_TYPE );    	
         _commentNotificationConfig = CommentNotificationHome.loadCommentNotificationConfigByType( type );        
@@ -137,7 +134,7 @@ public class CommentNotificationJspBean extends MVCAdminJspBean
      * @throws AccessDeniedException 
      */
     @Action( ACTION_DO_UPDATE_NOTIFICATION_CONFIG )
-    public String doUpdateNotificationCommentConfig( HttpServletRequest request ) throws AccessDeniedException
+    public String doUpdateNotificationCommentConfig( HttpServletRequest request )
     {
         populate( _commentNotificationConfig, request );
         CommentNotificationHome.update(_commentNotificationConfig);
