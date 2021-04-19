@@ -53,6 +53,7 @@ import fr.paris.lutece.portal.service.plugin.Plugin;
 import fr.paris.lutece.portal.service.plugin.PluginService;
 import fr.paris.lutece.portal.service.rbac.RBACService;
 import fr.paris.lutece.portal.service.template.AppTemplateService;
+import fr.paris.lutece.portal.service.util.AppPathService;
 import fr.paris.lutece.portal.service.workgroup.AdminWorkgroupService;
 import fr.paris.lutece.util.html.HtmlTemplate;
 
@@ -69,6 +70,7 @@ public class AppointmentFormDashboardComponent extends DashboardComponent
     private static final String MARK_ICON = "icon";
     private static final String MARK_APPOINTMENTFORM_LIST = "appointmentform_list";
     private static final String MARK_PERMISSION_CREATE = "permission_create";
+    private static final String MARK_BASE_URL = "baseUrl";
     private static final String VIEW_PERMISSIONS_FORM = "permissions";
 
     // TEMPLATES
@@ -88,6 +90,7 @@ public class AppointmentFormDashboardComponent extends DashboardComponent
         model.put( MARK_APPOINTMENTFORM_LIST, RBACService.getAuthorizedCollection( listAppointmentForm, AppointmentResourceIdService.PERMISSION_VIEW_FORM,
                 (User) AdminUserService.getAdminUser( request ) ) );
         model.put( MARK_ICON, plugin.getIconUrl( ) );
+        model.put( MARK_BASE_URL,  AppPathService.getProdUrl( request ));
         model.put( MARK_URL, AppointmentFormJspBean.getURLManageAppointmentForms( request ) );
         model.put( MARK_PERMISSION_CREATE, String.valueOf(
                 RBACService.isAuthorized( AppointmentFormDTO.RESOURCE_TYPE_CREATE, "0", AppointmentResourceIdService.PERMISSION_CREATE_FORM, (User) user ) ) );

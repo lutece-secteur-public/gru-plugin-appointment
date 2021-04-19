@@ -136,6 +136,7 @@ public class AppointmentFormJspBean extends AbstractAppointmentFormAndSlotJspBea
     private static final String MARK_LOCALE_TINY = "locale";
     private static final String MARK_FILE_CLOSING_DAYS = "fileClosingDays";
     private static final String MARK_PERMISSION_CREATE = "permission_create";
+    private static final String MARK_BASE_URL = "baseUrl";
 
     // Jsp
     private static final String JSP_MANAGE_APPOINTMENTFORMS = "jsp/admin/plugins/appointment/ManageAppointmentForms.jsp";
@@ -221,6 +222,7 @@ public class AppointmentFormJspBean extends AbstractAppointmentFormAndSlotJspBea
         Map<String, Object> model = getModel( );
         model.put( MARK_NB_ITEMS_PER_PAGE, Integer.toString( _nItemsPerPage ) );
         model.put( MARK_PAGINATOR, paginator );
+        model.put( MARK_BASE_URL,  AppPathService.getProdUrl( request ));
         model.put( MARK_APPOINTMENTFORM_LIST, RBACService.getAuthorizedCollection( paginator.getPageItems( ), AppointmentResourceIdService.PERMISSION_VIEW_FORM,
                 (User) AdminUserService.getAdminUser( request ) ) );
         model.put( VIEW_PERMISSIONS_FORM, AppointmentUtilities.getPermissions( paginator.getPageItems( ), user ) );
