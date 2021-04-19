@@ -48,7 +48,6 @@ import fr.paris.lutece.plugins.appointment.business.comment.Comment;
 import fr.paris.lutece.plugins.appointment.business.comment.CommentHome;
 import fr.paris.lutece.plugins.appointment.service.AppointmentResourceIdService;
 import fr.paris.lutece.plugins.appointment.service.CommentService;
-import fr.paris.lutece.plugins.appointment.service.FormService;
 import fr.paris.lutece.plugins.appointment.web.dto.AppointmentFormDTO;
 import fr.paris.lutece.plugins.appointment.web.dto.CommentDTO;
 import fr.paris.lutece.portal.service.admin.AccessDeniedException;
@@ -77,7 +76,7 @@ public class CommentJspBean extends AbstractAppointmentFormAndSlotJspBean
      * 
      */
     private static final long serialVersionUID = 9120042889405463752L;
-    public static final String RIGHT_MANAGECOMMENTTFORM = "APPOINTMENT_FORM_MANAGEMENT";
+    public static final String RIGHT_MANAGECOMMENTTFORM = "APPOINTMENT_COMMENT_MANAGEMENT";
     /**
      * JSP of this JSP Bean
      */
