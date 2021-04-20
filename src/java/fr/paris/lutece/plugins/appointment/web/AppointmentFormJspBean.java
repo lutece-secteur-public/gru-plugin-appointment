@@ -499,10 +499,6 @@ public class AppointmentFormJspBean extends AbstractAppointmentFormAndSlotJspBea
                     }
                 }
             }
-            else
-            {
-                form.setStartingValidityDate( null );
-            }
             form.setIsActive( !form.getIsActive( ) );
             FormService.updateForm( form );
             AppLogService.info( LogUtilities.buildLog( ACTION_DO_CHANGE_FORM_ACTIVATION, strIdForm, getUser( ) ) );

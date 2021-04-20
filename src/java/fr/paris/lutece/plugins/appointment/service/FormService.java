@@ -311,7 +311,6 @@ public final class FormService
         List<AppointmentFormDTO> listAppointmentFormLight = new ArrayList<>( );
         for ( Form form : FormService.findAllForms( ) )
         {
-            checkValidityDate( form );
             listAppointmentFormLight.add( buildAppointmentFormLight( form ) );
         }
         return listAppointmentFormLight;
@@ -609,32 +608,6 @@ public final class FormService
             }
         }
 
-    }
-
-    /**
-     * Check the validity of the form and update it if necessary
-     * 
-     * @param form
-     *            the form to check
-     */
-    private static void checkValidityDate( Form form )
-    {
-        LocalDate dateNow = LocalDate.now( );
-        if ( form.getStartingValidityDate( ) != null && !form.getIsActive( )
-                && ( form.getStartingValidityDate( ).isBefore( dateNow ) || form.getStartingValidityDate( ).isEqual( dateNow ) )
-                && ( form.getEndingValidityDate( ) == null || form.getEndingValidityDate( ).isAfter( dateNow )
-                        || form.getEndingValidityDate( ).isEqual( dateNow ) ) )
-        {
-            form.setIsActive( true );
-            FormService.updateForm( form );
-
-        }
-        else
-            if ( form.getEndingValidityDate( ) != null && form.getIsActive( ) && form.getEndingValidityDate( ).isBefore( dateNow ) )
-            {
-                form.setIsActive( false );
-                FormService.updateForm( form );
-            }
     }
 
     /**
