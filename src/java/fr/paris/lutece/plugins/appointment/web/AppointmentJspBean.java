@@ -230,11 +230,9 @@ public class AppointmentJspBean extends MVCAdminJspBean
     private static final String MARK_PLACES = "nbplaces";
     private static final String MARK_STR_ENTRY = "str_entry";
     private static final String MARK_RIGHT_CREATE = "rightCreate";
-    private static final String MARK_RIGHT_MODIFY = "rightModify";
     private static final String MARK_RIGHT_DELETE = "rightDelete";
     private static final String MARK_RIGHT_VIEW = "rightView";
     private static final String MARK_RIGHT_CHANGE_STATUS = "rightChangeStatus";
-    private static final String MARK_RIGHT_CHANGE_DATE = "rightChangeDate";
     private static final String MARK_FILTER = "filter";
     private static final String MARK_LIST_STATUS = "listStatus";
     private static final String MARK_RESOURCE_HISTORY = "resource_history";
@@ -604,17 +602,13 @@ public class AppointmentJspBean extends MVCAdminJspBean
         model.put( MARK_LIST_STATUS, getListStatus( ) );
         model.put( MARK_RIGHT_CREATE,
                 RBACService.isAuthorized( AppointmentFormDTO.RESOURCE_TYPE, strIdForm, AppointmentResourceIdService.PERMISSION_CREATE_APPOINTMENT, user ) );
-        model.put( MARK_RIGHT_MODIFY,
-                RBACService.isAuthorized( AppointmentFormDTO.RESOURCE_TYPE, strIdForm, AppointmentResourceIdService.PERMISSION_MODIFY_APPOINTMENT, user ) );
-        model.put( MARK_RIGHT_DELETE,
+         model.put( MARK_RIGHT_DELETE,
                 RBACService.isAuthorized( AppointmentFormDTO.RESOURCE_TYPE, strIdForm, AppointmentResourceIdService.PERMISSION_DELETE_APPOINTMENT, user ) );
         model.put( MARK_RIGHT_VIEW,
                 RBACService.isAuthorized( AppointmentFormDTO.RESOURCE_TYPE, strIdForm, AppointmentResourceIdService.PERMISSION_VIEW_APPOINTMENT, user ) );
         model.put( MARK_RIGHT_CHANGE_STATUS, RBACService.isAuthorized( AppointmentFormDTO.RESOURCE_TYPE, strIdForm,
                 AppointmentResourceIdService.PERMISSION_CHANGE_APPOINTMENT_STATUS, user ) );
-        model.put( MARK_RIGHT_CHANGE_DATE, RBACService.isAuthorized( AppointmentFormDTO.RESOURCE_TYPE, strIdForm,
-                AppointmentResourceIdService.PERMISSION_CHANGE_APPOINTMENT_DATE, user ) );
-        model.put( MARK_DEFAULT_FIELD_LIST, AppointmentExportService.getDefaultColumnList( getLocale( ) ) );
+             model.put( MARK_DEFAULT_FIELD_LIST, AppointmentExportService.getDefaultColumnList( getLocale( ) ) );
         model.put( MARK_CUSTOM_FIELD_LIST, AppointmentExportService.getCustomColumnList( strIdForm ) );
         model.put( MARK_LOCALE, getLocale( ) );
 
@@ -786,17 +780,13 @@ public class AppointmentJspBean extends MVCAdminJspBean
         User user = getUser( );
         model.put( MARK_RIGHT_CREATE,
                 RBACService.isAuthorized( AppointmentFormDTO.RESOURCE_TYPE, strIdForm, AppointmentResourceIdService.PERMISSION_CREATE_APPOINTMENT, user ) );
-        model.put( MARK_RIGHT_MODIFY,
-                RBACService.isAuthorized( AppointmentFormDTO.RESOURCE_TYPE, strIdForm, AppointmentResourceIdService.PERMISSION_MODIFY_APPOINTMENT, user ) );
-        model.put( MARK_RIGHT_DELETE,
+         model.put( MARK_RIGHT_DELETE,
                 RBACService.isAuthorized( AppointmentFormDTO.RESOURCE_TYPE, strIdForm, AppointmentResourceIdService.PERMISSION_DELETE_APPOINTMENT, user ) );
         model.put( MARK_RIGHT_VIEW,
                 RBACService.isAuthorized( AppointmentFormDTO.RESOURCE_TYPE, strIdForm, AppointmentResourceIdService.PERMISSION_VIEW_APPOINTMENT, user ) );
         model.put( MARK_RIGHT_CHANGE_STATUS, RBACService.isAuthorized( AppointmentFormDTO.RESOURCE_TYPE, strIdForm,
                 AppointmentResourceIdService.PERMISSION_CHANGE_APPOINTMENT_STATUS, user ) );
-        model.put( MARK_RIGHT_CHANGE_DATE, RBACService.isAuthorized( AppointmentFormDTO.RESOURCE_TYPE, strIdForm,
-                AppointmentResourceIdService.PERMISSION_CHANGE_APPOINTMENT_DATE, user ) );
-        model.put( MARK_LANGUAGE, getLocale( ) );
+              model.put( MARK_LANGUAGE, getLocale( ) );
         model.put( MARK_ACTIVATE_WORKFLOW, ACTIVATEWORKFLOW );
         model.put( MARK_LOCALE, getLocale( ) );
         return getPage( PROPERTY_PAGE_TITLE_VIEW_APPOINTMENT, TEMPLATE_VIEW_APPOINTMENT, model );
@@ -1133,14 +1123,7 @@ public class AppointmentJspBean extends MVCAdminJspBean
     {
         String strIdForm = request.getParameter( PARAMETER_ID_FORM );
         Locale locale = getLocale( );
-
         int nIdForm = Integer.parseInt( strIdForm );
-        if ( !RBACService.isAuthorized( AppointmentFormDTO.RESOURCE_TYPE, strIdForm, AppointmentResourceIdService.PERMISSION_CHANGE_APPOINTMENT_DATE,
-                (User) getUser( ) ) )
-        {
-            throw new AccessDeniedException( AppointmentResourceIdService.PERMISSION_CHANGE_APPOINTMENT_DATE );
-        }
-
         LocalDateTime startingDateTime = LocalDateTime.parse( request.getParameter( PARAMETER_STARTING_DATE_TIME ) );
         LocalDateTime endingDateTime = LocalDateTime.parse( request.getParameter( PARAMETER_ENDING_DATE_TIME ) );
         // Get all the week definitions

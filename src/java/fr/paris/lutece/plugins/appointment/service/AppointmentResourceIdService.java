@@ -70,13 +70,8 @@ public final class AppointmentResourceIdService extends ResourceIdService
 
     /** Permission for modifying a form */
     public static final String PERMISSION_MODIFY_FORM = "MODIFY_FORM";
-
     /** Permission for modifying an advanced setting form */
     public static final String PERMISSION_MODIFY_ADVANCED_SETTING_FORM = "MODIFY_ADVANCED_SETTING_FORM";
-
-    /** Permission for modifying appointments of the form */
-    public static final String PERMISSION_MODIFY_APPOINTMENT = "MODIFY_APPOINTMENT";
-
     /** Permission for viewing appointment forms */
     public static final String PERMISSION_VIEW_FORM = "VIEW_FORM";
 
@@ -89,8 +84,6 @@ public final class AppointmentResourceIdService extends ResourceIdService
     /** Permission for changing appointment status */
     public static final String PERMISSION_CHANGE_APPOINTMENT_STATUS = "CHANGE_APPOINTMENT_STATUS";
 
-    /** Permission for changing the date of the appointment */
-    public static final String PERMISSION_CHANGE_APPOINTMENT_DATE = "CHANGE_APPOINTMENT_DATE";
     /** Permission for taking appointment */
     public static final String PERMISSION_OVERBOOKING_FORM = "OVERBOOKING_FORM";
     /** Permission for moderate comment  */
@@ -108,12 +101,10 @@ public final class AppointmentResourceIdService extends ResourceIdService
     private static final String PROPERTY_LABEL_DELETE_APPOINTMENT = "appointment.permission.label.deleteAppointment";
     private static final String PROPERTY_LABEL_MODIFY_FORM = "appointment.permission.label.modifyForm";
     private static final String PROPERTY_LABEL_MODIFY_ADVANCED_SETTINGS_FORM = "appointment.permission.label.modifyAdvancedSettingForm";
-    private static final String PROPERTY_LABEL_MODIFY_APPOINTMENT = "appointment.permission.label.modifyAppointment";
     private static final String PROPERTY_LABEL_VIEW_FORM = "appointment.permission.label.viewForm";
     private static final String PROPERTY_LABEL_VIEW_APPOINTMENT = "appointment.permission.label.viewAppointment";
     private static final String PROPERTY_LABEL_CHANGE_STATE = "appointment.permission.label.changeState";
     private static final String PROPERTY_LABEL_CHANGE_APPOINTMENT_STATUS = "appointment.permission.label.changeAppointmentStatus";
-    private static final String PROPERTY_LABEL_CHANGE_APPOINTMENT_DATE = "appointment.permission.label.changeAppointmentDate";
     public static final String PROPERTY_LABEL_OVERBOOKING_FORM = "appointment.permission.label.overbooking";
     public static final String PROPERTY_LABEL_MODERATE_COMMENT_FORM = "appointment.permission.label.moderateComment";
     public static final String PROPERTY_LABEL_ADD_COMMENT_FORM = "appointment.permission.label.addComment";
@@ -174,11 +165,6 @@ public final class AppointmentResourceIdService extends ResourceIdService
         resourceType.registerPermission( permission );
 
         permission = new Permission( );
-        permission.setPermissionKey( PERMISSION_MODIFY_APPOINTMENT );
-        permission.setPermissionTitleKey( PROPERTY_LABEL_MODIFY_APPOINTMENT );
-        resourceType.registerPermission( permission );
-
-        permission = new Permission( );
         permission.setPermissionKey( PERMISSION_DELETE_APPOINTMENT );
         permission.setPermissionTitleKey( PROPERTY_LABEL_DELETE_APPOINTMENT );
         resourceType.registerPermission( permission );
@@ -186,11 +172,6 @@ public final class AppointmentResourceIdService extends ResourceIdService
         permission = new Permission( );
         permission.setPermissionKey( PERMISSION_CHANGE_APPOINTMENT_STATUS );
         permission.setPermissionTitleKey( PROPERTY_LABEL_CHANGE_APPOINTMENT_STATUS );
-        resourceType.registerPermission( permission );
-
-        permission = new Permission( );
-        permission.setPermissionKey( PERMISSION_CHANGE_APPOINTMENT_DATE );
-        permission.setPermissionTitleKey( PROPERTY_LABEL_CHANGE_APPOINTMENT_DATE );
         resourceType.registerPermission( permission );
 
         permission = new Permission( );
