@@ -306,7 +306,6 @@ $(function(){
 			$('#${idComment}_help').html('<span class="color-danger">Vous devez saisir un texte !</span>');
 			e.preventDefault();
 		}
-
 	});
 });
 </script>
@@ -415,8 +414,11 @@ $( '#modify-comment' ).modal('show');
 
 <#macro getComments comments_list>
 <#list comments_list as comment_event>
+<#compress>
+	<#assign comment_title>${comment_event.comment?replace('\n', '')?replace('\r', '')?replace('\rn', '')?replace('\'', '&apos;')?replace('\\', '&bsol;')}</#assign>
+</#compress>
 {
-	"title" : "${comment_event.comment?replace('\n', '')?replace('\r', '')?replace('\rn', '')?replace('\'', '&apos;')?replace('\"', '\\"')}",
+	"title" : "${comment_title?json_string}",
 	"start" : "${comment_event.startingValidityDate}T${comment_event.startingValidityTime!}",
 	"end" : "${comment_event.calendarAllDaySlotEnd}T${comment_event.endingValidityTime!}",
 	"validity_end" : "${comment_event.endingValidityDate}",
