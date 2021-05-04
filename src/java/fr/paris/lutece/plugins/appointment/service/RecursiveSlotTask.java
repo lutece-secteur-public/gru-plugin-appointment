@@ -58,8 +58,9 @@ public class RecursiveSlotTask extends RecursiveTask<List<Slot>>
     private LocalDate _startingDate;
     private LocalDate _endingDate;
     private int _nNbPlaces;
+    private boolean _bAllOpenSlot;
 
-    RecursiveSlotTask( int nIdForm, Map<WeekDefinition, ReservationRule> mapReservationRule, LocalDate startingDate, LocalDate endingDate, int nNbPlaces )
+    RecursiveSlotTask( int nIdForm, Map<WeekDefinition, ReservationRule> mapReservationRule, LocalDate startingDate, LocalDate endingDate, int nNbPlaces, boolean bAllOpenSlot )
     {
 
         this._nIdForm = nIdForm;
@@ -67,6 +68,7 @@ public class RecursiveSlotTask extends RecursiveTask<List<Slot>>
         this._startingDate = startingDate;
         this._endingDate = endingDate;
         this._nNbPlaces = nNbPlaces;
+        this._bAllOpenSlot=  bAllOpenSlot;
 
     }
 
@@ -91,7 +93,7 @@ public class RecursiveSlotTask extends RecursiveTask<List<Slot>>
             else
             {
 
-                listSlot.addAll( buildListSlot( _nIdForm, _mapReservationRule, _startingDate, _endingDate, _nNbPlaces ) );
+                listSlot.addAll( buildListSlot( _nIdForm, _mapReservationRule, _startingDate, _endingDate, _nNbPlaces, _bAllOpenSlot ) );
 
             }
 
@@ -106,13 +108,13 @@ public class RecursiveSlotTask extends RecursiveTask<List<Slot>>
                 if ( tmpCompareDate.isAfter( _endingDate ) || tmpCompareDate.isEqual( _endingDate ) )
                 {
 
-                    subtask = new RecursiveSlotTask( _nIdForm, _mapReservationRule, tmpDate, _endingDate, _nNbPlaces );
+                    subtask = new RecursiveSlotTask( _nIdForm, _mapReservationRule, tmpDate, _endingDate, _nNbPlaces, _bAllOpenSlot );
 
                 }
                 else
                 {
 
-                    subtask = new RecursiveSlotTask( _nIdForm, _mapReservationRule, tmpDate, tmpCompareDate, _nNbPlaces );
+                    subtask = new RecursiveSlotTask( _nIdForm, _mapReservationRule, tmpDate, tmpCompareDate, _nNbPlaces, _bAllOpenSlot );
 
                 }
 
@@ -304,10 +306,12 @@ public class RecursiveSlotTask extends RecursiveTask<List<Slot>>
      *            the ending date of the periode
      * @param nNbPlaces
      *            the number of place to take
+     * @param isAllOpenSlot
+     *            build slots with the all open slot
      * @returna list of all the slots built
      */
     public static List<Slot> buildListSlot( int nIdForm, Map<WeekDefinition, ReservationRule> mapReservationRule, LocalDate startingDate, LocalDate endingDate,
-            int nNbPlaces )
+            int nNbPlaces, boolean isAllOpenSlot )
     {
         List<Slot> listSlotToShow = new ArrayList<>( );
 
@@ -324,10 +328,13 @@ public class RecursiveSlotTask extends RecursiveTask<List<Slot>>
         LocalDateTime endingDateTime;
         LocalDateTime startingDateTime = null;
         LocalTime tempEndingDateTime = null;
+        LocalDateTime localDateTimeNow= LocalDateTime.now( );
 
         boolean isChanged = true;
+        boolean isfull = false;
         int sumNbPotentialRemainingPlaces;
         int sumNbRemainingPlaces;
+        int nbSlot;
 
         Slot slotToAdd;
         TimeSlot timeSlot;
@@ -381,6 +388,7 @@ public class RecursiveSlotTask extends RecursiveTask<List<Slot>>
                     timeTemp = minTimeForThisDay;
                     sumNbPotentialRemainingPlaces = 0;
                     sumNbRemainingPlaces = 0;
+                    nbSlot= 0;
                     isChanged = true;
                     tempEndingDateTime = timeTemp;
                     // For each slot of this day
@@ -420,22 +428,27 @@ public class RecursiveSlotTask extends RecursiveTask<List<Slot>>
                             }
                         }
 
-                        if ( sumNbPotentialRemainingPlaces >= nNbPlaces || !slotToAdd.getIsOpen( ) || slotToAdd.getNbPotentialRemainingPlaces( ) <= 0
-                                || slotToAdd.getEndingDateTime( ).isBefore( LocalDateTime.now( ) ) )
+                        if ( isNewSlot(  sumNbPotentialRemainingPlaces,  nNbPlaces,  slotToAdd,  localDateTimeNow, isAllOpenSlot, nbSlot  ) )
                         {
 
                             sumNbPotentialRemainingPlaces = 0;
+                            nbSlot= 0;
                             sumNbRemainingPlaces = 0;
                             startingDateTime = slotToAdd.getEndingDateTime( );
                             tempEndingDateTime = slotToAdd.getEndingTime( );
                         }
                         else
                         {
+                        	if( slotToAdd.getNbPotentialRemainingPlaces( ) <= 0 ) 
+                        	{
+                        		isfull= true;
+                        	}
                             sumNbPotentialRemainingPlaces = sumNbPotentialRemainingPlaces + 1;
+                            nbSlot = nbSlot +1;
                             sumNbRemainingPlaces = sumNbRemainingPlaces + 1;
                         }
 
-                        if ( sumNbPotentialRemainingPlaces >= nNbPlaces )
+                        if ( buildNewSlot(  sumNbPotentialRemainingPlaces,  nNbPlaces, isAllOpenSlot, nbSlot  ) )
                         {
 
                             endingDateTime = slotToAdd.getEndingDateTime( );
@@ -447,8 +460,10 @@ public class RecursiveSlotTask extends RecursiveTask<List<Slot>>
                             slt.setNbRemainingPlaces( sumNbRemainingPlaces );
                             slt.setDate( slotToAdd.getDate( ) );
                             slt.setIdForm( slotToAdd.getIdForm( ) );
+                            slt.setIsFull(isfull? 1:0 );
                             listSlotToShow.add( slt );
                             isChanged = true;
+                            isfull= false;
                             timeTemp = tempEndingDateTime;
                         }
 
@@ -461,4 +476,27 @@ public class RecursiveSlotTask extends RecursiveTask<List<Slot>>
         return listSlotToShow;
 
     }
+    private static boolean isNewSlot( int sumNbPotentialRemainingPlaces, int nNbPlaces, Slot slotToAdd, LocalDateTime localDateTimeNow, boolean isAllOpenSlot, int nbSlot  ) 
+    {
+    	
+    	if( isAllOpenSlot ) 
+    	{
+    		
+    		return nbSlot == nNbPlaces || !slotToAdd.getIsOpen( ) || slotToAdd.getEndingDateTime( ).isBefore( localDateTimeNow ) ;
+    	}
+    	
+    	return sumNbPotentialRemainingPlaces >= nNbPlaces || !slotToAdd.getIsOpen( ) || slotToAdd.getNbPotentialRemainingPlaces( ) <= 0
+                || slotToAdd.getEndingDateTime( ).isBefore( localDateTimeNow ) ;
+    } 
+    
+    private static boolean buildNewSlot( int sumNbPotentialRemainingPlaces, int nNbPlaces, boolean isAllOpenSlot, int nbSlot  ) 
+    {
+    	if( isAllOpenSlot ) 
+    	{
+    		
+    		return nbSlot == nNbPlaces ;
+    	}
+    	
+    	return sumNbPotentialRemainingPlaces >= nNbPlaces ;
+    } 
 }

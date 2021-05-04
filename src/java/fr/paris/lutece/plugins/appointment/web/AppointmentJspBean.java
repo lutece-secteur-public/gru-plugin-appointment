@@ -407,7 +407,8 @@ public class AppointmentJspBean extends MVCAdminJspBean
             {
 
                 _nNbPlacesToTake = isNewNbPlacesToTake ? Integer.parseInt( nbPlacesToTake ) : _nNbPlacesToTake;
-                listSlot = SlotService.buildListSlot( nIdForm, mapReservationRule, startingDateOfDisplay, endingDateOfDisplay, _nNbPlacesToTake );
+                listSlot = SlotService.buildListSlot( nIdForm, mapReservationRule, startingDateOfDisplay, endingDateOfDisplay, _nNbPlacesToTake, appointmentForm.getBoOverbooking( ) && RBACService.isAuthorized( AppointmentFormDTO.RESOURCE_TYPE, strIdForm,
+                        AppointmentResourceIdService.PERMISSION_OVERBOOKING_FORM, (User) getUser( ) ) );
 
             }
             else
@@ -1119,7 +1120,7 @@ public class AppointmentJspBean extends MVCAdminJspBean
      * @throws AccessDeniedException
      */
     @View( VIEW_CHANGE_DATE_APPOINTMENT )
-    public String getViewChangeDateAppointment( HttpServletRequest request ) throws AccessDeniedException
+    public String getViewChangeDateAppointment( HttpServletRequest request ) 
     {
         String strIdForm = request.getParameter( PARAMETER_ID_FORM );
         Locale locale = getLocale( );
@@ -1131,11 +1132,23 @@ public class AppointmentJspBean extends MVCAdminJspBean
         Map<WeekDefinition, ReservationRule> mapReservationRule = ReservationRuleService.findAllReservationRule( nIdForm, listWeekDefinition );
 
         List<Slot> listSlot = SlotService.buildListSlot( nIdForm, mapReservationRule, startingDateTime.toLocalDate( ), endingDateTime.toLocalDate( ) );
-        listSlot = listSlot
+        
+        FormRule formRule = FormRuleService.findFormRuleWithFormId( nIdForm );
+        if(formRule.getBoOverbooking( ) && RBACService.isAuthorized( AppointmentFormDTO.RESOURCE_TYPE, strIdForm,
+                AppointmentResourceIdService.PERMISSION_OVERBOOKING_FORM, (User) getUser( ) )) {
+        	 
+        	  listSlot = listSlot
+                      .stream( ).filter( s -> ( ( startingDateTime.compareTo( s.getStartingDateTime( ) ) <= 0 )
+                              && ( endingDateTime.compareTo( s.getEndingDateTime( ) ) >= 0 ) && ( s.getIsOpen( ) ) ) )
+                      .collect( Collectors.toList( ) );
+        	
+        }else {
+        
+        	listSlot = listSlot
                 .stream( ).filter( s -> ( ( startingDateTime.compareTo( s.getStartingDateTime( ) ) <= 0 )
                         && ( endingDateTime.compareTo( s.getEndingDateTime( ) ) >= 0 ) && ( s.getNbRemainingPlaces( ) > 0 ) && ( s.getIsOpen( ) ) ) )
                 .collect( Collectors.toList( ) );
-
+        }
         boolean bool = true;
 
         // If nIdSlot == 0, the slot has not been created yet
