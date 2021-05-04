@@ -722,6 +722,7 @@ public final class FormService
                 ReservationRuleHome.delete( rule.getIdReservationRule( ) );
             }
 
+            ClosingDayHome.deleteByIdForm(nIdForm);
             FormRuleHome.deleteByIdFom( nIdForm );
             DisplayHome.deleteByIdForm( nIdForm );
             LocalizationHome.deleteByIdForm( nIdForm );
@@ -729,7 +730,6 @@ public final class FormService
             CommentHome.removeByIdFom( nIdForm );
             FormHome.delete( nIdForm );
             EntryService.getService( ).removeEntriesByIdAppointmentForm( nIdForm );
-            ClosingDayHome.deleteByIdForm(nIdForm);
             
             TransactionManager.commitTransaction( AppointmentPlugin.getPlugin( ) );
 
