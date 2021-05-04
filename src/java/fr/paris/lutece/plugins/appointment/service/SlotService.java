@@ -261,8 +261,30 @@ public final class SlotService
     public static List<Slot> buildListSlot( int nIdForm, Map<WeekDefinition, ReservationRule> mapReservationRule, LocalDate startingDate, LocalDate endingDate,
             int nNbPlaces )
     {
+    	 return buildListSlot( nIdForm, mapReservationRule, startingDate, endingDate, nNbPlaces, false );
+    }
+    /**
+     * Build all the slot for a period with all the rules (open hours ...) to apply on each day, for each slot
+     * 
+     * @param nIdForm
+     *            the form Id
+     * @param mapReservationRule
+     *            the map of the rule week definition
+     * @param startingDate
+     *            the starting date of the period
+     * @param endingDate
+     *            the ending date of the periode
+     * @param nNbPlaces
+     *            the number of place to take
+     * @param bAllOpenSlot
+     *            build slots with the all open slot          
+     * @return list of all the slots built
+     */
+    public static List<Slot> buildListSlot( int nIdForm, Map<WeekDefinition, ReservationRule> mapReservationRule, LocalDate startingDate, LocalDate endingDate,
+            int nNbPlaces, boolean bAllOpenSlot )
+    {
         ForkJoinPool fjp = new ForkJoinPool( );
-        RecursiveSlotTask task = new RecursiveSlotTask( nIdForm, mapReservationRule, startingDate, endingDate, nNbPlaces );
+        RecursiveSlotTask task = new RecursiveSlotTask( nIdForm, mapReservationRule, startingDate, endingDate, nNbPlaces, bAllOpenSlot );
         List<Slot> listSlot = fjp.invoke( task );
         fjp.shutdownNow( );
         return listSlot;

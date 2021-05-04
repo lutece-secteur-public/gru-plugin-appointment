@@ -28,7 +28,7 @@
                     "id" : "${event.idSlot}",
                     "textColor" : <#if event.isOpen & !event.isPassed & (nbAppointments > event.maxCapacity)>"white"<#else>"#2c2c2d"</#if>,
                     "url" : eventUrl + "manageAppointments&id_form=${event.idForm}&id_slot=${event.idSlot}&starting_date_time=${event.startingDateTime}&ending_date_time=${event.endingDateTime}&modif_date=${modifDateAppointment?c}",                                                      
-                    "backgroundColor" : <#if event.isOpen & !event.isPassed & (nbAppointments > event.maxCapacity)>"#ff6600"
+                    "backgroundColor" : <#if event.isOpen & !event.isPassed &  ( nbAppointments > event.maxCapacity || event.isFull )>"#ff6600"
                     				  <#elseif event.isOpen & !event.isPassed & (event.nbRemainingPlaces > 0) & (event.nbRemainingPlaces = event.nbPotentialRemainingPlaces)>"white"
                                       <#elseif event.isOpen & !event.isPassed & (event.nbRemainingPlaces > 0) & (event.nbPotentialRemainingPlaces = 0)>"red"
                                       <#elseif event.isOpen & !event.isPassed & (event.nbRemainingPlaces = 0)>"red"
