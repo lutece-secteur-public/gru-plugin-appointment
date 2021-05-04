@@ -53,6 +53,7 @@ import fr.paris.lutece.plugins.appointment.business.localization.LocalizationHom
 import fr.paris.lutece.plugins.appointment.business.message.FormMessage;
 import fr.paris.lutece.plugins.appointment.business.message.FormMessageHome;
 import fr.paris.lutece.plugins.appointment.business.planning.ClosingDay;
+import fr.paris.lutece.plugins.appointment.business.planning.ClosingDayHome;
 import fr.paris.lutece.plugins.appointment.business.planning.TimeSlot;
 import fr.paris.lutece.plugins.appointment.business.planning.TimeSlotHome;
 import fr.paris.lutece.plugins.appointment.business.planning.WeekDefinition;
@@ -728,7 +729,8 @@ public final class FormService
             CommentHome.removeByIdFom( nIdForm );
             FormHome.delete( nIdForm );
             EntryService.getService( ).removeEntriesByIdAppointmentForm( nIdForm );
-
+            ClosingDayHome.deleteByIdForm(nIdForm);
+            
             TransactionManager.commitTransaction( AppointmentPlugin.getPlugin( ) );
 
             FormListenerManager.notifyListenersFormRemoval( nIdForm );

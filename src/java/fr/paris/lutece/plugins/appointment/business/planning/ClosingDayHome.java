@@ -111,6 +111,18 @@ public final class ClosingDayHome
     	_dao.deleteByIdFormAndDateOfClosingDay(nIdForm, dateOfCLosingDay, _plugin);
     }
     /**
+     * Delete a record from the table
+     * 
+     * @param nIdForm
+     *            the Form Id
+     * @param dateOfCLosingDay
+     *            the date of the closing day
+     */
+    public static void deleteByIdForm( int nIdForm ) 
+    {
+    	_dao.deleteByIdForm(nIdForm, _plugin);
+    }
+    /**
      * Returns an instance of the ClosingDay whose identifier is specified in parameter
      * 
      * @param nKey

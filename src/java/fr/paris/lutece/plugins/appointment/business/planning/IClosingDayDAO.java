@@ -86,7 +86,15 @@ public interface IClosingDayDAO
      *            the plugin
      */
     void deleteByIdFormAndDateOfClosingDay( int nIdForm, LocalDate dateOfCLosingDay, Plugin plugin );
-
+    /**
+     * Delete a record from the table
+     * 
+     * @param nIdForm
+     *            the Form Id
+     * @param plugin
+     *            the plugin
+     */
+    void deleteByIdForm( int nIdForm, Plugin plugin );
     /**
      * Load the data from the table
      * 
