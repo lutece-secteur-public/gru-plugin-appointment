@@ -19,7 +19,6 @@
                     </@li>
                 </#list>
             </@ul>
-           
         </@columns>
     </@row>
 </@appointmentTabs>
@@ -168,8 +167,8 @@ $(function() {
                 <#list listWeekDefinition?filter( weekdef -> weekdef.idReservationRule  = rule.idReservationRule ) as weekdef>
                     {
                         id: ${rule.idReservationRule},
-                        name: '${rule.name}',
-                        location: '${rule.descriptionRule}',
+                        name: '${rule.name?js_string}',
+                        location: '${rule.descriptionRule?js_string}',
                         startDate: new Date(${weekdef.dateOfApply.year}, ${weekdef.dateOfApply.monthValue -1}, ${weekdef.dateOfApply.dayOfMonth}),
                         endDate: new Date(${weekdef.endingDateOfApply.year}, ${weekdef.endingDateOfApply.monthValue -1}, ${weekdef.endingDateOfApply.dayOfMonth!}),
                         color: '${rule.color}',
