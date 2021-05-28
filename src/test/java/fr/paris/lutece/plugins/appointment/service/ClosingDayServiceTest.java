@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2002-2020, City of Paris
+ * Copyright (c) 2002-2021, City of Paris
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -51,7 +51,7 @@ public class ClosingDayServiceTest extends LuteceTestCase
     {
         // Build the form
         AppointmentFormDTO formDto = FormServiceTest.buildAppointmentForm( );
-        formDto.setName("appointment_form");
+        formDto.setName( "appointment_form" );
         int nIdForm = FormService.createAppointmentForm( formDto );
         List<LocalDate> listClosingDays = new ArrayList<>( );
         listClosingDays.add( LocalDate.parse( "2018-05-01" ) );

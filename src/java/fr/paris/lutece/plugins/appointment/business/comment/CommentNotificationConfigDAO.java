@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2002-2020, City of Paris
+ * Copyright (c) 2002-2021, City of Paris
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -51,8 +51,6 @@ public class CommentNotificationConfigDAO implements ICommentNotificationConfigD
 
     private static final String SQL_QUERY_UPDATE = "UPDATE appointment_comment_notification_cf SET sender_name=?,subject=?,message=? WHERE notify_type= ? ";
 
-   
-
     /**
      * {@inheritDoc}
      */
@@ -67,7 +65,7 @@ public class CommentNotificationConfigDAO implements ICommentNotificationConfigD
             daoUtil.setString( ++nPos, config.getSubject( ) );
             daoUtil.setString( ++nPos, config.getMessage( ) );
 
-            daoUtil.setString( ++nPos, config.getType().name( ));
+            daoUtil.setString( ++nPos, config.getType( ).name( ) );
             daoUtil.executeUpdate( );
         }
     }
@@ -81,14 +79,14 @@ public class CommentNotificationConfigDAO implements ICommentNotificationConfigD
         CommentNotificationConfig config = null;
         try ( DAOUtil daoUtil = new DAOUtil( SQL_QUERY_FIND_BY_TYPE, plugin ) )
         {
-        	daoUtil.setString(1 , strType );
+            daoUtil.setString( 1, strType );
             daoUtil.executeQuery( );
 
             if ( daoUtil.next( ) )
             {
                 int nPos = 0;
                 config = new CommentNotificationConfig( );
-                config.setType( CommentNotificationConfig.NotificationType.valueOf( (daoUtil.getString( ++nPos ) )));
+                config.setType( CommentNotificationConfig.NotificationType.valueOf( ( daoUtil.getString( ++nPos ) ) ) );
                 config.setSenderName( daoUtil.getString( ++nPos ) );
                 config.setSubject( daoUtil.getString( ++nPos ) );
                 config.setMessage( daoUtil.getString( ++nPos ) );
@@ -96,13 +94,14 @@ public class CommentNotificationConfigDAO implements ICommentNotificationConfigD
         }
         return config;
     }
+
     /**
      * {@inheritDoc}
      */
     @Override
     public List<CommentNotificationConfig> load( Plugin plugin )
     {
-    	List<CommentNotificationConfig> listCommentNotificationConfig= new ArrayList< >();
+        List<CommentNotificationConfig> listCommentNotificationConfig = new ArrayList<>( );
         try ( DAOUtil daoUtil = new DAOUtil( SQL_QUERY_FIND, plugin ) )
         {
             daoUtil.executeQuery( );
@@ -111,7 +110,7 @@ public class CommentNotificationConfigDAO implements ICommentNotificationConfigD
             {
                 int nPos = 0;
                 CommentNotificationConfig config = new CommentNotificationConfig( );
-                config.setType( CommentNotificationConfig.NotificationType.valueOf( (daoUtil.getString( ++nPos ) )));
+                config.setType( CommentNotificationConfig.NotificationType.valueOf( ( daoUtil.getString( ++nPos ) ) ) );
                 config.setSenderName( daoUtil.getString( ++nPos ) );
                 config.setSubject( daoUtil.getString( ++nPos ) );
                 config.setMessage( daoUtil.getString( ++nPos ) );

@@ -98,6 +98,7 @@ public final class ClosingDayHome
     {
         _dao.delete( nKey, _plugin );
     }
+
     /**
      * Delete a record from the table
      * 
@@ -106,10 +107,11 @@ public final class ClosingDayHome
      * @param dateOfCLosingDay
      *            the date of the closing day
      */
-    public static void deleteByIdFormAndDateOfClosingDay( int nIdForm, LocalDate dateOfCLosingDay ) 
+    public static void deleteByIdFormAndDateOfClosingDay( int nIdForm, LocalDate dateOfCLosingDay )
     {
-    	_dao.deleteByIdFormAndDateOfClosingDay(nIdForm, dateOfCLosingDay, _plugin);
+        _dao.deleteByIdFormAndDateOfClosingDay( nIdForm, dateOfCLosingDay, _plugin );
     }
+
     /**
      * Delete a record from the table
      * 
@@ -118,10 +120,11 @@ public final class ClosingDayHome
      * @param dateOfCLosingDay
      *            the date of the closing day
      */
-    public static void deleteByIdForm( int nIdForm ) 
+    public static void deleteByIdForm( int nIdForm )
     {
-    	_dao.deleteByIdForm(nIdForm, _plugin);
+        _dao.deleteByIdForm( nIdForm, _plugin );
     }
+
     /**
      * Returns an instance of the ClosingDay whose identifier is specified in parameter
      * 

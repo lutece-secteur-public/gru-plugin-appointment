@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2002-2020, City of Paris
+ * Copyright (c) 2002-2021, City of Paris
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -70,10 +70,11 @@ public class WeekDefinitionServiceTest extends LuteceTestCase
         appointmentForm2.setDateEndValidity( Date.valueOf( dateOfModification ) );
         ReservationRuleService.updateAdvancedParameters( appointmentForm2 );
         appointmentForm2.setIdReservationRule( nIdReservationRule );
-        
-        WeekDefinition weekDefinition = WeekDefinitionService.createWeekDefinition( appointmentForm2.getIdReservationRule( ), dateOfModification, dateOfModification );
+
+        WeekDefinition weekDefinition = WeekDefinitionService.createWeekDefinition( appointmentForm2.getIdReservationRule( ), dateOfModification,
+                dateOfModification );
         WeekDefinitionService.assignWeekDefinition( nIdForm, weekDefinition );
-     
+
         WeekDefinition foundWeekDefinition = WeekDefinitionService.findWeekDefinitionByIdFormAndClosestToDateOfApply( nIdForm, dateOfApply );
         assertEquals( appointmentForm2.getDateStartValidity( ), Date.valueOf( foundWeekDefinition.getDateOfApply( ) ) );
 
@@ -81,12 +82,12 @@ public class WeekDefinitionServiceTest extends LuteceTestCase
         appointmentForm3.setIdForm( nIdForm );
         appointmentForm3.setTimeEnd( "19:00" );
         LocalDate dateOfModification2 = LocalDate.parse( "2028-06-21" );
-        
+
         appointmentForm3.setDateStartValidity( Date.valueOf( dateOfModification2 ) );
         appointmentForm3.setDateEndValidity( Date.valueOf( dateOfModification2 ) );
         appointmentForm3.setIdReservationRule( nIdReservationRule );
         ReservationRuleService.updateAdvancedParameters( appointmentForm3 );
-        
+
         weekDefinition = WeekDefinitionService.createWeekDefinition( appointmentForm3.getIdReservationRule( ), dateOfModification2, dateOfModification2 );
         WeekDefinitionService.assignWeekDefinition( nIdForm, weekDefinition );
 
@@ -95,18 +96,17 @@ public class WeekDefinitionServiceTest extends LuteceTestCase
         FormServiceTest.cleanForm( nIdForm );
     }
 
-
     /**
      * Return the min starting time of a list of week definitions
      */
     public void testGetMinStartingTimeOfAListOfWeekDefinition( )
     {
         // Build the form
-    	List<ReservationRule> openDays = new ArrayList<>();
+        List<ReservationRule> openDays = new ArrayList<>( );
         AppointmentFormDTO appointmentForm = FormServiceTest.buildAppointmentForm( );
         appointmentForm.setTimeStart( "09:00" );
         int nIdForm = FormService.createAppointmentForm( appointmentForm );
-        appointmentForm.setIdForm(nIdForm);
+        appointmentForm.setIdForm( nIdForm );
         int nIdReservationRule = WeekDefinitionService.findListWeekDefinition( nIdForm ).get( 0 ).getIdReservationRule( );
         appointmentForm.setIdReservationRule( nIdReservationRule );
         openDays.add( ReservationRuleService.findReservationRuleById( nIdReservationRule ) );
@@ -119,7 +119,7 @@ public class WeekDefinitionServiceTest extends LuteceTestCase
         appointmentForm2.setDateEndValidity( Date.valueOf( dateOfModification ) );
         appointmentForm2.setIdReservationRule( nIdReservationRule );
         ReservationRuleService.updateAdvancedParameters( appointmentForm2 );
-        
+
         openDays.add( ReservationRuleService.findReservationRuleById( nIdReservationRule ) );
 
         AppointmentFormDTO appointmentForm3 = FormServiceTest.buildAppointmentForm( );
@@ -149,7 +149,8 @@ public class WeekDefinitionServiceTest extends LuteceTestCase
         appointmentForm.setIdForm( nIdForm );
         int nIdReservationRule = WeekDefinitionService.findListWeekDefinition( nIdForm ).get( 0 ).getIdReservationRule( );
         appointmentForm.setIdReservationRule( nIdReservationRule );
-        assertEquals( LocalTime.parse( "09:00" ), WeekDefinitionService.getMinStartingTimeOfAWeekDefinition( ReservationRuleService.findReservationRuleById( nIdReservationRule ) ) );
+        assertEquals( LocalTime.parse( "09:00" ),
+                WeekDefinitionService.getMinStartingTimeOfAWeekDefinition( ReservationRuleService.findReservationRuleById( nIdReservationRule ) ) );
         FormServiceTest.cleanForm( nIdForm );
     }
 
@@ -160,7 +161,7 @@ public class WeekDefinitionServiceTest extends LuteceTestCase
     {
 
         // Build the form
-    	List<ReservationRule> openDays = new ArrayList<>();
+        List<ReservationRule> openDays = new ArrayList<>( );
         AppointmentFormDTO appointmentForm = FormServiceTest.buildAppointmentForm( );
         appointmentForm.setTimeEnd( "18:00" );
         int nIdForm = FormService.createAppointmentForm( appointmentForm );
@@ -203,7 +204,8 @@ public class WeekDefinitionServiceTest extends LuteceTestCase
         appointmentForm.setTimeEnd( "19:00" );
         int nIdForm = FormService.createAppointmentForm( appointmentForm );
         appointmentForm.setIdForm( nIdForm );
-        ReservationRule reservationRule = ReservationRuleService.findReservationRuleById( WeekDefinitionService.findListWeekDefinition( nIdForm ).get( 0 ).getIdReservationRule( ) );
+        ReservationRule reservationRule = ReservationRuleService
+                .findReservationRuleById( WeekDefinitionService.findListWeekDefinition( nIdForm ).get( 0 ).getIdReservationRule( ) );
         assertEquals( LocalTime.parse( "19:00" ), WeekDefinitionService.getMaxEndingTimeOfAWeekDefinition( reservationRule ) );
         FormServiceTest.cleanForm( nIdForm );
     }
@@ -214,9 +216,9 @@ public class WeekDefinitionServiceTest extends LuteceTestCase
     public void testGetMinDurationTimeSlotOfAListOfWeekDefinition( )
     {
         // Build the form
-    	List<ReservationRule> openDays = new ArrayList<>();
+        List<ReservationRule> openDays = new ArrayList<>( );
         AppointmentFormDTO appointmentForm = FormServiceTest.buildAppointmentForm( );
-        appointmentForm.setName("appointment_form");
+        appointmentForm.setName( "appointment_form" );
         appointmentForm.setDurationAppointments( 30 );
         int nIdForm = FormService.createAppointmentForm( appointmentForm );
         appointmentForm.setIdForm( nIdForm );
@@ -225,7 +227,7 @@ public class WeekDefinitionServiceTest extends LuteceTestCase
         openDays.add( ReservationRuleService.findReservationRuleById( nIdReservationRule ) );
 
         AppointmentFormDTO appointmentForm2 = FormServiceTest.buildAppointmentForm( );
-        appointmentForm2.setName("appointment_form");
+        appointmentForm2.setName( "appointment_form" );
         appointmentForm2.setIdForm( nIdForm );
         appointmentForm2.setDurationAppointments( 20 );
         appointmentForm2.setIdReservationRule( nIdReservationRule );
@@ -236,7 +238,7 @@ public class WeekDefinitionServiceTest extends LuteceTestCase
         openDays.add( ReservationRuleService.findReservationRuleById( nIdReservationRule ) );
 
         AppointmentFormDTO appointmentForm3 = FormServiceTest.buildAppointmentForm( );
-        appointmentForm3.setName("appointment_form");
+        appointmentForm3.setName( "appointment_form" );
         appointmentForm3.setIdForm( nIdForm );
         appointmentForm3.setDurationAppointments( 10 );
         appointmentForm3.setIdReservationRule( nIdReservationRule );
@@ -260,7 +262,7 @@ public class WeekDefinitionServiceTest extends LuteceTestCase
         // Build the form
         AppointmentFormDTO appointmentForm = FormServiceTest.buildAppointmentForm( );
 
-        appointmentForm.setName("appointment_form");
+        appointmentForm.setName( "appointment_form" );
         appointmentForm.setIsOpenMonday( Boolean.TRUE );
         appointmentForm.setIsOpenTuesday( Boolean.TRUE );
         appointmentForm.setIsOpenWednesday( Boolean.TRUE );
@@ -274,9 +276,8 @@ public class WeekDefinitionServiceTest extends LuteceTestCase
         appointmentForm.setIdReservationRule( nIdReservationRule );
 
         List<WeekDefinition> listWeekDefinition = WeekDefinitionService.findListWeekDefinition( nIdForm );
-        
-        
-        List<ReservationRule> openDays = new ArrayList<>();
+
+        List<ReservationRule> openDays = new ArrayList<>( );
         openDays.add( ReservationRuleService.findReservationRuleById( nIdReservationRule ) );
 
         assertEquals( 5, WeekDefinitionService.getOpenDaysOfWeek( openDays ).size( ) );

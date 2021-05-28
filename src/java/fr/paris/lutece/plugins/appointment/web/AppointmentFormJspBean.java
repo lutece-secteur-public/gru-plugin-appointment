@@ -222,7 +222,7 @@ public class AppointmentFormJspBean extends AbstractAppointmentFormAndSlotJspBea
         Map<String, Object> model = getModel( );
         model.put( MARK_NB_ITEMS_PER_PAGE, Integer.toString( _nItemsPerPage ) );
         model.put( MARK_PAGINATOR, paginator );
-        model.put( MARK_BASE_URL,  AppPathService.getProdUrl( request ));
+        model.put( MARK_BASE_URL, AppPathService.getProdUrl( request ) );
         model.put( MARK_APPOINTMENTFORM_LIST, RBACService.getAuthorizedCollection( paginator.getPageItems( ), AppointmentResourceIdService.PERMISSION_VIEW_FORM,
                 (User) AdminUserService.getAdminUser( request ) ) );
         model.put( VIEW_PERMISSIONS_FORM, AppointmentUtilities.getPermissions( paginator.getPageItems( ), user ) );

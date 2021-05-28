@@ -83,7 +83,7 @@ public class Appointment extends User
      * Id for a cancelled appointment
      */
     private int _nIdActionCancelled;
-    
+
     /**
      * Id for a reported appointment
      */
@@ -211,6 +211,7 @@ public class Appointment extends User
     {
         this._nIdActionCancelled = nIdActionCancelled;
     }
+
     /**
      * Get the id for the reported appointment
      * 
@@ -458,7 +459,7 @@ public class Appointment extends User
             this._dateAppointmentTaken = null;
         }
     }
-    
+
     /**
      * Get if the appointment is surbooked
      * 

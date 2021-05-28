@@ -63,7 +63,6 @@ public final class ClosingDayDAO implements IClosingDayDAO
     private static final String SQL_QUERY_DELETE_BY_ID_FORM_AND_DATE_OF_CLOSING_DAY = "DELETE FROM appointment_closing_day WHERE id_form = ? AND date_of_closing_day = ? ";
     private static final String SQL_QUERY_DELETE_BY_ID_FORM = "DELETE FROM appointment_closing_day WHERE id_form = ? ";
 
-
     @Override
     public void insert( ClosingDay closingDay, Plugin plugin )
     {
@@ -137,8 +136,9 @@ public final class ClosingDayDAO implements IClosingDayDAO
             daoUtil.setInt( 1, nIdForm );
             daoUtil.setDate( 2, Date.valueOf( dateOfCLosingDay ) );
             daoUtil.executeUpdate( );
-        }    
+        }
     }
+
     @Override
     public void deleteByIdForm( int nIdForm, Plugin plugin )
     {
@@ -146,9 +146,9 @@ public final class ClosingDayDAO implements IClosingDayDAO
         {
             daoUtil.setInt( 1, nIdForm );
             daoUtil.executeUpdate( );
-        }    
+        }
     }
-    
+
     @Override
     public List<ClosingDay> findByIdForm( int nIdForm, Plugin plugin )
     {

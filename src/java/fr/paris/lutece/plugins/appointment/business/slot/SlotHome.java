@@ -261,15 +261,20 @@ public final class SlotHome
         _dao.resetPotentialRemainingPlaces( _plugin );
 
     }
+
     /**
      * Return the specific slot dates from the form
-     * @param nIdForm the id Form
-     * @param plugin the plugin
-     * @return list of date 
+     * 
+     * @param nIdForm
+     *            the id Form
+     * @param plugin
+     *            the plugin
+     * @return list of date
      */
-    public static List<LocalDate> findSpecificSlotDates( int nIdForm ){
-    	
-    	return _dao.findSpecificSlotDates( nIdForm, _plugin );
+    public static List<LocalDate> findSpecificSlotDates( int nIdForm )
+    {
+
+        return _dao.findSpecificSlotDates( nIdForm, _plugin );
     }
 
 }

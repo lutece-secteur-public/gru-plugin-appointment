@@ -69,8 +69,11 @@ public interface IAppointmentDAO
 
     /**
      * Update date appointment, update AppointmentSlot
-     * @param appointment the appointment
-     * @param plugin the plugin
+     * 
+     * @param appointment
+     *            the appointment
+     * @param plugin
+     *            the plugin
      */
     void updateAppointmentDate( Appointment appointment, Plugin plugin );
 
@@ -171,18 +174,23 @@ public interface IAppointmentDAO
      * @return a list of appointments
      */
     List<Appointment> findByFilter( AppointmentFilterDTO appointmentFilter, Plugin plugin );
-    
+
     /**
      * Find a list of appointments by id category and mail
-     * @param nIdCategory the id category
-     * @param mail the mail
+     * 
+     * @param nIdCategory
+     *            the id category
+     * @param mail
+     *            the mail
      * @param plugin
      *            the plugin
      * @return list of appointments
      */
     List<Appointment> findByCategoryAndMail( int nIdCategory, String mail, Plugin plugin );
+
     /**
      * returns a list of all appointment ids.
+     * 
      * @param plugin
      * @return
      */

@@ -84,7 +84,6 @@ public class AppointmentCategoryJspBean extends AbstractAppointmentFormAndSlotJs
     // Validations
     private static final String VALIDATION_ATTRIBUTES_PREFIX = "appointment.model.entity.category.attribute.";
 
-  
     // Markers
     private static final String MARK_CATEGORY = "category";
     private static final String MARK_LIST_CATEGORY = "category_list";
@@ -122,7 +121,7 @@ public class AppointmentCategoryJspBean extends AbstractAppointmentFormAndSlotJs
     @View( value = VIEW_MANAGE_CATEGORY, defaultView = true )
     public String getManageCategory( HttpServletRequest request )
     {
-    	_category = null;
+        _category = null;
         List<Category> listCategory = CategoryService.findAllCategories( );
         Map<String, Object> model = getPaginatedListModel( request, MARK_LIST_CATEGORY, listCategory, JSP_MANAGE_CATEGORY );
 
@@ -166,9 +165,9 @@ public class AppointmentCategoryJspBean extends AbstractAppointmentFormAndSlotJs
     public String doRemoveCategory( HttpServletRequest request )
     {
         String strIdCategory = request.getParameter( PARAMETER_ID_CATEGORY );
-        if ( CollectionUtils.isNotEmpty( FormHome.findByCategory(Integer.parseInt( strIdCategory )) ))
+        if ( CollectionUtils.isNotEmpty( FormHome.findByCategory( Integer.parseInt( strIdCategory ) ) ) )
         {
-        	addError( MESSAGE_ERROR_REMOVE_CATEGORY ,getLocale( ) );
+            addError( MESSAGE_ERROR_REMOVE_CATEGORY, getLocale( ) );
             return redirectView( request, VIEW_MANAGE_CATEGORY );
         }
         int nIdCategory = Integer.parseInt( strIdCategory );
@@ -190,7 +189,7 @@ public class AppointmentCategoryJspBean extends AbstractAppointmentFormAndSlotJs
     public String getCreateCategory( HttpServletRequest request )
     {
         Map<String, Object> model = getModel( );
-        _category= (_category == null )?new Category( ):_category;
+        _category = ( _category == null ) ? new Category( ) : _category;
         model.put( MARK_CATEGORY, _category );
         return getPage( PROPERTY_PAGE_TITLE_CREATE_CATEGORY, TEMPLATE_CREATE_CATEGORY, model );
     }
@@ -208,7 +207,7 @@ public class AppointmentCategoryJspBean extends AbstractAppointmentFormAndSlotJs
     public String doCreateCategory( HttpServletRequest request )
     {
         populate( _category, request );
-      // Check constraints
+        // Check constraints
         if ( !validateBean( _category, VALIDATION_ATTRIBUTES_PREFIX ) )
         {
             return redirectView( request, VIEW_CREATE_CATEGORY );
@@ -253,10 +252,10 @@ public class AppointmentCategoryJspBean extends AbstractAppointmentFormAndSlotJs
     {
         String strIdCategory = request.getParameter( PARAMETER_ID_CATEGORY );
         int nIdCategory = Integer.parseInt( strIdCategory );
-        _category=(_category== null || _category.getIdCategory( ) != nIdCategory )?new Category( ): _category;
+        _category = ( _category == null || _category.getIdCategory( ) != nIdCategory ) ? new Category( ) : _category;
         _category.setIdCategory( nIdCategory );
         populate( _category, request );
-        //Check constraints
+        // Check constraints
         if ( !validateBean( _category, VALIDATION_ATTRIBUTES_PREFIX ) )
         {
             return redirectView( request, VIEW_MODIFY_CATEGORY );

@@ -49,7 +49,7 @@ import fr.paris.lutece.portal.service.spring.SpringContextService;
 public final class TimeSlotHome
 {
     // Static variable pointed at the DAO instance
-    private static ITimeSlotDAO _dao = SpringContextService.getBean( "appointment.timeSlotDAO");
+    private static ITimeSlotDAO _dao = SpringContextService.getBean( "appointment.timeSlotDAO" );
     private static Plugin _plugin = PluginService.getPlugin( AppointmentPlugin.PLUGIN_NAME );
 
     /**

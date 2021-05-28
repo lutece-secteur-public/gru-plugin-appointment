@@ -48,7 +48,7 @@ public final class FormRuleHome
 {
 
     // Static variable pointed at the DAO instance
-    private static IFormRuleDAO _dao = SpringContextService.getBean(  "appointment.formRuleDAO" );
+    private static IFormRuleDAO _dao = SpringContextService.getBean( "appointment.formRuleDAO" );
     private static Plugin _plugin = PluginService.getPlugin( AppointmentPlugin.PLUGIN_NAME );
 
     /**

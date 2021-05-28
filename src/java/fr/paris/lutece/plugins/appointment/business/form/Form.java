@@ -137,7 +137,7 @@ public final class Form implements RBACResource, AdminWorkgroupResource, Seriali
     /**
      * theoretical capacity per slot
      */
-    private int _nCapacityPerSlot = 1; 
+    private int _nCapacityPerSlot = 1;
 
     /**
      * Get the form Id
@@ -463,20 +463,23 @@ public final class Form implements RBACResource, AdminWorkgroupResource, Seriali
 
     /**
      * Returns the theoretical capacity per slot
+     * 
      * @return The theoretical capacity per slot
-     */ 
-     public int getCapacityPerSlot()
-     {
-         return _nCapacityPerSlot;
-     }
- 
+     */
+    public int getCapacityPerSlot( )
+    {
+        return _nCapacityPerSlot;
+    }
+
     /**
      * Sets the theoretical capacity per slot
-     * @param nCapacityPerSlot The theoretical capacity per slot
-     */ 
-     public void setCapacityPerSlot( int nCapacityPerSlot )
-     {
-         _nCapacityPerSlot = nCapacityPerSlot;
-     }
+     * 
+     * @param nCapacityPerSlot
+     *            The theoretical capacity per slot
+     */
+    public void setCapacityPerSlot( int nCapacityPerSlot )
+    {
+        _nCapacityPerSlot = nCapacityPerSlot;
+    }
 
 }

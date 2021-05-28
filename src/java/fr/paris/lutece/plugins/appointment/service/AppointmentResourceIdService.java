@@ -86,11 +86,10 @@ public final class AppointmentResourceIdService extends ResourceIdService
 
     /** Permission for taking appointment */
     public static final String PERMISSION_OVERBOOKING_FORM = "OVERBOOKING_FORM";
-    /** Permission for moderate comment  */
+    /** Permission for moderate comment */
     public static final String PERMISSION_MODERATE_COMMENT_FORM = "MODERATE_COMMENT_FORM";
     /** Permission for adding comment */
     public static final String PERMISSION_ADD_COMMENT_FORM = "ADD_COMMENT_FORM";
-    
 
     // Permission labels
     private static final String PROPERTY_LABEL_RESOURCE_TYPE = "appointment.appointment.name";
@@ -108,8 +107,6 @@ public final class AppointmentResourceIdService extends ResourceIdService
     public static final String PROPERTY_LABEL_OVERBOOKING_FORM = "appointment.permission.label.overbooking";
     public static final String PROPERTY_LABEL_MODERATE_COMMENT_FORM = "appointment.permission.label.moderateComment";
     public static final String PROPERTY_LABEL_ADD_COMMENT_FORM = "appointment.permission.label.addComment";
-
-
 
     /** Creates a new instance of DocumentTypeResourceIdService */
     public AppointmentResourceIdService( )

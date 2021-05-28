@@ -453,7 +453,7 @@ public final class FormService
         {
             fillAppointmentFormWithFormRulePart( appointmentForm, formRule );
         }
-        
+
         return appointmentForm;
     }
 
@@ -684,7 +684,7 @@ public final class FormService
         form.setWorkgroup( appointmentForm.getWorkgroup( ) );
         form.setIsMultislotAppointment( appointmentForm.getIsMultislotAppointment( ) );
         form.setRole( appointmentForm.getRole( ) );
-        form.setCapacityPerSlot( appointmentForm.getCapacityPerSlot( ));
+        form.setCapacityPerSlot( appointmentForm.getCapacityPerSlot( ) );
         return form;
     }
 
@@ -722,7 +722,7 @@ public final class FormService
                 ReservationRuleHome.delete( rule.getIdReservationRule( ) );
             }
 
-            ClosingDayHome.deleteByIdForm(nIdForm);
+            ClosingDayHome.deleteByIdForm( nIdForm );
             FormRuleHome.deleteByIdFom( nIdForm );
             DisplayHome.deleteByIdForm( nIdForm );
             LocalizationHome.deleteByIdForm( nIdForm );
@@ -730,7 +730,7 @@ public final class FormService
             CommentHome.removeByIdFom( nIdForm );
             FormHome.delete( nIdForm );
             EntryService.getService( ).removeEntriesByIdAppointmentForm( nIdForm );
-            
+
             TransactionManager.commitTransaction( AppointmentPlugin.getPlugin( ) );
 
             FormListenerManager.notifyListenersFormRemoval( nIdForm );

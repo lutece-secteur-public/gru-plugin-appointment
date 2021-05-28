@@ -90,7 +90,7 @@ public class AppointmentFormDashboardComponent extends DashboardComponent
         model.put( MARK_APPOINTMENTFORM_LIST, RBACService.getAuthorizedCollection( listAppointmentForm, AppointmentResourceIdService.PERMISSION_VIEW_FORM,
                 (User) AdminUserService.getAdminUser( request ) ) );
         model.put( MARK_ICON, plugin.getIconUrl( ) );
-        model.put( MARK_BASE_URL,  AppPathService.getProdUrl( request ));
+        model.put( MARK_BASE_URL, AppPathService.getProdUrl( request ) );
         model.put( MARK_URL, AppointmentFormJspBean.getURLManageAppointmentForms( request ) );
         model.put( MARK_PERMISSION_CREATE, String.valueOf(
                 RBACService.isAuthorized( AppointmentFormDTO.RESOURCE_TYPE_CREATE, "0", AppointmentResourceIdService.PERMISSION_CREATE_FORM, (User) user ) ) );

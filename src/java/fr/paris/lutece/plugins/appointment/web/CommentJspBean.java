@@ -139,9 +139,9 @@ public class CommentJspBean extends AbstractAppointmentFormAndSlotJspBean
      * @param request
      *            The HTTP request
      * @return The page
-     * @throws AccessDeniedException 
+     * @throws AccessDeniedException
      */
-    @View( value= VIEW_MANAGE_COMMENT , defaultView = true )
+    @View( value = VIEW_MANAGE_COMMENT, defaultView = true )
     public String getManageComment( HttpServletRequest request )
     {
         _comment = null;
@@ -157,7 +157,7 @@ public class CommentJspBean extends AbstractAppointmentFormAndSlotJspBean
      * @param request
      *            The Http request
      * @return the html code of the comment form
-     * @throws AccessDeniedException 
+     * @throws AccessDeniedException
      */
     @View( VIEW_ADD_COMMENT )
     public String getViewAddComment( HttpServletRequest request ) throws AccessDeniedException
@@ -165,7 +165,8 @@ public class CommentJspBean extends AbstractAppointmentFormAndSlotJspBean
         String strIdForm = request.getParameter( PARAMETER_ID_FORM );
         int nIdForm = Integer.parseInt( strIdForm );
 
-        if ( !RBACService.isAuthorized( AppointmentFormDTO.RESOURCE_TYPE, strIdForm, AppointmentResourceIdService.PERMISSION_ADD_COMMENT_FORM, (User) getUser( ) ) )
+        if ( !RBACService.isAuthorized( AppointmentFormDTO.RESOURCE_TYPE, strIdForm, AppointmentResourceIdService.PERMISSION_ADD_COMMENT_FORM,
+                (User) getUser( ) ) )
         {
             throw new AccessDeniedException( AppointmentResourceIdService.PERMISSION_ADD_COMMENT_FORM );
         }
@@ -175,7 +176,7 @@ public class CommentJspBean extends AbstractAppointmentFormAndSlotJspBean
         model.put( MARK_COMMENT, _comment );
         model.put( MARK_LOCALE, getLocale( ) );
         model.put( PARAMETER_ID_FORM, nIdForm );
-        model.put( MARK_MAILING_LIST, AdminMailingListService.getMailingLists( getUser( )  ));
+        model.put( MARK_MAILING_LIST, AdminMailingListService.getMailingLists( getUser( ) ) );
 
         return getPage( MESSAGE_COMMENT_PAGE_TITLE, TEMPLATE_CREATE_COMMENT, model );
 
@@ -187,7 +188,7 @@ public class CommentJspBean extends AbstractAppointmentFormAndSlotJspBean
      * @param request
      *            The Http Request
      * @return The Jsp URL of the process result
-     * @throws AccessDeniedException 
+     * @throws AccessDeniedException
      */
     @Action( ACTION_DO_ADD_COMMENT )
     public String doAddComment( HttpServletRequest request ) throws AccessDeniedException
@@ -196,9 +197,10 @@ public class CommentJspBean extends AbstractAppointmentFormAndSlotJspBean
         String strIdForm = request.getParameter( PARAMETER_ID_FORM );
         int nIdForm = Integer.parseInt( strIdForm );
         String strReferer = request.getHeader( REFERER );
-        int nIdMailingList= Integer.parseInt( request.getParameter( PARAMETER_ID_MAILING_LIST ));
+        int nIdMailingList = Integer.parseInt( request.getParameter( PARAMETER_ID_MAILING_LIST ) );
 
-        if ( !RBACService.isAuthorized( AppointmentFormDTO.RESOURCE_TYPE, strIdForm, AppointmentResourceIdService.PERMISSION_ADD_COMMENT_FORM, (User) getUser( ) ) )
+        if ( !RBACService.isAuthorized( AppointmentFormDTO.RESOURCE_TYPE, strIdForm, AppointmentResourceIdService.PERMISSION_ADD_COMMENT_FORM,
+                (User) getUser( ) ) )
         {
             throw new AccessDeniedException( AppointmentResourceIdService.PERMISSION_ADD_COMMENT_FORM );
         }
@@ -223,14 +225,14 @@ public class CommentJspBean extends AbstractAppointmentFormAndSlotJspBean
         }
 
         // Check constraints
-        if ( !validateBean( _comment, VALIDATION_ATTRIBUTES_PREFIX ) || !validateDateStartEndValidity( _comment ))
+        if ( !validateBean( _comment, VALIDATION_ATTRIBUTES_PREFIX ) || !validateDateStartEndValidity( _comment ) )
         {
             addError( INFO_COMMENT_ERROR, getLocale( ) );
 
         }
         else
         {
-            CommentService.createAndNotifyMailingList( _comment, nIdMailingList,  getLocale( ) );
+            CommentService.createAndNotifyMailingList( _comment, nIdMailingList, getLocale( ) );
             addInfo( INFO_COMMENT_CREATED, getLocale( ) );
         }
 
@@ -248,15 +250,17 @@ public class CommentJspBean extends AbstractAppointmentFormAndSlotJspBean
      * @param request
      *            The Http request
      * @return the html code of the comment form
-     * @throws AccessDeniedException 
+     * @throws AccessDeniedException
      */
     @View( VIEW_MODIFY_COMMENT )
     public String getViewModifyComment( HttpServletRequest request ) throws AccessDeniedException
     {
         User user = getUser( );
         int nIdComment = Integer.parseInt( request.getParameter( PARAMETER_ID_COMMENT ) );
-        _comment = CommentHome.findByPrimaryKey( nIdComment );        
-        if (!RBACService.isAuthorized( AppointmentFormDTO.RESOURCE_TYPE, Integer.toString( _comment.getIdForm( ) ), AppointmentResourceIdService.PERMISSION_MODERATE_COMMENT_FORM, (User) getUser( ) ) && !_comment.getCreatorUserName( ).equals( user.getAccessCode( ) ) )
+        _comment = CommentHome.findByPrimaryKey( nIdComment );
+        if ( !RBACService.isAuthorized( AppointmentFormDTO.RESOURCE_TYPE, Integer.toString( _comment.getIdForm( ) ),
+                AppointmentResourceIdService.PERMISSION_MODERATE_COMMENT_FORM, (User) getUser( ) )
+                && !_comment.getCreatorUserName( ).equals( user.getAccessCode( ) ) )
         {
             throw new AccessDeniedException( AppointmentResourceIdService.PERMISSION_MODERATE_COMMENT_FORM );
 
@@ -265,10 +269,10 @@ public class CommentJspBean extends AbstractAppointmentFormAndSlotJspBean
         model.put( MARK_COMMENT, _comment );
         model.put( MARK_LOCALE, getLocale( ) );
         model.put( PARAMETER_ID_FORM, _comment.getIdForm( ) );
-        model.put( MARK_MAILING_LIST, AdminMailingListService.getMailingLists( getUser( )  ));
+        model.put( MARK_MAILING_LIST, AdminMailingListService.getMailingLists( getUser( ) ) );
 
         return getPage( MESSAGE_COMMENT_PAGE_TITLE, TEMPLATE_MODIFY_COMMENT, model );
-        
+
     }
 
     /**
@@ -285,13 +289,15 @@ public class CommentJspBean extends AbstractAppointmentFormAndSlotJspBean
         User user = getUser( );
         int nIdComment = Integer.parseInt( request.getParameter( PARAMETER_ID_COMMENT ) );
         String strReferer = request.getHeader( REFERER );
-        int nIdMailingList= Integer.parseInt( request.getParameter( PARAMETER_ID_MAILING_LIST ));
-       
+        int nIdMailingList = Integer.parseInt( request.getParameter( PARAMETER_ID_MAILING_LIST ) );
+
         if ( _comment == null || _comment.getId( ) != nIdComment )
         {
             _comment = CommentHome.findByPrimaryKey( nIdComment );
         }
-        if (!RBACService.isAuthorized( AppointmentFormDTO.RESOURCE_TYPE, Integer.toString( _comment.getIdForm( ) ), AppointmentResourceIdService.PERMISSION_MODERATE_COMMENT_FORM, (User) getUser( ) ) && !_comment.getCreatorUserName( ).equals( user.getAccessCode( ) ) )
+        if ( !RBACService.isAuthorized( AppointmentFormDTO.RESOURCE_TYPE, Integer.toString( _comment.getIdForm( ) ),
+                AppointmentResourceIdService.PERMISSION_MODERATE_COMMENT_FORM, (User) getUser( ) )
+                && !_comment.getCreatorUserName( ).equals( user.getAccessCode( ) ) )
         {
             throw new AccessDeniedException( AppointmentResourceIdService.PERMISSION_MODERATE_COMMENT_FORM );
         }
@@ -317,10 +323,10 @@ public class CommentJspBean extends AbstractAppointmentFormAndSlotJspBean
         }
         else
         {
-        	CommentService.updateAndNotifyMailingList(_comment, nIdMailingList, getLocale( ));
-        	addInfo( INFO_COMMENT_UPDATED, getLocale( ) );
+            CommentService.updateAndNotifyMailingList( _comment, nIdMailingList, getLocale( ) );
+            addInfo( INFO_COMMENT_UPDATED, getLocale( ) );
         }
-            
+
         if ( StringUtils.isNotBlank( strReferer ) )
         {
             return redirect( request, strReferer );
@@ -336,15 +342,17 @@ public class CommentJspBean extends AbstractAppointmentFormAndSlotJspBean
      * @param request
      *            The Http request
      * @return the html code to confirm
-     * @throws AccessDeniedException 
+     * @throws AccessDeniedException
      */
     @Action( ACTION_CONFIRM_REMOVE_COMMENT )
     public String getConfirmRemoveComment( HttpServletRequest request ) throws AccessDeniedException
     {
-    	User user = getUser( );
+        User user = getUser( );
         int nId = Integer.parseInt( request.getParameter( PARAMETER_ID_COMMENT ) );
         _comment = CommentHome.findByPrimaryKey( nId );
-        if (!RBACService.isAuthorized( AppointmentFormDTO.RESOURCE_TYPE, Integer.toString( _comment.getIdForm( ) ), AppointmentResourceIdService.PERMISSION_MODERATE_COMMENT_FORM, (User) getUser( ) ) && !_comment.getCreatorUserName( ).equals( user.getAccessCode( ) ) )
+        if ( !RBACService.isAuthorized( AppointmentFormDTO.RESOURCE_TYPE, Integer.toString( _comment.getIdForm( ) ),
+                AppointmentResourceIdService.PERMISSION_MODERATE_COMMENT_FORM, (User) getUser( ) )
+                && !_comment.getCreatorUserName( ).equals( user.getAccessCode( ) ) )
         {
             throw new AccessDeniedException( AppointmentResourceIdService.PERMISSION_MODERATE_COMMENT_FORM );
         }
@@ -372,19 +380,21 @@ public class CommentJspBean extends AbstractAppointmentFormAndSlotJspBean
         User user = getUser( );
         int nIdComment = Integer.parseInt( request.getParameter( PARAMETER_ID_COMMENT ) );
         String strReferer = request.getParameter( REFERER );
-        int nIdMailingList= Integer.parseInt( request.getParameter( PARAMETER_ID_MAILING_LIST ));
+        int nIdMailingList = Integer.parseInt( request.getParameter( PARAMETER_ID_MAILING_LIST ) );
 
         UrlItem url = new UrlItem( strReferer );
         url.addParameter( PARAMETER_ID_FORM, _comment.getIdForm( ) );
 
         _comment = CommentHome.findByPrimaryKey( nIdComment );
-        if (!RBACService.isAuthorized( AppointmentFormDTO.RESOURCE_TYPE, Integer.toString( _comment.getIdForm( ) ), AppointmentResourceIdService.PERMISSION_MODERATE_COMMENT_FORM, (User) getUser( ) ) && !_comment.getCreatorUserName( ).equals( user.getAccessCode( ) ) )
+        if ( !RBACService.isAuthorized( AppointmentFormDTO.RESOURCE_TYPE, Integer.toString( _comment.getIdForm( ) ),
+                AppointmentResourceIdService.PERMISSION_MODERATE_COMMENT_FORM, (User) getUser( ) )
+                && !_comment.getCreatorUserName( ).equals( user.getAccessCode( ) ) )
         {
             throw new AccessDeniedException( AppointmentResourceIdService.PERMISSION_MODERATE_COMMENT_FORM );
         }
 
-        CommentService.removeAndNotifyMailingList( nIdComment, nIdMailingList, getLocale( )  );
-        addInfo( INFO_COMMENT_REMOVED, getLocale( ) );      
+        CommentService.removeAndNotifyMailingList( nIdComment, nIdMailingList, getLocale( ) );
+        addInfo( INFO_COMMENT_REMOVED, getLocale( ) );
         if ( StringUtils.isNotBlank( strReferer ) )
         {
             return redirect( request, url.getUrl( ) );
@@ -406,15 +416,19 @@ public class CommentJspBean extends AbstractAppointmentFormAndSlotJspBean
 
         return template.getHtml( );
     }
+
     /**
      * Validate Comment date
-     * @param comment the comment
+     * 
+     * @param comment
+     *            the comment
      * @return boolean
      */
-    public boolean validateDateStartEndValidity( Comment comment ) 
+    public boolean validateDateStartEndValidity( Comment comment )
     {
-    	return !( comment.getStartingValidityDate().isAfter(comment.getEndingValidityDate( )) 
-    			|| ( comment.getStartingValidityDate().isEqual(comment.getEndingValidityDate( ) ) && comment.getStartingValidityTime() != null && comment.getStartingValidityTime().isAfter(comment.getEndingValidityTime( ))));
+        return !( comment.getStartingValidityDate( ).isAfter( comment.getEndingValidityDate( ) )
+                || ( comment.getStartingValidityDate( ).isEqual( comment.getEndingValidityDate( ) ) && comment.getStartingValidityTime( ) != null
+                        && comment.getStartingValidityTime( ).isAfter( comment.getEndingValidityTime( ) ) ) );
 
     }
 }

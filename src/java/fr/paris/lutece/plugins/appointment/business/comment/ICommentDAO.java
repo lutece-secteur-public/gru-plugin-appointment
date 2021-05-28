@@ -73,6 +73,7 @@ public interface ICommentDAO
      *            the Plugin
      */
     void delete( int nKey, Plugin plugin );
+
     /**
      * Delete a list comment from the table
      * 

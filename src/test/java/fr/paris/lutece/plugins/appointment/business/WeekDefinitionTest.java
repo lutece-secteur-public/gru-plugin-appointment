@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2002-2020, City of Paris
+ * Copyright (c) 2002-2021, City of Paris
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -64,12 +64,12 @@ public final class WeekDefinitionTest extends LuteceTestCase
         // Initialize a WeekDefinition
         Form form = FormTest.buildForm1( );
         FormHome.create( form );
-        
+
         ReservationRule reservationRule1 = Commons.buildReservationRule( form.getIdForm( ) );
         ReservationRuleHome.create( reservationRule1 );
-        
-        WeekDefinition weekDefinition = buildWeekDefinition( reservationRule1.getIdReservationRule() );
-        
+
+        WeekDefinition weekDefinition = buildWeekDefinition( reservationRule1.getIdReservationRule( ) );
+
         // Insert the WeekDefinition in database
         WeekDefinitionHome.create( weekDefinition );
         // Find the weekDefinition created in database
@@ -106,10 +106,10 @@ public final class WeekDefinitionTest extends LuteceTestCase
         // Initialize a WeekDefinition
         Form form = FormTest.buildForm1( );
         FormHome.create( form );
-        
+
         ReservationRule reservationRule1 = Commons.buildReservationRule( form.getIdForm( ) );
-        ReservationRuleHome.create( reservationRule1 ) ;
-        
+        ReservationRuleHome.create( reservationRule1 );
+
         WeekDefinition weekDefinition = buildWeekDefinition( reservationRule1.getIdReservationRule( ) );
 
         // Insert the WeekDefinition in database
@@ -123,7 +123,7 @@ public final class WeekDefinitionTest extends LuteceTestCase
         // Clean
         WeekDefinitionHome.delete( weekDefinition.getIdWeekDefinition( ) );
         ReservationRuleHome.delete( reservationRule1.getIdReservationRule( ) );
-        FormHome.delete( form.getIdForm( ) ); 
+        FormHome.delete( form.getIdForm( ) );
     }
 
     /**
@@ -139,7 +139,7 @@ public final class WeekDefinitionTest extends LuteceTestCase
         weekDefinition.setEndingDateOfApply( DATE_OF_APPLY_2 );
         return weekDefinition;
     }
-    
+
     /**
      * Build a WeekDefinition Business Object
      * 

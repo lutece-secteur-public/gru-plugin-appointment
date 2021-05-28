@@ -126,10 +126,9 @@ public final class Slot implements Serializable
      */
     private int _nIdForm;
     /**
-     * is full
-     * if ( _bIsFull == 1 || _nNbPotentialRemainingPlaces <= 0 ): the slot is full
+     * is full if ( _bIsFull == 1 || _nNbPotentialRemainingPlaces <= 0 ): the slot is full
      */
-    private int _bIsFull ;
+    private int _bIsFull;
 
     /**
      * Get the id of the slot
@@ -485,24 +484,27 @@ public final class Slot implements Serializable
 
     /**
      * Returns the IsFull
+     * 
      * @return The IsFull
-     */ 
-     public boolean getIsFull()
-     {
-    	 if( _bIsFull == 1 ) 
-    	 {
-    		 return  true;
-    	 }
-    	 return _nNbPotentialRemainingPlaces <= 0;
-    	 
-     }
- 
+     */
+    public boolean getIsFull( )
+    {
+        if ( _bIsFull == 1 )
+        {
+            return true;
+        }
+        return _nNbPotentialRemainingPlaces <= 0;
+
+    }
+
     /**
      * Sets the IsFull
-     * @param bIsFull The IsFull ( _bIsFull == 1: if is full)
-     */ 
-     public void setIsFull( int bIsFull )
-     {
-         _bIsFull = bIsFull;
-     }
+     * 
+     * @param bIsFull
+     *            The IsFull ( _bIsFull == 1: if is full)
+     */
+    public void setIsFull( int bIsFull )
+    {
+        _bIsFull = bIsFull;
+    }
 }

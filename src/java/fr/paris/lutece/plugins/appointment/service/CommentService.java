@@ -59,9 +59,9 @@ import fr.paris.lutece.portal.service.template.AppTemplateService;
 
 public class CommentService
 {
-	 // TEMPLATES
+    // TEMPLATES
     private static final String TEMPLATE_TASK_NOTIFY_MAIL = "admin/plugins/appointment/notification/task_notify_comment_mail.html";
-    
+
     // MARKS
     private static final String MARK_MESSAGE = "message";
     private static final String MARK_COMMENT = "comment";
@@ -73,7 +73,7 @@ public class CommentService
     private static final String MARK_TIME_END_VALIDITY = "time_end_validity";
     private static final String MARK_DATE_START_VALIDITY = "date_start_validity";
     private static final String MARK_TIME_START_VALIDITY = "time_start_validity";
-    
+
     private CommentService( )
     {
 
@@ -108,21 +108,21 @@ public class CommentService
 
         return CommentHome.selectCommentsListInclusive( startingDate, endingDate, nIdForm );
     }
-    
+
     /**
      * Create an instance of the comment class and notify the mailing list
      * 
      * @param comment
      *            The instance of the Comment which contains the informations to store
-      * @param idMailingList
-     * 			the mailing list id to notify
+     * @param idMailingList
+     *            the mailing list id to notify
      * @return The instance of comment which has been created with its primary key.
      */
-    public static Comment createAndNotifyMailingList( Comment comment, int idMailingList, Locale locale  )
+    public static Comment createAndNotifyMailingList( Comment comment, int idMailingList, Locale locale )
     {
-    	CommentHome.create( comment  );
-    	sendNotification( comment,  idMailingList, NotificationType.CREATE, locale );
-    	
+        CommentHome.create( comment );
+        sendNotification( comment, idMailingList, NotificationType.CREATE, locale );
+
         return comment;
     }
 
@@ -131,15 +131,15 @@ public class CommentService
      * 
      * @param comment
      *            The instance of the Comment which contains the data to store
-      * @param idMailingList
-     * 			the mailing list id to notify
+     * @param idMailingList
+     *            the mailing list id to notify
      * 
      * @return The instance of the comment which has been updated
      */
-    public static Comment updateAndNotifyMailingList( Comment comment,int idMailingList, Locale locale )
+    public static Comment updateAndNotifyMailingList( Comment comment, int idMailingList, Locale locale )
     {
-    	CommentHome.update( comment  );
-    	sendNotification( comment,  idMailingList, NotificationType.UPDATE, locale );
+        CommentHome.update( comment );
+        sendNotification( comment, idMailingList, NotificationType.UPDATE, locale );
 
         return comment;
     }
@@ -149,90 +149,92 @@ public class CommentService
      * 
      * @param nKey
      *            The comment Id
-      * @param idMailingList
-     * 			the mailing list id to notify
+     * @param idMailingList
+     *            the mailing list id to notify
      */
-    public static void removeAndNotifyMailingList( int nKey,int idMailingList, Locale locale )
+    public static void removeAndNotifyMailingList( int nKey, int idMailingList, Locale locale )
     {
-    	Comment comment= CommentHome.findByPrimaryKey(nKey);
-    	sendNotification( comment,  idMailingList, NotificationType.DELETE, locale );
+        Comment comment = CommentHome.findByPrimaryKey( nKey );
+        sendNotification( comment, idMailingList, NotificationType.DELETE, locale );
 
-    	CommentHome.remove( nKey );
+        CommentHome.remove( nKey );
     }
-    
+
     /**
      * 
      * @param comment
      * @param idMailingList
-     * 			the mailing list id to notify
+     *            the mailing list id to notify
      * @param locale
      */
-    public static void sendNotification( Comment comment,  int idMailingList, NotificationType type, Locale locale )
+    public static void sendNotification( Comment comment, int idMailingList, NotificationType type, Locale locale )
     {
-    	
-    	CommentNotificationConfig config = CommentNotificationHome.loadCommentNotificationConfigByType( type.name() );
 
-    	if( config!= null && idMailingList != -1 )
-    	{
-    		
-        	String strSenderEmail = MailService.getNoReplyEmail( );
-            Collection<Recipient> listRecipients = AdminMailingListService.getRecipients( idMailingList );           
+        CommentNotificationConfig config = CommentNotificationHome.loadCommentNotificationConfigByType( type.name( ) );
+
+        if ( config != null && idMailingList != -1 )
+        {
+
+            String strSenderEmail = MailService.getNoReplyEmail( );
+            Collection<Recipient> listRecipients = AdminMailingListService.getRecipients( idMailingList );
             Map<String, Object> model = fillModel( comment, config );
 
-            String strContent = AppTemplateService.getTemplateFromStringFtl( AppTemplateService
-                    .getTemplate(  TEMPLATE_TASK_NOTIFY_MAIL, locale, model ).getHtml( ), locale,
-                    model ).getHtml( );            
+            String strContent = AppTemplateService
+                    .getTemplateFromStringFtl( AppTemplateService.getTemplate( TEMPLATE_TASK_NOTIFY_MAIL, locale, model ).getHtml( ), locale, model )
+                    .getHtml( );
             // Send Mail
             for ( Recipient recipient : listRecipients )
             {
                 // Build the mail message
                 MailService.sendMailHtml( recipient.getEmail( ), config.getSenderName( ), strSenderEmail, config.getSubject( ), strContent );
             }
-    	}
-                 
+        }
+
     }
-    
-    public static List<CommentDTO> buildCommentDTO( List<Comment> listComment ){
-    	
-    	List<CommentDTO> listComments= new ArrayList<>( );
-    	List<Form> listFom= FormService.findAllForms( );
-    	Collection<AdminUser> listAdminUser= AdminUserHome.findUserList( );
-    	AdminUser user = null;
-    	Form frm = null;
-    	for( Comment comment: listComment) 
-    	{
-    		CommentDTO commentDTO= new CommentDTO();
-    		commentDTO.setId(comment.getId( ));
-    		commentDTO.setComment(comment.getComment( ));
-    		commentDTO.setCreationDate(comment.getCreationDate());
-    		commentDTO.setCreatorUserName(comment.getCreatorUserName( ));
-    		commentDTO.setEndingValidityDate(comment.getEndingValidityDate( ));
-    		commentDTO.setEndingValidityTime(comment.getEndingValidityTime( ));
-    		commentDTO.setIdForm(comment.getIdForm( ));
-    		commentDTO.setStartingValidityDate(comment.getStartingValidityDate( ));
-    		commentDTO.setStartingValidityTime(comment.getStartingValidityTime( ));
-    		
-    		frm= listFom.stream().filter( form -> form.getIdForm()==comment.getIdForm( )).findAny().orElse( null );
-    		user= listAdminUser.stream().filter(usr ->usr.getAccessCode().equals(comment.getCreatorUserName( ))).findAny().orElse( null );
-    		if(frm != null) 
-    		{
-    			commentDTO.setFormTitle(frm.getTitle( ));
-    		}
-    		if( user != null) 
-    		{
-    			commentDTO.setUserFirstName(user.getFirstName( ));
-    			commentDTO.setUserLastName(user.getLastName( ));
-    		}
-    		listComments.add( commentDTO );
-    	}
-    	
-    	return listComments;
+
+    public static List<CommentDTO> buildCommentDTO( List<Comment> listComment )
+    {
+
+        List<CommentDTO> listComments = new ArrayList<>( );
+        List<Form> listFom = FormService.findAllForms( );
+        Collection<AdminUser> listAdminUser = AdminUserHome.findUserList( );
+        AdminUser user = null;
+        Form frm = null;
+        for ( Comment comment : listComment )
+        {
+            CommentDTO commentDTO = new CommentDTO( );
+            commentDTO.setId( comment.getId( ) );
+            commentDTO.setComment( comment.getComment( ) );
+            commentDTO.setCreationDate( comment.getCreationDate( ) );
+            commentDTO.setCreatorUserName( comment.getCreatorUserName( ) );
+            commentDTO.setEndingValidityDate( comment.getEndingValidityDate( ) );
+            commentDTO.setEndingValidityTime( comment.getEndingValidityTime( ) );
+            commentDTO.setIdForm( comment.getIdForm( ) );
+            commentDTO.setStartingValidityDate( comment.getStartingValidityDate( ) );
+            commentDTO.setStartingValidityTime( comment.getStartingValidityTime( ) );
+
+            frm = listFom.stream( ).filter( form -> form.getIdForm( ) == comment.getIdForm( ) ).findAny( ).orElse( null );
+            user = listAdminUser.stream( ).filter( usr -> usr.getAccessCode( ).equals( comment.getCreatorUserName( ) ) ).findAny( ).orElse( null );
+            if ( frm != null )
+            {
+                commentDTO.setFormTitle( frm.getTitle( ) );
+            }
+            if ( user != null )
+            {
+                commentDTO.setUserFirstName( user.getFirstName( ) );
+                commentDTO.setUserLastName( user.getLastName( ) );
+            }
+            listComments.add( commentDTO );
+        }
+
+        return listComments;
     }
+
     /**
      * Get a model to generate email content for a given comment and a given task.
-
+     * 
      * @param comment
-     *            The comment 
+     *            The comment
      * @param locale
      *            The locale
      * @return The model with data
@@ -240,25 +242,23 @@ public class CommentService
     private static Map<String, Object> fillModel( Comment comment, CommentNotificationConfig config )
     {
         Map<String, Object> model = new HashMap<>( );
-        Form form = FormService.findFormLightByPrimaryKey(  comment.getIdForm() );
+        Form form = FormService.findFormLightByPrimaryKey( comment.getIdForm( ) );
 
-        AdminUser user= AdminUserHome.findUserByLogin( comment.getCreatorUserName( ) );
-        StringBuilder builder= new StringBuilder( );
-        builder.append(user.getFirstName( )).append( StringUtils.SPACE ).append( user.getLastName( ) );
-        model.put( MARK_COMMENT, comment.getComment( ));
+        AdminUser user = AdminUserHome.findUserByLogin( comment.getCreatorUserName( ) );
+        StringBuilder builder = new StringBuilder( );
+        builder.append( user.getFirstName( ) ).append( StringUtils.SPACE ).append( user.getLastName( ) );
+        model.put( MARK_COMMENT, comment.getComment( ) );
         model.put( MARK_CREATION_DATE, comment.getCreationDate( ).format( Utilities.getFormatter( ) ) );
-        model.put( MARK_FORM_ID, form.getIdForm( ));
+        model.put( MARK_FORM_ID, form.getIdForm( ) );
         model.put( MARK_FORM_TITLE, form.getTitle( ) );
-        model.put( MARK_CREATOR_USER_NAME,  builder.toString( ) );
-        model.put( MARK_DATE_END_VALIDITY,comment.getEndingValidityDate( ).format( Utilities.getFormatter( ) ));        
-        model.put( MARK_TIME_END_VALIDITY,comment.getEndingValidityTime( ) );        
+        model.put( MARK_CREATOR_USER_NAME, builder.toString( ) );
+        model.put( MARK_DATE_END_VALIDITY, comment.getEndingValidityDate( ).format( Utilities.getFormatter( ) ) );
+        model.put( MARK_TIME_END_VALIDITY, comment.getEndingValidityTime( ) );
         model.put( MARK_DATE_START_VALIDITY, comment.getStartingValidityDate( ).format( Utilities.getFormatter( ) ) );
-        model.put( MARK_TIME_START_VALIDITY, comment.getStartingValidityTime() );
+        model.put( MARK_TIME_START_VALIDITY, comment.getStartingValidityTime( ) );
         model.put( MARK_MESSAGE, config.getMessage( ) );
 
-        
         return model;
     }
-    
-   
+
 }

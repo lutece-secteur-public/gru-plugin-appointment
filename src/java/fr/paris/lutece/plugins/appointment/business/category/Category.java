@@ -58,12 +58,11 @@ public final class Category implements Serializable
      * Label of the category
      */
     private String _strLabel;
-   
+
     /**
      * Maximum appointments for a same user
      */
     private int _nNbMaxAppointmentsPerUser;
-
 
     /**
      * Get the id of the category

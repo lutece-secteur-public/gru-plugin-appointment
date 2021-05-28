@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2002-2020, City of Paris
+ * Copyright (c) 2002-2021, City of Paris
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -53,14 +53,14 @@ public class WorkingDayServiceTest extends LuteceTestCase
     /**
      * Get the max ending time of a list of working days
      */
-    @SuppressWarnings("null")
-	public void testGetMaxEndingTimeOfAListOfWorkingDay( )
+    @SuppressWarnings( "null" )
+    public void testGetMaxEndingTimeOfAListOfWorkingDay( )
     {
-    	List<WorkingDay> listWorkingDay = new ArrayList<>();
-    	
+        List<WorkingDay> listWorkingDay = new ArrayList<>( );
+
         // Build the form
         AppointmentFormDTO appointmentForm = FormServiceTest.buildAppointmentForm( );
-        appointmentForm.setName("appointment_form");
+        appointmentForm.setName( "appointment_form" );
         appointmentForm.setTimeEnd( "18:00" );
         int nIdForm = FormService.createAppointmentForm( appointmentForm );
         appointmentForm.setIdForm( nIdForm );
@@ -77,8 +77,7 @@ public class WorkingDayServiceTest extends LuteceTestCase
         ReservationRuleService.updateAdvancedParameters( appointmentForm2 );
 
         List<WeekDefinition> listWeekDefinition = WeekDefinitionService.findListWeekDefinition( nIdForm );
-        listWorkingDay.addAll( ReservationRuleService.findReservationRuleById( listWeekDefinition.get( 0 ).getIdReservationRule( ) ).getListWorkingDay() );
-        
+        listWorkingDay.addAll( ReservationRuleService.findReservationRuleById( listWeekDefinition.get( 0 ).getIdReservationRule( ) ).getListWorkingDay( ) );
 
         assertEquals( LocalTime.parse( "20:00" ), WorkingDayService.getMaxEndingTimeOfAListOfWorkingDay( listWorkingDay ) );
         FormServiceTest.cleanForm( nIdForm );
@@ -91,7 +90,7 @@ public class WorkingDayServiceTest extends LuteceTestCase
     {
         // Build the form
         AppointmentFormDTO appointmentForm = FormServiceTest.buildAppointmentForm( );
-        appointmentForm.setName("appointment_form");
+        appointmentForm.setName( "appointment_form" );
         appointmentForm.setTimeEnd( "18:00" );
         int nIdForm = FormService.createAppointmentForm( appointmentForm );
 
@@ -115,7 +114,7 @@ public class WorkingDayServiceTest extends LuteceTestCase
     {
         // Build the form
         AppointmentFormDTO appointmentForm = FormServiceTest.buildAppointmentForm( );
-        appointmentForm.setName("appointment_form");
+        appointmentForm.setName( "appointment_form" );
         appointmentForm.setDurationAppointments( 30 );
         int nIdForm = FormService.createAppointmentForm( appointmentForm );
         appointmentForm.setIdForm( nIdForm );
@@ -123,7 +122,7 @@ public class WorkingDayServiceTest extends LuteceTestCase
         appointmentForm.setIdReservationRule( nIdReservationRule );
 
         AppointmentFormDTO appointmentForm2 = FormServiceTest.buildAppointmentForm( );
-        appointmentForm2.setName("appointment_form");
+        appointmentForm2.setName( "appointment_form" );
         appointmentForm2.setIdForm( nIdForm );
         appointmentForm2.setDurationAppointments( 10 );
         appointmentForm2.setIdReservationRule( nIdReservationRule );
@@ -150,9 +149,9 @@ public class WorkingDayServiceTest extends LuteceTestCase
     {
         // Build the form
         AppointmentFormDTO appointmentForm = FormServiceTest.buildAppointmentForm( );
-        appointmentForm.setName("appointment_form");
+        appointmentForm.setName( "appointment_form" );
         appointmentForm.setDurationAppointments( 30 );
-        appointmentForm.setDescriptionRule( "appointment description");
+        appointmentForm.setDescriptionRule( "appointment description" );
         int nIdForm = FormService.createAppointmentForm( appointmentForm );
         List<ReservationRule> listReservationRule = ReservationRuleHome.findByIdForm( nIdForm );
         List<WorkingDay> listWorkingDay = new ArrayList<>( );
@@ -173,12 +172,12 @@ public class WorkingDayServiceTest extends LuteceTestCase
     {
         // Build the form
         AppointmentFormDTO appointmentForm = FormServiceTest.buildAppointmentForm( );
-        appointmentForm.setName("appointment_form");
+        appointmentForm.setName( "appointment_form" );
         appointmentForm.setTimeStart( "09:00" );
         int nIdForm = FormService.createAppointmentForm( appointmentForm );
 
         AppointmentFormDTO appointmentForm2 = FormServiceTest.buildAppointmentForm( );
-        appointmentForm2.setName("appointment_form");
+        appointmentForm2.setName( "appointment_form" );
         appointmentForm2.setIdForm( nIdForm );
         appointmentForm2.setTimeStart( "10:00" );
         LocalDate dateOfModification = LocalDate.parse( "2018-06-20" );
@@ -203,7 +202,7 @@ public class WorkingDayServiceTest extends LuteceTestCase
         // Build the form
         AppointmentFormDTO appointmentForm = FormServiceTest.buildAppointmentForm( );
         appointmentForm.setTimeStart( "09:00" );
-        appointmentForm.setName("appointment_form");
+        appointmentForm.setName( "appointment_form" );
         int nIdForm = FormService.createAppointmentForm( appointmentForm );
         List<ReservationRule> listReservationRule = ReservationRuleHome.findByIdForm( nIdForm );
         List<WorkingDay> listWorkingDay = new ArrayList<>( );
@@ -225,7 +224,7 @@ public class WorkingDayServiceTest extends LuteceTestCase
     {
         // Build the form
         AppointmentFormDTO appointmentForm = FormServiceTest.buildAppointmentForm( );
-        appointmentForm.setName("appointment_form");
+        appointmentForm.setName( "appointment_form" );
         appointmentForm.setIsOpenMonday( Boolean.TRUE );
         appointmentForm.setIsOpenTuesday( Boolean.TRUE );
         appointmentForm.setIsOpenWednesday( Boolean.TRUE );

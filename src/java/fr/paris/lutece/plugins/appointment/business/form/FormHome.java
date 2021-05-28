@@ -109,6 +109,7 @@ public final class FormHome
     {
         return _dao.select( nKey, _plugin );
     }
+
     /**
      * Returns an instance of the Form whose identifier category is specified in parameter
      * 

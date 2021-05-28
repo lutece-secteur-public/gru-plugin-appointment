@@ -106,7 +106,7 @@ public final class AppointmentUtilities
     public static final String ERROR_MESSAGE_EMPTY_NB_BOOKED_SEAT = "appointment.validation.appointment.NbBookedSeat.notEmpty";
     public static final String ERROR_MESSAGE_FORMAT_NB_BOOKED_SEAT = "appointment.validation.appointment.NbBookedSeat.notNumberFormat";
     public static final String ERROR_MESSAGE_ERROR_NB_BOOKED_SEAT = "appointment.validation.appointment.NbBookedSeat.error";
-        
+
     public static final String MARK_PERMISSION_ADD_COMMENT = "permission_add_comment";
     public static final String MARK_PERMISSION_MODERATE_COMMENT = "permission_moderate_comment";
     public static final String MARK_PERMISSION_ACCESS_CODE = "permission_access_code";
@@ -176,8 +176,8 @@ public final class AppointmentUtilities
      */
     public static void checkDateOfTheAppointmentIsNotBeforeNow( AppointmentDTO appointmentDTO, Locale locale, List<GenericAttributeError> listFormErrors )
     {
-    	LocalDateTime startingDateTime= getStartingDateTime( appointmentDTO );
-    	if ( startingDateTime == null || startingDateTime.toLocalDate( ).isBefore( LocalDate.now( ) ) )
+        LocalDateTime startingDateTime = getStartingDateTime( appointmentDTO );
+        if ( startingDateTime == null || startingDateTime.toLocalDate( ).isBefore( LocalDate.now( ) ) )
         {
             GenericAttributeError genAttError = new GenericAttributeError( );
             genAttError.setErrorMessage( I18nService.getLocalizedString( ERROR_MESSAGE_DATE_APPOINTMENT, locale ) );
@@ -196,8 +196,7 @@ public final class AppointmentUtilities
      *            the form
      * @return false if the delay is not respected
      */
-    public static boolean checkNbDaysBetweenTwoAppointments( AppointmentDTO appointmentDTO, String strEmail,
-            AppointmentFormDTO form )
+    public static boolean checkNbDaysBetweenTwoAppointments( AppointmentDTO appointmentDTO, String strEmail, AppointmentFormDTO form )
     {
         boolean bCheckPassed = true;
         int nbDaysBetweenTwoAppointments = form.getNbDaysBeforeNewAppointment( );
@@ -361,12 +360,12 @@ public final class AppointmentUtilities
         if ( form.getNbMaxAppointmentsPerUser( ) > 0 && StringUtils.isNotEmpty( strEmail ) )
         {
             // Get the date of the future appointment
-        	LocalDateTime startingDateTime= getStartingDateTime( appointmentDTO );
-        	if( startingDateTime == null ) 
-        	{
+            LocalDateTime startingDateTime = getStartingDateTime( appointmentDTO );
+            if ( startingDateTime == null )
+            {
                 AppLogService.error( "Error checkNbMaxAppointmentsOnAGivenPeriod, startingDateTime is null" );
-        		return false;
-        	}
+                return false;
+            }
             LocalDate dateOfTheAppointment = startingDateTime.toLocalDate( );
 
             AppointmentFilterDTO filter = new AppointmentFilterDTO( );
@@ -418,7 +417,7 @@ public final class AppointmentUtilities
         return true;
 
     }
-    
+
     /**
      * Check that the number of appointments on a defined category is not above the maximum authorized
      * 
@@ -430,35 +429,35 @@ public final class AppointmentUtilities
      *            the form
      * @return false if the number of appointments is above the maximum authorized on the defined category
      */
-    public static boolean checkNbMaxAppointmentsDefinedOnCategory( AppointmentDTO appointmentDTO, String strEmail, AppointmentFormDTO form, List<AppointmentDTO> listAppointments )
+    public static boolean checkNbMaxAppointmentsDefinedOnCategory( AppointmentDTO appointmentDTO, String strEmail, AppointmentFormDTO form,
+            List<AppointmentDTO> listAppointments )
     {
         if ( form.getIdCategory( ) != 0 && StringUtils.isNotEmpty( strEmail ) )
         {
-        	Category category= CategoryService.findCategoryById(form.getIdCategory( ));
-        	if( category != null && category.getNbMaxAppointmentsPerUser( ) > 0 ) 
-        	{
-        		LocalDateTime now= LocalDateTime.now( );	         
-        		List<AppointmentDTO> listAppointmentsDTO = AppointmentService.findAppointmentByMailAndCategory(category.getIdCategory(), strEmail);
-        		listAppointmentsDTO.removeIf(appt -> appt.getEndingDateTime().isBefore(now) || appt.getIsCancelled( ));
-	            // If we modify an appointment, we remove the
-	            // appointment that we currently edit
-	            if ( appointmentDTO.getIdAppointment( ) != 0 )
-	            {
-	
-	                listAppointmentsDTO.removeIf( appt -> appt.getIdAppointment( ) != appointmentDTO.getIdAppointment( ) );
-	            }
+            Category category = CategoryService.findCategoryById( form.getIdCategory( ) );
+            if ( category != null && category.getNbMaxAppointmentsPerUser( ) > 0 )
+            {
+                LocalDateTime now = LocalDateTime.now( );
+                List<AppointmentDTO> listAppointmentsDTO = AppointmentService.findAppointmentByMailAndCategory( category.getIdCategory( ), strEmail );
+                listAppointmentsDTO.removeIf( appt -> appt.getEndingDateTime( ).isBefore( now ) || appt.getIsCancelled( ) );
+                // If we modify an appointment, we remove the
+                // appointment that we currently edit
+                if ( appointmentDTO.getIdAppointment( ) != 0 )
+                {
+
+                    listAppointmentsDTO.removeIf( appt -> appt.getIdAppointment( ) != appointmentDTO.getIdAppointment( ) );
+                }
                 listAppointments.addAll( listAppointmentsDTO );
-	            if ( CollectionUtils.isNotEmpty( listAppointmentsDTO ) && listAppointmentsDTO.size() >= category.getNbMaxAppointmentsPerUser( ))
-	            {
-	                return false;
-	                  
-	            }
-        	}
+                if ( CollectionUtils.isNotEmpty( listAppointmentsDTO ) && listAppointmentsDTO.size( ) >= category.getNbMaxAppointmentsPerUser( ) )
+                {
+                    return false;
+
+                }
+            }
         }
         return true;
 
     }
-
 
     /**
      * Check and validate all the rules for the number of booked seats asked
@@ -1171,33 +1170,38 @@ public final class AppointmentUtilities
 
         return false;
     }
+
     /**
      * Check if list of slot is builded correctly
-     * @param nIdForm the id form
-     * @param listSlots the list of slot to check
+     * 
+     * @param nIdForm
+     *            the id form
+     * @param listSlots
+     *            the list of slot to check
      * @return true if the listSlots is builded correctly
      */
-    public static boolean checkListSlotIsBuildedCorrectly(int nIdForm, List<Slot> listSlots) 
-    { 	
-    	if( !CollectionUtils.isEmpty( listSlots )) 
-    	{
-    		
-    		LocalDateTime minDate= listSlots.stream( ).map( Slot::getStartingDateTime ).min( LocalDateTime::compareTo ).orElse( null );
-    		LocalDateTime maxDate= listSlots.stream( ).map( Slot::getStartingDateTime ).max( LocalDateTime::compareTo ).orElse( null );
-    		if( minDate!= null && maxDate!= null )
-    		{		
-	    		List<WeekDefinition> listWeekDefinition = WeekDefinitionService.findListWeekDefinition( nIdForm );
-	    	    Map<WeekDefinition, ReservationRule> mapReservationRule = ReservationRuleService.findAllReservationRule( nIdForm, listWeekDefinition );
-	            List<Slot> listSlotBuilded = SlotService.buildListSlot( nIdForm, mapReservationRule, minDate.toLocalDate( ), maxDate.toLocalDate( ) );            
-	            for(Slot slt: listSlots) 
-	            {
-	            	if(listSlotBuilded.stream().noneMatch(slot -> slt.getStartingDateTime().isEqual(slot.getStartingDateTime()) && slt.getEndingDateTime().isEqual(slot.getEndingDateTime( ))))
-	            	{
-	            		return false;
-	            	}
-	            }
-    		}
-    	}
-    	return true;
+    public static boolean checkListSlotIsBuildedCorrectly( int nIdForm, List<Slot> listSlots )
+    {
+        if ( !CollectionUtils.isEmpty( listSlots ) )
+        {
+
+            LocalDateTime minDate = listSlots.stream( ).map( Slot::getStartingDateTime ).min( LocalDateTime::compareTo ).orElse( null );
+            LocalDateTime maxDate = listSlots.stream( ).map( Slot::getStartingDateTime ).max( LocalDateTime::compareTo ).orElse( null );
+            if ( minDate != null && maxDate != null )
+            {
+                List<WeekDefinition> listWeekDefinition = WeekDefinitionService.findListWeekDefinition( nIdForm );
+                Map<WeekDefinition, ReservationRule> mapReservationRule = ReservationRuleService.findAllReservationRule( nIdForm, listWeekDefinition );
+                List<Slot> listSlotBuilded = SlotService.buildListSlot( nIdForm, mapReservationRule, minDate.toLocalDate( ), maxDate.toLocalDate( ) );
+                for ( Slot slt : listSlots )
+                {
+                    if ( listSlotBuilded.stream( ).noneMatch( slot -> slt.getStartingDateTime( ).isEqual( slot.getStartingDateTime( ) )
+                            && slt.getEndingDateTime( ).isEqual( slot.getEndingDateTime( ) ) ) )
+                    {
+                        return false;
+                    }
+                }
+            }
+        }
+        return true;
     }
 }

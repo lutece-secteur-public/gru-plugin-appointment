@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2002-2020, City of Paris
+ * Copyright (c) 2002-2021, City of Paris
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -80,7 +80,7 @@ public class AppointmentUtilitiesTest extends LuteceTestCase
     public void testNbDaysBetweenTwoAppointments( )
     {
         AppointmentFormDTO appointmentForm = FormServiceTest.buildAppointmentForm( );
-        appointmentForm.setName("appointment_form");
+        appointmentForm.setName( "appointment_form" );
         appointmentForm.setDateStartValidity( Date.valueOf( _formStart ) );
         appointmentForm.setDateEndValidity( Date.valueOf( _formEnd ) );
 
@@ -121,7 +121,7 @@ public class AppointmentUtilitiesTest extends LuteceTestCase
     public void testNbDaysBetweenTwoAppointments2( )
     {
         AppointmentFormDTO appointmentForm = FormServiceTest.buildAppointmentForm( );
-        appointmentForm.setName("appointment_form");
+        appointmentForm.setName( "appointment_form" );
         appointmentForm.setDateStartValidity( Date.valueOf( _formStart ) );
         appointmentForm.setDateEndValidity( Date.valueOf( _formEnd ) );
 
@@ -160,7 +160,7 @@ public class AppointmentUtilitiesTest extends LuteceTestCase
     public void testNbDaysBetweenTwoAppointments3( )
     {
         AppointmentFormDTO appointmentForm = FormServiceTest.buildAppointmentForm( );
-        appointmentForm.setName("appointment_form");
+        appointmentForm.setName( "appointment_form" );
         appointmentForm.setDateStartValidity( Date.valueOf( _formStart ) );
         appointmentForm.setDateEndValidity( Date.valueOf( _formEnd ) );
 
@@ -357,7 +357,6 @@ public class AppointmentUtilitiesTest extends LuteceTestCase
 
         AppointmentDTO appointmentDTO3 = AppointmentTest.buildAppointmentDTO( nIdForm, slot3, "jean.dupont@mdp.fr", "Jean", "Dupont", _timeStart, _timeEnd, 2 );
 
-        
         assertFalse( AppointmentUtilities.checkNbMaxAppointmentsOnAGivenPeriod( appointmentDTO3, "jean.dupont@mdp.fr", appointmentForm ) );
         cleanUp( nIdForm, appointmentForm, appointmentDTO1, appointmentDTO2, appointmentDTO3 );
     }
@@ -699,19 +698,18 @@ public class AppointmentUtilitiesTest extends LuteceTestCase
         // Build the form
         int nIdForm = FormService.createAppointmentForm( appointmentForm );
         appointmentForm.setIdForm( nIdForm );
-        //LocalDate resId = _formStart ;
-        appointmentForm.setIdReservationRule( ReservationRuleHome.findByIdFormAndDateOfApply( nIdForm, _formStart  ).getIdReservationRule() );
+        // LocalDate resId = _formStart ;
+        appointmentForm.setIdReservationRule( ReservationRuleHome.findByIdFormAndDateOfApply( nIdForm, _formStart ).getIdReservationRule( ) );
         appointmentForm.setListWorkingDay( WorkingDayService.findListWorkingDayByWeekDefinitionRule( appointmentForm.getIdReservationRule( ) ) );
         List<WeekDefinition> allWeekDefinition = WeekDefinitionService.findListWeekDefinition( nIdForm );
-        
+
         WeekDefinition weekDefinition = allWeekDefinition.get( 0 );
-        
-        
+
         LocalDate nextMonday = _formStart.with( TemporalAdjusters.next( DayOfWeek.MONDAY ) );
         Slot slot1 = SlotTest.buildSlot( nIdForm, nextMonday.atTime( _timeStart ), nextMonday.atTime( _timeEnd ), 3, 3, 0, 3, Boolean.TRUE, Boolean.TRUE );
         slot1 = SlotService.saveSlot( slot1 );
 
-        List<WorkingDay> listWorkingDay = appointmentForm.getListWorkingDay();
+        List<WorkingDay> listWorkingDay = appointmentForm.getListWorkingDay( );
 
         WorkingDay mondayWorkingDay = listWorkingDay.stream( ).filter( w -> w.getDayOfWeek( ) == DayOfWeek.MONDAY.getValue( ) ).findFirst( ).get( );
 

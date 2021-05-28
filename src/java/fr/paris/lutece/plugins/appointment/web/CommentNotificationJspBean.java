@@ -43,17 +43,16 @@ import fr.paris.lutece.portal.util.mvc.admin.annotations.Controller;
 import fr.paris.lutece.portal.util.mvc.commons.annotations.Action;
 import fr.paris.lutece.portal.util.mvc.commons.annotations.View;
 
-
 /**
  * This class provides the user interface to manage calendar templates
  * 
  * @author Laurent Payen
  *
  */
-@Controller( controllerJsp = CommentNotificationJspBean.CONTROLLER_JSP, controllerPath = CommentNotificationJspBean.CONTROLLER_PATH, right = CommentJspBean.RIGHT_MANAGECOMMENTTFORM  )
+@Controller( controllerJsp = CommentNotificationJspBean.CONTROLLER_JSP, controllerPath = CommentNotificationJspBean.CONTROLLER_PATH, right = CommentJspBean.RIGHT_MANAGECOMMENTTFORM )
 public class CommentNotificationJspBean extends MVCAdminJspBean
 {
-	private static final long serialVersionUID = 1995349998868975731L;
+    private static final long serialVersionUID = 1995349998868975731L;
 
     /**
      * Folder of the JSP of this controller
@@ -75,7 +74,7 @@ public class CommentNotificationJspBean extends MVCAdminJspBean
     private static final String MARK_CONFIG = "config";
     private static final String MARK_LIST_CONFIG = "list_config";
 
-    //Parameters
+    // Parameters
     private static final String PARAMETER_TYPE = "type";
 
     // Messages
@@ -89,57 +88,59 @@ public class CommentNotificationJspBean extends MVCAdminJspBean
     private static final String ACTION_DO_UPDATE_NOTIFICATION_CONFIG = "updateNotificationCommentConfig";
     // Session variables
     private CommentNotificationConfig _commentNotificationConfig;
-  
+
     /**
      * Get the page to manage comment notification.
      * 
      * @param request
      *            The request
      * @return The HTML code to display
-     * @throws AccessDeniedException 
+     * @throws AccessDeniedException
      */
     @View( value = VIEW_NOTIFIACTION_CONFIG, defaultView = true )
     public String getNotificationCommentConfig( HttpServletRequest request )
     {
-    	_commentNotificationConfig = null;    	
-        Map<String, Object> model =getModel();
+        _commentNotificationConfig = null;
+        Map<String, Object> model = getModel( );
         model.put( MARK_LIST_CONFIG, CommentNotificationHome.loadCommentNotificationConfig( ) );
         return getPage( PROPERTY_PAGE_TITLE_MANAGE_COMMENTS, TEMPLATE_MANAGE_NOTIFICATION_CONFIG, model );
 
     }
+
     /**
      * Get the page to edite comment notification.
      * 
      * @param request
      *            The request
      * @return The HTML code to display
-     * @throws AccessDeniedException 
+     * @throws AccessDeniedException
      */
-    @View( value = VIEW_MODIFY_NOTIFIACTION_CONFIG  )
+    @View( value = VIEW_MODIFY_NOTIFIACTION_CONFIG )
     public String getModifyNotificationCommentConfig( HttpServletRequest request )
     {
-    	String type= request.getParameter( PARAMETER_TYPE );    	
-        _commentNotificationConfig = CommentNotificationHome.loadCommentNotificationConfigByType( type );        
-        Map<String, Object> model =getModel();
+        String type = request.getParameter( PARAMETER_TYPE );
+        _commentNotificationConfig = CommentNotificationHome.loadCommentNotificationConfigByType( type );
+        Map<String, Object> model = getModel( );
         model.put( MARK_CONFIG, _commentNotificationConfig );
         return getPage( PROPERTY_PAGE_TITLE_MANAGE_COMMENTS, TEMPLATE_NOTIFICATION_CONFIG, model );
 
     }
+
     /**
      * Update the notification config
      * 
      * @param request
      *            The request
      * @return The next URL to redirect to
-     * @throws AccessDeniedException 
+     * @throws AccessDeniedException
      */
     @Action( ACTION_DO_UPDATE_NOTIFICATION_CONFIG )
     public String doUpdateNotificationCommentConfig( HttpServletRequest request )
     {
         populate( _commentNotificationConfig, request );
-        CommentNotificationHome.update(_commentNotificationConfig);
+        CommentNotificationHome.update( _commentNotificationConfig );
         addInfo( INFO_COMMENT_UPDATED, getLocale( ) );
-        return redirectView( request, VIEW_NOTIFIACTION_CONFIG );       
+        return redirectView( request, VIEW_NOTIFIACTION_CONFIG );
     }
 
 }

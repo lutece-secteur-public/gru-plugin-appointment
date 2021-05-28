@@ -53,7 +53,7 @@ public final class WeekDefinitionManagerListener
      * Notify listeners that a week definition has been created
      * 
      * @param weekDefinition
-     *            The  week definition that has been assigned
+     *            The week definition that has been assigned
      */
     public static void notifyListenersWeekDefinitionAssigned( WeekDefinition weekDefinition )
     {
@@ -70,9 +70,10 @@ public final class WeekDefinitionManagerListener
      * 
      * @param nIdForm
      *            The id of the form where the Week Definition has been changed
-     * @param listWeek the list of week
+     * @param listWeek
+     *            the list of week
      */
-    public static void notifyListenersListWeekDefinitionChanged( int nIdForm, List<WeekDefinition> listWeek  )
+    public static void notifyListenersListWeekDefinitionChanged( int nIdForm, List<WeekDefinition> listWeek )
     {
         new Thread( ( ) -> {
             for ( IWeekDefinitionListener weekDefinitionListener : SpringContextService.getBeansOfType( IWeekDefinitionListener.class ) )
@@ -88,7 +89,7 @@ public final class WeekDefinitionManagerListener
      * @param weekDefinition
      *            The week definition that has been assigned
      */
-    public static void notifyListenersWeekDefinitionUnassigned( WeekDefinition weekDefinition)
+    public static void notifyListenersWeekDefinitionUnassigned( WeekDefinition weekDefinition )
     {
         new Thread( ( ) -> {
             for ( IWeekDefinitionListener weekDefinitionListener : SpringContextService.getBeansOfType( IWeekDefinitionListener.class ) )

@@ -66,7 +66,8 @@ public interface IWeekDefinitionListener
      * 
      * @param nIdForm
      *            The id of the form
-     * @param listWeek the list of week
+     * @param listWeek
+     *            the list of week
      */
     void notifyListWeeksChanged( int nIdForm, List<WeekDefinition> listWeek );
 

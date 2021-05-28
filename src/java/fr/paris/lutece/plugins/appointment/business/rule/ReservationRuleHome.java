@@ -51,7 +51,7 @@ public final class ReservationRuleHome
 {
 
     // Static variable pointed at the DAO instance
-    private static IReservationRuleDAO _dao = SpringContextService.getBean( "appointment.reservationRuleDAO");
+    private static IReservationRuleDAO _dao = SpringContextService.getBean( "appointment.reservationRuleDAO" );
     private static Plugin _plugin = PluginService.getPlugin( AppointmentPlugin.PLUGIN_NAME );
 
     /**

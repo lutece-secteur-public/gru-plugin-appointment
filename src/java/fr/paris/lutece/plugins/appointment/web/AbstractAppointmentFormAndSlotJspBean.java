@@ -324,7 +324,7 @@ public abstract class AbstractAppointmentFormAndSlotJspBean extends MVCAdminJspB
         return validateBean( rule, strPrefix );
 
     }
-    
+
     /**
      * Add elements to the model to display the left column to modify an appointment form
      * 
@@ -354,12 +354,12 @@ public abstract class AbstractAppointmentFormAndSlotJspBean extends MVCAdminJspB
         model.put( MARK_APPOINTMENT_RESOURCE_ENABLED, ( pluginAppointmentResource != null ) && pluginAppointmentResource.isInstalled( ) );
         model.put( MARK_APPOINTMENT_DESK_ENABLED, ( moduleAppointmentDesk != null ) && moduleAppointmentDesk.isInstalled( ) );
         model.put( MARK_REF_LIST_ROLES, listRoles );
-        model.put( MARK_MAILING_LIST, AdminMailingListService.getMailingLists( user ));
-        model.put( AppointmentUtilities.MARK_PERMISSION_ADD_COMMENT, String.valueOf( RBACService.isAuthorized( AppointmentFormDTO.RESOURCE_TYPE, String.valueOf(appointmentForm.getIdForm( ) ),
-                AppointmentResourceIdService.PERMISSION_ADD_COMMENT_FORM, (User) user ) ));
-        model.put( AppointmentUtilities.MARK_PERMISSION_MODERATE_COMMENT, String.valueOf( RBACService.isAuthorized( AppointmentFormDTO.RESOURCE_TYPE, String.valueOf(appointmentForm.getIdForm( ) ),
-                AppointmentResourceIdService.PERMISSION_MODERATE_COMMENT_FORM, (User) user ) ));
-        model.put( AppointmentUtilities.MARK_PERMISSION_ACCESS_CODE , user.getAccessCode( ) );
+        model.put( MARK_MAILING_LIST, AdminMailingListService.getMailingLists( user ) );
+        model.put( AppointmentUtilities.MARK_PERMISSION_ADD_COMMENT, String.valueOf( RBACService.isAuthorized( AppointmentFormDTO.RESOURCE_TYPE,
+                String.valueOf( appointmentForm.getIdForm( ) ), AppointmentResourceIdService.PERMISSION_ADD_COMMENT_FORM, (User) user ) ) );
+        model.put( AppointmentUtilities.MARK_PERMISSION_MODERATE_COMMENT, String.valueOf( RBACService.isAuthorized( AppointmentFormDTO.RESOURCE_TYPE,
+                String.valueOf( appointmentForm.getIdForm( ) ), AppointmentResourceIdService.PERMISSION_MODERATE_COMMENT_FORM, (User) user ) ) );
+        model.put( AppointmentUtilities.MARK_PERMISSION_ACCESS_CODE, user.getAccessCode( ) );
     }
 
 }

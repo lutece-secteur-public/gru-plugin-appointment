@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2002-2020, City of Paris
+ * Copyright (c) 2002-2021, City of Paris
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -43,12 +43,12 @@ import java.io.Serializable;
 public class CommentNotificationConfig implements Serializable
 {
     /**
-	 * Variables declarations 
-	 */
-	private static final long serialVersionUID = -6494118423858717180L;
-	
-	private NotificationType _type;
-	private String _strSubject;
+     * Variables declarations
+     */
+    private static final long serialVersionUID = -6494118423858717180L;
+
+    private NotificationType _type;
+    private String _strSubject;
     private String _strMessage;
     private String _strSenderName;
 
@@ -60,29 +60,30 @@ public class CommentNotificationConfig implements Serializable
         CREATE,
         UPDATE,
         DELETE
-        
-        
+
     }
-    
 
     /**
      * Returns the Type
+     * 
      * @return The Type
-     */ 
-     public NotificationType getType()
-     {
-         return _type;
-     }
- 
+     */
+    public NotificationType getType( )
+    {
+        return _type;
+    }
+
     /**
      * Sets the Type
-     * @param type The Type
-     */ 
-     public void setType( NotificationType type )
-     {
-    	 _type = type;
-     }
-    
+     * 
+     * @param type
+     *            The Type
+     */
+    public void setType( NotificationType type )
+    {
+        _type = type;
+    }
+
     /**
      *
      * @return the subject of the message
