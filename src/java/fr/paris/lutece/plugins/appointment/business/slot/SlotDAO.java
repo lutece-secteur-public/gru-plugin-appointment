@@ -356,7 +356,7 @@ public final class SlotDAO implements ISlotDAO
             daoUtil.executeUpdate( );
         }
     }
-    
+
     @Override
     public List<LocalDate> findSpecificSlotDates( int nIdForm, Plugin plugin )
     {
@@ -367,7 +367,7 @@ public final class SlotDAO implements ISlotDAO
             daoUtil.executeQuery( );
             while ( daoUtil.next( ) )
             {
-            	listDate.add( daoUtil.getDate( 1 ).toLocalDate() );
+                listDate.add( daoUtil.getDate( 1 ).toLocalDate( ) );
             }
         }
         return listDate;

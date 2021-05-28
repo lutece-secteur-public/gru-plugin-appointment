@@ -99,9 +99,9 @@ public final class AppointmentExportService
 
     private static final String CONSTANT_COMMA = ",";
 
-    private static final List<String> DEFAULT_COLUMN_LIST = Arrays.asList( KEY_COLUMN_FORM_CATEGORY, KEY_COLUMN_FORM_TITLE, KEY_COLUMN_LAST_NAME, KEY_COLUMN_FIRST_NAME, KEY_COLUMN_EMAIL,
-            KEY_COLUMN_DATE_APPOINTMENT, KEY_TIME_START, KEY_TIME_END, KEY_COLUMN_ADMIN, KEY_COLUMN_STATUS, KEY_COLUMN_STATE, KEY_COLUMN_NB_BOOKED_SEATS,
-            KEY_DATE_APPOINT_TAKEN, KEY_HOUR_APPOINT_TAKEN );
+    private static final List<String> DEFAULT_COLUMN_LIST = Arrays.asList( KEY_COLUMN_FORM_CATEGORY, KEY_COLUMN_FORM_TITLE, KEY_COLUMN_LAST_NAME,
+            KEY_COLUMN_FIRST_NAME, KEY_COLUMN_EMAIL, KEY_COLUMN_DATE_APPOINTMENT, KEY_TIME_START, KEY_TIME_END, KEY_COLUMN_ADMIN, KEY_COLUMN_STATUS,
+            KEY_COLUMN_STATE, KEY_COLUMN_NB_BOOKED_SEATS, KEY_DATE_APPOINT_TAKEN, KEY_HOUR_APPOINT_TAKEN );
 
     private AppointmentExportService( )
     {
@@ -128,7 +128,6 @@ public final class AppointmentExportService
         EntryFilter entryFilter = new EntryFilter( );
         List<Entry> listEntry = EntryHome.getEntryList( entryFilter ).stream( ).filter( e -> entryList.contains( e.getIdEntry( ) ) ).map( Entry::getIdEntry )
                 .map( EntryHome::findByPrimaryKey ).collect( Collectors.toList( ) );
-
 
         linesValues.add( createHeaderContent( defaultColumnList, listEntry, locale ) );
 

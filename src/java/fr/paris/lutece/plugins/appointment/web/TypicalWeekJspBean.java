@@ -175,14 +175,14 @@ public class TypicalWeekJspBean extends AbstractAppointmentFormAndSlotJspBean
      * @param request
      *            the request
      * @return the page
-     * @throws AccessDeniedException 
+     * @throws AccessDeniedException
      */
     @View( value = VIEW_MANAGE_TYPICAL_WEEK )
     public String getViewManageTypicalWeek( HttpServletRequest request ) throws AccessDeniedException
     {
         _timeSlot = null;
         boolean bCanUpdateAdvancedParam = true;
-        String strIdForm=request.getParameter( PARAMETER_ID_FORM );
+        String strIdForm = request.getParameter( PARAMETER_ID_FORM );
         int nIdForm = Integer.parseInt( strIdForm );
         String strIdReservationRule = request.getParameter( PARAMETER_ID_RULE );
         if ( !RBACService.isAuthorized( AppointmentFormDTO.RESOURCE_TYPE, strIdForm, AppointmentResourceIdService.PERMISSION_MODIFY_ADVANCED_SETTING_FORM,
@@ -218,21 +218,23 @@ public class TypicalWeekJspBean extends AbstractAppointmentFormAndSlotJspBean
         List<TimeSlot> listTimeSlot = new ArrayList<>( );
         LocalTime minStartingTime = LocalTime.MIN;
         LocalTime maxEndingTime = LocalTime.MAX;
-        
-        if ( nIdReservationRule == 0 && (_appointmentForm == null || _appointmentForm.getIdReservationRule() != 0 ||_appointmentForm.getIdForm( ) != nIdForm ) )
+
+        if ( nIdReservationRule == 0
+                && ( _appointmentForm == null || _appointmentForm.getIdReservationRule( ) != 0 || _appointmentForm.getIdForm( ) != nIdForm ) )
         {
             _appointmentForm = FormService.buildAppointmentFormWithoutReservationRule( nIdForm );
 
         }
-        else if(  nIdReservationRule != 0 )
-        {
-            _appointmentForm = FormService.buildAppointmentForm( nIdForm, nIdReservationRule );
-            List<WorkingDay> listWorkingDay = reservationRule.getListWorkingDay( );
-            listDayOfWeek = new ArrayList<>( WorkingDayService.getSetDaysOfWeekOfAListOfWorkingDayForFullCalendar( listWorkingDay ) );
-            listTimeSlot = TimeSlotService.getListTimeSlotOfAListOfWorkingDay( listWorkingDay, dateOfApply );
-            minStartingTime = WorkingDayService.getMinStartingTimeOfAListOfWorkingDay( listWorkingDay );
-            maxEndingTime = WorkingDayService.getMaxEndingTimeOfAListOfWorkingDay( listWorkingDay );
-        }
+        else
+            if ( nIdReservationRule != 0 )
+            {
+                _appointmentForm = FormService.buildAppointmentForm( nIdForm, nIdReservationRule );
+                List<WorkingDay> listWorkingDay = reservationRule.getListWorkingDay( );
+                listDayOfWeek = new ArrayList<>( WorkingDayService.getSetDaysOfWeekOfAListOfWorkingDayForFullCalendar( listWorkingDay ) );
+                listTimeSlot = TimeSlotService.getListTimeSlotOfAListOfWorkingDay( listWorkingDay, dateOfApply );
+                minStartingTime = WorkingDayService.getMinStartingTimeOfAListOfWorkingDay( listWorkingDay );
+                maxEndingTime = WorkingDayService.getMaxEndingTimeOfAListOfWorkingDay( listWorkingDay );
+            }
 
         model.put( CAN_UPDATE_ADVANCED_PARAM, bCanUpdateAdvancedParam );
         model.put( PARAMETER_DAY_OF_WEEK, listDayOfWeek );
@@ -384,7 +386,8 @@ public class TypicalWeekJspBean extends AbstractAppointmentFormAndSlotJspBean
         populate( _appointmentForm, request );
         ReservationRuleService.fillInReservationRule( reservationRule, _appointmentForm, _appointmentForm.getIdForm( ) );
 
-        if ( !validateReservationRuleBean( _appointmentForm, VALIDATION_ATTRIBUTES_PREFIX ) || !checkMultiSlotFormTypeBookablePlaces( _appointmentForm ) || !checkSlotCapacityAndPeoplePerAppointment( _appointmentForm ))
+        if ( !validateReservationRuleBean( _appointmentForm, VALIDATION_ATTRIBUTES_PREFIX ) || !checkMultiSlotFormTypeBookablePlaces( _appointmentForm )
+                || !checkSlotCapacityAndPeoplePerAppointment( _appointmentForm ) )
         {
             addError( PARAMETER_ERROR_MODIFICATION );
             return redirect( request, VIEW_MANAGE_TYPICAL_WEEK, PARAMETER_ID_FORM, _appointmentForm.getIdForm( ), PARAMETER_ID_RULE,
@@ -506,7 +509,7 @@ public class TypicalWeekJspBean extends AbstractAppointmentFormAndSlotJspBean
      * @param request
      *            the request
      * @return to the page of the typical week
-     * @throws AccessDeniedException 
+     * @throws AccessDeniedException
      */
     @Action( ACTION_DO_MODIFY_TIME_SLOT )
     public String doModifyTimeSlot( HttpServletRequest request ) throws AccessDeniedException
@@ -570,7 +573,7 @@ public class TypicalWeekJspBean extends AbstractAppointmentFormAndSlotJspBean
                 Map<String, String> additionalParameters = new HashMap<>( );
                 additionalParameters.put( PARAMETER_ID_FORM, strIdForm );
                 additionalParameters.put( PARAMETER_ID_RULE, strIdReservationRule );
-                return redirect( request, VIEW_MANAGE_TYPICAL_WEEK, additionalParameters);
+                return redirect( request, VIEW_MANAGE_TYPICAL_WEEK, additionalParameters );
             }
             bEndingTimeHasChanged = true;
         }
@@ -605,7 +608,7 @@ public class TypicalWeekJspBean extends AbstractAppointmentFormAndSlotJspBean
                     Map<String, String> additionalParameters = new HashMap<>( );
                     additionalParameters.put( PARAMETER_ID_FORM, strIdForm );
                     additionalParameters.put( PARAMETER_ID_RULE, strIdReservationRule );
-                    return redirect( request, VIEW_MANAGE_TYPICAL_WEEK, additionalParameters);
+                    return redirect( request, VIEW_MANAGE_TYPICAL_WEEK, additionalParameters );
                 }
                 // Get the slot whith appointment (the appointments that are not
                 // cancelled)
@@ -637,7 +640,7 @@ public class TypicalWeekJspBean extends AbstractAppointmentFormAndSlotJspBean
      * @param request
      *            the request
      * @return to the page of the typical week
-     * @throws AccessDeniedException 
+     * @throws AccessDeniedException
      */
     @Action( ACTION_DO_MODIFY_LIST_TIME_SLOT )
     public String doModifyListTimeSlot( HttpServletRequest request ) throws AccessDeniedException
@@ -679,15 +682,15 @@ public class TypicalWeekJspBean extends AbstractAppointmentFormAndSlotJspBean
             return redirect( request, VIEW_MANAGE_TYPICAL_WEEK, PARAMETER_ID_FORM, nIdForm, PARAMETER_ID_RULE, nIdReservationRule );
 
         }
-        boolean bStateHasChanged= false;
+        boolean bStateHasChanged = false;
         boolean bIsOpen = false;
-        String strIsOpen= request.getParameter( PARAMETER_IS_OPEN );
-        
-        if(strIsOpen.equalsIgnoreCase("true") || strIsOpen.equalsIgnoreCase("false")) 
+        String strIsOpen = request.getParameter( PARAMETER_IS_OPEN );
+
+        if ( strIsOpen.equalsIgnoreCase( "true" ) || strIsOpen.equalsIgnoreCase( "false" ) )
         {
-        	
-        	bStateHasChanged = true;
-        	bIsOpen= Boolean.parseBoolean( strIsOpen );
+
+            bStateHasChanged = true;
+            bIsOpen = Boolean.parseBoolean( strIsOpen );
         }
         boolean bMaxCapacityIsLower = false;
         LocalDate dateNow = LocalDate.now( );
@@ -795,7 +798,8 @@ public class TypicalWeekJspBean extends AbstractAppointmentFormAndSlotJspBean
                     return redirect( request, VIEW_MANAGE_TYPICAL_WEEK, additionalParameters );
                 }
 
-                manageTheSlotsAndAppointmentsImpacted( listSlotsImpactedWithAppointment, listSlotsImpacted, nMaxCapacity, nVarMaxCapacity, bIsOpen, bStateHasChanged );
+                manageTheSlotsAndAppointmentsImpacted( listSlotsImpactedWithAppointment, listSlotsImpacted, nMaxCapacity, nVarMaxCapacity, bIsOpen,
+                        bStateHasChanged );
             }
             else
             {

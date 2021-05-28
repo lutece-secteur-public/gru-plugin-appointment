@@ -260,16 +260,20 @@ public final class AppointmentService
         }
         return listAppointmentsDTO;
     }
-   /**
-    * Find a list of appointments by id category and mail
-    * @param nIdCategory the id category
-    * @param mail the mail
-    * @return list of appointments
-    */
+
+    /**
+     * Find a list of appointments by id category and mail
+     * 
+     * @param nIdCategory
+     *            the id category
+     * @param mail
+     *            the mail
+     * @return list of appointments
+     */
     public static List<AppointmentDTO> findAppointmentByMailAndCategory( int nIdCategory, String mail )
     {
         List<AppointmentDTO> listAppointmentsDTO = new ArrayList<>( );
-        for ( Appointment appointment : AppointmentHome.findByMailAndCategory(nIdCategory, mail ))
+        for ( Appointment appointment : AppointmentHome.findByMailAndCategory( nIdCategory, mail ) )
         {
             listAppointmentsDTO.add( buildAppointmentDTO( appointment ) );
         }
@@ -382,9 +386,9 @@ public final class AppointmentService
             UserHome.delete( appointmentToDelete.getIdUser( ) );
             TransactionManager.commitTransaction( AppointmentPlugin.getPlugin( ) );
             AppointmentListenerManager.notifyListenersAppointmentRemoval( nIdAppointment );
-            for(AppointmentSlot appSlot : appointmentToDelete.getListAppointmentSlot( ) )
+            for ( AppointmentSlot appSlot : appointmentToDelete.getListAppointmentSlot( ) )
             {
-            	SlotListenerManager.notifyListenersSlotChange( appSlot.getIdSlot( ) );
+                SlotListenerManager.notifyListenersSlotChange( appSlot.getIdSlot( ) );
             }
         }
         catch( Exception e )
@@ -459,15 +463,20 @@ public final class AppointmentService
 
     /**
      * Update an appointment DTO in database
-     * @param nIdappointment the id appointment
-     * @param user the user
-     * @param listResponse the listResponse 
-     * @param deleteBoOnly  if the action is Bo only
+     * 
+     * @param nIdappointment
+     *            the id appointment
+     * @param user
+     *            the user
+     * @param listResponse
+     *            the listResponse
+     * @param deleteBoOnly
+     *            if the action is Bo only
      */
-    public static void updateAppointmentDTO( int nIdappointment, User user, List<Response> listResponse, boolean deleteBoOnly   )
+    public static void updateAppointmentDTO( int nIdappointment, User user, List<Response> listResponse, boolean deleteBoOnly )
     {
         UserHome.update( user );
-        AppointmentResponseService.removeResponsesByIdAppointmentAndBoOnly( nIdappointment , deleteBoOnly );
+        AppointmentResponseService.removeResponsesByIdAppointmentAndBoOnly( nIdappointment, deleteBoOnly );
         if ( CollectionUtils.isNotEmpty( listResponse ) )
         {
             for ( Response response : listResponse )
@@ -478,6 +487,7 @@ public final class AppointmentService
         }
         AppointmentListenerManager.notifyListenersAppointmentUpdated( nIdappointment );
     }
+
     /**
      * Update an appointment in database
      * 
@@ -486,7 +496,7 @@ public final class AppointmentService
      */
     public static void updateAppointment( Appointment appointment )
     {
-    	boolean statusUpdated= false;
+        boolean statusUpdated = false;
         // Get the old appointment in db
         Appointment oldAppointment = AppointmentService.findAppointmentById( appointment.getIdAppointment( ) );
         // If the update concerns a cancellation of the appointment
@@ -500,26 +510,27 @@ public final class AppointmentService
                     // Need to update the nb remaining places of the related slot
                     SlotSafeService.updateRemaningPlacesWithAppointmentMovedDeletedOrCanceled( appSlot.getNbPlaces( ), appSlot.getIdSlot( ) );
                 }
-                statusUpdated= true;
+                statusUpdated = true;
             }
-            else if( oldAppointment.getIsCancelled( ) && !appointment.getIsCancelled( ))
-            {
-            	for ( AppointmentSlot appSlot : oldAppointment.getListAppointmentSlot( ) )
+            else
+                if ( oldAppointment.getIsCancelled( ) && !appointment.getIsCancelled( ) )
                 {
-                    // Need to update the nb remaining places of the related slot
-                    SlotSafeService.updateRemaningPlacesWithAppointmentReactivated( appSlot.getNbPlaces( ), appSlot.getIdSlot( ) );
+                    for ( AppointmentSlot appSlot : oldAppointment.getListAppointmentSlot( ) )
+                    {
+                        // Need to update the nb remaining places of the related slot
+                        SlotSafeService.updateRemaningPlacesWithAppointmentReactivated( appSlot.getNbPlaces( ), appSlot.getIdSlot( ) );
+                    }
+                    statusUpdated = true;
                 }
-                statusUpdated= true;
-            }
             AppointmentHome.update( appointment );
             TransactionManager.commitTransaction( AppointmentPlugin.getPlugin( ) );
             AppointmentListenerManager.notifyListenersAppointmentUpdated( appointment.getIdAppointment( ) );
-            if( statusUpdated ) 
+            if ( statusUpdated )
             {
-	            for(AppointmentSlot appSlot : oldAppointment.getListAppointmentSlot( ) )
-	            {
-	            	SlotListenerManager.notifyListenersSlotChange( appSlot.getIdSlot( ) );
-	            } 
+                for ( AppointmentSlot appSlot : oldAppointment.getListAppointmentSlot( ) )
+                {
+                    SlotListenerManager.notifyListenersSlotChange( appSlot.getIdSlot( ) );
+                }
             }
         }
         catch( Exception e )

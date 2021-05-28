@@ -96,6 +96,7 @@ public final class CommentHome
     {
         _dao.delete( nKey, _plugin );
     }
+
     /**
      * Remove the comments whose identifier of form is specified in parameter
      * 
@@ -147,7 +148,8 @@ public final class CommentHome
     /**
      * Load the data from the table
      * 
-     *            the date start
+     * the date start
+     * 
      * @param endingDate
      *            the date end
      * @returnThe list of the comments

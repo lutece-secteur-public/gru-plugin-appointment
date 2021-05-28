@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2002-2020, City of Paris
+ * Copyright (c) 2002-2021, City of Paris
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -78,9 +78,9 @@ public class FormServiceTest extends LuteceTestCase
      */
     public void testCreateAppointmentForm( )
     {
-    	//Remove all former forms with same title mistaking this test
-    	cleanFormByTitle( TITLE_FORM );
-    	
+        // Remove all former forms with same title mistaking this test
+        cleanFormByTitle( TITLE_FORM );
+
         int nIdForm = FormService.createAppointmentForm( buildAppointmentForm( ) );
 
         List<Form> listForms = FormService.findFormsByTitle( TITLE_FORM );
@@ -190,12 +190,13 @@ public class FormServiceTest extends LuteceTestCase
         {
             for ( Slot s : SlotService.findListSlot( nIdForm ) )
             {
-            	try ( DAOUtil daoUtil = new DAOUtil( "DELETE FROM appointment_appointment_slot WHERE id_appointment = ?" ) )
+                try ( DAOUtil daoUtil = new DAOUtil( "DELETE FROM appointment_appointment_slot WHERE id_appointment = ?" ) )
                 {
                     daoUtil.setInt( 1, s.getIdSlot( ) );
                     daoUtil.executeUpdate( );
                 }
-            	//AppointmentDAO.deleteAppointmentSlot( AppointmentHome.findByIdSlot( s.getIdSlot( ) ), PluginService.getPlugin( AppointmentPlugin.PLUGIN_NAME)  );
+                // AppointmentDAO.deleteAppointmentSlot( AppointmentHome.findByIdSlot( s.getIdSlot( ) ), PluginService.getPlugin( AppointmentPlugin.PLUGIN_NAME)
+                // );
                 SlotService.deleteSlot( s );
             }
             Display display = DisplayHome.findByIdForm( nIdForm );
@@ -233,33 +234,33 @@ public class FormServiceTest extends LuteceTestCase
             {
                 FormRuleHome.delete( formRule.getIdFormRule( ) );
             }
-           
+
             for ( ReservationRule rr : ReservationRuleHome.findByIdForm( nIdForm ) )
-            {    
-            for ( WeekDefinition wd : WeekDefinitionHome.findByIdForm( nIdForm ) )
             {
-                for ( WorkingDay wda : WorkingDayHome.findByIdReservationRule( rr.getIdReservationRule( ) ) )
+                for ( WeekDefinition wd : WeekDefinitionHome.findByIdForm( nIdForm ) )
                 {
-                    TimeSlotHome.deleteByIdWorkingDay( wda.getIdWorkingDay( ) );
-                    
+                    for ( WorkingDay wda : WorkingDayHome.findByIdReservationRule( rr.getIdReservationRule( ) ) )
+                    {
+                        TimeSlotHome.deleteByIdWorkingDay( wda.getIdWorkingDay( ) );
+
+                    }
+
                 }
-                
-            }
-           
-            WeekDefinitionHome.deleteByIdReservationRule( rr.getIdReservationRule( ) );
-            WorkingDayHome.deleteByIdReservationRule( rr.getIdReservationRule( ) );
-            ReservationRuleHome.delete( rr.getIdReservationRule( ) );
+
+                WeekDefinitionHome.deleteByIdReservationRule( rr.getIdReservationRule( ) );
+                WorkingDayHome.deleteByIdReservationRule( rr.getIdReservationRule( ) );
+                ReservationRuleHome.delete( rr.getIdReservationRule( ) );
             }
             FormService.removeForm( nIdForm );
         }
     }
-    
+
     public static void cleanFormByTitle( String strFormsTitle )
     {
-    	List<Form> formsByTitle = FormService.findFormsByTitle( strFormsTitle );
-    	for(Form form : formsByTitle)
-    	{
-    		cleanForm( form.getIdForm( ) );
-    	}
+        List<Form> formsByTitle = FormService.findFormsByTitle( strFormsTitle );
+        for ( Form form : formsByTitle )
+        {
+            cleanForm( form.getIdForm( ) );
+        }
     }
 }

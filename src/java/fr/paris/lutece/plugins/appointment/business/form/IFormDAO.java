@@ -86,7 +86,7 @@ public interface IFormDAO
      * @return the instance of the Form
      */
     List<Form> selectByCategory( int nIdCategory, Plugin plugin );
-    
+
     /**
      * Load the data from the table
      * 

@@ -297,7 +297,8 @@ public final class TimeSlotService
             // the new end of the current time slot
             if ( CollectionUtils.isNotEmpty( listTimeSlotToShift ) )
             {
-                TimeSlot nextTimeSlot = listTimeSlotToShift.stream( ).min( ( t1, t2 ) -> t1.getStartingTime( ).compareTo( t2.getStartingTime( ) ) ).orElse(listTimeSlotToShift.get( 0 ));
+                TimeSlot nextTimeSlot = listTimeSlotToShift.stream( ).min( ( t1, t2 ) -> t1.getStartingTime( ).compareTo( t2.getStartingTime( ) ) )
+                        .orElse( listTimeSlotToShift.get( 0 ) );
                 if ( timeSlot.getEndingTime( ).isAfter( nextTimeSlot.getStartingTime( ) ) )
                 {
                     timeToAdd = nextTimeSlot.getStartingTime( ).until( timeSlot.getEndingTime( ), ChronoUnit.MINUTES );
@@ -402,23 +403,24 @@ public final class TimeSlotService
         {
             listAllTimeSlotsAfterThisTimeSlot.remove( tSlot );
             // If the new ending time is after the previous time
-            if ( tSlot.getEndingTime().isAfter(timeSlot.getEndingTime( )) )
+            if ( tSlot.getEndingTime( ).isAfter( timeSlot.getEndingTime( ) ) )
             {
-            	tSlot.setStartingTime(timeSlot.getEndingTime( ) );
+                tSlot.setStartingTime( timeSlot.getEndingTime( ) );
                 updateTimeSlot( tSlot );
                 listAllTimeSlotsAfterThisTimeSlot.add( tSlot );
             }
-            else 
+            else
             {
                 deleteTimeSlot( tSlot );
             }
-        }        
+        }
         // Need to find the next time slot (the one with the closest
         // starting time of the ending time of the new time slot)
         TimeSlot nextTimeSlot = null;
         if ( CollectionUtils.isNotEmpty( listAllTimeSlotsAfterThisTimeSlot ) )
         {
-            nextTimeSlot = listAllTimeSlotsAfterThisTimeSlot.stream( ).min( ( t1, t2 ) -> t1.getStartingTime( ).compareTo( t2.getStartingTime( ) ) ).orElse( null );
+            nextTimeSlot = listAllTimeSlotsAfterThisTimeSlot.stream( ).min( ( t1, t2 ) -> t1.getStartingTime( ).compareTo( t2.getStartingTime( ) ) )
+                    .orElse( null );
         }
         if ( nextTimeSlot != null )
         {

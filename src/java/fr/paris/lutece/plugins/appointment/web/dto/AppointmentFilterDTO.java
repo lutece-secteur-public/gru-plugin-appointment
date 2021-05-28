@@ -81,7 +81,7 @@ public class AppointmentFilterDTO extends User
      * The status
      */
     private int _status = -1;
-    
+
     private List<Integer> _listIdAppointment = new ArrayList<>( );
 
     /**
@@ -269,7 +269,8 @@ public class AppointmentFilterDTO extends User
     }
 
     /**
-     * @param listIdAppointment the listIdAppointment to set
+     * @param listIdAppointment
+     *            the listIdAppointment to set
      */
     public void setListIdAppointment( List<Integer> listIdAppointment )
     {

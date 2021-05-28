@@ -84,7 +84,7 @@ public final class WeekDefinitionService
         WeekDefinition weekDefinition = new WeekDefinition( );
         fillInWeekDefinition( weekDefinition, nIdReservationRule, dateOfApply, endingDateOfApply );
         WeekDefinitionHome.create( weekDefinition );
-        //WeekDefinitionManagerListener.notifyListenersWeekDefinitionAssigned( weekDefinition.getIdWeekDefinition( ) );
+        // WeekDefinitionManagerListener.notifyListenersWeekDefinitionAssigned( weekDefinition.getIdWeekDefinition( ) );
         return weekDefinition;
     }
 
@@ -143,25 +143,30 @@ public final class WeekDefinitionService
         return WeekDefinitionHome.findByIdForm( nIdForm );
 
     }
+
     /**
      * Find a week definition of a form by date of apply
-     * @param nIdForm the id form
-     * @param startingDate the starting date 
-     * @param endingDate the ending date
+     * 
+     * @param nIdForm
+     *            the id form
+     * @param startingDate
+     *            the starting date
+     * @param endingDate
+     *            the ending date
      * @return the list of week definition
      */
-    public static List<WeekDefinition> findWeekDefinitionByDateOfApply( int nIdForm, LocalDate startingDate,  LocalDate endingDate )
+    public static List<WeekDefinition> findWeekDefinitionByDateOfApply( int nIdForm, LocalDate startingDate, LocalDate endingDate )
     {
         List<WeekDefinition> listWeekDefinition = WeekDefinitionService.findListWeekDefinition( nIdForm );
         // Filter on the list of week definition on the starting date and the ending date of display
-         listWeekDefinition = listWeekDefinition.stream( )
-                 .filter( w -> (  w.getEndingDateOfApply( ).isEqual( startingDate ) || w.getEndingDateOfApply( ).isAfter( startingDate ) )
-                         && ( w.getDateOfApply( ).isBefore( endingDate )
-                                 || w.getDateOfApply( ).isEqual( endingDate ) ) )
-                 .collect( Collectors.toList( ) );
-    
-    	return listWeekDefinition;
+        listWeekDefinition = listWeekDefinition.stream( )
+                .filter( w -> ( w.getEndingDateOfApply( ).isEqual( startingDate ) || w.getEndingDateOfApply( ).isAfter( startingDate ) )
+                        && ( w.getDateOfApply( ).isBefore( endingDate ) || w.getDateOfApply( ).isEqual( endingDate ) ) )
+                .collect( Collectors.toList( ) );
+
+        return listWeekDefinition;
     }
+
     /**
      * Find a week definition of a form and a date of apply
      * 
@@ -231,7 +236,7 @@ public final class WeekDefinitionService
      */
     public static WeekDefinition findNextWeekDefinition( int nIdForm, LocalDate previousDateOfApply )
     {
-        WeekDefinition nextWeekDefinition = new WeekDefinition();
+        WeekDefinition nextWeekDefinition = new WeekDefinition( );
         List<WeekDefinition> listWeekDefinition = WeekDefinitionHome.findByIdForm( nIdForm );
         if ( CollectionUtils.isNotEmpty( listWeekDefinition ) )
         {
@@ -549,7 +554,7 @@ public final class WeekDefinitionService
                 WeekDefinitionHome.create( week );
             }
             TransactionManager.commitTransaction( AppointmentPlugin.getPlugin( ) );
-           // WeekDefinitionManagerListener.notifyListenersListWeekDefinitionChanged( nIdForm, listWeekToEdit );
+            // WeekDefinitionManagerListener.notifyListenersListWeekDefinitionChanged( nIdForm, listWeekToEdit );
         }
         catch( Exception e )
         {

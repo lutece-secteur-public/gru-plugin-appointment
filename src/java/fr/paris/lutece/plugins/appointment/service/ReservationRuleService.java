@@ -191,8 +191,8 @@ public final class ReservationRuleService
             WorkingDayService.generateWorkingDayAndListTimeSlot( reservationRule.getIdReservationRule( ), dayOfWeek, startingHour, endingHour, nDuration,
                     nMaxCapacity );
         }
-        List<WeekDefinition> listWeek= WeekDefinitionService.findByReservationRule( appointmentForm.getIdReservationRule( ) ) ;
-        if ( CollectionUtils.isNotEmpty(listWeek ) )
+        List<WeekDefinition> listWeek = WeekDefinitionService.findByReservationRule( appointmentForm.getIdReservationRule( ) );
+        if ( CollectionUtils.isNotEmpty( listWeek ) )
         {
 
             WeekDefinitionManagerListener.notifyListenersListWeekDefinitionChanged( appointmentForm.getIdForm( ), listWeek );
@@ -208,16 +208,16 @@ public final class ReservationRuleService
     public static void removeReservationRule( int nIdReservationRule )
     {
         ReservationRule rule = findReservationRuleById( nIdReservationRule );
-        if( rule != null)
+        if ( rule != null )
         {
-	        for ( WorkingDay day : rule.getListWorkingDay( ) )
-	        {
-	
-	            TimeSlotHome.deleteByIdWorkingDay( day.getIdWorkingDay( ) );
-	            WorkingDayHome.delete( day.getIdWorkingDay( ) );
-	
-	        }
-	        ReservationRuleHome.delete( rule.getIdReservationRule( ) );
+            for ( WorkingDay day : rule.getListWorkingDay( ) )
+            {
+
+                TimeSlotHome.deleteByIdWorkingDay( day.getIdWorkingDay( ) );
+                WorkingDayHome.delete( day.getIdWorkingDay( ) );
+
+            }
+            ReservationRuleHome.delete( rule.getIdReservationRule( ) );
         }
     }
 
@@ -272,7 +272,7 @@ public final class ReservationRuleService
         reservationRule.setMaxPeoplePerAppointment( appointmentForm.getMaxPeoplePerAppointment( ) );
         reservationRule.setName( appointmentForm.getName( ) );
         reservationRule.setDescriptionRule( appointmentForm.getDescriptionRule( ) );
-        reservationRule.setDurationAppointments(appointmentForm.getDurationAppointments( ));
+        reservationRule.setDurationAppointments( appointmentForm.getDurationAppointments( ) );
         reservationRule.setColor( appointmentForm.getColor( ) );
         reservationRule.setIdForm( nIdForm );
     }
@@ -370,10 +370,10 @@ public final class ReservationRuleService
         {
             ReservationRule reservationRule = listReservationRule.stream( ).filter( p -> p.getIdReservationRule( ) == weekDefinition.getIdReservationRule( ) )
                     .findAny( ).orElse( null );
-            if( reservationRule != null )
+            if ( reservationRule != null )
             {
-	            reservationRule.setListWorkingDay( WorkingDayService.findListWorkingDayByWeekDefinitionRule( reservationRule.getIdReservationRule( ) ) );
-	            mapReservationRule.put( weekDefinition, reservationRule );
+                reservationRule.setListWorkingDay( WorkingDayService.findListWorkingDayByWeekDefinitionRule( reservationRule.getIdReservationRule( ) ) );
+                mapReservationRule.put( weekDefinition, reservationRule );
             }
 
         }

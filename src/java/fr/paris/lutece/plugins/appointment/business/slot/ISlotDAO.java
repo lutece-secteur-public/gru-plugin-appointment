@@ -214,12 +214,15 @@ public interface ISlotDAO
      *            the plugin
      */
     void resetPotentialRemainingPlaces( Plugin plugin );
-   
+
     /**
      * Return the specific slot dates from the form
-     * @param nIdForm the id Form
-     * @param plugin the plugin
-     * @return list of date 
+     * 
+     * @param nIdForm
+     *            the id Form
+     * @param plugin
+     *            the plugin
+     * @return list of date
      */
     List<LocalDate> findSpecificSlotDates( int nIdForm, Plugin plugin );
 

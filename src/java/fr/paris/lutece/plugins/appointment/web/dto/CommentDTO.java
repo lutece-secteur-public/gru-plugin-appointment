@@ -33,7 +33,6 @@
  */
 package fr.paris.lutece.plugins.appointment.web.dto;
 
-
 import java.time.LocalDate;
 import java.time.LocalTime;
 
@@ -261,58 +260,67 @@ public class CommentDTO
     {
         return _dateEndingValidityDate.plusDays( 1 );
     }
-    
+
     /**
      * Returns the FormTitle
+     * 
      * @return The FormTitle
-     */ 
-     public String getFormTitle()
-     {
-         return _strFormTitle;
-     }
- 
+     */
+    public String getFormTitle( )
+    {
+        return _strFormTitle;
+    }
+
     /**
      * Sets the FormTitle
-     * @param strFormTitle The FormTitle
-     */ 
-     public void setFormTitle( String strFormTitle )
-     {
-         _strFormTitle = strFormTitle;
-     }
- 
+     * 
+     * @param strFormTitle
+     *            The FormTitle
+     */
+    public void setFormTitle( String strFormTitle )
+    {
+        _strFormTitle = strFormTitle;
+    }
+
     /**
      * Returns the UserLastName
+     * 
      * @return The UserLastName
-     */ 
-     public String getUserLastName()
-     {
-         return _strUserLastName;
-     }
- 
+     */
+    public String getUserLastName( )
+    {
+        return _strUserLastName;
+    }
+
     /**
      * Sets the UserLastName
-     * @param strUserLastName The UserLastName
-     */ 
-     public void setUserLastName( String strUserLastName )
-     {
-         _strUserLastName = strUserLastName;
-     }
- 
+     * 
+     * @param strUserLastName
+     *            The UserLastName
+     */
+    public void setUserLastName( String strUserLastName )
+    {
+        _strUserLastName = strUserLastName;
+    }
+
     /**
      * Returns the UserFirstName
+     * 
      * @return The UserFirstName
-     */ 
-     public String getUserFirstName()
-     {
-         return _strUserFirstName;
-     }
- 
+     */
+    public String getUserFirstName( )
+    {
+        return _strUserFirstName;
+    }
+
     /**
      * Sets the UserFirstName
-     * @param strUserFirstName The UserFirstName
-     */ 
-     public void setUserFirstName( String strUserFirstName )
-     {
-         _strUserFirstName = strUserFirstName;
-     }
+     * 
+     * @param strUserFirstName
+     *            The UserFirstName
+     */
+    public void setUserFirstName( String strUserFirstName )
+    {
+        _strUserFirstName = strUserFirstName;
+    }
 }

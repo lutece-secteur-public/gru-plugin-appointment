@@ -709,7 +709,7 @@ public final class EntryService extends RemovalListenerService implements Serial
      *            the entry
      * @return the url
      */
-    public static String getEntryUrl( Entry entry)
+    public static String getEntryUrl( Entry entry )
     {
         UrlItem url = new UrlItem( AppPathService.getPortalUrl( ) );
         url.addParameter( XPageAppService.PARAM_XPAGE_APP, AppointmentPlugin.PLUGIN_NAME );

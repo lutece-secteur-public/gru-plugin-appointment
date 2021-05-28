@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2002-2020, City of Paris
+ * Copyright (c) 2002-2021, City of Paris
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -52,7 +52,7 @@ public class TimeSlotServiceTest extends LuteceTestCase
     {
         // Build the form
         AppointmentFormDTO appointmentForm = FormServiceTest.buildAppointmentForm( );
-        appointmentForm.setName("appointment_form");
+        appointmentForm.setName( "appointment_form" );
         appointmentForm.setTimeStart( "09:00" );
         appointmentForm.setTimeEnd( "18:00" );
         appointmentForm.setDurationAppointments( 30 );
@@ -79,7 +79,7 @@ public class TimeSlotServiceTest extends LuteceTestCase
     {
         // Build the form
         AppointmentFormDTO appointmentForm = FormServiceTest.buildAppointmentForm( );
-        appointmentForm.setName("appointment_form");
+        appointmentForm.setName( "appointment_form" );
         appointmentForm.setTimeStart( "09:00" );
         appointmentForm.setTimeEnd( "18:00" );
         appointmentForm.setDurationAppointments( 30 );
@@ -104,7 +104,7 @@ public class TimeSlotServiceTest extends LuteceTestCase
     {
         // Build the form
         AppointmentFormDTO appointmentForm = FormServiceTest.buildAppointmentForm( );
-        appointmentForm.setName("appointment_form");
+        appointmentForm.setName( "appointment_form" );
         appointmentForm.setTimeStart( "09:00" );
         appointmentForm.setTimeEnd( "18:00" );
         appointmentForm.setDurationAppointments( 30 );

@@ -133,5 +133,5 @@ public final class WorkingDayHome
     {
         return _dao.findByIdReservationRule( nIdReservationRule, _plugin );
     }
-    
+
 }

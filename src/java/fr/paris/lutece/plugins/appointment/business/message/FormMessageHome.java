@@ -47,7 +47,7 @@ import fr.paris.lutece.portal.service.spring.SpringContextService;
 public final class FormMessageHome
 {
     // Static variable pointed at the DAO instance
-    private static IFormMessageDAO _dao = SpringContextService.getBean(  "appointment.formMessageDAO" );
+    private static IFormMessageDAO _dao = SpringContextService.getBean( "appointment.formMessageDAO" );
     private static Plugin _plugin = PluginService.getPlugin( AppointmentPlugin.PLUGIN_NAME );
 
     /**

@@ -74,7 +74,7 @@ public final class AppointmentHome
 
         return appointment;
     }
- 
+
     /**
      * Update of the Appointment which is specified in parameter
      * 
@@ -88,15 +88,20 @@ public final class AppointmentHome
 
         return appointment;
     }
+
     /**
      * Update date appointment, update AppointmentSlot
-     * @param appointment the appointment
-     * @param plugin the plugin
+     * 
+     * @param appointment
+     *            the appointment
+     * @param plugin
+     *            the plugin
      */
     public static void updateAppointmentDate( Appointment appointment )
     {
-    	_dao.updateAppointmentDate( appointment, _plugin);
+        _dao.updateAppointmentDate( appointment, _plugin );
     }
+
     /**
      * Delete the Appointment whose identifier is specified in parameter
      * 
@@ -206,21 +211,24 @@ public final class AppointmentHome
     {
         return _dao.findByFilter( appointmentFilter, _plugin );
     }
+
     /**
      * Find a list of appointments by id category and mail
-     * @param nIdCategory the id category
-     * @param mail the mail
+     * 
+     * @param nIdCategory
+     *            the id category
+     * @param mail
+     *            the mail
      * @return list of appointments
      */
-    public static List<Appointment> findByMailAndCategory(int nIdCategory, String mail )
+    public static List<Appointment> findByMailAndCategory( int nIdCategory, String mail )
     {
-        return _dao.findByCategoryAndMail(nIdCategory, mail, _plugin);
+        return _dao.findByCategoryAndMail( nIdCategory, mail, _plugin );
     }
-    
-    
-    
+
     /**
      * returns a list of all appointment ids.
+     * 
      * @param plugin
      * @return
      */

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2002-2020, City of Paris
+ * Copyright (c) 2002-2021, City of Paris
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -65,12 +65,12 @@ public final class WorkingDayTest extends LuteceTestCase
         // Initialize a WorkingDay
         Form form = FormTest.buildForm1( );
         FormHome.create( form );
-        
+
         ReservationRule reservationRule1 = Commons.buildReservationRule( form.getIdForm( ) );
         ReservationRuleHome.create( reservationRule1 );
-        
+
         WeekDefinition weekDefinition = WeekDefinitionTest.buildWeekDefinition( reservationRule1.getIdReservationRule( ) );
-        //weekDefinition.setIdForm( form.getIdForm( ) );
+        // weekDefinition.setIdForm( form.getIdForm( ) );
         WeekDefinitionHome.create( weekDefinition );
         WorkingDay workingDay = buildWorkingDay( );
         workingDay.setIdReservationRule( reservationRule1.getIdReservationRule( ) );
@@ -110,19 +110,19 @@ public final class WorkingDayTest extends LuteceTestCase
         // Initialize a WorkingDay
         Form form = FormTest.buildForm1( );
         FormHome.create( form );
-        
+
         ReservationRule reservationRule1 = Commons.buildReservationRule( form.getIdForm( ) );
         ReservationRuleHome.create( reservationRule1 );
-        
+
         WeekDefinition weekDefinition = WeekDefinitionTest.buildWeekDefinition( reservationRule1.getIdReservationRule( ) );
-        //weekDefinition.setIdForm( form.getIdForm( ) );
+        // weekDefinition.setIdForm( form.getIdForm( ) );
         WeekDefinitionHome.create( weekDefinition );
         WorkingDay workingDay = buildWorkingDay( );
         workingDay.setIdReservationRule( reservationRule1.getIdReservationRule( ) );
         // Insert the WorkingDay in database
         WorkingDayHome.create( workingDay );
         // Find the workingDay created in database
-        List<WorkingDay> listWorkingDayStored = WorkingDayHome.findByIdReservationRule( reservationRule1.getIdReservationRule() );
+        List<WorkingDay> listWorkingDayStored = WorkingDayHome.findByIdReservationRule( reservationRule1.getIdReservationRule( ) );
         // Check Asserts
         assertEquals( listWorkingDayStored.size( ), 1 );
         checkAsserts( listWorkingDayStored.get( 0 ), workingDay );

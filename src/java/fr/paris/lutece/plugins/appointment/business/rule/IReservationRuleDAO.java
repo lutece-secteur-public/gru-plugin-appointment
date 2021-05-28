@@ -46,7 +46,7 @@ import fr.paris.lutece.portal.service.plugin.Plugin;
  */
 public interface IReservationRuleDAO
 {
-	
+
     /**
      * Insert a new record in the table
      * 

@@ -245,6 +245,7 @@ public class ReservationRule implements Serializable
     {
         this._nMaxPeoplePerAppointment = nMaxPeoplePerAppointment;
     }
+
     /**
      * Returns the duration of an appointment
      * 

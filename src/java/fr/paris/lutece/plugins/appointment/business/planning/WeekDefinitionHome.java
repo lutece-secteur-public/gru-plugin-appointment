@@ -50,7 +50,7 @@ import fr.paris.lutece.portal.service.spring.SpringContextService;
 public final class WeekDefinitionHome
 {
     // Static variable pointed at the DAO instance
-    private static IWeekDefinitionDAO _dao = SpringContextService.getBean( "appointment.weekDefinitionDAO");
+    private static IWeekDefinitionDAO _dao = SpringContextService.getBean( "appointment.weekDefinitionDAO" );
     private static Plugin _plugin = PluginService.getPlugin( AppointmentPlugin.PLUGIN_NAME );
 
     /**

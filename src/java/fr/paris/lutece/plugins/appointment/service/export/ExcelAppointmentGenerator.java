@@ -64,8 +64,7 @@ public class ExcelAppointmentGenerator implements IFileGenerator
     private final List<AppointmentDTO> _listAppointmentsDTO;
     private final List<Integer> _entryList;
 
-    public ExcelAppointmentGenerator( List<String> defaultColumnList, Locale locale, List<AppointmentDTO> listAppointmentsDTO,
-            List<Integer> entryList )
+    public ExcelAppointmentGenerator( List<String> defaultColumnList, Locale locale, List<AppointmentDTO> listAppointmentsDTO, List<Integer> entryList )
     {
         super( );
         _fileName = new SimpleDateFormat( "yyyyMMdd-hhmm" ).format( Calendar.getInstance( locale ).getTime( ) ) + "_"

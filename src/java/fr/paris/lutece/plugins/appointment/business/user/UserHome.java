@@ -48,7 +48,7 @@ import fr.paris.lutece.portal.service.spring.SpringContextService;
  */
 public final class UserHome
 {
-	
+
     // Static variable pointed at the DAO instance
     private static IUserDAO _dao = SpringContextService.getBean( "appointment.userDAO" );
     private static Plugin _plugin = PluginService.getPlugin( AppointmentPlugin.PLUGIN_NAME );

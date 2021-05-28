@@ -108,10 +108,11 @@ public final class FormDAO implements IFormDAO
         }
         return form;
     }
+
     @Override
     public List<Form> selectByCategory( int nIdCategory, Plugin plugin )
     {
-    	List<Form> listForms = new ArrayList<>( );
+        List<Form> listForms = new ArrayList<>( );
         try ( DAOUtil daoUtil = new DAOUtil( SQL_QUERY_SELECT_BY_CATEGORY, plugin ) )
         {
             daoUtil.setInt( 1, nIdCategory );
@@ -209,7 +210,7 @@ public final class FormDAO implements IFormDAO
         form.setIsMultislotAppointment( daoUtil.getBoolean( nIndex++ ) );
         form.setRole( daoUtil.getString( nIndex++ ) );
         form.setCapacityPerSlot( daoUtil.getInt( nIndex ) );
-        
+
         return form;
     }
 

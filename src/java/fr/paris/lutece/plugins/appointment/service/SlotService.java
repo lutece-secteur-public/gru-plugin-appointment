@@ -261,8 +261,9 @@ public final class SlotService
     public static List<Slot> buildListSlot( int nIdForm, Map<WeekDefinition, ReservationRule> mapReservationRule, LocalDate startingDate, LocalDate endingDate,
             int nNbPlaces )
     {
-    	 return buildListSlot( nIdForm, mapReservationRule, startingDate, endingDate, nNbPlaces, false );
+        return buildListSlot( nIdForm, mapReservationRule, startingDate, endingDate, nNbPlaces, false );
     }
+
     /**
      * Build all the slot for a period with all the rules (open hours ...) to apply on each day, for each slot
      * 
@@ -277,7 +278,7 @@ public final class SlotService
      * @param nNbPlaces
      *            the number of place to take
      * @param bAllOpenSlot
-     *            build slots with the all open slot          
+     *            build slots with the all open slot
      * @return list of all the slots built
      */
     public static List<Slot> buildListSlot( int nIdForm, Map<WeekDefinition, ReservationRule> mapReservationRule, LocalDate startingDate, LocalDate endingDate,

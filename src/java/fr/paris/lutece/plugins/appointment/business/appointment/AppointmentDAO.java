@@ -91,16 +91,15 @@ public final class AppointmentDAO implements IAppointmentDAO
 
     private static final String SQL_QUERY_SELECT_BY_LIST_ID_SLOT = SQL_QUERY_SELECT_COLUMNS
             + ",appt_slot.nb_places FROM appointment_appointment appointment INNER JOIN appointment_appointment_slot appt_slot on ( appt_slot.id_appointment = appointment.id_appointment ) where appt_slot.id_slot IN(";
-    
-    private static final String SQL_QUERY_SELECT_BY_EMAIL_AND_CATEGORY= " Select app.id_appointment, app.reference, app.nb_places, app.is_cancelled, app.id_action_cancelled, app.id_action_reported, app.notification, app.id_admin_user, app.admin_access_code_create, app.id_user, app.date_appointment_create,  "
-    		+ "user.id_user, user.guid, user.first_name, user.last_name, user.email, user.phone_number, "
-    		+ "slot.id_slot, slot.starting_date_time, slot.ending_date_time, slot.is_open, slot.is_specific, slot.max_capacity, slot.nb_remaining_places, slot.nb_potential_remaining_places, slot.nb_places_taken, slot.id_form "
-    		+ "from appointment_appointment app JOIN appointment_appointment_slot appSlot ON app.id_appointment = appSlot.id_appointment "
-    		+ "JOIN appointment_user user ON user.id_user = app.id_user and user.email = ? "
-    		+ "JOIN appointment_slot slot ON slot.id_slot = appSlot.id_slot "
-    		+ "JOIN appointment_form form ON form.id_form = slot.id_form "
-    		+ "JOIN appointment_category cat on cat.id_category = form.id_category and cat.id_category = ? ";
-    
+
+    private static final String SQL_QUERY_SELECT_BY_EMAIL_AND_CATEGORY = " Select app.id_appointment, app.reference, app.nb_places, app.is_cancelled, app.id_action_cancelled, app.id_action_reported, app.notification, app.id_admin_user, app.admin_access_code_create, app.id_user, app.date_appointment_create,  "
+            + "user.id_user, user.guid, user.first_name, user.last_name, user.email, user.phone_number, "
+            + "slot.id_slot, slot.starting_date_time, slot.ending_date_time, slot.is_open, slot.is_specific, slot.max_capacity, slot.nb_remaining_places, slot.nb_potential_remaining_places, slot.nb_places_taken, slot.id_form "
+            + "from appointment_appointment app JOIN appointment_appointment_slot appSlot ON app.id_appointment = appSlot.id_appointment "
+            + "JOIN appointment_user user ON user.id_user = app.id_user and user.email = ? " + "JOIN appointment_slot slot ON slot.id_slot = appSlot.id_slot "
+            + "JOIN appointment_form form ON form.id_form = slot.id_form "
+            + "JOIN appointment_category cat on cat.id_category = form.id_category and cat.id_category = ? ";
+
     private static final String SQL_QUERY_SELECT_ID = "SELECT id_appointment FROM appointment_appointment ";
     private static final String SQL_FILTER_FIRST_NAME = "UPPER(user.first_name) LIKE ?";
     private static final String SQL_FILTER_LAST_NAME = "UPPER(user.last_name) LIKE ?";
@@ -187,11 +186,12 @@ public final class AppointmentDAO implements IAppointmentDAO
         {
             daoUtil.executeUpdate( );
         }
-    } 
+    }
+
     @Override
     public void updateAppointmentDate( Appointment appointment, Plugin plugin )
     {
-        
+
         if ( appointment.getListAppointmentSlot( ) != null && !appointment.getListAppointmentSlot( ).isEmpty( ) )
         {
             deleteAppointmentSlot( appointment.getIdAppointment( ), plugin );
@@ -201,7 +201,7 @@ public final class AppointmentDAO implements IAppointmentDAO
             }
         }
     }
-    
+
     @Override
     public void delete( int nIdAppointment, Plugin plugin )
     {
@@ -387,15 +387,16 @@ public final class AppointmentDAO implements IAppointmentDAO
         }
         return new ArrayList<>( mapAppointment.values( ) );
     }
+
     @Override
     public List<Appointment> findByCategoryAndMail( int nIdCategory, String mail, Plugin plugin )
     {
         Map<Integer, Appointment> mapAppointment = new HashMap<>( );
         boolean isFirst = true;
-        try ( DAOUtil daoUtil = new DAOUtil(SQL_QUERY_SELECT_BY_EMAIL_AND_CATEGORY, plugin ) )
+        try ( DAOUtil daoUtil = new DAOUtil( SQL_QUERY_SELECT_BY_EMAIL_AND_CATEGORY, plugin ) )
         {
-        	daoUtil.setString(1, mail);
-        	daoUtil.setInt(2, nIdCategory);
+            daoUtil.setString( 1, mail );
+            daoUtil.setInt( 2, nIdCategory );
             daoUtil.executeQuery( );
 
             while ( daoUtil.next( ) )
@@ -434,7 +435,6 @@ public final class AppointmentDAO implements IAppointmentDAO
         }
         return new ArrayList<>( mapAppointment.values( ) );
     }
-
 
     /**
      * Add all the filters to the daoUtil
@@ -562,10 +562,10 @@ public final class AppointmentDAO implements IAppointmentDAO
         {
             sbSql.append( CONSTANT_AND );
             sbSql.append( SQL_FILTER_ID_LIST_START );
-            sbSql.append( listId.stream( ).map( s -> "?").collect( Collectors.joining( "," ) ) );
+            sbSql.append( listId.stream( ).map( s -> "?" ).collect( Collectors.joining( "," ) ) );
             sbSql.append( SQL_FILTER_ID_LIST_END );
         }
-        
+
         return sbSql.toString( );
     }
 
@@ -584,7 +584,7 @@ public final class AppointmentDAO implements IAppointmentDAO
         }
         return listAppointment;
     }
-    
+
     @Override
     public List<Integer> selectAllAppointmentId( Plugin plugin )
     {
@@ -592,10 +592,10 @@ public final class AppointmentDAO implements IAppointmentDAO
         try ( DAOUtil daoUtil = new DAOUtil( SQL_QUERY_SELECT_ID, plugin ) )
         {
             daoUtil.executeQuery( );
-            
+
             while ( daoUtil.next( ) )
             {
-                list.add( daoUtil.getInt( 1 ) ); 
+                list.add( daoUtil.getInt( 1 ) );
             }
         }
         return list;
@@ -706,7 +706,7 @@ public final class AppointmentDAO implements IAppointmentDAO
         daoUtil.setInt( nIndex++, appointment.getIdUser( ) );
         daoUtil.setTimestamp( nIndex++, appointment.getAppointmentTakenSqlDate( ) );
 
-        if ( isInsert ) 
+        if ( isInsert )
         {
             daoUtil.setBoolean( nIndex++, appointment.getIsSurbooked( ) );
         }

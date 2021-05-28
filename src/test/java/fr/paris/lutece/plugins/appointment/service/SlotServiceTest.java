@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2002-2020, City of Paris
+ * Copyright (c) 2002-2021, City of Paris
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -62,7 +62,7 @@ public class SlotServiceTest extends LuteceTestCase
 
         // Build the form
         AppointmentFormDTO appointmentForm = FormServiceTest.buildAppointmentForm( );
-        appointmentForm.setName("appointment_form");
+        appointmentForm.setName( "appointment_form" );
         appointmentForm.setDateStartValidity( Date.valueOf( _nextMonday ) );
         appointmentForm.setDateEndValidity( Date.valueOf( _sundayTwoWeeks ) );
 
@@ -88,7 +88,7 @@ public class SlotServiceTest extends LuteceTestCase
     {
         // Build the form
         AppointmentFormDTO appointmentForm = FormServiceTest.buildAppointmentForm( );
-        appointmentForm.setName("appointment_form");
+        appointmentForm.setName( "appointment_form" );
         appointmentForm.setDateStartValidity( Date.valueOf( _nextMonday ) );
         appointmentForm.setDateEndValidity( Date.valueOf( _sundayTwoWeeks ) );
 
@@ -125,7 +125,7 @@ public class SlotServiceTest extends LuteceTestCase
     {
         // Build the form
         AppointmentFormDTO appointmentForm = FormServiceTest.buildAppointmentForm( );
-        appointmentForm.setName("appointment_form");
+        appointmentForm.setName( "appointment_form" );
         appointmentForm.setDateStartValidity( Date.valueOf( _nextMonday ) );
         appointmentForm.setDateEndValidity( Date.valueOf( _sundayTwoWeeks ) );
 

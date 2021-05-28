@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2002-2020, City of Paris
+ * Copyright (c) 2002-2021, City of Paris
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -112,11 +112,11 @@ public final class FormTest extends LuteceTestCase
     {
         Form form = buildForm1( );
         FormHome.create( form );
-        
-        ReservationRule reservationRule = buildReservationRule( form.getIdForm() );
+
+        ReservationRule reservationRule = buildReservationRule( form.getIdForm( ) );
         ReservationRuleHome.create( reservationRule );
-        
-        ReservationRule reservationRule2 = buildReservationRule( form.getIdForm() );
+
+        ReservationRule reservationRule2 = buildReservationRule( form.getIdForm( ) );
         ReservationRuleHome.create( reservationRule2 );
 
         WeekDefinition weekDefinition1 = new WeekDefinition( );
@@ -248,7 +248,7 @@ public final class FormTest extends LuteceTestCase
         form.setIdWorkflow( ID_WORKFLOW_1 );
         return form;
     }
-    
+
     /**
      * Build a Reservation Rule
      * 
@@ -256,11 +256,11 @@ public final class FormTest extends LuteceTestCase
      */
     public static ReservationRule buildReservationRule( int nIdForm )
     {
-    	ReservationRule reservationRule = new ReservationRule( );
-    	reservationRule.setName( "ReservationRule" );
-    	reservationRule.setDescriptionRule( "A built reservation Rule" );
-    	reservationRule.setIdForm( nIdForm );
-    	return reservationRule;
+        ReservationRule reservationRule = new ReservationRule( );
+        reservationRule.setName( "ReservationRule" );
+        reservationRule.setDescriptionRule( "A built reservation Rule" );
+        reservationRule.setIdForm( nIdForm );
+        return reservationRule;
     }
 
     /**

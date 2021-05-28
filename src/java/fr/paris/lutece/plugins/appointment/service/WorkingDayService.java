@@ -243,8 +243,8 @@ public final class WorkingDayService
         {
             LocalTime endingTimeTemp = getMaxEndingTimeOfAWorkingDay( workingDay );
 
-                maxEndingTime = endingTimeTemp;
-            
+            maxEndingTime = endingTimeTemp;
+
         }
         return maxEndingTime;
     }
@@ -275,7 +275,7 @@ public final class WorkingDayService
         for ( WorkingDay workingDay : listWorkingDay )
         {
             startingTimeTemp = getMinStartingTimeOfAWorkingDay( workingDay );
-            if ( minStartingTime == null || (startingTimeTemp != null && startingTimeTemp.isBefore( minStartingTime ) ))
+            if ( minStartingTime == null || ( startingTimeTemp != null && startingTimeTemp.isBefore( minStartingTime ) ) )
             {
                 minStartingTime = startingTimeTemp;
             }
