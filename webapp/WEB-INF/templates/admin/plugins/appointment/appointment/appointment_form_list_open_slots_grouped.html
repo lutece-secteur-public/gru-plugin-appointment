@@ -73,8 +73,8 @@
                             showOn: "button",
                             language: "${locale}",
                             autoclose: true,
-                            startDate: strStartingDateOfDisplay,
-                            endDate: strEndingDateOfDisplay,
+                            startDate:  moment(startingDateOfDisplay).toDate(),
+                            endDate: moment(endingDateOfDisplay).toDate(),
                             orientation: "bottom"
                         });
                         var $btnDatepicker = $(".ui-datepicker-trigger"); // name of the generated datepicker UI 
@@ -144,7 +144,7 @@
                     $('.spanNextButton').replaceWith("<span class='spanNextButton' style='margin-right: 5px;'>#i18n{appointment.appointmentApp.nextDay}</span>");
                     $('.spanPrevButton').replaceWith("<span class='spanPrevButton' style='margin-right: 5px;'>#i18n{appointment.appointmentApp.previousDay}</span>");
                 } else {
-                    $('#calendar').fullCalendar( 'changeView', 'agendaWeek' );                        
+                    $('#calendar').fullCalendar( 'changeView', 'basicWeek' );                        
                     $('.spanNextButton').replaceWith("<span class='spanNextButton' style='margin-right: 5px;'>#i18n{appointment.appointmentApp.nextWeek}</span>");
                     $('.spanPrevButton').replaceWith("<span class='spanPrevButton' style='margin-right: 5px;'>#i18n{appointment.appointmentApp.previousWeek}</span>");
                 }
