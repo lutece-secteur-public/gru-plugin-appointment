@@ -1,8 +1,5 @@
-<link rel='stylesheet' href='css/plugins/appointment/bootstrap-datetimepicker.css' />
 <script src="js/jquery/jquery.min.js"></script>
 <script src="js/jquery/jquery-ui.min.js"></script>
-<script src="js/plugins/appointment/moment.min.js"></script>
-<script src="js/plugins/appointment/bootstrap-datetimepicker.min.js"></script>
 <script src="js/bootstrap-filestyle.min.js"></script>
 <@row>
 	<@tform id='formid' class='form-horizontal' method='post' action='jsp/admin/plugins/appointment/ManageAppointmentForms.jsp' params='enctype=\'multipart/form-data\''>
@@ -30,7 +27,7 @@
 								<@icon style='calendar' />
 							</@inputGroupItem>
 						</@inputGroup>
-						<@getDatePickerBootstrap idField="date_start_validity" language=language />
+						<@getDateFlatPicker idField="date_start_validity" language=language />
 					</@formGroup>
 					
 					<@formGroup labelFor='date_end_validity' labelKey='#i18n{appointment.createAppointmentForm.labelDateEndValidity}' helpKey='#i18n{appointment.createAppointmentForm.labelDateEndValidity.help}'>
@@ -40,7 +37,7 @@
 								<@icon style='calendar' />
 							</@inputGroupItem>
 						</@inputGroup>
-						<@getDatePickerBootstrap idField="date_end_validity" language=language />
+						<@getDateFlatPicker idField="date_end_validity" language=language />
 					</@formGroup>
 					<@formGroup labelFor='bo_overbooking' labelKey='#i18n{appointment.label.BoOverbooking}' helpKey='#i18n{appointment.label.BoOverbooking.help}'>
                       <@checkBox labelFor='bo_overbooking' name='bo_overbooking' id='bo_overbooking' value='true' checked=appointmentform.boOverbooking!false />
@@ -108,6 +105,7 @@
 								<@icon style='clock-o' />
 							</@inputGroupItem>
 						</@inputGroup>
+						<@getTimeFlatPicker idField="time_start" language=language />
 					</@formGroup>
 					
 					<@formGroup labelFor='time_end' labelKey='#i18n{appointment.createAppointmentForm.labelTimeEnd}' helpKey='#i18n{appointment.createAppointmentForm.labelTimeEnd.help}' mandatory=true>
@@ -117,6 +115,7 @@
 								<@icon style='clock-o' />
 							</@inputGroupItem>
 						</@inputGroup>
+						<@getTimeFlatPicker idField="time_end" language=language />						
 					</@formGroup>
 					
 					<@formGroup labelFor='duration_appointments' labelKey='#i18n{appointment.createAppointmentForm.labelDurationAppointments}' helpKey='#i18n{appointment.createAppointmentForm.labelDurationAppointments.help}' mandatory=true>
@@ -365,30 +364,4 @@
 	}
 	else return true;
 	};
-    $('#date_start_validity').datepicker({
-		    language:		"${language}",
-		    startDate: 		new Date(),
-		    weekStart: 1,
-		    todayBtn: true,
-		    todayHighLight: true,
-		    autoclose: true
-		});
-	$('#date_end_validity').datepicker({
-		    language:		"${language}",
-		    startDate: 		new Date(),
-		    weekStart: 1,
-		    todayBtn: true,
-		    todayHighLight: true,
-		    autoclose: true
-		});
-	$(function () {
-		$('#time_start').datetimepicker({
-		  format: 'HH:mm',
-		  stepping: 5
-	    });
-		$('#time_end').datetimepicker({
-		  format: 'HH:mm',
-		  stepping: 5
-	    });		
-	});
 </script>
