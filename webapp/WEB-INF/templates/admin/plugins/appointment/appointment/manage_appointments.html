@@ -48,6 +48,7 @@
 											<@icon style='calendar' />
 										</@inputGroupItem>
 									</@inputGroup>
+									<@getDateFlatPicker idField="startingDateOfSearch" language=language />
 								</@formGroup>
 							</@columns>
 							<@columns sm=2>
@@ -58,6 +59,7 @@
 											<@icon style='clock-o' />
 										</@inputGroupItem>
 									</@inputGroup>
+									<@getTimeFlatPicker idField="startingTimeOfSearch" language=language />
 								</@formGroup>
 							</@columns>
 							<@columns sm=2>
@@ -68,6 +70,7 @@
 											<@icon style='calendar' />
 										</@inputGroupItem>
 									</@inputGroup>
+									<@getDateFlatPicker idField="endingDateOfSearch" language=language />
 								</@formGroup>
 							</@columns>
 							<@columns sm=2>
@@ -78,6 +81,7 @@
 											<@icon style='clock-o' />
 										</@inputGroupItem>
 									</@inputGroup>
+									<@getTimeFlatPicker idField="endingTimeOfSearch" language=language />
 								</@formGroup>
 							</@columns>
 						</@row>
@@ -185,18 +189,9 @@
 	</@columns>
 </@row>
 
-<@getDatePickerBootstrap idField="dateAppointment" language=language />
+<@getDateFlatPicker idField="dateAppointment" language=language />
+
 <script type="text/javascript">
-    $(function () {
-        $('#startingTimeOfSearch').datetimepicker({
-            format: 'HH:mm',
-            stepping: 1
-        });
-        $('#endingTimeOfSearch').datetimepicker({
-            format: 'HH:mm',
-            stepping: 1
-        });
-    });
     $('#allCheck').click(function() {
         var etat = this.checked;
         $("input[name='apmt']").each(function() {
@@ -212,18 +207,4 @@
             }
         });
     });
-    $('#startingDateOfSearch').datepicker({
-        language : "${language}",
-        weekStart : 1,
-        todayBtn : true,
-        todayHighLight : true,
-        autoclose : true
-    });
-    $('#endingDateOfSearch').datepicker({
-        language : "${language}",
-        weekStart : 1,
-        todayBtn : true,
-        todayHighLight : true,
-        autoclose : true
-    });    
 </script>
