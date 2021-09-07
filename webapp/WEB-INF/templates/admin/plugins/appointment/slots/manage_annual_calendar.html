@@ -38,6 +38,7 @@
 						<@icon style='calendar' />
 					</@inputGroupItem>
 				</@inputGroup>
+                <@getDateFlatPicker idField="date_of_apply" language=language />
 			</@formGroup>
 			<@formGroup labelFor='endingDate' labelKey='#i18n{appointment.manageAppointments.endingDateOfSearch}'>
 				<@inputGroup>
@@ -46,6 +47,7 @@
 						<@icon style='calendar' />
 					</@inputGroupItem>
 				</@inputGroup>
+                <@getDateFlatPicker idField="ending_date_of_apply" language=language />
 			</@formGroup>	
 			<@formGroup labelFor='type' labelKey='#i18n{appointment.week.toApplay}'>
 				<select name="id_reservation_rule" id="id_reservation_rule" class="form-control">
@@ -93,10 +95,9 @@ function editEvent( event) {
         $('#event-modal #delete').hide();
     }
     
-    $('#event-modal input[name="date_of_apply"]').val( moment( event.startDate ).format('L') );
-    $('#event-modal input[name="date_of_apply"]').datetimepicker({ locale: '${language}', format: 'L' });
-    $('#event-modal input[name="ending_date_of_apply"]').val( moment( event.endDate ).format('L') );
-    $('#event-modal input[name="ending_date_of_apply"]').datetimepicker({ locale: '${language}', format: 'L'});
+    document.querySelector('#event-modal input[name="date_of_apply"]')._flatpickr.setDate(event.startDate);
+    document.querySelector('#event-modal input[name="ending_date_of_apply"]')._flatpickr.setDate(event.endDate);
+
     $('#event-modal').modal();
 }
 
@@ -108,7 +109,7 @@ var specDates = [<#list specificSlotDates as sDate>'${sDate}',</#list>];
 
 $(function() {
     calendar = new Calendar('#calendar', { 
-        language: 'fr',
+        language: '${language}',
         startYear: ${start_year},
         enableContextMenu: true,
         enableRangeSelection: true,
