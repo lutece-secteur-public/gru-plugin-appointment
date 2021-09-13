@@ -251,34 +251,35 @@ $('.content-header h1').html("<a href=\"jsp/admin/plugins/appointment/ManageAppo
 $(function(){
 	$('#${idEndingDate}_help').html('');
 
-	<#if action !='doModifyComment'>
-	/* Set current date */
-	$('#${modalId}').on('shown.bs.modal', function(){
-		var workingDate=sessionStorage.getItem( 'appCurrentDate');
-		$('#${idStartingDate}').val( workingDate );
-		$('#${idEndingDate}').val( workingDate );
-		localStorage.setItem( 'commentContext', workingDate );
-  	});
-	</#if>
-        
-        const start_date = document.getElementById('${idStartingDate}')._flatpickr;
-        const end_date = document.getElementById('${idEndingDate}')._flatpickr;
+	const start_date = document.getElementById('${idStartingDate}')._flatpickr;
+    const end_date = document.getElementById('${idEndingDate}')._flatpickr;
 
 	start_date.set('onChange', function () {
-           end_date.set('minDate', start_date.selectedDates[0]);
+        end_date.set('minDate', start_date.selectedDates[0], true);
 	});
 
 	end_date.set('onChange', function () {
-           start_date.set('maxDate', end_date.selectedDates[0]);
+        start_date.set('maxDate', end_date.selectedDates[0], true);
 	});
+
+	<#if action !='doModifyComment'>
+	/* Set current date */
+	$('#${modalId}').on('shown.bs.modal', function(){
+		let rawWorkingDate=sessionStorage.getItem( 'appCurrentDate');
+		let workingDate = moment(rawWorkingDate, 'DD/MM/YYYY').toDate();
+		start_date.setDate(workingDate);
+		end_date.setDate(workingDate);
+		localStorage.setItem( 'commentContext', rawWorkingDate );
+  	});
+	</#if>
+	
 
 	if( '${action!}' === 'doAddComment' ){
 		$('#commentDelete').remove()
 	}
 
 	$( '[name="action_${action}"]' ).click( function(e){
-		var dStart=$('#${idStartingDate}').val(),dEnd=$('#${idEndingDate}').val();
-		if( moment(dEnd).isBefore( dStart ) ){
+		if( moment(end_date.selectedDates[0]).isBefore( start_date.selectedDates[0] ) ){
 			$('#${idEndingDate}').parents('.form-group').addClass('has-error');
 			$('#${idEndingDate}_help').html('La date de fin ne peut être supérieure à la date de début !');
 			e.preventDefault();
@@ -459,7 +460,7 @@ $( function(){
                     event.stopPropagation();
                     $('#hiddenDate + span').show();
                     document.querySelector('#hiddenDate')._flatpickr.toggle();
-				    $('#hiddenDate + span').hide();                   
+				    $('#hiddenDate + span').hide();
 				}
 			}
 		},
@@ -726,11 +727,11 @@ $( function(){
 		localStorage.removeItem( 'commentContext' );
 		calendar.fullCalendar( 'gotoDate', moment(dtCurrent,'DD-MM-YYYY'));
 	}
-
-    $('.fc-datePicker-button' ).after('<input id="hiddenDate" type="text">');
-    <@getDateFlatPickerScript idField='hiddenDate' language=locale />
     
 	<#if !isTypical>
+    $('.fc-datePicker-button' ).after('<input id="hiddenDate" type="text">');
+    <@getDateFlatPickerScript idField='hiddenDate' language=locale />
+
     const hid_date = document.querySelector('#hiddenDate')._flatpickr;
 
     hid_date.set('onChange', function() {
