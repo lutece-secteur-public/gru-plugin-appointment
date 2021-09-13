@@ -280,12 +280,12 @@ $(function(){
 		var dStart=$('#${idStartingDate}').val(),dEnd=$('#${idEndingDate}').val();
 		if( moment(dEnd).isBefore( dStart ) ){
 			$('#${idEndingDate}').parents('.form-group').addClass('has-error');
-			$('#${idEndingDate}_help').html('La date de fin ne peut être supérieure à la date de début !');
+			$('#${idEndingDate}_help').html('#i18n{appointment.message.error.dateStartAfterTimeEnd'});
 			e.preventDefault();
 		}
 		if( tinyMCE.activeEditor.getContent().trim().length === 0 ){
 			$('#${idComment}').parents('.form-group').addClass('has-error');
-			$('#${idComment}_help').html('<span class="color-danger">Vous devez saisir un texte !</span>');
+			$('#${idComment}_help').html('<span class="color-danger">'#i18n{appointment.message.error.noText}</span>');
 			e.preventDefault();
 		}
 	});
@@ -694,7 +694,7 @@ $( function(){
 					/* Add comment render */
 					labelEventDate=setLabelComment( event, '${locale}' );
 					var creator = event.creator_name.trim() !== '' ? event.creator_name : event.creator_user;
-					json.content = '<p>' + labelEventDate +'</p><p>Créé par <em>' + creator + '</em> le <date>' + event.creation_date + '</date><hr>'+ event.title + '</p>'  ;
+					json.content = '<p>' + labelEventDate +'</p><p>#i18n{appointment.comment.createdBy} <em>' + creator + '</em> #i18n{appointment.comment.CreatedOn} <date>' + event.creation_date + '</date><hr>'+ event.title + '</p>'  ;
 					var dateDebut='', dateFin='';
 					if ( ! ( event.start_time == null || event.start_time == undefined || event.start_time == '00:00' ) ){
 						if( event.start.format('DDMM') != moment(event.validity_end).format('DDMM') ){
