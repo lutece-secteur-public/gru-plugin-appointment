@@ -692,14 +692,28 @@ $( function(){
 					$(element).addClass('comments').attr( 'id', 'comment-' + event.id ).attr( 'data-json', '{"id_comment":"' + event.id + '", "comment_text":"' + event.title.replace(/"/g,'\\"') + '", "comment_start":"' + event.start.format('YYYY-MM-DD') + '", "comment_start_time":"' + event.start_time + '", "comment_end":"' + event.validity_end + '", "comment_end_time\":"' + event.end_time + '"}' );
 					
 					/* Add comment render */
-					labelEventDate=setLabelComment( event, '${locale}' );
+					moment.locale( '${locale}' );
+					if ( moment( moment(event.start).format('YYYY-MM-DD') ).isSame( moment( event.validity_end ).format('YYYY-MM-DD') ) ){
+						if(  event.start_time == '00:00' &&  event.end_time == '00:00' ){
+							labelEventDate='#i18n{appointment.comment.dateOn} ' +  moment(event.start).format('ddd DD/MM');
+							} else {
+							labelEventDate='#i18n{appointment.comment.dateOn} ' +  moment(event.start).format('ddd DD/MM') + ' ' + event.start_time + ' - ' + event.end_time;
+						}
+					} else {
+						if(  event.start_time == '00:00' &&  event.end_time == '00:00' ){
+							labelEventDate = '#i18n{appointment.comment.dateFrom} ' +  moment(event.start).format('ddd DD/MM') + ' #i18n{appointment.comment.dateTo} '+ moment(event.validity_end).format('ddd DD/MM');
+						} else {
+							labelEventDate =  '#i18n{appointment.comment.dateFrom} ' +  moment(event.start).format('ddd DD/MM') + ' ' + event.start_time + ' #i18n{appointment.comment.dateTo} '+ moment(event.validity_end).format('ddd DD/MM') + ' ' + event.end_time;
+						}
+					}
+
 					var creator = event.creator_name.trim() !== '' ? event.creator_name : event.creator_user;
-					json.content = '<p>' + labelEventDate +'</p><p>#i18n{appointment.comment.createdBy} <em>' + creator + '</em> #i18n{appointment.comment.CreatedOn} <date>' + event.creation_date + '</date><hr>'+ event.title + '</p>'  ;
+					json.content = '<p>' + labelEventDate +'</p><p>#i18n{appointment.comment.createdBy} <em>' + creator + '</em> #i18n{appointment.comment.dateOn} <date>' + event.creation_date + '</date><hr>'+ event.title + '</p>'  ;
 					var dateDebut='', dateFin='';
 					if ( ! ( event.start_time == null || event.start_time == undefined || event.start_time == '00:00' ) ){
 						if( event.start.format('DDMM') != moment(event.validity_end).format('DDMM') ){
-							dateDebut=event.start.format('ddd DD/MM à ');
-							dateFin=moment(event.validity_end).format('ddd DD/MM à ')
+							dateDebut=event.start.format('ddd DD/MM') + ' #i18n{appointment.comment.timeAt} ';
+							dateFin=moment(event.validity_end).format('ddd DD/MM') + ' #i18n{appointment.comment.timeAt} ';
 						}
 						var fcTitle = element.find('.fc-title p');
 						fcTitle.prepend( dateDebut + event.start_time + '/' + dateFin + event.end_time + ' ' );
