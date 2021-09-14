@@ -146,7 +146,7 @@
 	<#else>
 	'nothing'
 	</#if>;
-    $(document).ready(function() {
+	$(function(){
 		$('#calendar').fullCalendar({
             displayEventEnd: true,
             timeFormat: 'LT',
@@ -283,12 +283,14 @@
 
 <script type="text/javascript">
 $(function() {
-	const hid_date = document.querySelector('#hiddenDate')._flatpickr;
+	if (document.querySelector('#hiddenDate')) {
+		const hid_date = document.querySelector('#hiddenDate')._flatpickr;
 
-	hid_date.set('onChange', function() {
-		$('#calendar').fullCalendar( 'gotoDate', hid_date.selectedDates[0]);
-	});
+		hid_date.set('onChange', function() {
+			$('#calendar').fullCalendar( 'gotoDate', hid_date.selectedDates[0]);
+		});
 
-	$('#hiddenDate + input').hide();
+		$('#hiddenDate + input').hide();
+	}
 });
 </script>
