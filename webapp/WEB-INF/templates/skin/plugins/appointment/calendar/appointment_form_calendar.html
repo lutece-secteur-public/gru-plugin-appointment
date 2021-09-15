@@ -220,8 +220,9 @@
 			viewRender: function(view, element) {
 				var minDate = moment.utc(minDateOfOpenDay);
 				var maxDate = moment.utc(maxDateOfOpenDay);
+
 				// Past
-				if (minDate >= view.start && minDate <= view.end || view.end <= minDate) {
+				if (minDate.isSameOrAfter(view.start) && minDate.isSameOrBefore(view.end) || view.end.isSameOrBefore(minDate)) {
 					$(".fc-prev-button").prop('disabled', true);
 					$(".fc-prev-button").addClass('fc-state-disabled');
                     $('.fc-prev-button').popover('hide');
@@ -230,7 +231,7 @@
 					$(".fc-prev-button").prop('disabled', false); 
 				}
 				// Future
-				if (maxDate >= view.start && maxDate <= view.end || maxDate <= view.start) {
+				if (maxDate.isSameOrAfter(view.start) && maxDate.isSameOrBefore(view.end) || maxDate.isSameOrBefore(view.start)) {
 					$(".fc-next-button").prop('disabled', true); 
 					$(".fc-next-button").addClass('fc-state-disabled');  
                     $('.fc-next-button').popover('hide');
