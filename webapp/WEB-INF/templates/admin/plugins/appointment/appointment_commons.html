@@ -281,12 +281,12 @@ $(function(){
 	$( '[name="action_${action}"]' ).click( function(e){
 		if( moment(end_date.selectedDates[0]).isBefore( start_date.selectedDates[0] ) ){
 			$('#${idEndingDate}').parents('.form-group').addClass('has-error');
-			$('#${idEndingDate}_help').html('#i18n{appointment.message.error.dateStartAfterTimeEnd'});
+			$('#${idEndingDate}_help').html('#i18n{appointment.message.error.dateStartAfterTimeEnd}');
 			e.preventDefault();
 		}
 		if( tinyMCE.activeEditor.getContent().trim().length === 0 ){
 			$('#${idComment}').parents('.form-group').addClass('has-error');
-			$('#${idComment}_help').html('<span class="color-danger">'#i18n{appointment.message.error.noText}</span>');
+			$('#${idComment}_help').html('<span class="color-danger">#i18n{appointment.message.error.noText}</span>');
 			e.preventDefault();
 		}
 	});
@@ -384,13 +384,15 @@ localStorage.setItem( 'appointmentContext', '${context}' );
 <#macro commentModal update=false >
 <#if update>
 	var formValues = JSON.parse( $(this).attr( 'data-json' ) );
-	localStorage.setItem( 'commentContext', moment(formValues.comment_start).format('DD/MM/YYYY') );
+	localStorage.setItem( 'commentContext', moment(formValues.comment_start, 'YYYY-MM-DD').format('DD/MM/YYYY') );
 	tinyMCE.activeEditor.setContent( formValues.comment_text );
+
 	$( '#modify-comment input[name="id_comment"]' ).val( formValues.id_comment.slice(1) );
-	$( '#modify-comment input[name="startingValidityDate"]' ).val( moment(formValues.comment_start).format('DD/MM/YYYY') );
-	$( '#modify-comment input[name="endingValidityDate"]' ).val( moment(formValues.comment_end).format('DD/MM/YYYY')  );
-	$( '#modify-comment input[name="startingValidityTime"]' ).val( formValues.comment_start_time );
-	$( '#modify-comment input[name="endingValidityTime"]' ).val( formValues.comment_end_time );
+
+	document.getElementById('modifyStartingValidityDate')._flatpickr.setDate(moment(formValues.comment_start, 'YYYY-MM-DD').toDate());
+	document.getElementById('idModifyStartingTime')._flatpickr.setDate(moment(formValues.comment_start_time, 'HH:mm').toDate());
+	document.getElementById('modifyEndingValidityDate')._flatpickr.setDate(moment(formValues.comment_end, 'YYYY-MM-DD').toDate());
+	document.getElementById('idModifyEndingTime')._flatpickr.setDate(moment(formValues.comment_end_time, 'HH:mm').toDate());
 </#if>
 $( '#modify-comment' ).modal('show');
 </#macro> 
@@ -694,7 +696,7 @@ $( function(){
 					
 					/* Add comment render */
 					moment.locale( '${locale}' );
-					if ( moment( moment(event.start).format('YYYY-MM-DD') ).isSame( moment( event.validity_end ).format('YYYY-MM-DD') ) ){
+					if ( moment(event.start).isSame(moment(event.validity_end), 'day')) {
 						if(  event.start_time == '00:00' &&  event.end_time == '00:00' ){
 							labelEventDate='#i18n{appointment.comment.dateOn} ' +  moment(event.start).format('#i18n{appointment.shortDayWithDateFormat}');
 							} else {
