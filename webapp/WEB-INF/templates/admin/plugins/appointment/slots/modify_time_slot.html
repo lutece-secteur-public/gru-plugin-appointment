@@ -1,7 +1,5 @@
-<link rel='stylesheet' href='css/plugins/appointment/bootstrap-datetimepicker.css' />
 <script src="js/jquery/jquery.min.js"></script>
 <script src="js/plugins/appointment/moment.min.js" ></script>
-<script src="js/plugins/appointment/bootstrap-datetimepicker.min.js"></script>
 <@row>
 	<@columns>
 		<@box color='primary'>
@@ -63,8 +61,6 @@
 	}
 	else return true;
 	};
-	$('#ending_time').datetimepicker({
-      format: 'HH:mm',
-      stepping: 5
-    });
 </script>
+
+<@getTimeFlatPicker idField="ending_time" language=language />

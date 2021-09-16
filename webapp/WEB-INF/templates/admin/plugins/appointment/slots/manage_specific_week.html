@@ -130,12 +130,8 @@ $('#new_cap').click(function(){
 $('#var_cap').click(function(){
     $('#newCapacity').attr('min','-99');
 });
-<@fullCalendarScript isSpecific=true >
-    $('#timeEnd').datetimepicker({
-        format: 'HH:mm',
-        stepping: 5
-    });
-</@fullCalendarScript>
+<@fullCalendarScript isSpecific=true /> 
 </script>
 <#include "/admin/util/editor/editor.html" />
 <@initEditor type='comment' />
+<@getTimeFlatPicker idField="timeEnd" language=language />

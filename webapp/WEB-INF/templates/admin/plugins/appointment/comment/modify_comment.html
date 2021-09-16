@@ -12,12 +12,11 @@
     </@columns>
 </@row>
 
-<@getDatePickerBootstrap idField="modifyStartingValidityDate" language=locale />
-<@getDatePickerBootstrap idField="modifyEndingValidityDate" language=locale />
 <script>
 $( function( ) {
-        $( "input[name='startingValidityDate']" ).datepicker().datepicker( 'setDate', new Date( "${comment.startingValidityDate}" ) );
-        $( "input[name='endingValidityDate']" ).datepicker().datepicker( 'setDate', new Date( "${comment.endingValidityDate}" ) );
+        document.getElementById('modifyStartingValidityDate')._flatpickr.setDate(moment('${comment.startingValidityDate}', 'YYYY-MM-DD').toDate());
+        document.getElementById('modifyEndingValidityDate')._flatpickr.setDate(moment('${comment.endingValidityDate}', 'YYYY-MM-DD').toDate());
+
         tinyMCE.activeEditor.setContent( "${comment.comment}" );
 });
 </script>
