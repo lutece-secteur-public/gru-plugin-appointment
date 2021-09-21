@@ -499,7 +499,7 @@ $( function(){
 					const isOpen = JSON.parse( evt.isOpen )
 					$('#is_open').prop( "checked", isOpen );
 					$('#maxCapacity').val( evt.maxCapacity );
-					$('#dtSlot').text( moment(evt.startingDateTime).format('DD/MM/YYYY') );
+					$('#dtSlot').text( moment(evt.startingDateTime).format('LT') );
 					$('#date_of_display_slot').val( moment(evt.startingDateTime).format('YYYY-MM-DD') );
 					$('#timeStart').text( evt.startingTime );
 					$('#timeEnd').val( evt.endingTime );
