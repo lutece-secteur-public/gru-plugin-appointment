@@ -46,6 +46,7 @@ import java.util.List;
 import org.apache.commons.fileupload.FileItem;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.CellType;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
@@ -232,7 +233,7 @@ public final class ClosingDayService
                         {
                             Cell cell = cellIterator.next( );
                             // The Cell Containing String will is name.
-                            if ( cell.getColumnIndex( ) == 3 && cell.getCellType( ) == 0 )
+                            if ( cell.getColumnIndex( ) == 3 && cell.getCellType( ) == CellType.NUMERIC )
                             {
                                 Instant instant = cell.getDateCellValue( ).toInstant( );
                                 LocalDate localDate = instant.atZone( ZoneId.systemDefault( ) ).toLocalDate( );
