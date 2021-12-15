@@ -1,6 +1,5 @@
 <#macro commonsAppJS>
 <!--  CSS admin -->
-<link rel='stylesheet' href='css/admin/plugins/appointment/bootstrap-datetimepicker.css' >
 <link rel="stylesheet" href="css/admin/plugins/appointment/fullcalendar.min.css" >
 <link rel="stylesheet" href="css/admin/plugins/appointment/appointment.css" >
 <link rel="stylesheet" href="css/admin/plugins/appointment/fullcalendar.custom.css" >
@@ -9,9 +8,6 @@
 <script src="js/admin/plugins/appointment/moment.min.js" ></script>
 <script src="js/admin/plugins/appointment/fullcalendar.min.js"></script>
 <script src="js/admin/plugins/appointment/locale-all.js"></script>
-<script src="js/admin/bootstrap-datepicker.js" ></script>
-<script src="js/admin/locales/bootstrap-datepicker.fr.js" ></script>
-<script src="js/admin/plugins/appointment/bootstrap-datetimepicker.min.js"></script>
 <script src="js/admin/plugins/appointment/tinycolor-min.js"></script>
 <script src="js/admin/plugins/appointment/appointment.js" ></script>
 </#macro>
@@ -246,64 +242,51 @@ $('.content-header h1').html("<a href=\"jsp/admin/plugins/appointment/ManageAppo
 	</@modalBody>
 </@modal>
 
+<@getDateFlatPicker idField="${idStartingDate}" language=locale />
+<@getDateFlatPicker idField="${idEndingDate}" language=locale />
+<@getTimeFlatPicker idField="${idStartingTime}" language=locale />
+<@getTimeFlatPicker idField="${idEndingTime}" language=locale />
+
 <script>
 $(function(){
 	$('#${idEndingDate}_help').html('');
 
-	$('#${idStartingDate}').datetimepicker({locale: '${locale}', format: 'DD/MM/YYYY'});
-	$('#${idStartingDate}').val( moment().format('DD/MM/YYYY') );
-	$('#${idStartingDate}Group').click(function(event){
-		$('#${idStartingDate}').data("DateTimePicker").show();
+	const start_date = document.getElementById('${idStartingDate}')._flatpickr;
+    const end_date = document.getElementById('${idEndingDate}')._flatpickr;
+
+	start_date.set('onChange', function () {
+        end_date.set('minDate', start_date.selectedDates[0], true);
 	});
 
-	$('#${idEndingDate}').datetimepicker({locale: '${locale}', format: 'DD/MM/YYYY', useCurrent: false});
-	$('#${idEndingDate}').val( moment().format('DD/MM/YYYY') );
-	$('#${idEndingDate}Group').click(function(event){
-		$('#${idEndingDate}').data("DateTimePicker").show();
-	});
-
-	$('#${idStartingTime}').datetimepicker({format: 'HH:mm', stepping: 5});
-	$('#${idStartingTime}Group').click(function(event){
-		$('#${idStartingTime}').data("DateTimePicker").show();
-	});
-
-	$('#${idEndingTime}').datetimepicker({format: 'HH:mm', stepping: 5});
-	$('#${idEndingTime}Group').click(function(event){
-		$('#${idEndingTime}').data("DateTimePicker").show();
+	end_date.set('onChange', function () {
+        start_date.set('maxDate', end_date.selectedDates[0], true);
 	});
 
 	<#if action !='doModifyComment'>
 	/* Set current date */
 	$('#${modalId}').on('shown.bs.modal', function(){
-		var workingDate=sessionStorage.getItem( 'appCurrentDate');
-		$('#${idStartingDate}').val( workingDate );
-		$('#${idEndingDate}').val( workingDate );
-		localStorage.setItem( 'commentContext', workingDate );
+		let rawWorkingDate=sessionStorage.getItem( 'appCurrentDate');
+		let workingDate = moment(rawWorkingDate, 'DD/MM/YYYY').toDate();
+		start_date.setDate(workingDate);
+		end_date.setDate(workingDate);
+		localStorage.setItem( 'commentContext', rawWorkingDate );
   	});
 	</#if>
-
-	$("#${idStartingDate}").on("dp.change", function (e) {
-		$('#${idEndingDate}').data("DateTimePicker").minDate(e.date);
-	});
-
-	$("#${idEndingDate}").on("dp.change", function (e) {
-		$('#${idStartingDate}').data("DateTimePicker").maxDate(e.date);
-	});
+	
 
 	if( '${action!}' === 'doAddComment' ){
 		$('#commentDelete').remove()
 	}
 
 	$( '[name="action_${action}"]' ).click( function(e){
-		var dStart=$('#${idStartingDate}').val(),dEnd=$('#${idEndingDate}').val();
-		if( moment(dEnd).isBefore( dStart ) ){
+		if( moment(end_date.selectedDates[0]).isBefore( start_date.selectedDates[0] ) ){
 			$('#${idEndingDate}').parents('.form-group').addClass('has-error');
-			$('#${idEndingDate}_help').html('La date de fin ne peut être supérieure à la date de début !');
+			$('#${idEndingDate}_help').html('#i18n{appointment.message.error.dateStartAfterTimeEnd}');
 			e.preventDefault();
 		}
 		if( tinyMCE.activeEditor.getContent().trim().length === 0 ){
 			$('#${idComment}').parents('.form-group').addClass('has-error');
-			$('#${idComment}_help').html('<span class="color-danger">Vous devez saisir un texte !</span>');
+			$('#${idComment}_help').html('<span class="color-danger">#i18n{appointment.message.error.noText}</span>');
 			e.preventDefault();
 		}
 	});
@@ -401,13 +384,15 @@ localStorage.setItem( 'appointmentContext', '${context}' );
 <#macro commentModal update=false >
 <#if update>
 	var formValues = JSON.parse( $(this).attr( 'data-json' ) );
-	localStorage.setItem( 'commentContext', moment(formValues.comment_start).format('DD/MM/YYYY') );
+	localStorage.setItem( 'commentContext', moment(formValues.comment_start, 'YYYY-MM-DD').format('DD/MM/YYYY') );
 	tinyMCE.activeEditor.setContent( formValues.comment_text );
+
 	$( '#modify-comment input[name="id_comment"]' ).val( formValues.id_comment.slice(1) );
-	$( '#modify-comment input[name="startingValidityDate"]' ).val( moment(formValues.comment_start).format('DD/MM/YYYY') );
-	$( '#modify-comment input[name="endingValidityDate"]' ).val( moment(formValues.comment_end).format('DD/MM/YYYY')  );
-	$( '#modify-comment input[name="startingValidityTime"]' ).val( formValues.comment_start_time );
-	$( '#modify-comment input[name="endingValidityTime"]' ).val( formValues.comment_end_time );
+
+	document.getElementById('modifyStartingValidityDate')._flatpickr.setDate(moment(formValues.comment_start, 'YYYY-MM-DD').toDate());
+	document.getElementById('idModifyStartingTime')._flatpickr.setDate(moment(formValues.comment_start_time, 'HH:mm').toDate());
+	document.getElementById('modifyEndingValidityDate')._flatpickr.setDate(moment(formValues.comment_end, 'YYYY-MM-DD').toDate());
+	document.getElementById('idModifyEndingTime')._flatpickr.setDate(moment(formValues.comment_end_time, 'HH:mm').toDate());
 </#if>
 $( '#modify-comment' ).modal('show');
 </#macro> 
@@ -473,32 +458,18 @@ $( function(){
 		customButtons: {
 			datePicker: {
 				text: '#i18n{appointment.appointmentCalendar.labelChooseDate}',
-				click: function () {
-					var $btnCustom = $('.fc-datePicker-button' ); // name of custom  button in the generated code
-					$btnCustom.after('<input type="text" id="hiddenDate" class="datepicker">');
-					$( '#hiddenDate' ).datepicker({
-						showOn: "button",
-						language:'fr',
-						autoclose: true,
-						orientation: "bottom"
-					});
-					var $btnDatepicker = $( '.ui-datepicker-trigger' ); // name of the generated datepicker UI 
-					//Below are required for manipulating dynamically created datepicker on custom button click
-					$( '#hiddenDate' ).focus().hide();
-					$btnDatepicker.trigger( 'click' ); //dynamically generated button for datepicker when clicked on input textbox
-					$btnDatepicker.hide();
-					$btnDatepicker.remove();
-					$( 'input.datepicker' ).not( ':first' ).remove();//dynamically appended every time on custom button click
-					$( '#hiddenDate' ).change(function () {
-						calendar.fullCalendar( 'gotoDate', moment($("#hiddenDate").val(),'DD-MM-YYYY'));
-					});
+                click: function (event) {
+                    event.stopPropagation();
+                    $('#hiddenDate + span').show();
+                    document.querySelector('#hiddenDate')._flatpickr.toggle();
+				    $('#hiddenDate + span').hide();
 				}
 			}
 		},
 		</#if>
 		header: <#if isTypical>false<#else>{left: 'prev',center: 'today, datePicker, title',right: 'next'}</#if>,
 		<#if isTypical>columnFormat : 'dddd',<#else>columnHeaderHtml: function(mom) { return mom.format('dddd') + '</br>' + mom.format('LL'); },</#if>
-		slotLabelFormat: 'H:mm',
+		slotLabelFormat: 'LT',
 		slotLabelInterval: slotDuration,
 		slotDuration: slotDuration,
 		<#if selectable>
@@ -528,7 +499,7 @@ $( function(){
 					const isOpen = JSON.parse( evt.isOpen )
 					$('#is_open').prop( "checked", isOpen );
 					$('#maxCapacity').val( evt.maxCapacity );
-					$('#dtSlot').text( moment(evt.startingDateTime).format('DD/MM/YYYY') );
+					$('#dtSlot').text( moment(evt.startingDateTime).format('LT') );
 					$('#date_of_display_slot').val( moment(evt.startingDateTime).format('YYYY-MM-DD') );
 					$('#timeStart').text( evt.startingTime );
 					$('#timeEnd').val( evt.endingTime );
@@ -665,7 +636,7 @@ $( function(){
 								const isOpen = JSON.parse( evt.isOpen )
 								$('#is_open').prop( "checked", isOpen );
 								$('#maxCapacity').val( evt.maxCapacity );
-								$('#dtSlot').text( moment(evt.startingDateTime).format('DD/MM/YYYY') );
+								$('#dtSlot').text( moment(evt.startingDateTime).format('L') );
 								$('#date_of_display_slot').val( moment(evt.startingDateTime).format('YYYY-MM-DD') );
 								$('#timeStart').text( evt.startingTime );
 								$('#timeEnd').val( evt.endingTime );
@@ -724,28 +695,42 @@ $( function(){
 					$(element).addClass('comments').attr( 'id', 'comment-' + event.id ).attr( 'data-json', '{"id_comment":"' + event.id + '", "comment_text":"' + event.title.replace(/"/g,'\\"') + '", "comment_start":"' + event.start.format('YYYY-MM-DD') + '", "comment_start_time":"' + event.start_time + '", "comment_end":"' + event.validity_end + '", "comment_end_time\":"' + event.end_time + '"}' );
 					
 					/* Add comment render */
-					labelEventDate=setLabelComment( event, '${locale}' );
+					moment.locale( '${locale}' );
+					if ( moment(event.start).isSame(moment(event.validity_end), 'day')) {
+						if(  event.start_time == '00:00' &&  event.end_time == '00:00' ){
+							labelEventDate='#i18n{appointment.comment.dateOn} ' +  moment(event.start).format('#i18n{appointment.shortDayWithDateFormat}');
+							} else {
+							labelEventDate='#i18n{appointment.comment.dateOn} ' +  moment(event.start).format('#i18n{appointment.shortDayWithDateFormat}') + ' ' + event.start_time + ' - ' + event.end_time;
+						}
+					} else {
+						if(  event.start_time == '00:00' &&  event.end_time == '00:00' ){
+							labelEventDate = '#i18n{appointment.comment.dateFrom} ' +  moment(event.start).format('#i18n{appointment.shortDayWithDateFormat}') + ' #i18n{appointment.comment.dateTo} '+ moment(event.validity_end).format('#i18n{appointment.shortDayWithDateFormat}');
+						} else {
+							labelEventDate =  '#i18n{appointment.comment.dateFrom} ' +  moment(event.start).format('#i18n{appointment.shortDayWithDateFormat}') + ' ' + event.start_time + ' #i18n{appointment.comment.dateTo} '+ moment(event.validity_end).format('#i18n{appointment.shortDayWithDateFormat}') + ' ' + event.end_time;
+						}
+					}
+
 					var creator = event.creator_name.trim() !== '' ? event.creator_name : event.creator_user;
-					json.content = '<p>' + labelEventDate +'</p><p>Créé par <em>' + creator + '</em> le <date>' + event.creation_date + '</date><hr>'+ event.title + '</p>'  ;
+					json.content = '<p>' + labelEventDate +'</p><p>#i18n{appointment.comment.createdBy} <em>' + creator + '</em> #i18n{appointment.comment.dateOn} <date>' + event.creation_date + '</date><hr>'+ event.title + '</p>'  ;
 					var dateDebut='', dateFin='';
 					if ( ! ( event.start_time == null || event.start_time == undefined || event.start_time == '00:00' ) ){
 						if( event.start.format('DDMM') != moment(event.validity_end).format('DDMM') ){
-							dateDebut=event.start.format('ddd DD/MM à ');
-							dateFin=moment(event.validity_end).format('ddd DD/MM à ')
+							dateDebut=event.start.format('#i18n{appointment.shortDayWithDateFormat}') + ' #i18n{appointment.comment.timeAt} ';
+							dateFin=moment(event.validity_end).format('#i18n{appointment.shortDayWithDateFormat}') + ' #i18n{appointment.comment.timeAt} ';
 						}
 						var fcTitle = element.find('.fc-title p');
-						fcTitle.prepend( dateDebut + event.start_time + '/' + dateFin + event.end_time + ' ' );
+						fcTitle.prepend( dateDebut + event.start_time + ' / ' + dateFin + event.end_time + ' ' );
 					} else {
 						$(element).addClass('allday');
 					}
 				} else {
 					if( event.id != undefined || event.id != undefined ){
-						json.content = "<center><b>" + event.start.format('HH:mm') + "</b> - <b>" + event.end.format('HH:mm')+"</b></center>";
+						json.content = "<center><b>" + event.start.format('LT') + "</b> - <b>" + event.end.format('LT')+"</b></center>";
 					}
 				}
 			<#else>
 				if( event.id != undefined || event.id != undefined ){
-					json.content = "<center><b>" + event.start.format('HH:mm') + "</b> - <b>" + event.end.format('HH:mm')+"</b></center>";
+					json.content = "<center><b>" + event.start.format('LT') + "</b> - <b>" + event.end.format('LT')+"</b></center>";
 				}
 			</#if>
 			$(element).popover( json );
@@ -754,10 +739,27 @@ $( function(){
 	});
 	/* If comment creation set currentDate from "commentContext" localstorage */
 	const dtCurrent=localStorage.getItem('commentContext');
-	if(  dtCurrent !='' ){
+	if(  dtCurrent ){
 		localStorage.removeItem( 'commentContext' );
 		calendar.fullCalendar( 'gotoDate', moment(dtCurrent,'DD-MM-YYYY'));
 	}
-	<#nested>
+    
+	<#if !isTypical>
+    $('.fc-datePicker-button' ).after('<input id="hiddenDate" type="text">');
+    <@getDateFlatPickerScript idField='hiddenDate' language=locale />
+
+    const hid_date = document.querySelector('#hiddenDate')._flatpickr;
+
+    hid_date.set('onChange', function() {
+        calendar.fullCalendar( 'gotoDate', hid_date.selectedDates[0]);
+    });
+
+    $(function() {
+        $('#hiddenDate + span').hide();
+    });
+    </#if>
+
+    <#nested>
 });
+
 </#macro>

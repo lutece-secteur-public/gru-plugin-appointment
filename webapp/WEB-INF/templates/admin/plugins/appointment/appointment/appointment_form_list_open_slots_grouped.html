@@ -46,7 +46,7 @@
         $('#calendar').fullCalendar({
             displayEventTime: true,
             displayEventEnd: true,
-            timeFormat: 'H:mm',
+            timeFormat: 'LT',
             themeSystem: 'jquery-ui',
             buttonText : {
                 prev : '#i18n{appointment.appointmentApp.previousWeek}',
@@ -67,26 +67,10 @@
                 datePicker: {
                     text: '#i18n{appointment.appointmentCalendar.labelChooseDate}',
                     click: function () {
-                        var $btnCustom = $('.fc-datePicker-button'); // name of custom  button in the generated code
-                        $btnCustom.after('<input type="text" id="hiddenDate" class="datepicker"/>');
-                        $("#hiddenDate").datepicker({
-                            showOn: "button",
-                            language: "${locale}",
-                            autoclose: true,
-                            startDate:  moment(startingDateOfDisplay).toDate(),
-                            endDate: moment(endingDateOfDisplay).toDate(),
-                            orientation: "bottom"
-                        });
-                        var $btnDatepicker = $(".ui-datepicker-trigger"); // name of the generated datepicker UI 
-                        //Below are required for manipulating dynamically created datepicker on custom button click
-                        $("#hiddenDate").focus().hide();
-                        $btnDatepicker.trigger("click"); //dynamically generated button for datepicker when clicked on input textbox
-                        $btnDatepicker.hide();
-                        $btnDatepicker.remove();
-                        $("input.datepicker").not(":first").remove();//dynamically appended every time on custom button click
-                        $("#hiddenDate").change(function () {
-                            $('#calendar').fullCalendar('gotoDate', moment($("#hiddenDate").val(),'DD-MM-YYYY'));
-                        });
+                        event.stopPropagation();
+                        $('#hiddenDate + span').show();
+                        document.querySelector('#hiddenDate')._flatpickr.toggle();
+				        $('#hiddenDate + span').hide();
                     }
                 }
             },
@@ -158,7 +142,7 @@
                     html : true,
                     trigger : 'hover'
                 };
-                json.content = "<center>"+event.start.format('ddd DD/MM')+"</center>" + "<center><b>" + event.start.format('HH:mm') + "</b> - <b>" + event.end.format('HH:mm')+"</b></center>";
+                json.content = "<center>"+event.start.format('L')+"</center>" + "<center><b>" + event.start.format('LT') + "</b> - <b>" + event.end.format('LT')+"</b></center>";
                 $(element).popover( json );
                 $(element).contextmenu(function() {
                     return false;
@@ -166,5 +150,19 @@
                 
             }
         });
+    });
+
+
+    $('.fc-datePicker-button' ).after('<input id="hiddenDate" type="text">');
+    <@getDateFlatPickerScript idField='hiddenDate' language=locale minDate='${starting_date_of_display}' maxDate='${ending_date_of_display}'=/>
+
+    const hid_date = document.querySelector('#hiddenDate')._flatpickr;
+
+    hid_date.set('onChange', function() {
+        calendar.fullCalendar( 'gotoDate', hid_date.selectedDates[0]);
+    });
+
+    $(function() {
+        $('#hiddenDate + span').hide();
     });
 </script>

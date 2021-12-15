@@ -207,10 +207,14 @@
     </@modalBody>
 </@modal> 
 
-<@getDatePickerBootstrap idField="date_of_modification" language=language />
+<@getDateFlatPicker idField="date_of_modification" language=language />
+<@getTimeFlatPicker idField="time_start" language=language />
+<@getTimeFlatPicker idField="time_end" language=language />
+<@getTimeFlatPicker idField="ending_time" language=language />
 
 <script src="js/admin/plugins/appointment/selectable.min.js"></script>
 <script src="js/admin/plugins/appointment/selectable.table.min.js"></script>
+
 <script>
 var slotDuration = '${min_duration}';
 var minTime = '${min_time}';
@@ -249,49 +253,7 @@ var defaultDate = moment();
 var startingDateOfDisplay = moment().subtract(1, 'year');
 var endingDateOfDisplay = moment().add(1, 'year');
 
-<@fullCalendarScript isTypical=true showComments=false locale='fr'>
-$('#date_of_modification').datepicker({
-    language: "${language}",
-    startDate: new Date(),
-    weekStart: 1,
-    todayBtn: true,
-    todayHighLight: true,
-    autoclose: true
-});
-
-$('#datetimepicker').datetimepicker({
-    format: 'HH:mm',
-    stepping: 5
-});
-
-$('#time_start').datetimepicker({
-    format: 'HH:mm',
-    stepping: 5
-});
-
-$('#time_end').datetimepicker({
-    format: 'HH:mm',
-    stepping: 5
-});
-
-$('#time_start_new').datetimepicker({
-    format: 'HH:mm',
-    stepping: 5
-});
-
-$('#time_end_new').datetimepicker({
-    format: 'HH:mm',
-    stepping: 5
-});
-
-$("#time_start_new").on("dp.change", function (e) {
-    $('#time_end_new').data("DateTimePicker").date( e.date.add(1, 'hour') );
-});
-
-$('#ending_time').datetimepicker({
-    format: 'HH:mm',
-    stepping: 5
-});
+<@fullCalendarScript isTypical=true showComments=false locale=language>
 
 $('#new_cap').click(function(){
     $('#newCapacity').attr('min','0');
