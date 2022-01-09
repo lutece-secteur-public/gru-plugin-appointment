@@ -649,6 +649,12 @@ public final class AppointmentUtilities
             request.getSession( ).removeAttribute( SESSION_TASK_TIMER_SLOT + idSlot );
         }
     }
+    
+    public static boolean isEditSlotTaskExpiredTime( HttpServletRequest request, int idSlot )
+    {
+    	ScheduledFuture<Slot> task = (ScheduledFuture<Slot>) request.getSession( ).getAttribute( SESSION_TASK_TIMER_SLOT + idSlot );
+        return ( task != null && task.isDone( ) );
+    }
 
     /**
      * Create a timer on a slot
