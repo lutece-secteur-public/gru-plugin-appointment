@@ -68,6 +68,7 @@ import fr.paris.lutece.plugins.appointment.business.slot.Slot;
 import fr.paris.lutece.plugins.appointment.business.slot.SlotHome;
 import fr.paris.lutece.plugins.appointment.business.user.User;
 import fr.paris.lutece.plugins.appointment.exception.AppointmentSavedException;
+import fr.paris.lutece.plugins.appointment.exception.SlotEditTaskExpiredTimeException;
 import fr.paris.lutece.plugins.appointment.exception.SlotFullException;
 import fr.paris.lutece.plugins.appointment.service.listeners.AppointmentListenerManager;
 import fr.paris.lutece.plugins.appointment.service.listeners.SlotListenerManager;
@@ -79,6 +80,7 @@ import fr.paris.lutece.portal.business.user.AdminUser;
 import fr.paris.lutece.portal.service.admin.AdminUserService;
 import fr.paris.lutece.portal.service.util.AppLogService;
 import fr.paris.lutece.portal.service.workflow.WorkflowService;
+import fr.paris.lutece.portal.web.l10n.LocaleService;
 import fr.paris.lutece.util.sql.TransactionManager;
 
 public final class SlotSafeService
@@ -333,7 +335,7 @@ public final class SlotSafeService
      */
     public static int saveAppointment( AppointmentDTO appointmentDTO, HttpServletRequest request )
     {
-        Locale locale = ( request != null ) ? request.getLocale( ) : null;
+        Locale locale = null;
         User user = appointmentDTO.getUser( );
         List<Lock> listLock = new ArrayList<>( );
         // change date appointment
@@ -341,6 +343,16 @@ public final class SlotSafeService
         if ( appointmentDTO.getIsSaved( ) )
         {
             throw new AppointmentSavedException( "Appointment is already saved " );
+        }
+        if ( request != null )
+        {
+        	locale= LocaleService.getContextUserLocale( request );
+        			
+            for ( Slot slt : appointmentDTO.getSlot( ) )
+            {
+                if (AppointmentUtilities.isEditSlotTaskExpiredTime( request, slt.getIdSlot( ) ))
+                	   throw new SlotEditTaskExpiredTimeException( "appointment edit expired time" );                               
+            }
         }
         AppointmentService.buildListAppointmentSlot( appointmentDTO );
         TransactionManager.beginTransaction( AppointmentPlugin.getPlugin( ) );

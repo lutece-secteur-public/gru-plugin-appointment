@@ -69,6 +69,7 @@ import fr.paris.lutece.plugins.appointment.business.rule.FormRule;
 import fr.paris.lutece.plugins.appointment.business.rule.ReservationRule;
 import fr.paris.lutece.plugins.appointment.business.slot.Slot;
 import fr.paris.lutece.plugins.appointment.exception.AppointmentSavedException;
+import fr.paris.lutece.plugins.appointment.exception.SlotEditTaskExpiredTimeException;
 import fr.paris.lutece.plugins.appointment.exception.SlotFullException;
 import fr.paris.lutece.plugins.appointment.log.LogUtilities;
 import fr.paris.lutece.plugins.appointment.service.AppointmentResourceIdService;
@@ -248,6 +249,8 @@ public class AppointmentJspBean extends MVCAdminJspBean
     private static final String MARK_USER_CREATOR = "userCreator";
     private static final String JSP_MANAGE_APPOINTMENTS = "jsp/admin/plugins/appointment/ManageAppointments.jsp";
     private static final String ERROR_MESSAGE_SLOT_FULL = "appointment.message.error.slotFull";
+    private static final String ERROR_MESSAGE_SLOT_EDIT_TASK_EXPIRED_TIME ="appointment.message.error.appointment.edit.expired.time";
+
 
     // Messages
     private static final String MESSAGE_CONFIRM_REMOVE_APPOINTMENT = "appointment.message.confirmRemoveAppointment";
@@ -1289,6 +1292,11 @@ public class AppointmentJspBean extends MVCAdminJspBean
             addError( ERROR_MESSAGE_SLOT_FULL, getLocale( ) );
             return redirect( request, VIEW_CALENDAR_MANAGE_APPOINTMENTS, PARAMETER_ID_FORM, _validatedAppointment.getIdForm( ) );
         }
+        catch( SlotEditTaskExpiredTimeException e )
+        {
+        	addError( ERROR_MESSAGE_SLOT_EDIT_TASK_EXPIRED_TIME, getLocale( ));
+        	return redirect( request, VIEW_CALENDAR_MANAGE_APPOINTMENTS, PARAMETER_ID_FORM, _validatedAppointment.getIdForm( ) );
+        } 
         catch( AppointmentSavedException e )
         {
 

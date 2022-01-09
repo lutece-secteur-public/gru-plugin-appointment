@@ -67,6 +67,7 @@ import fr.paris.lutece.plugins.appointment.business.planning.WeekDefinition;
 import fr.paris.lutece.plugins.appointment.business.rule.ReservationRule;
 import fr.paris.lutece.plugins.appointment.business.slot.Slot;
 import fr.paris.lutece.plugins.appointment.exception.AppointmentSavedException;
+import fr.paris.lutece.plugins.appointment.exception.SlotEditTaskExpiredTimeException;
 import fr.paris.lutece.plugins.appointment.exception.SlotFullException;
 import fr.paris.lutece.plugins.appointment.log.LogUtilities;
 import fr.paris.lutece.plugins.appointment.service.AppointmentResponseService;
@@ -255,6 +256,7 @@ public class AppointmentApp extends MVCApplication
 
     // Errors
     private static final String ERROR_MESSAGE_SLOT_FULL = "appointment.message.error.slotFull";
+    private static final String ERROR_MESSAGE_SLOT_EDIT_TASK_EXPIRED_TIME ="appointment.message.error.appointment.edit.expired.time";
     private static final String ERROR_MESSAGE_CAPTCHA = "portal.admin.message.wrongCaptcha";
     private static final String ERROR_MESSAGE_NB_MIN_DAYS_BETWEEN_TWO_APPOINTMENTS = "appointment.validation.appointment.NbMinDaysBetweenTwoAppointments.error";
     private static final String ERROR_MESSAGE_NB_MAX_APPOINTMENTS_ON_A_PERIOD = "appointment.validation.appointment.NbMaxAppointmentsOnAPeriod.error";
@@ -980,10 +982,16 @@ public class AppointmentApp extends MVCApplication
         catch( SlotFullException e )
         {
 
-            addInfo( ERROR_MESSAGE_SLOT_FULL, getLocale( request ) );
+            addError( ERROR_MESSAGE_SLOT_FULL, getLocale( request ) );
             return redirect( request, VIEW_APPOINTMENT_CALENDAR, PARAMETER_ID_FORM, _validatedAppointment.getIdForm( ), PARAMETER_NB_PLACE_TO_TAKE,
                     _nNbPlacesToTake );
         }
+        catch( SlotEditTaskExpiredTimeException e )
+        {
+        	addError( ERROR_MESSAGE_SLOT_EDIT_TASK_EXPIRED_TIME, getLocale( request ) );
+            return redirect( request, VIEW_APPOINTMENT_CALENDAR, PARAMETER_ID_FORM, _validatedAppointment.getIdForm( ), PARAMETER_NB_PLACE_TO_TAKE,
+                    _nNbPlacesToTake );
+        }        
         catch( AppointmentSavedException e )
         {
             nIdAppointment = _validatedAppointment.getIdAppointment( );
