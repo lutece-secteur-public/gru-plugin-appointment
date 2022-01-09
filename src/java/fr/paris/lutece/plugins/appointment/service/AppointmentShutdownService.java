@@ -54,9 +54,10 @@ public class AppointmentShutdownService implements ShutdownService
     @Override
     public void process( )
     {
-
+    	AppointmentUtilities.shutdownSecheduledExecutor( );
+    	AppointmentExecutorService.INSTANCE.shutdown( );
         SlotHome.resetPotentialRemainingPlaces( );
-
+        
     }
 
 }

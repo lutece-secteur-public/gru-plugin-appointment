@@ -264,14 +264,15 @@ public final class SlotSafeService
      * @param task
      *            the task timer
      */
-    public static void incrementPotentialRemainingPlaces( SlotEditTask task )
+    public static Slot incrementPotentialRemainingPlaces( SlotEditTask task )
     {
         Lock lock = getLockOnSlot( task.getIdSlot( ) );
+        Slot slot;
         lock.lock( );
         try
         {
-            Slot slot = SlotService.findSlotById( task.getIdSlot( ) );
-            if ( slot != null && !task.isCancelled( ) )
+            slot = SlotService.findSlotById( task.getIdSlot( ) );
+            if ( slot != null  )
             {
 
                 int nNewPotentialRemainingPlaces = Math.min( slot.getNbPotentialRemainingPlaces( ) + task.getNbPlacesTaken( ), slot.getNbRemainingPlaces( ) );
@@ -286,6 +287,7 @@ public final class SlotSafeService
             lock.unlock( );
 
         }
+        return slot;
     }
 
     /**

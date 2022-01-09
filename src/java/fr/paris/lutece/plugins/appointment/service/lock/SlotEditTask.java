@@ -35,7 +35,9 @@ package fr.paris.lutece.plugins.appointment.service.lock;
 
 import java.io.Serializable;
 import java.util.TimerTask;
+import java.util.concurrent.Callable;
 
+import fr.paris.lutece.plugins.appointment.business.slot.Slot;
 import fr.paris.lutece.plugins.appointment.service.SlotSafeService;
 
 /**
@@ -44,13 +46,8 @@ import fr.paris.lutece.plugins.appointment.service.SlotSafeService;
  * @author Laurent Payen
  *
  */
-public final class SlotEditTask extends TimerTask implements Serializable
+public final class SlotEditTask  implements Callable<Slot>  
 {
-
-    /**
-     * UID
-     */
-    private static final long serialVersionUID = 2397343851302139337L;
 
     /**
      * Potentially number of places taken
@@ -61,22 +58,18 @@ public final class SlotEditTask extends TimerTask implements Serializable
      * Id of the slot on which the user is taking an appointment
      */
     private int _idSlot;
-    /**
-     * Is Cancelled
-     */
-    private boolean _bIsCancelled;
+    
 
-    public SlotEditTask( )
+    public SlotEditTask( int nIdSlot, int nbPlacesTaken)
     {
-        super( );
+        _idSlot= nIdSlot;
+        _nbPlacesTaken= nbPlacesTaken;
     }
 
     @Override
-    public void run( )
+    public Slot call( )
     {
-        SlotSafeService.incrementPotentialRemainingPlaces( this );
-        this.cancel( );
-        _bIsCancelled = true;
+        return SlotSafeService.incrementPotentialRemainingPlaces( this );
 
     }
 
@@ -120,28 +113,4 @@ public final class SlotEditTask extends TimerTask implements Serializable
     {
         this._idSlot = nIdSlot;
     }
-
-    /**
-     * If the task is cancelled
-     * 
-     * @return true if task is cancelled
-     */
-    public boolean isCancelled( )
-    {
-
-        return _bIsCancelled;
-
-    }
-
-    /**
-     * set If the task is cancelled
-     * 
-     * @param isCancelled
-     */
-    public void setIsCancelled( boolean isCancelled )
-    {
-
-        _bIsCancelled = isCancelled;
-    }
-
 }

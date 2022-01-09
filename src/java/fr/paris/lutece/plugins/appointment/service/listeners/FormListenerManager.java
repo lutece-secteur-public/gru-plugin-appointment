@@ -33,6 +33,7 @@
  */
 package fr.paris.lutece.plugins.appointment.service.listeners;
 
+import fr.paris.lutece.plugins.appointment.service.AppointmentExecutorService;
 import fr.paris.lutece.portal.service.spring.SpringContextService;
 
 public final class FormListenerManager
@@ -54,12 +55,12 @@ public final class FormListenerManager
      */
     public static void notifyListenersFormCreation( int nIdForm )
     {
-        new Thread( ( ) -> {
+    	AppointmentExecutorService.INSTANCE.execute( ( ) -> {
             for ( IFormListener formListener : SpringContextService.getBeansOfType( IFormListener.class ) )
             {
                 formListener.notifyFormCreation( nIdForm );
             }
-        } ).start( );
+        } );
     }
 
     /**
@@ -70,12 +71,12 @@ public final class FormListenerManager
      */
     public static void notifyListenersFormChange( int nIdForm )
     {
-        new Thread( ( ) -> {
+    	AppointmentExecutorService.INSTANCE.execute( ( ) -> {
             for ( IFormListener formListener : SpringContextService.getBeansOfType( IFormListener.class ) )
             {
                 formListener.notifyFormChange( nIdForm );
             }
-        } ).start( );
+        } );
     }
 
     /**
@@ -86,12 +87,12 @@ public final class FormListenerManager
      */
     public static void notifyListenersFormRemoval( int nIdForm )
     {
-        new Thread( ( ) -> {
+    	AppointmentExecutorService.INSTANCE.execute( ( ) -> {
             for ( IFormListener formListener : SpringContextService.getBeansOfType( IFormListener.class ) )
             {
                 formListener.notifyFormRemoval( nIdForm );
             }
-        } ).start( );
+        } );
     }
 
 }

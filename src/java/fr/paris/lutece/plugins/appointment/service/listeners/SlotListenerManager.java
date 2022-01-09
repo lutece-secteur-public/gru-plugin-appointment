@@ -36,8 +36,15 @@ package fr.paris.lutece.plugins.appointment.service.listeners;
 import java.time.LocalDateTime;
 
 import fr.paris.lutece.plugins.appointment.business.slot.Slot;
+import fr.paris.lutece.plugins.appointment.service.AppointmentExecutorService;
 import fr.paris.lutece.portal.service.spring.SpringContextService;
 
+/**
+ * Manager for slot listeners
+ * 
+ * Listeners are started by another thread asynchronously.
+ * Currently we have a problem with the propagation of the BDDS transaction when launching a workflow task that triggers the listener
+*/
 public final class SlotListenerManager
 {
 
@@ -57,12 +64,12 @@ public final class SlotListenerManager
      */
     public static void notifyListenersSlotCreation( int nIdSlot )
     {
-        new Thread( ( ) -> {
+    	AppointmentExecutorService.INSTANCE.execute( ( ) -> {
             for ( ISlotListener slotListener : SpringContextService.getBeansOfType( ISlotListener.class ) )
             {
                 slotListener.notifySlotCreation( nIdSlot );
             }
-        } ).start( );
+        } );
 
     }
 
@@ -74,12 +81,12 @@ public final class SlotListenerManager
      */
     public static void notifyListenersSlotChange( int nIdSlot )
     {
-        new Thread( ( ) -> {
+    	AppointmentExecutorService.INSTANCE.execute( ( ) -> {
             for ( ISlotListener slotListener : SpringContextService.getBeansOfType( ISlotListener.class ) )
             {
                 slotListener.notifySlotChange( nIdSlot );
             }
-        } ).start( );
+        } );
     }
 
     /**
@@ -90,12 +97,12 @@ public final class SlotListenerManager
      */
     public static void notifyListenersSlotRemoval( Slot slot )
     {
-        new Thread( ( ) -> {
+    	AppointmentExecutorService.INSTANCE.execute( ( ) -> {
             for ( ISlotListener slotListener : SpringContextService.getBeansOfType( ISlotListener.class ) )
             {
                 slotListener.notifySlotRemoval( slot );
             }
-        } ).start( );
+        }) ;
     }
 
     /**
@@ -108,12 +115,12 @@ public final class SlotListenerManager
      */
     public static void notifySlotEndingTimeHasChanged( int nIdSlot, int nIdForm, LocalDateTime endingDateTime )
     {
-        new Thread( ( ) -> {
+    	AppointmentExecutorService.INSTANCE.execute( ( ) -> {
             for ( ISlotListener slotListener : SpringContextService.getBeansOfType( ISlotListener.class ) )
             {
                 slotListener.notifySlotEndingTimeHasChanged( nIdSlot, nIdForm, endingDateTime );
             }
-        } ).start( );
+        } );
     }
 
 }
