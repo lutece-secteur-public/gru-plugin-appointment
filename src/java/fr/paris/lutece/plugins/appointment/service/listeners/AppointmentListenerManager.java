@@ -39,10 +39,14 @@ import java.util.Locale;
 
 import org.apache.commons.lang.StringUtils;
 
+import fr.paris.lutece.plugins.appointment.service.AppointmentExecutorService;
 import fr.paris.lutece.portal.service.spring.SpringContextService;
 
 /**
  * Manager for appointment listeners
+ * 
+ * Listeners are started by another thread asynchronously.
+ * Currently we have a problem with the propagation of the BDDS transaction when launching a workflow task that triggers the listener
  */
 public final class AppointmentListenerManager
 {
@@ -62,12 +66,12 @@ public final class AppointmentListenerManager
      */
     public static void notifyListenersAppointmentRemoval( int nIdAppointment )
     {
-        new Thread( ( ) -> {
+    	AppointmentExecutorService.INSTANCE.execute(()->{
             for ( IAppointmentListener appointmentRemovalListener : SpringContextService.getBeansOfType( IAppointmentListener.class ) )
             {
                 appointmentRemovalListener.notifyAppointmentRemoval( nIdAppointment );
             }
-        } ).start( );
+        } );
     }
 
     /**
@@ -78,14 +82,14 @@ public final class AppointmentListenerManager
      */
     public static void notifyListenersAppointmentCreated( int nIdAppointment )
     {
-        new Thread( ( ) -> {
+    	AppointmentExecutorService.INSTANCE.execute( ( ) -> {
 
             for ( IAppointmentListener appointmentListener : SpringContextService.getBeansOfType( IAppointmentListener.class ) )
             {
                 appointmentListener.notifyAppointmentCreated( nIdAppointment );
             }
 
-        } ).start( );
+        } );
 
     }
 
@@ -97,12 +101,12 @@ public final class AppointmentListenerManager
      */
     public static void notifyListenersAppointmentUpdated( int nIdAppointment )
     {
-        new Thread( ( ) -> {
+    	AppointmentExecutorService.INSTANCE.execute( ( ) -> {
             for ( IAppointmentListener appointmentListener : SpringContextService.getBeansOfType( IAppointmentListener.class ) )
             {
                 appointmentListener.notifyAppointmentUpdated( nIdAppointment );
             }
-        } ).start( );
+        } );
     }
 
     /**
@@ -141,12 +145,12 @@ public final class AppointmentListenerManager
      */
     public static void notifyListenersAppointmentFormRemoval( int nIdAppointmentForm )
     {
-        new Thread( ( ) -> {
+    	AppointmentExecutorService.INSTANCE.execute( ( ) -> {
             for ( IAppointmentFormRemovalListener appointmentRemovalListener : SpringContextService.getBeansOfType( IAppointmentFormRemovalListener.class ) )
             {
                 appointmentRemovalListener.notifyAppointmentFormRemoval( nIdAppointmentForm );
             }
-        } ).start( );
+        } );
     }
 
     /**
@@ -159,12 +163,12 @@ public final class AppointmentListenerManager
      */
     public static void notifyAppointmentWFActionTriggered( int nIdAppointment, int nIdAction )
     {
-        new Thread( ( ) -> {
+    	AppointmentExecutorService.INSTANCE.execute( ( ) -> {
             for ( IAppointmentWorkflowActionListener appointmentListener : SpringContextService.getBeansOfType( IAppointmentWorkflowActionListener.class ) )
             {
                 appointmentListener.notifyAppointmentWFActionTriggered( nIdAppointment, nIdAction );
             }
-        } ).start( );
+        } );
     }
 
 }

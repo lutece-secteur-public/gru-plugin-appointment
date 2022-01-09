@@ -48,7 +48,9 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
-import java.util.Timer;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.Lock;
 import java.util.stream.Collectors;
@@ -69,7 +71,6 @@ import fr.paris.lutece.plugins.appointment.business.rule.ReservationRule;
 import fr.paris.lutece.plugins.appointment.business.slot.Slot;
 import fr.paris.lutece.plugins.appointment.business.user.User;
 import fr.paris.lutece.plugins.appointment.service.lock.SlotEditTask;
-import fr.paris.lutece.plugins.appointment.service.lock.TimerForLockOnSlot;
 import fr.paris.lutece.plugins.appointment.web.dto.AppointmentDTO;
 import fr.paris.lutece.plugins.appointment.web.dto.AppointmentFilterDTO;
 import fr.paris.lutece.plugins.appointment.web.dto.AppointmentFormDTO;
@@ -116,13 +117,15 @@ public final class AppointmentUtilities
     public static final String PROPERTY_DEFAULT_EXPIRED_TIME_EDIT_APPOINTMENT = "appointment.edit.expired.time";
 
     public static final int THIRTY_MINUTES = 30;
-    private static TimerForLockOnSlot _timer;
+    //We don't need to instantiate an ScheduledExecutorService with the removeOnCancel=true because we are using non-periodic and short time tasks.
+    //The getTask call removes the task from the queue.
+    private static final  ScheduledExecutorService _secheduledExecutor = Executors.newSingleThreadScheduledExecutor(r -> new Thread(r, "Lutece-AppointmentSecheduledExecutor-thread") );
 
     /**
      * Private constructor - this class does not need to be instantiated
      */
     private AppointmentUtilities( )
-    {
+    {    	
     }
 
     /**
@@ -628,18 +631,21 @@ public final class AppointmentUtilities
     }
 
     /**
-     * cancel the task timer on a slot
+     * Attempts to cancel execution of the task.
      * 
      * @param request
      *            the request
+     * @param idSlot
+     * 			the id Slot
      */
+   
     public static void cancelTaskTimer( HttpServletRequest request, int idSlot )
     {
-        SlotEditTask task = (SlotEditTask) request.getSession( ).getAttribute( SESSION_TASK_TIMER_SLOT + idSlot );
+    	ScheduledFuture<Slot> task = (ScheduledFuture<Slot>) request.getSession( ).getAttribute( SESSION_TASK_TIMER_SLOT + idSlot );
         if ( task != null )
         {
-            task.cancel( );
-            task.setIsCancelled( true );
+            if (!task.isDone( ))
+            	task.cancel( false );
             request.getSession( ).removeAttribute( SESSION_TASK_TIMER_SLOT + idSlot );
         }
     }
@@ -653,9 +659,9 @@ public final class AppointmentUtilities
      *            the appointment
      * @param maxPeoplePerAppointment
      *            the max people per appointment
-     * @return the timer
+     * @return the ScheduledFuture
      */
-    public static Timer putTimerInSession( HttpServletRequest request, int nIdSlot, AppointmentDTO appointmentDTO, int maxPeoplePerAppointment )
+    public static ScheduledFuture<Slot> putTimerInSession( HttpServletRequest request, int nIdSlot, AppointmentDTO appointmentDTO, int maxPeoplePerAppointment )
     {
         Lock lock = SlotSafeService.getLockOnSlot( nIdSlot );
         lock.lock( );
@@ -670,28 +676,16 @@ public final class AppointmentUtilities
             if ( slot.getNbPotentialRemainingPlaces( ) > 0 )
             {
 
-                _timer = ( _timer != null ) ? _timer : new TimerForLockOnSlot( );
-                _timer.purge( );
-                SlotEditTask slotEditTask = new SlotEditTask( );
-                slotEditTask.setNbPlacesTaken( nbPotentialPlacesTaken );
-                slotEditTask.setIdSlot( slot.getIdSlot( ) );
-                long delay = TimeUnit.MINUTES.toMillis( AppPropertiesService.getPropertyInt( PROPERTY_DEFAULT_EXPIRED_TIME_EDIT_APPOINTMENT, 1 ) );
-                _timer.schedule( slotEditTask, delay );
-
+                ScheduledFuture<Slot> scheduledFuture= _secheduledExecutor.schedule( new SlotEditTask(slot.getIdSlot( ), nbPotentialPlacesTaken), AppPropertiesService.getPropertyInt( PROPERTY_DEFAULT_EXPIRED_TIME_EDIT_APPOINTMENT, 1 ), TimeUnit.MINUTES );
                 appointmentDTO.setNbMaxPotentialBookedSeats( nNewNbMaxPotentialBookedSeats );
                 SlotSafeService.decrementPotentialRemainingPlaces( nbPotentialPlacesTaken, slot.getIdSlot( ) );
 
-                request.getSession( ).setAttribute( SESSION_TASK_TIMER_SLOT + slotEditTask.getIdSlot( ), slotEditTask );
-                return _timer;
+                request.getSession( ).setAttribute( SESSION_TASK_TIMER_SLOT + slot.getIdSlot( ), scheduledFuture );
+                return scheduledFuture;
             }
             appointmentDTO.setNbMaxPotentialBookedSeats( 0 );
         }
-        catch( IllegalStateException e )
-        {
-
-            _timer = new TimerForLockOnSlot( );
-            throw e;
-        }
+        
         finally
         {
 
@@ -1203,5 +1197,28 @@ public final class AppointmentUtilities
             }
         }
         return true;
+    }
+    /**
+	 * The following method shuts down the _executorService in two phases,
+	 * first by calling shutdown to reject incoming tasks, 
+	 * and then calling shutdownNow, if necessary, to cancel any lingering tasks: 
+	 */
+    public static void shutdownSecheduledExecutor( ) 
+    {
+    	_secheduledExecutor.shutdown();
+		try 
+		{
+		    if (!_secheduledExecutor.awaitTermination(60, TimeUnit.SECONDS)) 
+		    {	    	
+		    	_secheduledExecutor.shutdownNow();
+		    } 
+		} 
+		catch(InterruptedException e) {
+			// (Re-)Cancel if current thread also interrupted
+			AppLogService.error( e.getMessage( ), e );
+			_secheduledExecutor.shutdownNow();
+		     
+		}	
+    	
     }
 }

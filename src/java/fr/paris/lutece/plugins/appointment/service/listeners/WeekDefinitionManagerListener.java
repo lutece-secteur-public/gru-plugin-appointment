@@ -36,6 +36,7 @@ package fr.paris.lutece.plugins.appointment.service.listeners;
 import java.util.List;
 
 import fr.paris.lutece.plugins.appointment.business.planning.WeekDefinition;
+import fr.paris.lutece.plugins.appointment.service.AppointmentExecutorService;
 import fr.paris.lutece.portal.service.spring.SpringContextService;
 
 public final class WeekDefinitionManagerListener
@@ -57,12 +58,12 @@ public final class WeekDefinitionManagerListener
      */
     public static void notifyListenersWeekDefinitionAssigned( WeekDefinition weekDefinition )
     {
-        new Thread( ( ) -> {
+    	AppointmentExecutorService.INSTANCE.execute( ( ) -> {
             for ( IWeekDefinitionListener weekDefinitionListener : SpringContextService.getBeansOfType( IWeekDefinitionListener.class ) )
             {
                 weekDefinitionListener.notifyWeekAssigned( weekDefinition );
             }
-        } ).start( );
+        } );
     }
 
     /**
@@ -75,12 +76,12 @@ public final class WeekDefinitionManagerListener
      */
     public static void notifyListenersListWeekDefinitionChanged( int nIdForm, List<WeekDefinition> listWeek )
     {
-        new Thread( ( ) -> {
+    	AppointmentExecutorService.INSTANCE.execute( ( ) -> {
             for ( IWeekDefinitionListener weekDefinitionListener : SpringContextService.getBeansOfType( IWeekDefinitionListener.class ) )
             {
                 weekDefinitionListener.notifyListWeeksChanged( nIdForm, listWeek );
             }
-        } ).start( );
+        } );
     }
 
     /**
@@ -91,12 +92,12 @@ public final class WeekDefinitionManagerListener
      */
     public static void notifyListenersWeekDefinitionUnassigned( WeekDefinition weekDefinition )
     {
-        new Thread( ( ) -> {
+    	AppointmentExecutorService.INSTANCE.execute( ( ) -> {
             for ( IWeekDefinitionListener weekDefinitionListener : SpringContextService.getBeansOfType( IWeekDefinitionListener.class ) )
             {
                 weekDefinitionListener.notifyWeekUnassigned( weekDefinition );
             }
-        } ).start( );
+        } );
     }
 
 }

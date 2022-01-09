@@ -39,7 +39,6 @@ import java.time.LocalTime;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.ForkJoinPool;
 import java.util.stream.Collectors;
 
 import org.apache.commons.collections.CollectionUtils;
@@ -284,11 +283,14 @@ public final class SlotService
     public static List<Slot> buildListSlot( int nIdForm, Map<WeekDefinition, ReservationRule> mapReservationRule, LocalDate startingDate, LocalDate endingDate,
             int nNbPlaces, boolean bAllOpenSlot )
     {
-        ForkJoinPool fjp = new ForkJoinPool( );
-        RecursiveSlotTask task = new RecursiveSlotTask( nIdForm, mapReservationRule, startingDate, endingDate, nNbPlaces, bAllOpenSlot );
-        List<Slot> listSlot = fjp.invoke( task );
-        fjp.shutdownNow( );
-        return listSlot;
+    	if ( nNbPlaces < 1 )
+        {
+            return CalendarBuilder.buildListSlot( nIdForm, mapReservationRule, startingDate, endingDate ) ;
+        }
+        else
+        {
+            return  CalendarBuilder.buildListSlot( nIdForm, mapReservationRule, startingDate, endingDate, nNbPlaces, bAllOpenSlot ) ;
+        }
     }
 
     /**

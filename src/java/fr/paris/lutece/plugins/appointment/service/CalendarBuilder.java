@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2002-2021, City of Paris
+ * Copyright (c) 2002-2022, City of Paris
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -38,10 +38,8 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.ArrayList;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.RecursiveTask;
 
 import fr.paris.lutece.plugins.appointment.business.planning.TimeSlot;
 import fr.paris.lutece.plugins.appointment.business.planning.WeekDefinition;
@@ -50,90 +48,15 @@ import fr.paris.lutece.plugins.appointment.business.rule.ReservationRule;
 import fr.paris.lutece.plugins.appointment.business.slot.Period;
 import fr.paris.lutece.plugins.appointment.business.slot.Slot;
 
-public class RecursiveSlotTask extends RecursiveTask<List<Slot>>
+public class CalendarBuilder 
 {
-
-    private int _nIdForm;
-    private Map<WeekDefinition, ReservationRule> _mapReservationRule;
-    private LocalDate _startingDate;
-    private LocalDate _endingDate;
-    private int _nNbPlaces;
-    private boolean _bAllOpenSlot;
-
-    RecursiveSlotTask( int nIdForm, Map<WeekDefinition, ReservationRule> mapReservationRule, LocalDate startingDate, LocalDate endingDate, int nNbPlaces,
-            boolean bAllOpenSlot )
-    {
-
-        this._nIdForm = nIdForm;
-        this._mapReservationRule = mapReservationRule;
-        this._startingDate = startingDate;
-        this._endingDate = endingDate;
-        this._nNbPlaces = nNbPlaces;
-        this._bAllOpenSlot = bAllOpenSlot;
-
-    }
-
-    @Override
-    protected List<Slot> compute( )
-    {
-
-        List<RecursiveSlotTask> forks = new LinkedList<>( );
-        LocalDate tmpDate = _startingDate;
-        LocalDate tmpCompareDate = _startingDate.plusMonths( 1 );
-        List<Slot> listSlot = new ArrayList<>( );
-
-        if ( tmpCompareDate.isAfter( _endingDate ) || tmpCompareDate.isEqual( _endingDate ) )
-        {
-
-            if ( _nNbPlaces < 1 )
-            {
-
-                listSlot.addAll( buildListSlot( _nIdForm, _mapReservationRule, _startingDate, _endingDate ) );
-
-            }
-            else
-            {
-
-                listSlot.addAll( buildListSlot( _nIdForm, _mapReservationRule, _startingDate, _endingDate, _nNbPlaces, _bAllOpenSlot ) );
-
-            }
-
-        }
-        else
-        {
-
-            while ( tmpDate.isBefore( _endingDate ) )
-            {
-
-                RecursiveSlotTask subtask = null;
-                if ( tmpCompareDate.isAfter( _endingDate ) || tmpCompareDate.isEqual( _endingDate ) )
-                {
-
-                    subtask = new RecursiveSlotTask( _nIdForm, _mapReservationRule, tmpDate, _endingDate, _nNbPlaces, _bAllOpenSlot );
-
-                }
-                else
-                {
-
-                    subtask = new RecursiveSlotTask( _nIdForm, _mapReservationRule, tmpDate, tmpCompareDate, _nNbPlaces, _bAllOpenSlot );
-
-                }
-
-                subtask.fork( );
-                forks.add( subtask );
-                tmpDate = tmpCompareDate.plusDays( 1 );
-                tmpCompareDate = tmpCompareDate.plusMonths( 1 );
-            }
-
-            for ( RecursiveSlotTask task : forks )
-            {
-
-                listSlot.addAll( task.join( ) );
-            }
-        }
-
-        return listSlot;
-    }
+	/**
+	 * Private constructor
+	 */
+	private CalendarBuilder () 
+	{
+		
+	}
 
     /**
      * Build all the slot for a period with all the rules (open hours ...) to apply on each day, for each slot
@@ -148,7 +71,7 @@ public class RecursiveSlotTask extends RecursiveTask<List<Slot>>
      *            the ending date of the periode
      * @returna list of all the slots built
      */
-    private List<Slot> buildListSlot( int nIdForm, Map<WeekDefinition, ReservationRule> mapReservationRule, LocalDate startingDate, LocalDate endingDate )
+    public static List<Slot> buildListSlot( int nIdForm, Map<WeekDefinition, ReservationRule> mapReservationRule, LocalDate startingDate, LocalDate endingDate )
     {
         List<Slot> listSlot = new ArrayList<>( );
         final List<WeekDefinition> listDateReservationRule = new ArrayList<>( mapReservationRule.keySet( ) );
