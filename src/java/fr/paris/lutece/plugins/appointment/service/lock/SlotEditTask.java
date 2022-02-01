@@ -33,8 +33,6 @@
  */
 package fr.paris.lutece.plugins.appointment.service.lock;
 
-import java.io.Serializable;
-import java.util.TimerTask;
 import java.util.concurrent.Callable;
 
 import fr.paris.lutece.plugins.appointment.business.slot.Slot;
