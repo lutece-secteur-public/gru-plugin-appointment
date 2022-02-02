@@ -1211,15 +1211,16 @@ public final class AppointmentUtilities
 	 */
     public static void shutdownSecheduledExecutor( ) 
     {
-    	_secheduledExecutor.shutdown();
+    	_secheduledExecutor.shutdown( );
 		try 
 		{
-		    if (!_secheduledExecutor.awaitTermination(60, TimeUnit.SECONDS)) 
+		    if ( !_secheduledExecutor.awaitTermination( 60, TimeUnit.SECONDS ) ) 
 		    {	    	
-		    	_secheduledExecutor.shutdownNow();
+		    	_secheduledExecutor.shutdownNow( );
 		    } 
 		} 
-		catch(InterruptedException e) {
+		catch( InterruptedException e )
+		{
 			// (Re-)Cancel if current thread also interrupted
 			AppLogService.error( e.getMessage( ), e );
 			_secheduledExecutor.shutdownNow();

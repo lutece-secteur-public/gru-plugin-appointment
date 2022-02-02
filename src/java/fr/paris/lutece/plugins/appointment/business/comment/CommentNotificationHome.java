@@ -35,7 +35,6 @@ package fr.paris.lutece.plugins.appointment.business.comment;
 
 import java.util.List;
 
-import fr.paris.lutece.plugins.appointment.business.comment.CommentNotificationConfig.NotificationType;
 import fr.paris.lutece.plugins.appointment.service.AppointmentPlugin;
 import fr.paris.lutece.portal.service.plugin.Plugin;
 import fr.paris.lutece.portal.service.plugin.PluginService;

@@ -36,10 +36,9 @@ package fr.paris.lutece.plugins.appointment.business.user;
 import java.io.Serializable;
 import java.util.List;
 
+import javax.validation.constraints.Email;
+import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
-
-import org.hibernate.validator.constraints.Email;
-import org.hibernate.validator.constraints.NotBlank;
 
 import fr.paris.lutece.plugins.appointment.business.appointment.Appointment;
 
