@@ -35,7 +35,7 @@ package fr.paris.lutece.plugins.appointment.service;
 
 import java.util.List;
 
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 
 import fr.paris.lutece.plugins.appointment.business.category.Category;
 import fr.paris.lutece.plugins.appointment.business.category.CategoryHome;
