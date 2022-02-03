@@ -36,7 +36,7 @@ package fr.paris.lutece.plugins.appointment.service;
 import java.util.Collection;
 import java.util.Locale;
 
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 
 import fr.paris.lutece.plugins.appointment.business.form.Form;
 import fr.paris.lutece.plugins.appointment.web.dto.AppointmentFormDTO;
