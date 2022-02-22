@@ -754,7 +754,7 @@ $( function(){
 	});
 	/* If comment creation set currentDate from "commentContext" localstorage */
 	const dtCurrent=localStorage.getItem('commentContext');
-	if(  dtCurrent !='' ){
+	if(  dtCurrent !='' && dtCurrent != null ){
 		localStorage.removeItem( 'commentContext' );
 		calendar.fullCalendar( 'gotoDate', moment(dtCurrent,'DD-MM-YYYY'));
 	}
