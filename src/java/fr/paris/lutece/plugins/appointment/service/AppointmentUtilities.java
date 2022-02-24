@@ -920,12 +920,7 @@ public final class AppointmentUtilities
         }
         // If we have change the open hours
 
-        if ( !newStartingTime.equals( oldStartingTime ) || !newEndingTime.equals( oldEndingTime ) )
-        {
-            return false;
-        }
-
-        return true;
+        return !newStartingTime.equals( oldStartingTime ) || !newEndingTime.equals( oldEndingTime );
     }
 
     /**
