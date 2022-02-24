@@ -604,9 +604,10 @@ $( function(){
 			tgc.click(function(ev) {
 				<@commentModal />
 			});	
-
+			var firstBgColor;
 			// Highlight comment from bg
 			$( '.fc-bgevent' ).hover(function(){
+			    firstBgColor = $( this ).css( "background-color" );
 				$( this ).css('background-color', 'orange' );
 				var classSel = $(this).attr('class'), bgColor=$(this).css('background-color'),
 				commentSel = classSel.split(' '),
@@ -615,11 +616,11 @@ $( function(){
 				$( c ).css('color', '#fff' );
 				return false;
 			}, function(){
-				$( this ).css('background-color', 'rgb(233, 250, 0)' );
+				$( this ).css('background-color', firstBgColor );
 				var classSel = $(this).attr('class'),
 				commentSel = classSel.split(' '),
 				c = '#' + commentSel[0].replace('-','-C');
-				$( c ).css('background-color', 'rgb(233, 250, 0)' )
+				$( c ).css('background-color', firstBgColor );
 				$( c ).css('color', '#000' );
 			});
 
