@@ -165,7 +165,22 @@ $('.content-header h1').html("<a href=\"jsp/admin/plugins/appointment/ManageAppo
 
 <#macro getCommentModal modalId modalTitle idComment idStartingDate idEndingDate idStartingTime idEndingTime action idForm mailingList locale=locale>
 <@modal id=modalId >
-	<@modalHeader modalTitle='#i18n{appointment.create_comment.pageTitle}' />
+    <#switch modalId>
+    <#case 'modify-comment'>
+	    <#assign startDateLabel='#i18n{appointment.modify_comment.labelStartingValidityDate}'>
+	    <#assign startTimeLabel='#i18n{appointment.modify_comment.labelStartingValidityTime}'>
+	    <#assign endDateLabel='#i18n{appointment.modify_comment.labelEndingValidityDate}'>
+	    <#assign endDateHelp='#i18n{appointment.modify_comment.labelEndingValidityDate}'>
+	    <#assign endTimeLabel='#i18n{appointment.modify_comment.labelEndingValidityTime}'>
+    <#break>
+    <#default>
+		<#assign startDateLabel='#i18n{appointment.create_comment.labelStartingValidityDate}'>
+		<#assign startTimeLabel='#i18n{appointment.create_comment.labelStartingValidityTime}'>
+		<#assign endDateLabel='#i18n{appointment.create_comment.labelEndingValidityDate}'>
+		<#assign endDateHelp='#i18n{appointment.create_comment.labelEndingValidityDate}'>
+		<#assign endTimeLabel='#i18n{appointment.create_comment.labelEndingValidityTime}'>
+	</#switch>
+	<@modalHeader modalTitle=modalTitle />
 	<@modalBody>
 		<@tform action='jsp/admin/plugins/appointment/Comments.jsp' id='commentUpdate'>
 		<@input type='hidden' name='id_form' value='${idForm!}' />
@@ -179,7 +194,7 @@ $('.content-header h1').html("<a href=\"jsp/admin/plugins/appointment/ManageAppo
 		</@row>
 		<@row>
 			<@columns offsetSm=1 sm=4>
-				<@formGroup labelFor='startingValidityDate' labelKey='#i18n{appointment.create_comment.labelStartingValidityDate}' mandatory=true rows=2>
+				<@formGroup labelFor='startingValidityDate' labelKey=startDateLabel mandatory=true rows=2>
 					<@inputGroup class='date' id='${idStartingDate}Group'>
 						<@input type='text' name='startingValidityDate' id=idStartingDate />
 						<@inputGroupItem type='text'>
@@ -189,7 +204,7 @@ $('.content-header h1').html("<a href=\"jsp/admin/plugins/appointment/ManageAppo
 				</@formGroup>
 			</@columns>
 			<@columns sm=3>
-				<@formGroup labelFor='startingValidityTime' labelKey='#i18n{appointment.create_comment.labelStartingValidityTime}' rows=2>
+				<@formGroup labelFor='startingValidityTime' labelKey=startTimeLabel rows=2>
 					<@inputGroup id='${idStartingTime}Group' class='date'>
 						<@input type='text' name='startingValidityTime' id=idStartingTime value='00:00' />
 						<@inputGroupItem type='addon' >
@@ -201,7 +216,7 @@ $('.content-header h1').html("<a href=\"jsp/admin/plugins/appointment/ManageAppo
 			</@row>
 			<@row>
 				<@columns offsetSm=1 sm=4>
-					<@formGroup labelFor=idEndingDate labelKey='#i18n{appointment.create_comment.labelEndingValidityDate}' helpKey='#i18n{appointment.create_comment.labelEndingValidityDate}' mandatory=true rows=2>
+					<@formGroup labelFor=idEndingDate labelKey=endDateLabel helpKey=endDateHelp mandatory=true rows=2>
 						<@inputGroup class='date' id='${idEndingDate}Group'>
 							<@input type='text' name='endingValidityDate' id=idEndingDate />
 							<@inputGroupItem type='text'>
@@ -211,7 +226,7 @@ $('.content-header h1').html("<a href=\"jsp/admin/plugins/appointment/ManageAppo
 					</@formGroup>
 				</@columns>
 				<@columns sm=3>
-					<@formGroup labelFor='endingValidityTime' labelKey='#i18n{appointment.create_comment.labelEndingValidityTime}' rows=0>
+					<@formGroup labelFor='endingValidityTime' labelKey=endTimeLabel rows=0>
 						<@inputGroup class='date' id='${idEndingTime}Group'>
 							<@input type='text' name='endingValidityTime' id=idEndingTime value='00:00' />
 							<@inputGroupItem type='addon'>
@@ -509,6 +524,7 @@ $( function(){
 				var selected=$('.fc-event-container .fc-time-grid-event.fc-v-event.fc-event.fc-start.fc-end.fc-custom.ui-selectee');
 				selected.each( function(  ){ 
 					var evt='{' + $(this).data('event') + '}';
+					console.log("not direct:", $(this).data('event'));
 					const event = JSON.parse(evt); 
 					if(  moment( event.startingDateTime ).isSameOrAfter( startDate.format() ) && moment( event.endingDateTime ).isSameOrBefore( endDate.format() ) ){
 						selData += JSON.stringify( event ) + ',' ;
@@ -517,13 +533,16 @@ $( function(){
 				}) ;
 				if ( selIdx > 1 ){
 					evtData='['+ selData.slice(0, -1) + ']';
+					console.log("evtdata:",evtData);
 					const evt = JSON.parse(evtData); 
+					console.log("evt",evt);
 					$('#slotsData').val(evtData);
 					$('#date_of_display_multi').val( moment(evt[0].startingDateTime).format('YYYY-MM-DD') );
 					$('#updatePlanningMultiSlot').modal('show');
 				} else {
 					evtData=selData.slice(0, -1) ;
 					const evt = JSON.parse(evtData); 
+					console.log("else evtdata:",evt);
 					$('#slotData').val( '['+evtData+']' );
 					const isOpen = JSON.parse( evt.isOpen )
 					$('#is_open').prop( "checked", isOpen );
@@ -640,6 +659,7 @@ $( function(){
             $( ".fc-content-skeleton" )<#if isSpecific>.not(":has(.comments)")</#if>.not(":has(.btn-comments)").selectable({
                 filter: ".fc-time-grid-event.fc-v-event",
 				selecting: function( event, ui ) {
+				console.log("direct :",event);
 					eventIdx++;
 				},
 				unselecting: function( event, ui ) {
