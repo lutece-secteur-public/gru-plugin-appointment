@@ -574,7 +574,6 @@ public class SpecificWeekJspBean extends AbstractAppointmentFormAndSlotJspBean
         if ( CollectionUtils.isNotEmpty( listAppointment ) )
         {
             bReturn = false;
-            addError( MESSAGE_ERROR_APPOINTMENT_ON_SLOT, getLocale( ) );
         }
         return bReturn;
     }
@@ -679,14 +678,20 @@ public class SpecificWeekJspBean extends AbstractAppointmentFormAndSlotJspBean
             }
         }
 
-        if ( CollectionUtils.isNotEmpty( listSlot ) )
-        {
-            addInfo( MESSAGE_INFO_SLOT_UPDATED, getLocale( ) );
-        }
-
         if ( appointmentsImpacted && bOpeningHasChanged )
         {
-            addWarning( MESSAGE_INFO_VALIDATED_APPOINTMENTS_IMPACTED, getLocale( ) );
+            addError( MESSAGE_INFO_VALIDATED_APPOINTMENTS_IMPACTED, getLocale( ) );
+        }
+        else if( CollectionUtils.isNotEmpty( listSlot ) )
+        {
+            boolean bNoSlotImpacted = true;
+            for( Slot slt : listSlot )
+            {
+                if( !checkNoAppointmentsOnThisSlotOrOnTheSlotsImpacted( slt, bShiftSlot ) )
+                bNoSlotImpacted = false;
+            }
+            if ( bNoSlotImpacted )
+            addInfo( MESSAGE_INFO_SLOT_UPDATED, getLocale( ) );
         }
 
         if ( !StringUtils.isEmpty( sbAlert.toString( ) ) )
