@@ -348,14 +348,14 @@ $(function(){
 
 <#macro appointmentTabList tab form tabcontext>
 <#if tabcontext='slot'>
-	<#if tab='day'><#assign active = true /><#else><#assign active = false /></#if>
-	<@tabLink href='jsp/admin/plugins/appointment/modules/desk/ManageAppointmentDesks.jsp?plugin_name=appointment-desk&id_form=${form.idForm}&context=slot' title='#i18n{appointment.specificDay.pageTitle}' active=active />  
+	<#if tab="typicalWeek"><#assign active = true /><#else><#assign active = false /></#if>
+    <@tabLink href='jsp/admin/plugins/appointment/ManageAppointmentSlots.jsp?view=manageTypicalWeek&id_form=${form.idForm}&context=slot' title='#i18n{appointment.typicalWeek.pageTitle}' active=active />
 	<#if tab="specificWeek"><#assign active = true /><#else><#assign active = false /></#if>
 	<@tabLink href='jsp/admin/plugins/appointment/ManageSpecificWeek.jsp?view=manageSpecificWeek&id_form=${form.idForm}&context=slot' title='#i18n{appointment.specificWeek.pageTitle}' active=active /> 			 
 	<#if tab="year"><#assign active = true /><#else><#assign active = false /></#if>
-	<@tabLink href='jsp/admin/plugins/appointment/ManageAnnualCalendar.jsp?view=manageAnnualCalendar&id_form=${form.idForm}&context=slot' title='#i18n{appointment.annual.calendar.pageTitle}' active=active />  			
-	<#if tab="typicalWeek"><#assign active = true /><#else><#assign active = false /></#if>
-	<@tabLink href='jsp/admin/plugins/appointment/ManageAppointmentSlots.jsp?view=manageTypicalWeek&id_form=${form.idForm}&context=slot' title='#i18n{appointment.typicalWeek.pageTitle}' active=active />
+	<@tabLink href='jsp/admin/plugins/appointment/ManageAnnualCalendar.jsp?view=manageAnnualCalendar&id_form=${form.idForm}&context=slot' title='#i18n{appointment.annual.calendar.pageTitle}' active=active />
+	<#if tab="day"><#assign active = true /><#else><#assign active = false /></#if>
+    <#if isDeskInstalled><@tabLink href='jsp/admin/plugins/appointment/modules/desk/ManageAppointmentDesks.jsp?plugin_name=appointment-desk&id_form=${form.idForm}&context=slot' title='#i18n{appointment.specificDay.pageTitle}' active=active /></#if>
 <#elseif tabcontext='app'>
 	<#if tab="calendar"><#assign active = true /><#else><#assign active = false /></#if>
 	<@tabLink href='jsp/admin/plugins/appointment/ManageAppointments.jsp?view=viewCalendarManageAppointment&id_form=${form.idForm}&context=app' title='#i18n{appointment.manageAppointmentCalendar.pageTitle}' active=active />
