@@ -362,10 +362,10 @@ $(function(){
 	<#if tab="filter"><#assign active = true /><#else><#assign active = false /></#if>
 	<@tabLink href='jsp/admin/plugins/appointment/ManageAppointments.jsp?view=manageAppointments&id_form=${form.idForm}&context=app' title='#i18n{appointment.manageAppointments.pageTitle}' active=active />
 	<#if tab='day'><#assign active = true /><#else><#assign active = false /></#if>
-	<@tabLink href='jsp/admin/plugins/appointment/modules/desk/ManageAppointmentDesks.jsp?plugin_name=appointment-desk&id_form=${form.idForm}&context=app' title='#i18n{appointment.specificDay.pageTitle}' active=active />  
+	<#if isDeskInstalled><@tabLink href='jsp/admin/plugins/appointment/modules/desk/ManageAppointmentDesks.jsp?plugin_name=appointment-desk&id_form=${form.idForm}&context=app' title='#i18n{appointment.specificDay.pageTitle}' active=active /></#if>  
 <#else>
 	<#assign tabparams='data-menu="slot"'>
-	<@tabLink href='jsp/admin/plugins/appointment/modules/desk/ManageAppointmentDesks.jsp?plugin_name=appointment-desk&id_form=${form.idForm}&context=slot' title='#i18n{appointment.specificDay.pageTitle}' active=true params=tabparams />  
+	<#if isDeskInstalled><@tabLink href='jsp/admin/plugins/appointment/modules/desk/ManageAppointmentDesks.jsp?plugin_name=appointment-desk&id_form=${form.idForm}&context=slot' title='#i18n{appointment.specificDay.pageTitle}' active=true params=tabparams /></#if>
 	<#assign active = false />
 	<@tabLink href='jsp/admin/plugins/appointment/ManageSpecificWeek.jsp?view=manageSpecificWeek&id_form=${form.idForm}&context=slot' title='#i18n{appointment.specificWeek.pageTitle}' active=active params=tabparams/> 			 
 	<@tabLink href='jsp/admin/plugins/appointment/ManageAnnualCalendar.jsp?view=manageAnnualCalendar&id_form=${form.idForm}&context=slot' title='#i18n{appointment.annual.calendar.pageTitle}' active=active params=tabparams/>  			
@@ -374,7 +374,7 @@ $(function(){
 	<#assign active = false />
 	<@tabLink href='jsp/admin/plugins/appointment/ManageAppointments.jsp?view=viewCalendarManageAppointment&id_form=${form.idForm}&context=app' title='#i18n{appointment.manageAppointmentCalendar.pageTitle}' active=active params=tabparams/>
 	<@tabLink href='jsp/admin/plugins/appointment/ManageAppointments.jsp?view=manageAppointments&id_form=${form.idForm}&context=app' title='#i18n{appointment.manageAppointments.pageTitle}' active=active params=tabparams/>
-	<@tabLink href='jsp/admin/plugins/appointment/modules/desk/ManageAppointmentDesks.jsp?plugin_name=appointment-desk&id_form=${form.idForm}&context=app' title='#i18n{appointment.specificDay.pageTitle}' active=true params=tabparams/>  
+	<#if isDeskInstalled><@tabLink href='jsp/admin/plugins/appointment/modules/desk/ManageAppointmentDesks.jsp?plugin_name=appointment-desk&id_form=${form.idForm}&context=app' title='#i18n{appointment.specificDay.pageTitle}' active=true params=tabparams/></#if>
 </#if>
 </#macro>
 
