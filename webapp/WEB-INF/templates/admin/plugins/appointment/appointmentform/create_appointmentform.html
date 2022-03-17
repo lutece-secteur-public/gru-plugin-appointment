@@ -336,8 +336,9 @@
 						</@formGroup>
 						
 						<@formGroup>
-							<@button type='submit' name='action_createAppointmentForm' buttonIcon='check' title='#i18n{portal.util.labelCreate}' />
-							<@button type='submit' name='view_manageAppointmentForms' buttonIcon='times' title='#i18n{portal.util.labelCancel}' color='default' />
+							<@input type='hidden' name='action_createAppointmentForm' value='' />
+							<@button type='submit' buttonIcon='check' title='#i18n{portal.util.labelCreate}' />
+							<@aButton href='jsp/admin/plugins/appointment/ManageAppointmentForms.jsp' buttonIcon='times' title='#i18n{portal.util.labelCancel}' color='default' />
 						</@formGroup>
 					</fieldset>
 				</@boxBody>
