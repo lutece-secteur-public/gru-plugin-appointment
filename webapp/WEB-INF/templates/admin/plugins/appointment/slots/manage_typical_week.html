@@ -127,11 +127,14 @@
 					</@fieldSet>
 					<@formGroup>
 					<#if id_reservation_rule != 0 >
-						<@button type='submit' name='action_modifyAdvancedParameters' title='#i18n{portal.util.labelModify}' buttonIcon='check' />
+						<@input type='hidden' name='action_modifyAdvancedParameters' value='' />
+						<@button type='submit' title='#i18n{portal.util.labelModify}' buttonIcon='check' />
 					<#else>
-						<@button type='submit' name='action_createTypicalWeek' title='#i18n{portal.util.labelCreate}' buttonIcon='check' />
+						<@input type='hidden' name='action_createTypicalWeek' value='' />
+						<@button type='submit' title='#i18n{portal.util.labelCreate}' buttonIcon='check' />
 					</#if>
-						<@button type='submit' name='view_manageAppointmentForms' title='#i18n{portal.util.labelCancel}' buttonIcon='times' cancel=true />
+						<@input type='hidden' name='view_manageAppointmentForms' value='' />
+						<@button type='submit' title='#i18n{portal.util.labelCancel}' buttonIcon='times' cancel=true />
 					</@formGroup>
 				</@tform>
 			</#if>
