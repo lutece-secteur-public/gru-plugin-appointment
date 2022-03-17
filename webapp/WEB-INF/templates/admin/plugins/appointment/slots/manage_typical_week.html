@@ -24,7 +24,8 @@
 			<hr>
 			<@tform type='inline' action='jsp/admin/plugins/appointment/ManageAppointmentSlots.jsp' params='enctype="multipart/form-data"'>
 				<@input type='hidden' name='id_form' value='${appointmentform.idForm}' />
-				<@button type='submit' name='view_manageTypicalWeek' id='btn-new-typicalweek'  buttonIcon='plus' title='#i18n{appointment.typicalWeek.buttonLabelCreate}' />
+				<@input type='hidden' name='view_manageTypicalWeek' value='' />
+				<@button type='submit' id='btn-new-typicalweek' buttonIcon='plus' title='#i18n{appointment.typicalWeek.buttonLabelCreate}' />
 			</@tform>
 		</@tabList>
 		<@tabContent params=' style="flex:1"'>
