@@ -14,7 +14,7 @@
 					<legend class="hidden">#i18n{appointment.createAppointmentForm.title}</legend>
 					<@messages errors=errors />
 					<input type="hidden" id="id_form" name="id_form">
-	                                 <@formGroup labelFor='title' labelKey='#i18n{appointment.createAppointmentForm.labelTitle}' mandatory=true>
+					<@formGroup labelFor='title' labelKey='#i18n{appointment.createAppointmentForm.labelTitle}' mandatory=true>
 						<@input type='text' name='title' id='title' value='${appointmentform.title!\'\'}' maxlength=255 />
 					</@formGroup>
 					<@formGroup labelFor='idCategory' labelKey='#i18n{appointment.createAppointmentForm.labelCategory}'>
@@ -346,7 +346,9 @@
 		</@columns>
 	</@tform>
 </@row>
-<script type="text/javascript">	
+<script src="js/bootstrap-datepicker.js"></script>
+<script src="js/locales/bootstrap-datepicker.<@getLanguageInLocale language=language />.js"></script>
+<script>	
 	$('#formid').on('keyup keypress', function(e) {
 	    var keyCode = e.keyCode || e.which;
 	    if (keyCode === 13) { 
