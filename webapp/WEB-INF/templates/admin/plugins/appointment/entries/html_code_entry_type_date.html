@@ -20,7 +20,7 @@
 <@formGroup labelFor='attribute${entry.idEntry}' labelKey='${entry.title}' helpKey='${entry.helpMessage!}' class=class mandatory=entry.mandatory>
 	<#assign field = getFieldByCode( entry, "default_date_value" ) >
 	<@inputGroup>
-		<@input type='text' name='attribute${entry.idEntry}' id='attribute${entry.idEntry}' value=value class='${entry.CSSClass!}' />
+		<@input type='datetime' name='attribute${entry.idEntry}' id='attribute${entry.idEntry}' value=value class='${entry.CSSClass!}' />
 		<@inputGroupItem type='text'>
 			<@icon style='calendar' />
 		</@inputGroupItem>
@@ -38,4 +38,4 @@
 </@formGroup>
 <script src="js/jquery/plugins/ui/jquery-ui-1.9.2.custom.min.js"></script>
 <script src="js/jquery/plugins/ui/ui.datepicker-fr.js"></script>
-<@getDatePickerBootstrap idField="attribute${entry.idEntry}" language=locale />
+<@getDatePickerBootstrap idField="attribute${entry.idEntry}" language=locale format='Y-m-d H:i:S' />
