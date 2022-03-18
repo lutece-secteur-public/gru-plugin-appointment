@@ -1,42 +1,23 @@
-<@box color='primary' style='solid' id='appointment_dashboard_card'>
-	<@boxHeader title='#i18n{appointment.manage.appointmentforms.title}'>
-		<#if permission_create=="true">
-			<@aButton href='jsp/admin/plugins/appointment/ManageAppointmentForms.jsp?view=createAppointmentForm' title='#i18n{appointment.manageAppointmentForms.buttonAdd}' hideTitle=['all'] buttonIcon='plus-square' size='sm' />
-		</#if>
-		<@button type='button' style='card-control collapse' buttonIcon='minus' buttonTargetId='#appointment_dashboard_card_body' size='sm' />
-		<@button style='card-control remove' buttonTargetId='#appointment_dashboard_card' buttonIcon='times' size='sm' />
-	</@boxHeader>
-
-    
-	
-	<@boxBody class='table-responsive' id='appointment_dashboard_card_body'>
-	<@table>
-		<tr>
-			<th>#i18n{appointment.labelTitle}</th>
-			<th>#i18n{portal.util.labelActions}</th>
-		</tr>
+<@adminDashboardWidget title='#i18n{appointment.manage.appointmentforms.title}'  id='appointment_dashboard_card' url=url  >
+	<@table striped=true condensed=true hover=false >
+		<@tr>
+			<@th>#i18n{appointment.labelTitle}</@th>
+			<@th>#i18n{portal.util.labelActions}</@th>
+		</@tr>
 		<#list appointmentform_list as appointmentform >
-			<tr>
-				<td>
-					<#if appointmentform.isActive>
-						<@tag color='success'><@icon style='check' /></@tag>
-					<#else>
-						<@tag color='danger'><@icon style='times' /></@tag>
-					</#if>
-					&nbsp;${appointmentform.title}
-					<#if appointmentform.isActive>
-						<a target="_blank" href="${baseUrl!}jsp/site/Portal.jsp?page=appointment&view=getViewAppointmentCalendar&id_form=${appointmentform.idForm}">
-							<@icon style='globe' />
-						</a>
-					</#if>
-				</td>
-				<td>
+			<@tr>
+				<@td>
+					<#if appointmentform.isActive><@tag color='success'><@icon style='check' /></@tag><#else><@tag color='danger'><@icon style='times' /></@tag></#if> ${appointmentform.title}
+				</@td>
+				<@td>
 					<#if permissions[appointmentform?index][0]=="true">
 						<@aButton href='jsp/admin/plugins/appointment/ManageAppointments.jsp?view=viewCalendarManageAppointment&id_form=${appointmentform.idForm}' title='#i18n{appointment.manageAppointmentForms.labelManageAppointments}' hideTitle=['all'] buttonIcon='calendar' size='sm' />
 					</#if>
 					<#if permissions[appointmentform?index][1]=="true">
-						<@aButton href='jsp/admin/plugins/appointment/ManageAppointmentSlots.jsp?view=manageTypicalWeek&id_form=${appointmentform.idForm}' title='#i18n{appointment.manageAppointmentForms.labelPlanning}' hideTitle=['all'] buttonIcon='clock-o' size='sm' />
-					</#if>	
+						<!#-- assign manageUrl='jsp/admin/plugins/appointment/ManageAppointmentSlots.jsp?view=manageTypicalWeek&id_form=' --> 
+						<#assign manageUrl='jsp/admin/plugins/appointment/modules/desk/ManageAppointmentDesks.jsp?plugin_name=appointment-desk&id_form=' />
+						<@aButton href='${manageUrl}${appointmentform.idForm}&context=slot' title='#i18n{appointment.manageAppointmentForms.labelPlanning}' hideTitle=['all'] buttonIcon='clock-o' size='sm' />
+					</#if>
 					<#if permissions[appointmentform?index][2]=="true">
 						<@aButton href='jsp/admin/plugins/appointment/ManageAppointmentForms.jsp?view=modifyAppointmentForm&id_form=${appointmentform.idForm}"' title='#i18n{appointment.manageAppointmentForms.labelConfig}' hideTitle=['all'] buttonIcon='wrench' size='sm' />
 					</#if>	
@@ -56,14 +37,8 @@
 					<#if permissions[appointmentform?index][5]=="true">	
 						<@aButton href='jsp/admin/plugins/appointment/ManageAppointmentForms.jsp?action=confirmRemoveAppointmentForm&id_form=${appointmentform.idForm}' title='#i18n{portal.util.labelDelete}' buttonIcon='trash' hideTitle=['all'] color='danger' size='sm' />
 					</#if>
-				</td>
-			</tr>
+				</@td>
+			</@tr>
 		</#list>
 	</@table>
-	</@boxBody>
-	<@boxFooter align='center'>
-		<a href="${url}" title="#i18n{form.dashboard.formList}">
-			#i18n{appointment.dashboard.formList} <@icon style='arrow-circle-right' />
-		</a>
-	</@boxFooter>
-</@box>
+</@adminDashboardWidget>
