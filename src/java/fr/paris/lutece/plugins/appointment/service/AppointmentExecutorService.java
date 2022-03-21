@@ -2,6 +2,7 @@ package fr.paris.lutece.plugins.appointment.service;
 
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
 import java.util.concurrent.RejectedExecutionException;
 import java.util.concurrent.TimeUnit;
 
@@ -31,6 +32,24 @@ public enum AppointmentExecutorService
 	{	
 		_executorService.execute( task );
 	}
+	
+	 /**
+     * Submits a Runnable task for execution and returns a Future
+     * representing that task. The Future's ge} method will
+     * return null upon <em>successful</em> completion.
+     *
+     * @param task the task to submit
+     * @return a Future representing pending completion of the task
+     * @throws RejectedExecutionException if the task cannot be
+     *         scheduled for execution
+     * @throws NullPointerException if the task is null
+     */
+	 public Future<?> submit(Runnable task)
+	 {
+		 
+		 return _executorService.submit( task );
+	 }
+
 	
 	/**
 	 * The following method shuts down the _executorService in two phases,

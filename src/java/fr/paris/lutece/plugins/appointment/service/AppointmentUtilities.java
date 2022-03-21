@@ -641,7 +641,7 @@ public final class AppointmentUtilities
    
     public static void cancelTaskTimer( HttpServletRequest request, int idSlot )
     {
-    	ScheduledFuture<Slot> task = (ScheduledFuture<Slot>) request.getSession( ).getAttribute( SESSION_TASK_TIMER_SLOT + idSlot );
+    	ScheduledFuture<Slot> task = (ScheduledFuture) request.getSession( ).getAttribute( SESSION_TASK_TIMER_SLOT + idSlot );
         if ( task != null )
         {
             if (!task.isDone( ))
@@ -652,7 +652,7 @@ public final class AppointmentUtilities
     
     public static boolean isEditSlotTaskExpiredTime( HttpServletRequest request, int idSlot )
     {
-    	ScheduledFuture<Slot> task = (ScheduledFuture<Slot>) request.getSession( ).getAttribute( SESSION_TASK_TIMER_SLOT + idSlot );
+    	ScheduledFuture<Slot> task = (ScheduledFuture) request.getSession( ).getAttribute( SESSION_TASK_TIMER_SLOT + idSlot );
         return ( task != null && task.isDone( ) );
     }
 
