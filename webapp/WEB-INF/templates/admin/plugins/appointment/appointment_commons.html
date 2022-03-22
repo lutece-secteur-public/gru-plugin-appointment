@@ -536,14 +536,14 @@ $( function(){
 					console.log("evtdata:",evtData);
 					const evt = JSON.parse(evtData); 
 					console.log("evt",evt);
-					$('#slotsData').val(evtData);
+					<#if isTypical>$('#timeSlotData')<#else>$('#slotData')</#if>.val(evtData);
 					$('#date_of_display_multi').val( moment(evt[0].startingDateTime).format('YYYY-MM-DD') );
 					$('#updatePlanningMultiSlot').modal('show');
 				} else {
 					evtData=selData.slice(0, -1) ;
 					const evt = JSON.parse(evtData); 
 					console.log("else evtdata:",evt);
-					$('#slotData').val( '['+evtData+']' );
+					<#if isTypical>$('#timeSlotData')<#else>$('#slotData')</#if>.val( '['+evtData+']' );
 					const isOpen = JSON.parse( evt.isOpen )
 					$('#is_open').prop( "checked", isOpen );
 					$('#maxCapacity').val( evt.maxCapacity );
