@@ -5,15 +5,13 @@
 <script src="js/plugins/appointment/bootstrap-datetimepicker.min.js"></script>
 <script src="js/bootstrap-filestyle.min.js"></script>
 <@row>
-	<@tform id='formid' class='form-horizontal' method='post' action='jsp/admin/plugins/appointment/ManageAppointmentForms.jsp' params='enctype=\'multipart/form-data\''>
-		<@columns>
-			<@box>
-				<@boxHeader title='#i18n{appointment.createAppointmentForm.title}' />
-				<@boxBody>			
-					<fieldset>
-					<legend class="hidden">#i18n{appointment.createAppointmentForm.title}</legend>
-					<@messages errors=errors />
-					<input type="hidden" id="id_form" name="id_form">
+	<@columns>
+		<@tform id='formid' class='horizontal' method='post' action='jsp/admin/plugins/appointment/ManageAppointmentForms.jsp' params='enctype=\'multipart/form-data\''>
+		<@box>
+			<@boxHeader title='#i18n{appointment.createAppointmentForm.title}' />
+			<@boxBody>			
+				<@messages errors=errors />
+				<input type="hidden" id="id_form" name="id_form">
 					<@formGroup labelFor='title' labelKey='#i18n{appointment.createAppointmentForm.labelTitle}' mandatory=true>
 						<@input type='text' name='title' id='title' value='${appointmentform.title!\'\'}' maxlength=255 />
 					</@formGroup>
@@ -82,14 +80,11 @@
 					<@formGroup labelFor='capacity_per_slot' labelKey='#i18n{appointment.createAppointmentForm.labelCapacityPerSlot}' helpKey='#i18n{appointment.createAppointmentForm.labelCapacityPerSlot.help}'>
 						<@input type='text' name='capacity_per_slot' id='capacity_per_slot' value=appointmentform.capacityPerSlot!'1' maxlength=4 />
 					</@formGroup>
-
-					</fieldset>
-				</@boxBody>
-			</@box>
-			<@box>
+			</@boxBody>
+		</@box>
+		<@box>
 			<@boxHeader title='#i18n{appointment.createAppointmentForm.LabelWeekType}' />
 				<@boxBody>
-					</fieldset>
 			 		<@formGroup labelFor='name' labelKey='#i18n{appointment.createAppointmentForm.labelName}' mandatory=true>
 						<@input type='text' name='name' id='name' value='${appointmentform.name!\'\'}' maxlength=50 />
 					</@formGroup>
@@ -109,7 +104,6 @@
 							</@inputGroupItem>
 						</@inputGroup>
 					</@formGroup>
-					
 					<@formGroup labelFor='time_end' labelKey='#i18n{appointment.createAppointmentForm.labelTimeEnd}' helpKey='#i18n{appointment.createAppointmentForm.labelTimeEnd.help}' mandatory=true>
 						<@inputGroup>
 							<@input type='text' name='time_end' id='time_end' value=appointmentform.timeEnd!'' />
@@ -118,25 +112,18 @@
 							</@inputGroupItem>
 						</@inputGroup>
 					</@formGroup>
-					
 					<@formGroup labelFor='duration_appointments' labelKey='#i18n{appointment.createAppointmentForm.labelDurationAppointments}' helpKey='#i18n{appointment.createAppointmentForm.labelDurationAppointments.help}' mandatory=true>
 						<@input type='text' name='duration_appointments' id='duration_appointments' value=appointmentform.durationAppointments!'' params='onkeypress="return validateQty(event);"' maxlength=3 />
 					</@formGroup>
 					 <@formGroup labelFor='max_capacity_per_slot' labelKey='#i18n{appointment.createAppointmentForm.labelMaxCapacityPerSlot}' helpKey='#i18n{appointment.createAppointmentForm.labelMaxCapacityPerSlot.help}' mandatory=true>
 						<@input type='text' name='max_capacity_per_slot' id='max_capacity_per_slot' value=appointmentform.maxCapacityPerSlot!'' params='onkeypress="return validateQty(event);"' maxlength=3 />
 					</@formGroup>
-										
-					</fieldset>
 				</@boxBody>
 			</@box>
 			<@box>
 				<@boxHeader title='#i18n{appointment.modifyAppointmentForm.titleAlterablesParameters}' />
 				<@boxBody>
-
-					<fieldset>						
-						<legend class="hidden">#i18n{appointment.modifyAppointmentForm.titleAlterablesParameters}</legend>				
-						<h4>#i18n{appointment.createAppointmentForm.labelTitleDaysOpen}</h4>
-						
+					<h4>#i18n{appointment.createAppointmentForm.labelTitleDaysOpen}</h4>
 						<@formGroup>
 							<@checkBox name='is_open_monday' id='is_open_monday' value='true' checked=appointmentform.isOpenMonday!false labelFor='is_open_monday' labelKey='#i18n{appointment.label.OpenMonday}' />
 						</@formGroup>
@@ -158,17 +145,14 @@
 						<@formGroup>
 							<@checkBox name='is_open_sunday' id='is_open_sunday' value='true' checked=appointmentform.isOpenSunday!false labelFor='is_open_sunday' labelKey='#i18n{appointment.label.OpenSunday}' />
 						</@formGroup>
-																	
 						<#if listWorkflows??>
 							<@formGroup labelFor='idWorkflow' labelKey='#i18n{appointment.createAppointmentForm.labelWorkflow}'>
 								<@select name='idWorkflow' id='idWorkflow' items=listWorkflows default_value='${appointmentform.idWorkflow!}' />
 							</@formGroup>
 						</#if>
-						
 						<@formGroup labelFor='workgroup' labelKey='#i18n{appointment.createAppointmentForm.labelWorkgroup}'>
 							<@select name='workgroup' id='workgroup' items=user_workgroup_list default_value='${appointmentform.workgroup!}' />
 						</@formGroup>
-
 						<@formGroup labelFor='calendarTemplateId' labelKey='#i18n{appointment.createAppointmentForm.labelCalendarTemplate}' mandatory=true>
 							<@select name='calendarTemplateId' id='calendarTemplateId' items=refListCalendarTemplates default_value='${appointmentform.calendarTemplateId!}' />
 						</@formGroup>						
@@ -177,19 +161,15 @@
 								<@checkBox name='enableCaptcha' id='enableCaptcha' value='true' checked=appointmentform.enableCaptcha!false labelFor='enableCaptcha' labelKey='#i18n{appointment.createAppointmentForm.labelEnableCaptcha}' />
 							</@formGroup>
 						</#if>
-						
 						<@formGroup>
 							<@checkBox name='enableMandatoryEmail' id='enableMandatoryEmail' value='true' checked=appointmentform.enableMandatoryEmail!false labelFor='enableMandatoryEmail' labelKey='#i18n{appointment.createAppointmentForm.labelEnableMandatoryEmail}' />
 						</@formGroup>
-						
 						<@formGroup>
 							<@checkBox name='activeAuthentication' id='activeAuthentication' value='true' checked=appointmentform.activeAuthentication!false labelFor='activeAuthentication' labelKey='#i18n{appointment.createAppointmentForm.labelActiveAuthentication}' />
 						</@formGroup>
-						
 						<@formGroup labelFor='role' labelKey='#i18n{appointment.createAppointmentForm.labelRole}'>
 							<@select name='role' id='role' items=refListRoles default_value='${appointmentform.role!}' />
 						</@formGroup>
-						
 						<@formGroup labelFor='icon' labelKey='#i18n{appointment.createAppointmentForm.labelIconForm}' helpKey='#i18n{appointment.modifyAppointmentForm.helpFormatIcon}'>
 							<@inputGroup>
 								<@input type='file' id='image_resource' name='image_resource' params='accept="image/*"' />
@@ -198,153 +178,140 @@
 								</@inputGroupItem>
 							</@inputGroup>
 						</@formGroup>
-
 						<@formGroup labelFor='geoloc_address' labelKey='#i18n{appointment.label.formAddress}' helpKey='#i18n{appointment.label.addressDescription}'>
 							<@input type='text' name='geoloc_address' id='geoloc_address' value='${(appointmentform.address?html)!}' />
 							<@input type='text' name='geoloc_longitude' id='geoloc_longitude' value='${(appointmentform.longitude?c)!}' />
 							<@input type='text' name='geoloc_latitude' id='geoloc_latitude' value='${(appointmentform.latitude?c)!}' />
 							<p class="help-block" id="help_address">#i18n{appointment.help.formAddress}</p>
 							<!-- used to keep state if the user presses back button -->
-							<input type="hidden" name="hidden_address" id="hidden_address" />
-							
+							<input type="hidden" name="hidden_address" id="hidden_address" >
 							<script type='text/javascript'>
-								$('#geoloc_address').clone().attr('type','hidden').insertAfter('#geoloc_address').prev().remove();
-								$('#geoloc_longitude').clone().attr('type','hidden').insertAfter('#geoloc_longitude').prev().remove();
-								$('#geoloc_latitude').clone().attr('type','hidden').insertAfter('#geoloc_latitude').prev().remove();
+							$('#geoloc_address').clone().attr('type','hidden').insertAfter('#geoloc_address').prev().remove();
+							$('#geoloc_longitude').clone().attr('type','hidden').insertAfter('#geoloc_longitude').prev().remove();
+							$('#geoloc_latitude').clone().attr('type','hidden').insertAfter('#geoloc_latitude').prev().remove();
+							$('<div class="input-group"><input type="text" id="address_address" name="address_address" class="form-control"><span class="input-group-btn"><button class="btn btn-danger btn-flat" type="button" title="#i18n{appointment.label.clearAddress}" id="button_delete_address"><i class="fa fa-times"></i></button> </span>').insertAfter('#geoloc_address');
+							$('<div id=map_address style="height: 300px; width: 100%"></div>').insertBefore('#hidden_address');
+							if (typeof(lutece_map_resources_loaded) == 'undefined') {
+								lutece_map_resources_loaded = true
+								var loadresource = document.createElement('link');
+								loadresource.setAttribute("rel", "stylesheet");
+								loadresource.setAttribute("type", "text/css");
+								loadresource.setAttribute("href", "js/plugins/leaflet/leaflet/leaflet.css");
+								document.getElementsByTagName("head")[0].appendChild(loadresource);
 
-								$('<div class="input-group"><input type="text" id="address_address" name="address_address" class="form-control"><span class="input-group-btn"><button class="btn btn-danger btn-flat" type="button" title="#i18n{appointment.label.clearAddress}" id="button_delete_address"><i class="fa fa-times"></i></button> </span>').insertAfter('#geoloc_address');
+								loadresource = document.createElement('script');
+								loadresource.setAttribute("type", "text/javascript");
+								loadresource.setAttribute("src",  "jsp/admin/plugins/address/modules/autocomplete/SetupSuggestPOI.js.jsp");
+								loadresource.async = false;
+								document.getElementsByTagName("head")[0].appendChild(loadresource);
 
-								$('<div id=map_address style="height: 300px; width: 100%"></div>').insertBefore('#hidden_address');
+								loadresource = document.createElement('script');
+								loadresource.setAttribute("type", "text/javascript");
+								loadresource.setAttribute("src",  "js/plugins/address/modules/autocomplete/jQuery.suggestPOI.js");
+								loadresource.async = false;
+								document.getElementsByTagName("head")[0].appendChild(loadresource);
 
-								if (typeof(lutece_map_resources_loaded) == 'undefined') {
-										lutece_map_resources_loaded = true
-										var loadresource = document.createElement('link');
-										loadresource.setAttribute("rel", "stylesheet");
-										loadresource.setAttribute("type", "text/css");
-										loadresource.setAttribute("href", "js/plugins/leaflet/leaflet/leaflet.css");
-										document.getElementsByTagName("head")[0].appendChild(loadresource);
+								loadresource = document.createElement('script');
+								loadresource.setAttribute("type", "text/javascript");
+								loadresource.setAttribute("src",   "js/plugins/leaflet/leaflet/leaflet.js" );
+								document.getElementsByTagName("head")[0].appendChild(loadresource);
+							}
+							$(window).load(function() {
+								var map = L.map('map_address').setView([48.85632, 2.33272], 12);
+								var markers_layer = L.featureGroup().addTo(map);
+								// create the tile layer with correct attribution
+								var osmUrl='http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png';
+								var osmAttrib='Map data � <a href="http://openstreetmap.org">OpenStreetMap</a> contributors';
+								var osm = new L.TileLayer(osmUrl, {minZoom: 8, maxZoom: 16, attribution: osmAttrib}).addTo(map);
 
-										loadresource = document.createElement('script');
-										loadresource.setAttribute("type", "text/javascript");
-										loadresource.setAttribute("src",  "jsp/admin/plugins/address/modules/autocomplete/SetupSuggestPOI.js.jsp");
-										loadresource.async = false;
-										document.getElementsByTagName("head")[0].appendChild(loadresource);
+								var jAdresse = $('#address_address');
+								jAdresse.suggestPOI();
+								jAdresse.bind($.suggestPOI.EVT_SELECT, function(event) {
 
-										loadresource = document.createElement('script');
-										loadresource.setAttribute("type", "text/javascript");
-										loadresource.setAttribute("src",  "js/plugins/address/modules/autocomplete/jQuery.suggestPOI.js");
-										loadresource.async = false;
-										document.getElementsByTagName("head")[0].appendChild(loadresource);
+								var poi = event.poi;
+								if (poi) {
+									var address = poi.libelleTypo;
 
-										loadresource = document.createElement('script');
-										loadresource.setAttribute("type", "text/javascript");
-										loadresource.setAttribute("src",   "js/plugins/leaflet/leaflet/leaflet.js" );
-										document.getElementsByTagName("head")[0].appendChild(loadresource);
+									markers_layer.clearLayers();
+									var marker = L.marker([poi.y, poi.x]).addTo(markers_layer);
+									map.fitBounds(markers_layer.getBounds());
+
+									var obj= {
+											"type": "Feature",
+											"properties": {
+												"address": address
+											},
+											"geometry": {
+												"type": "Point",
+												"coordinates": [poi.x, poi.y]
+											}
+										};
+										$('#hidden_address').val(JSON.stringify(obj));
+										$('#geoloc_address').val(address);
+										$('#geoloc_latitude').val(poi.y);
+										$('#geoloc_longitude').val(poi.x);
+									}
+								});
+								$("#button_delete_address").on('click', function() {
+									$('#address_address').val("");
+									//Don't put the empty string to disambiguate with the user
+									//clearing the field, and then pressing the browser back button
+									$('#hidden_address').val("false");
+									$('#geoloc_address').val("");
+									$('#geoloc_latitude').val("");
+									$('#geoloc_longitude').val("");
+									map.setView([48.85632, 2.33272], 12);
+									markers_layer.clearLayers();
+								});
+								//Try to restore from back/forward browser history buttons
+								var prev_data = $('#hidden_address').val();
+								var prev_value;
+								var user_cleared = false;
+								if (prev_data) {
+									prev_value=JSON.parse(prev_data);
+									if (!prev_value) {
+										user_cleared = true;
+									}
+							} else {
+								var server_address = $('#geoloc_address').val();
+								var server_longitude = $('#geoloc_longitude').val();
+								var server_latitude = $('#geoloc_latitude').val();
+								if (server_address && server_longitude && server_latitude) {
+									prev_value = {
+										"type":"Feature",
+										"properties": {
+										"address": server_address
+									},
+									"geometry": {
+										"type":"Point",
+										"coordinates":[server_longitude,server_latitude]
+									}
+									};
+								} else {
+									user_cleared = true;
 								}
-
-								$(window).load(function() {
-										var map = L.map('map_address').setView([48.85632, 2.33272], 12);
-										var markers_layer = L.featureGroup().addTo(map);
-										// create the tile layer with correct attribution
-										var osmUrl='http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png';
-										var osmAttrib='Map data � <a href="http://openstreetmap.org">OpenStreetMap</a> contributors';
-										var osm = new L.TileLayer(osmUrl, {minZoom: 8, maxZoom: 16, attribution: osmAttrib}).addTo(map);
-
-										var jAdresse = $('#address_address');
-										jAdresse.suggestPOI();
-										jAdresse.bind($.suggestPOI.EVT_SELECT, function(event) {
-
-												var poi = event.poi;
-												if (poi) {
-														var address = poi.libelleTypo;
-
-														markers_layer.clearLayers();
-														var marker = L.marker([poi.y, poi.x]).addTo(markers_layer);
-														map.fitBounds(markers_layer.getBounds());
-
-														var obj= {
-																"type": "Feature",
-																"properties": {
-																		"address": address
-																},
-																"geometry": {
-																		"type": "Point",
-																		"coordinates": [poi.x, poi.y]
-																}
-														};
-														$('#hidden_address').val(JSON.stringify(obj));
-														$('#geoloc_address').val(address);
-														$('#geoloc_latitude').val(poi.y);
-														$('#geoloc_longitude').val(poi.x);
-												}
-										});
-
-										$("#button_delete_address").on('click', function () {
-											$('#address_address').val("");
-											//Don't put the empty string to disambiguate with the user
-											//clearing the field, and then pressing the browser back button
-											$('#hidden_address').val("false");
-											$('#geoloc_address').val("");
-											$('#geoloc_latitude').val("");
-											$('#geoloc_longitude').val("");
-											map.setView([48.85632, 2.33272], 12);
-											markers_layer.clearLayers();
-										});
-
-										//Try to restore from back/forward browser history buttons
-										var prev_data = $('#hidden_address').val();
-										var prev_value;
-										var user_cleared = false;
-										if (prev_data) {
-												prev_value=JSON.parse(prev_data);
-												if (!prev_value) {
-														user_cleared = true;
-												}
-										} else {
-												var server_address = $('#geoloc_address').val();
-												var server_longitude = $('#geoloc_longitude').val();
-												var server_latitude = $('#geoloc_latitude').val();
-												if (server_address && server_longitude && server_latitude) {
-														prev_value = {
-																"type":"Feature",
-																"properties": {
-																		"address": server_address
-																 },
-																 "geometry": {
-																		"type":"Point",
-																		"coordinates":[server_longitude,server_latitude]
-																 }
-														 };
-												} else {
-														user_cleared = true;
-												}
-										}
-
-										if (!user_cleared) {
-											$('#address_address').val(prev_value.properties.address);
-											$('#geoloc_address').val(prev_value.properties.address);
-											$('#geoloc_latitude').val(prev_value.geometry.coordinates[1]);
-											$('#geoloc_longitude').val(prev_value.geometry.coordinates[0]);
-
-											markers_layer.clearLayers();
-											var marker = L.marker([prev_value.geometry.coordinates[1],prev_value.geometry.coordinates[0]]).addTo(markers_layer);
-											map.fitBounds(markers_layer.getBounds());
-										}
+							}
+							if (!user_cleared) {
+								$('#address_address').val(prev_value.properties.address);
+								$('#geoloc_address').val(prev_value.properties.address);
+								$('#geoloc_latitude').val(prev_value.geometry.coordinates[1]);
+								$('#geoloc_longitude').val(prev_value.geometry.coordinates[0]);
+								markers_layer.clearLayers();
+								var marker = L.marker([prev_value.geometry.coordinates[1],prev_value.geometry.coordinates[0]]).addTo(markers_layer);
+								map.fitBounds(markers_layer.getBounds());
+							}
 						});
-
 						</script>
 						</@formGroup>
-						
 						<@formGroup>
 							<@input type='hidden' name='action_createAppointmentForm' value='' />
 							<@button type='submit' buttonIcon='check' title='#i18n{portal.util.labelCreate}' />
 							<@aButton href='jsp/admin/plugins/appointment/ManageAppointmentForms.jsp' buttonIcon='times' title='#i18n{portal.util.labelCancel}' color='default' />
 						</@formGroup>
-					</fieldset>
 				</@boxBody>
 			</@box>
-		</@columns>
-	</@tform>
+		</@tform>
+	</@columns>
 </@row>
 <script src="js/bootstrap-datepicker.js"></script>
 <script src="js/locales/bootstrap-datepicker.<@getLanguageInLocale language=language />.js"></script>
