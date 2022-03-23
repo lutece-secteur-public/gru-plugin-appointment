@@ -117,15 +117,16 @@ public final class AppointmentUtilities
     public static final String PROPERTY_DEFAULT_EXPIRED_TIME_EDIT_APPOINTMENT = "appointment.edit.expired.time";
 
     public static final int THIRTY_MINUTES = 30;
-    //We don't need to instantiate an ScheduledExecutorService with the removeOnCancel=true because we are using non-periodic and short time tasks.
-    //The getTask call removes the task from the queue.
-    private static final  ScheduledExecutorService _secheduledExecutor = Executors.newSingleThreadScheduledExecutor(r -> new Thread(r, "Lutece-AppointmentSecheduledExecutor-thread") );
+    // We don't need to instantiate an ScheduledExecutorService with the removeOnCancel=true because we are using non-periodic and short time tasks.
+    // The getTask call removes the task from the queue.
+    private static final ScheduledExecutorService _secheduledExecutor = Executors
+            .newSingleThreadScheduledExecutor( r -> new Thread( r, "Lutece-AppointmentSecheduledExecutor-thread" ) );
 
     /**
      * Private constructor - this class does not need to be instantiated
      */
     private AppointmentUtilities( )
-    {    	
+    {
     }
 
     /**
@@ -636,23 +637,23 @@ public final class AppointmentUtilities
      * @param request
      *            the request
      * @param idSlot
-     * 			the id Slot
+     *            the id Slot
      */
-   
+
     public static void cancelTaskTimer( HttpServletRequest request, int idSlot )
     {
-    	ScheduledFuture<Slot> task = (ScheduledFuture) request.getSession( ).getAttribute( SESSION_TASK_TIMER_SLOT + idSlot );
+        ScheduledFuture<Slot> task = (ScheduledFuture) request.getSession( ).getAttribute( SESSION_TASK_TIMER_SLOT + idSlot );
         if ( task != null )
         {
-            if (!task.isDone( ))
-            	task.cancel( false );
+            if ( !task.isDone( ) )
+                task.cancel( false );
             request.getSession( ).removeAttribute( SESSION_TASK_TIMER_SLOT + idSlot );
         }
     }
-    
+
     public static boolean isEditSlotTaskExpiredTime( HttpServletRequest request, int idSlot )
     {
-    	ScheduledFuture<Slot> task = (ScheduledFuture) request.getSession( ).getAttribute( SESSION_TASK_TIMER_SLOT + idSlot );
+        ScheduledFuture<Slot> task = (ScheduledFuture) request.getSession( ).getAttribute( SESSION_TASK_TIMER_SLOT + idSlot );
         return ( task != null && task.isDone( ) );
     }
 
@@ -682,7 +683,8 @@ public final class AppointmentUtilities
             if ( slot.getNbPotentialRemainingPlaces( ) > 0 )
             {
 
-                ScheduledFuture<Slot> scheduledFuture= _secheduledExecutor.schedule( new SlotEditTask(slot.getIdSlot( ), nbPotentialPlacesTaken), AppPropertiesService.getPropertyInt( PROPERTY_DEFAULT_EXPIRED_TIME_EDIT_APPOINTMENT, 1 ), TimeUnit.MINUTES );
+                ScheduledFuture<Slot> scheduledFuture = _secheduledExecutor.schedule( new SlotEditTask( slot.getIdSlot( ), nbPotentialPlacesTaken ),
+                        AppPropertiesService.getPropertyInt( PROPERTY_DEFAULT_EXPIRED_TIME_EDIT_APPOINTMENT, 1 ), TimeUnit.MINUTES );
                 appointmentDTO.setNbMaxPotentialBookedSeats( nNewNbMaxPotentialBookedSeats );
                 SlotSafeService.decrementPotentialRemainingPlaces( nbPotentialPlacesTaken, slot.getIdSlot( ) );
 
@@ -691,7 +693,7 @@ public final class AppointmentUtilities
             }
             appointmentDTO.setNbMaxPotentialBookedSeats( 0 );
         }
-        
+
         finally
         {
 
@@ -1199,28 +1201,28 @@ public final class AppointmentUtilities
         }
         return true;
     }
+
     /**
-	 * The following method shuts down the _executorService in two phases,
-	 * first by calling shutdown to reject incoming tasks, 
-	 * and then calling shutdownNow, if necessary, to cancel any lingering tasks: 
-	 */
-    public static void shutdownSecheduledExecutor( ) 
+     * The following method shuts down the _executorService in two phases, first by calling shutdown to reject incoming tasks, and then calling shutdownNow, if
+     * necessary, to cancel any lingering tasks:
+     */
+    public static void shutdownSecheduledExecutor( )
     {
-    	_secheduledExecutor.shutdown( );
-		try 
-		{
-		    if ( !_secheduledExecutor.awaitTermination( 60, TimeUnit.SECONDS ) ) 
-		    {	    	
-		    	_secheduledExecutor.shutdownNow( );
-		    } 
-		} 
-		catch( InterruptedException e )
-		{
-			// (Re-)Cancel if current thread also interrupted
-			AppLogService.error( e.getMessage( ), e );
-			_secheduledExecutor.shutdownNow();
-		     
-		}	
-    	
+        _secheduledExecutor.shutdown( );
+        try
+        {
+            if ( !_secheduledExecutor.awaitTermination( 60, TimeUnit.SECONDS ) )
+            {
+                _secheduledExecutor.shutdownNow( );
+            }
+        }
+        catch( InterruptedException e )
+        {
+            // (Re-)Cancel if current thread also interrupted
+            AppLogService.error( e.getMessage( ), e );
+            _secheduledExecutor.shutdownNow( );
+
+        }
+
     }
 }

@@ -58,7 +58,7 @@ public final class WeekDefinitionManagerListener
      */
     public static void notifyListenersWeekDefinitionAssigned( WeekDefinition weekDefinition )
     {
-    	AppointmentExecutorService.INSTANCE.execute( ( ) -> {
+        AppointmentExecutorService.INSTANCE.execute( ( ) -> {
             for ( IWeekDefinitionListener weekDefinitionListener : SpringContextService.getBeansOfType( IWeekDefinitionListener.class ) )
             {
                 weekDefinitionListener.notifyWeekAssigned( weekDefinition );
@@ -76,7 +76,7 @@ public final class WeekDefinitionManagerListener
      */
     public static void notifyListenersListWeekDefinitionChanged( int nIdForm, List<WeekDefinition> listWeek )
     {
-    	AppointmentExecutorService.INSTANCE.execute( ( ) -> {
+        AppointmentExecutorService.INSTANCE.execute( ( ) -> {
             for ( IWeekDefinitionListener weekDefinitionListener : SpringContextService.getBeansOfType( IWeekDefinitionListener.class ) )
             {
                 weekDefinitionListener.notifyListWeeksChanged( nIdForm, listWeek );
@@ -92,7 +92,7 @@ public final class WeekDefinitionManagerListener
      */
     public static void notifyListenersWeekDefinitionUnassigned( WeekDefinition weekDefinition )
     {
-    	AppointmentExecutorService.INSTANCE.execute( ( ) -> {
+        AppointmentExecutorService.INSTANCE.execute( ( ) -> {
             for ( IWeekDefinitionListener weekDefinitionListener : SpringContextService.getBeansOfType( IWeekDefinitionListener.class ) )
             {
                 weekDefinitionListener.notifyWeekUnassigned( weekDefinition );
