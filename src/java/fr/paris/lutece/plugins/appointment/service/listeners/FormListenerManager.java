@@ -55,7 +55,7 @@ public final class FormListenerManager
      */
     public static void notifyListenersFormCreation( int nIdForm )
     {
-    	AppointmentExecutorService.INSTANCE.execute( ( ) -> {
+        AppointmentExecutorService.INSTANCE.execute( ( ) -> {
             for ( IFormListener formListener : SpringContextService.getBeansOfType( IFormListener.class ) )
             {
                 formListener.notifyFormCreation( nIdForm );
@@ -71,7 +71,7 @@ public final class FormListenerManager
      */
     public static void notifyListenersFormChange( int nIdForm )
     {
-    	AppointmentExecutorService.INSTANCE.execute( ( ) -> {
+        AppointmentExecutorService.INSTANCE.execute( ( ) -> {
             for ( IFormListener formListener : SpringContextService.getBeansOfType( IFormListener.class ) )
             {
                 formListener.notifyFormChange( nIdForm );
@@ -87,7 +87,7 @@ public final class FormListenerManager
      */
     public static void notifyListenersFormRemoval( int nIdForm )
     {
-    	AppointmentExecutorService.INSTANCE.execute( ( ) -> {
+        AppointmentExecutorService.INSTANCE.execute( ( ) -> {
             for ( IFormListener formListener : SpringContextService.getBeansOfType( IFormListener.class ) )
             {
                 formListener.notifyFormRemoval( nIdForm );

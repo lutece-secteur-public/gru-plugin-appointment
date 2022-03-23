@@ -48,15 +48,15 @@ import fr.paris.lutece.plugins.appointment.business.rule.ReservationRule;
 import fr.paris.lutece.plugins.appointment.business.slot.Period;
 import fr.paris.lutece.plugins.appointment.business.slot.Slot;
 
-public class CalendarBuilder 
+public class CalendarBuilder
 {
-	/**
-	 * Private constructor
-	 */
-	private CalendarBuilder () 
-	{
-		
-	}
+    /**
+     * Private constructor
+     */
+    private CalendarBuilder( )
+    {
+
+    }
 
     /**
      * Build all the slot for a period with all the rules (open hours ...) to apply on each day, for each slot

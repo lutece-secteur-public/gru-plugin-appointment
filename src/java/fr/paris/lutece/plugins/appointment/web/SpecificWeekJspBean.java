@@ -682,17 +682,18 @@ public class SpecificWeekJspBean extends AbstractAppointmentFormAndSlotJspBean
         {
             addError( MESSAGE_INFO_VALIDATED_APPOINTMENTS_IMPACTED, getLocale( ) );
         }
-        else if( CollectionUtils.isNotEmpty( listSlot ) )
-        {
-            boolean bNoSlotImpacted = true;
-            for( Slot slt : listSlot )
+        else
+            if ( CollectionUtils.isNotEmpty( listSlot ) )
             {
-                if( !checkNoAppointmentsOnThisSlotOrOnTheSlotsImpacted( slt, bShiftSlot ) )
-                bNoSlotImpacted = false;
+                boolean bNoSlotImpacted = true;
+                for ( Slot slt : listSlot )
+                {
+                    if ( !checkNoAppointmentsOnThisSlotOrOnTheSlotsImpacted( slt, bShiftSlot ) )
+                        bNoSlotImpacted = false;
+                }
+                if ( bNoSlotImpacted )
+                    addInfo( MESSAGE_INFO_SLOT_UPDATED, getLocale( ) );
             }
-            if ( bNoSlotImpacted )
-            addInfo( MESSAGE_INFO_SLOT_UPDATED, getLocale( ) );
-        }
 
         if ( !StringUtils.isEmpty( sbAlert.toString( ) ) )
         {

@@ -251,7 +251,7 @@ public class AppointmentJspBean extends MVCAdminJspBean
     private static final String MARK_USER_CREATOR = "userCreator";
     private static final String JSP_MANAGE_APPOINTMENTS = "jsp/admin/plugins/appointment/ManageAppointments.jsp";
     private static final String ERROR_MESSAGE_SLOT_FULL = "appointment.message.error.slotFull";
-    private static final String ERROR_MESSAGE_SLOT_EDIT_TASK_EXPIRED_TIME ="appointment.message.error.appointment.edit.expired.time";
+    private static final String ERROR_MESSAGE_SLOT_EDIT_TASK_EXPIRED_TIME = "appointment.message.error.appointment.edit.expired.time";
     private static final String MARK_APPOINTMENT_DESK_ENABLED = "isDeskInstalled";
 
     // Messages
@@ -265,7 +265,7 @@ public class AppointmentJspBean extends MVCAdminJspBean
     private static final String PROPERTY_DEFAULT_LIST_APPOINTMENT_PER_PAGE = "appointment.listAppointments.itemsPerPage";
     private static final String PROPERTY_NB_WEEKS_TO_DISPLAY_IN_BO = "appointment.nbWeeksToDisplayInBO";
     private static final String PROPERTY_MODULE_APPOINTMENT_DESK_NAME = "appointment.moduleAppointmentDesk.name";
-    
+
     // Views
     private static final String VIEW_MANAGE_APPOINTMENTS = "manageAppointments";
     private static final String VIEW_CREATE_APPOINTMENT = "createAppointment";
@@ -1301,9 +1301,9 @@ public class AppointmentJspBean extends MVCAdminJspBean
         }
         catch( SlotEditTaskExpiredTimeException e )
         {
-        	addError( ERROR_MESSAGE_SLOT_EDIT_TASK_EXPIRED_TIME, getLocale( ));
-        	return redirect( request, VIEW_CALENDAR_MANAGE_APPOINTMENTS, PARAMETER_ID_FORM, _validatedAppointment.getIdForm( ) );
-        } 
+            addError( ERROR_MESSAGE_SLOT_EDIT_TASK_EXPIRED_TIME, getLocale( ) );
+            return redirect( request, VIEW_CALENDAR_MANAGE_APPOINTMENTS, PARAMETER_ID_FORM, _validatedAppointment.getIdForm( ) );
+        }
         catch( AppointmentSavedException e )
         {
 
