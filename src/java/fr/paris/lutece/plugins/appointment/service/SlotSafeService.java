@@ -274,7 +274,7 @@ public final class SlotSafeService
         try
         {
             slot = SlotService.findSlotById( task.getIdSlot( ) );
-            if ( slot != null  )
+            if ( slot != null )
             {
 
                 int nNewPotentialRemainingPlaces = Math.min( slot.getNbPotentialRemainingPlaces( ) + task.getNbPlacesTaken( ), slot.getNbRemainingPlaces( ) );
@@ -346,12 +346,12 @@ public final class SlotSafeService
         }
         if ( request != null )
         {
-        	locale= LocaleService.getContextUserLocale( request );
-        			
+            locale = LocaleService.getContextUserLocale( request );
+
             for ( Slot slt : appointmentDTO.getSlot( ) )
             {
-                if (AppointmentUtilities.isEditSlotTaskExpiredTime( request, slt.getIdSlot( ) ))
-                	   throw new SlotEditTaskExpiredTimeException( "appointment edit expired time" );                               
+                if ( AppointmentUtilities.isEditSlotTaskExpiredTime( request, slt.getIdSlot( ) ) )
+                    throw new SlotEditTaskExpiredTimeException( "appointment edit expired time" );
             }
         }
         AppointmentService.buildListAppointmentSlot( appointmentDTO );

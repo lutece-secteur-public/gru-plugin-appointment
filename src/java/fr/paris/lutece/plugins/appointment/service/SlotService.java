@@ -283,13 +283,13 @@ public final class SlotService
     public static List<Slot> buildListSlot( int nIdForm, Map<WeekDefinition, ReservationRule> mapReservationRule, LocalDate startingDate, LocalDate endingDate,
             int nNbPlaces, boolean bAllOpenSlot )
     {
-    	if ( nNbPlaces < 1 )
+        if ( nNbPlaces < 1 )
         {
-            return CalendarBuilder.buildListSlot( nIdForm, mapReservationRule, startingDate, endingDate ) ;
+            return CalendarBuilder.buildListSlot( nIdForm, mapReservationRule, startingDate, endingDate );
         }
         else
         {
-            return  CalendarBuilder.buildListSlot( nIdForm, mapReservationRule, startingDate, endingDate, nNbPlaces, bAllOpenSlot ) ;
+            return CalendarBuilder.buildListSlot( nIdForm, mapReservationRule, startingDate, endingDate, nNbPlaces, bAllOpenSlot );
         }
     }
 

@@ -44,7 +44,7 @@ import fr.paris.lutece.plugins.appointment.service.SlotSafeService;
  * @author Laurent Payen
  *
  */
-public final class SlotEditTask  implements Callable<Slot>  
+public final class SlotEditTask implements Callable<Slot>
 {
 
     /**
@@ -56,12 +56,11 @@ public final class SlotEditTask  implements Callable<Slot>
      * Id of the slot on which the user is taking an appointment
      */
     private int _idSlot;
-    
 
-    public SlotEditTask( int nIdSlot, int nbPlacesTaken)
+    public SlotEditTask( int nIdSlot, int nbPlacesTaken )
     {
-        _idSlot= nIdSlot;
-        _nbPlacesTaken= nbPlacesTaken;
+        _idSlot = nIdSlot;
+        _nbPlacesTaken = nbPlacesTaken;
     }
 
     @Override
