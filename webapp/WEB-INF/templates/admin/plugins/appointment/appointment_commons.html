@@ -226,7 +226,7 @@ $('.content-header h1').html("<a href=\"jsp/admin/plugins/appointment/ManageAppo
 					</@formGroup>
 				</@columns>
 				<@columns sm=3>
-					<@formGroup labelFor='endingValidityTime' labelKey=endTimeLabel rows=0>
+					<@formGroup labelFor='endingValidityTime' labelKey=endTimeLabel helpKey=' ' rows=0>
 						<@inputGroup class='date' id='${idEndingTime}Group'>
 							<@input type='text' name='endingValidityTime' id=idEndingTime value='00:00' />
 							<@inputGroupItem type='addon'>
@@ -253,7 +253,6 @@ $('.content-header h1').html("<a href=\"jsp/admin/plugins/appointment/ManageAppo
 				<@columns offsetSm=1 sm=10 params=' style="display:flex;justify-content: space-around" '>
 					<@button type='submit' name='action_${action}' buttonIcon='save' title='#i18n{portal.util.labelValidate}' /> 
 					<@button type='submit' id='commentDelete'  name='action_confirmRemoveComment' buttonIcon='trash' title='#i18n{portal.util.labelDelete}'  class='btn btn-danger' /> 
-					
 					<@button type='button' params='data-dismiss="modal"' title='#i18n{portal.util.labelCancel}' buttonIcon='times' color='default' />
 				</@columns>
 			</@row>
@@ -277,11 +276,12 @@ $(function(){
 		$('#${idEndingDate}').data("DateTimePicker").show();
 	});
 
+
 	$('#${idStartingTime}').datetimepicker({format: 'HH:mm', stepping: 5});
-	$('#${idStartingTime}Group').click(function(event){
+	$('#${idStartingTime}Group').click( function(event){
 		$('#${idStartingTime}').data("DateTimePicker").show();
 	});
-
+	
 	$('#${idEndingTime}').datetimepicker({format: 'HH:mm', stepping: 5});
 	$('#${idEndingTime}Group').click(function(event){
 		$('#${idEndingTime}').data("DateTimePicker").show();
@@ -310,12 +310,28 @@ $(function(){
 	}
 
 	$( '[name="action_${action}"]' ).click( function(e){
+		$('#endingValidityTime_help').html('');
+		$('#${idEndingTime}').parents('.form-group').removeClass('has-error');
+		$('#${idEndingDate}_help').html('');
+		$('#${idEndingDate}').parents('.form-group').removeClass('has-error');
+		$('#${idComment}_help').html('');
+		$('#${idComment}').parents('.form-group').removeClass('has-error');
 		var dStart=$('#${idStartingDate}').val(),dEnd=$('#${idEndingDate}').val();
 		if( moment(dEnd).isBefore( dStart ) ){
 			$('#${idEndingDate}').parents('.form-group').addClass('has-error');
 			$('#${idEndingDate}_help').html('La date de fin ne peut être supérieure à la date de début !');
 			e.preventDefault();
 		}
+		
+		/* Check if hour is at less 5min */
+		if( dEnd === dStart && $('#${idStartingTime}').val() != '00:00') {
+			if( $('#${idEndingTime}').val() == $('#${idStartingTime}').val() ){
+				$('#${idEndingTime}').parents('.form-group').addClass('has-error');
+				$('#endingValidityTime_help').html('L\'heure de fin ne peut être égale à l\'heure de début !');
+				e.preventDefault();
+			}
+		}
+
 		if( tinyMCE.activeEditor.getContent().trim().length === 0 ){
 			$('#${idComment}').parents('.form-group').addClass('has-error');
 			$('#${idComment}_help').html('<span class="color-danger">Vous devez saisir un texte !</span>');
