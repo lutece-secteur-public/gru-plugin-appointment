@@ -322,7 +322,7 @@ public class AppointmentApp extends MVCApplication
             addError( ERROR_MESSAGE_FORM_NOT_ACTIVE, locale );
             bError = true;
         }
-        checkMyLuteceAuthentication( _appointmentForm, request );
+        
         FormMessage formMessages = FormMessageService.findFormMessageByIdForm( nIdForm );
 
         if ( StringUtils.isNotEmpty( refAppointment ) )
