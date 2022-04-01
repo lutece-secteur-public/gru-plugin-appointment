@@ -44,4 +44,15 @@
 	<bean id="appointment.entryTypeImage" class="fr.paris.lutece.plugins.appointment.service.entrytype.EntryTypeImage" />
 	<bean id="appointment.entryTypeFile" class="fr.paris.lutece.plugins.appointment.service.entrytype.EntryTypeFile" />
 	<bean id="appointment.entryTypePhone" class="fr.paris.lutece.plugins.appointment.service.entrytype.EntryTypePhone" />
+	<bean id="appointment.sitePropertiesGroup" class="fr.paris.lutece.portal.service.site.properties.SitePropertiesGroup" >
+        <property name="nameKey">
+            <value>appointment.site_properties.name</value>
+        </property>
+        <property name="descriptionKey">
+            <value>appointment.site_properties.description</value>
+        </property>
+        <property name="keysPrefix">
+            <value>appointment.site_property.</value>
+        </property>   
+    </bean>
 </beans>
