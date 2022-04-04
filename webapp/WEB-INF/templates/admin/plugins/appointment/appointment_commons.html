@@ -614,6 +614,7 @@ $( function(){
 		},
 		</#if>
 		eventAfterAllRender: function( view ) {
+			$.fn.popover.Constructor.Default.whiteList.center = [];
 			sessionStorage.setItem( 'appCurrentDate', moment(view.start).format('DD/MM/YYYY') );
 			
 			$('.fc-event').css('cursor', 'pointer');
