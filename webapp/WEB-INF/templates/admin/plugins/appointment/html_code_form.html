@@ -8,11 +8,11 @@
 			</#if>
 			<@boxHeader title=title />
 			<@boxBody>
-				<@tform id='form-validate' action='jsp/admin/plugins/appointment/ManageAppointments.jsp' params='enctype="multipart/form-data"'>
-					<input type='hidden' name='action' value='doValidateForm' />
-					<input type='hidden' name='id_form' value='${form.idForm}' />
-					<input type='hidden' name='date_of_display' value='${date_of_display}' />
-					<input type='hidden' name='session' value='session' />			
+				<@tform id='form-validate' action='jsp/admin/plugins/appointment/ManageAppointments.jsp' enctype='multipart/form-data'>
+					<@input type='hidden' name='action' value='doValidateForm' />
+					<@input type='hidden' name='id_form' value='${form.idForm}' />
+					<@input type='hidden' name='date_of_display' value='${date_of_display}' />
+					<@input type='hidden' name='session' value='session' />			
 					<fieldset>
 						<legend class="hidden">
 							<#if form.displayTitleFo && form.title != "" >
