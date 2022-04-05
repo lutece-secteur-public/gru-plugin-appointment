@@ -1,146 +1,154 @@
 <@appointmentTabs tab='typicalWeek' form=appointmentform context='slot'>
-	<@tabs params=' style="margin-top:15px;display:flex"'>
-		<@tabList  vertical=true params='style="width:15%"'>
-			<#if listReservationRule??>
-				<#assign active=false >
-				<#assign idx=0 >
-				<#list listReservationRule as item>
-					<#if id_reservation_rule?number=item.idReservationRule?number><#assign active=true ><#else><#assign active=false ></#if>
-					<@tabLink class='tablink-actions' href='jsp/admin/plugins/appointment/ManageAppointmentSlots.jsp?view=manageTypicalWeek&id_form=${appointmentform.idForm}&id_reservation_rule=${item.idReservationRule}' title='${item.name}' active=active >
-						<#if active=true>
-							<@tform type='inline' action='jsp/admin/plugins/appointment/ManageAppointmentSlots.jsp?view=manageTypicalWeek' id='listOfDates' params=' enctype="multipart/form-data" style="margin-top:-2px"'>
-								<@input type='hidden' name='id_form' value='${appointmentform.idForm}' />
-								<@input type='hidden' name='id_reservation_rule' value='${item.idReservationRule}' />
-								<@button type='button' hideTitle=['all'] class='btn-editappsearch' buttonIcon='edit fa-xs' size='xs' color='link'  title='#i18n{portal.util.labelModify}' />
-								<@button type='submit' name='action_confirmRemoveParameter' title='#i18n{portal.util.labelDelete}' hideTitle=['all'] buttonIcon='trash text-danger fa-xs' size='xs' color='link' />
-								<@button type='submit' name='action_copyTypicalWeek' title='#i18n{appointment.manageAppointmentForms.labelCopy}' hideTitle=['all'] buttonIcon='copy fa-xs' size='xs' color='link' />                                        	
-							</@tform>
-						</#if>
-						<@icon prefix='fas fa-' style='circle' params=' style="color:${item.color!};"' />
-					</@tabLink>
-					<#assign idx++ >
-				</#list>
-			</#if> 
-			<hr>
-			<@tform type='inline' action='jsp/admin/plugins/appointment/ManageAppointmentSlots.jsp' params='enctype="multipart/form-data"'>
-				<@input type='hidden' name='id_form' value='${appointmentform.idForm}' />
-				<@input type='hidden' name='view_manageTypicalWeek' value='' />
-				<@button type='submit' id='btn-new-typicalweek' buttonIcon='plus' title='#i18n{appointment.typicalWeek.buttonLabelCreate}' />
-			</@tform>
-		</@tabList>
-		<@tabContent params=' style="flex:1"'>
-			<!-- Modify Global Parameters-->
-			<div id="appointment_search">
-			<#if id_reservation_rule != 0 >
-				<@tform action='jsp/admin/plugins/appointment/ManageAppointmentSlots.jsp' params='enctype="multipart/form-data"' >
-				<@input type='hidden' id='is_multislot_appointment' name='is_multislot_appointment' value='${appointmentform.isMultislotAppointment?then("true", "false")}'/>
-				<@input type='hidden' id='bo_overbooking' name='bo_overbooking' value='${appointmentform.boOverbooking?then("true", "false")}'/>                    
-				<@fieldSet legend='#i18n{appointment.modifyAppointmentForm.titleAlterablesParameters}'>
-					<@formGroup labelFor='name' labelKey='#i18n{appointment.createAppointmentForm.labelName}' mandatory=true>
-						<@input type='text' name='name' id='name' value='${appointmentform.name!\'\'}' maxlength=50 />
-					</@formGroup>
-					<@formGroup labelFor='descriptionRule' labelKey='#i18n{appointment.createAppointmentForm.labelDescriptionRule}' mandatory=true>
-						<@input type='textarea' name='description_rule' id='description_rule' maxlength=255 >${appointmentform.descriptionRule!}</@input>
-					</@formGroup>                       
-					<#if !appointmentform.isMultislotAppointment >
-						<@formGroup labelFor='max_people_per_appointment' mandatory=true labelKey='#i18n{appointment.createAppointmentForm.labelMaxPeoplePerAppointment}' helpKey='#i18n{appointment.createAppointmentForm.labelMaxPeoplePerAppointment.help}' mandatory=true>
-							<@input type='number' name='max_people_per_appointment' id='max_people_per_appointment' value=appointmentform.maxPeoplePerAppointment!'' maxlength=3 />
-						</@formGroup>
-					</#if>
-				</@fieldSet>
-				<@formGroup labelFor='color' labelKey='#i18n{appointment.createAppointmentForm.labelColor}' mandatory=true>
-					<input type="color" id="color" name="color" value="${appointmentform.color!'#3769D9'}"> 
-				</@formGroup>
-					<@formGroup>
-						<@button type='submit' name='action_modifyGlobalParameters' title='#i18n{portal.util.labelModify}' buttonIcon='check' />                            
-						<@button type='submit' name='view_manageAppointmentForms' title='#i18n{portal.util.labelCancel}' buttonIcon='times' cancel=true />
-					</@formGroup>                  
-				</@tform>
-			</#if>
-			<!-- Modify Advanced Parameters-->
-			<#if canUpdateAdvancedParam >
-				<@tform action='jsp/admin/plugins/appointment/ManageAppointmentSlots.jsp' params='enctype="multipart/form-data"'>
-					<@input type='hidden' name='id_form' value='${appointmentform.idForm}' />
-					<@input type='hidden' id='bo_overbooking' name='bo_overbooking' value='${appointmentform.boOverbooking?then("true", "false")}'/> 
-					<@input type='hidden' id='is_multislot_appointment' name='is_multislot_appointment' value='${appointmentform.isMultislotAppointment?then("true", "false")}'/>
-					<@input type='hidden' id='enableMandatoryEmail' name='enableMandatoryEmail' value='${appointmentform.enableMandatoryEmail?then("true", "false")}'/>                        
-					<@fieldSet legend='#i18n{appointment.modifyAppointmentForm.titleStructuralsParameters}'>
-					<#if id_reservation_rule == 0 >
-						<@formGroup labelFor='name' labelKey='#i18n{appointment.createAppointmentForm.labelName}' mandatory=true>
-							<@input type='text' name='name' id='name' value='${appointmentform.name!\'\'}' maxlength=50 />
-						</@formGroup>
-						<@formGroup labelFor='descriptionRule' labelKey='#i18n{appointment.createAppointmentForm.labelDescriptionRule}' mandatory=true>
-							<@input type='textarea' name='description_rule' id='description_rule' maxlength=255 >${appointmentform.descriptionRule!}</@input>
-						</@formGroup>
-						<#if !appointmentform.isMultislotAppointment >
-						<@formGroup labelFor='max_people_per_appointment' mandatory=true labelKey='#i18n{appointment.createAppointmentForm.labelMaxPeoplePerAppointment}' helpKey='#i18n{appointment.createAppointmentForm.labelMaxPeoplePerAppointment.help}' mandatory=true>
-							<@input type='number' name='max_people_per_appointment' id='max_people_per_appointment' value=appointmentform.maxPeoplePerAppointment!'' maxlength=3 />
-						</@formGroup>
-						</#if>
-						<@formGroup labelFor='color' labelKey='#i18n{appointment.createAppointmentForm.labelColor}' mandatory=true>
-							<input type="color" id="color" name="color" value="${appointmentform.color!'#3769D9'}" > 
-						</@formGroup>
-					</#if>
-					<@formGroup labelFor='max_capacity_per_slot' labelKey='#i18n{appointment.createAppointmentForm.labelMaxCapacityPerSlot}' helpKey='#i18n{appointment.createAppointmentForm.labelMaxCapacityPerSlot.help}' mandatory=true>
-						<@input type='number' name='max_capacity_per_slot' id='max_capacity_per_slot' value=appointmentform.maxCapacityPerSlot!'' maxlength=3 />
-					</@formGroup>                                                
-					<@formGroup labelFor='time_start' labelKey='#i18n{appointment.createAppointmentForm.labelTimeStart}' helpKey='#i18n{appointment.createAppointmentForm.labelTimeStart.help}' mandatory=true>
-						<@inputGroup>
-							<@inputGroupItem type='text'>
-								<@icon style='clock-o' />
-							</@inputGroupItem>
-							<@input type='text' name='time_start' id='time_start' value=appointmentform.timeStart!'' />
-						</@inputGroup>
-					</@formGroup>
-					<@formGroup labelFor='time_end' labelKey='#i18n{appointment.createAppointmentForm.labelTimeEnd}' helpKey='#i18n{appointment.createAppointmentForm.labelTimeEnd.help}' mandatory=true>
-						<@inputGroup>
-							<@inputGroupItem type='text'>
-							<@icon style='clock-o' />
-							</@inputGroupItem>
-							<@input type='text' name='time_end' id='time_end' value=appointmentform.timeEnd!'' />
-						</@inputGroup>
-					</@formGroup>
-					<@formGroup labelFor='duration_appointments' labelKey='#i18n{appointment.createAppointmentForm.labelDurationAppointments}' helpKey='#i18n{appointment.createAppointmentForm.labelDurationAppointments.help}' mandatory=true>
-						<@input type='number' name='duration_appointments' id='duration_appointments' value=appointmentform.durationAppointments!'' maxlength=3 />
-					</@formGroup>
-					<@formGroup labelFor='is_open_monday'>
-						<@checkBox labelFor='is_open_monday' labelKey='#i18n{appointment.label.OpenMonday}' name='is_open_monday' id='is_open_monday' value='true' checked=appointmentform.isOpenMonday!false />
-					</@formGroup>
-					<@formGroup labelFor='is_open_tuesday'>
-						<@checkBox labelFor='is_open_tuesday' labelKey='#i18n{appointment.label.OpenTuesday}' name='is_open_tuesday' id='is_open_tuesday' value='true' checked=appointmentform.isOpenTuesday!false />
-					</@formGroup>
-					<@formGroup labelFor='is_open_wednesday'>
-						<@checkBox labelFor='is_open_wednesday' labelKey='#i18n{appointment.label.OpenWednesday}' name='is_open_wednesday' id='is_open_wednesday' value='true' checked=appointmentform.isOpenWednesday!false />
-					</@formGroup>
-					<@formGroup labelFor='is_open_thursday'>
-						<@checkBox labelFor='is_open_thursday' labelKey='#i18n{appointment.label.OpenThursday}' name='is_open_thursday' id='is_open_thursday' value='true' checked=appointmentform.isOpenThursday!false />
-					</@formGroup>
-					<@formGroup labelFor='is_open_friday'>
-						<@checkBox labelFor='is_open_friday' labelKey='#i18n{appointment.label.OpenFriday}' name='is_open_friday' id='is_open_friday' value='true' checked=appointmentform.isOpenFriday!false />
-					</@formGroup>
-					<@formGroup labelFor='is_open_saturday'>
-						<@checkBox labelFor='is_open_saturday' labelKey='#i18n{appointment.label.OpenSaturday}' name='is_open_saturday' id='is_open_saturday' value='true' checked=appointmentform.isOpenSaturday!false />
-					</@formGroup>
-					<@formGroup labelFor='is_open_sunday'>
-						<@checkBox labelFor='is_open_sunday' labelKey='#i18n{appointment.label.OpenSunday}' name='is_open_sunday' id='is_open_sunday' value='true' checked=appointmentform.isOpenSunday!false />
-					</@formGroup>
-					</@fieldSet>
-					<@formGroup>
+	<@tabs style='pills'>
+		<@row>
+			<@columns md=2>
+				<@tabList vertical=true>
+					<#if listReservationRule??>
+						<#assign active=false >
+						<#assign idx=0 >
+						<#list listReservationRule as item>
+							<#if id_reservation_rule?number=item.idReservationRule?number><#assign active=true ><#else><#assign active=false ></#if>
+							<@tabLink class='tablink-actions' href='jsp/admin/plugins/appointment/ManageAppointmentSlots.jsp?view=manageTypicalWeek&id_form=${appointmentform.idForm}&id_reservation_rule=${item.idReservationRule}' title='${item.name}' active=active >
+								<@icon prefix='fas fa-' style='circle' params=' style="color:${item.color!};"' />
+								<#if active=true>
+									<@tform type='inline' action='jsp/admin/plugins/appointment/ManageAppointmentSlots.jsp?view=manageTypicalWeek' id='listOfDates' params=' enctype="multipart/form-data" style="margin-top:-2px"'>
+										<@input type='hidden' name='id_form' value='${appointmentform.idForm}' />
+										<@input type='hidden' name='id_reservation_rule' value='${item.idReservationRule}' />
+										<@btnGroup>
+										<@button type='button' hideTitle=['all'] class='btn-editappsearch' buttonIcon='edit' title='#i18n{portal.util.labelModify}' />
+										<@button type='submit' name='action_confirmRemoveParameter' title='#i18n{portal.util.labelDelete}' hideTitle=['all'] buttonIcon='trash' class='text-danger' />
+										<@button type='submit' name='action_copyTypicalWeek' title='#i18n{appointment.manageAppointmentForms.labelCopy}' hideTitle=['all'] buttonIcon='copy' />
+										</@btnGroup>
+									</@tform>
+								</#if>
+							</@tabLink>
+							<#assign idx++ >
+						</#list>
+					</#if> 
+					<hr>
+					<@tform type='inline' action='jsp/admin/plugins/appointment/ManageAppointmentSlots.jsp' params='enctype="multipart/form-data"'>
+						<@input type='hidden' name='id_form' value='${appointmentform.idForm}' />
+						<@input type='hidden' name='view_manageTypicalWeek' value='' />
+						<@button type='submit' id='btn-new-typicalweek' buttonIcon='plus' title='#i18n{appointment.typicalWeek.buttonLabelCreate}' />
+					</@tform>
+				</@tabList>
+			</@columns>
+			<@columns md=10>
+				<@tabContent>
+					<!-- Modify Global Parameters-->
+					<div id="appointment_search">
 					<#if id_reservation_rule != 0 >
-						<@input type='hidden' name='action_modifyAdvancedParameters' value='' />
-						<@button type='submit' title='#i18n{portal.util.labelModify}' buttonIcon='check' />
-					<#else>
-						<@input type='hidden' name='action_createTypicalWeek' value='' />
-						<@button type='submit' title='#i18n{portal.util.labelCreate}' buttonIcon='check' />
+						<@tform action='jsp/admin/plugins/appointment/ManageAppointmentSlots.jsp' params='enctype="multipart/form-data"' >
+						<@input type='hidden' id='is_multislot_appointment' name='is_multislot_appointment' value='${appointmentform.isMultislotAppointment?then("true", "false")}'/>
+						<@input type='hidden' id='bo_overbooking' name='bo_overbooking' value='${appointmentform.boOverbooking?then("true", "false")}'/>                    
+						<@fieldSet legend='#i18n{appointment.modifyAppointmentForm.titleAlterablesParameters}'>
+							<@formGroup labelFor='name' labelKey='#i18n{appointment.createAppointmentForm.labelName}' mandatory=true>
+								<@input type='text' name='name' id='name' value='${appointmentform.name!\'\'}' maxlength=50 />
+							</@formGroup>
+							<@formGroup labelFor='descriptionRule' labelKey='#i18n{appointment.createAppointmentForm.labelDescriptionRule}' mandatory=true>
+								<@input type='textarea' name='description_rule' id='description_rule' maxlength=255 >${appointmentform.descriptionRule!}</@input>
+							</@formGroup>                       
+							<#if !appointmentform.isMultislotAppointment >
+								<@formGroup labelFor='max_people_per_appointment' mandatory=true labelKey='#i18n{appointment.createAppointmentForm.labelMaxPeoplePerAppointment}' helpKey='#i18n{appointment.createAppointmentForm.labelMaxPeoplePerAppointment.help}' mandatory=true>
+									<@input type='number' name='max_people_per_appointment' id='max_people_per_appointment' value=appointmentform.maxPeoplePerAppointment!'' maxlength=3 />
+								</@formGroup>
+							</#if>
+						</@fieldSet>
+						<@formGroup labelFor='color' labelKey='#i18n{appointment.createAppointmentForm.labelColor}' mandatory=true>
+							<input type="color" id="color" name="color" value="${appointmentform.color!'#3769D9'}"> 
+						</@formGroup>
+							<@formGroup>
+								<@button type='submit' name='action_modifyGlobalParameters' title='#i18n{portal.util.labelModify}' buttonIcon='check' />                            
+								<@button type='submit' name='view_manageAppointmentForms' title='#i18n{portal.util.labelCancel}' buttonIcon='times' cancel=true />
+							</@formGroup>                  
+						</@tform>
 					</#if>
-						<@input type='hidden' name='view_manageAppointmentForms' value='' />
-						<@button type='submit' title='#i18n{portal.util.labelCancel}' buttonIcon='times' cancel=true />
-					</@formGroup>
-				</@tform>
-			</#if>
-			</div>
-			<div id="calendar"></div>
-		</@tabContent>
+					<!-- Modify Advanced Parameters-->
+					<#if canUpdateAdvancedParam >
+						<@tform action='jsp/admin/plugins/appointment/ManageAppointmentSlots.jsp' params='enctype="multipart/form-data"'>
+							<@input type='hidden' name='id_form' value='${appointmentform.idForm}' />
+							<@input type='hidden' id='bo_overbooking' name='bo_overbooking' value='${appointmentform.boOverbooking?then("true", "false")}'/> 
+							<@input type='hidden' id='is_multislot_appointment' name='is_multislot_appointment' value='${appointmentform.isMultislotAppointment?then("true", "false")}'/>
+							<@input type='hidden' id='enableMandatoryEmail' name='enableMandatoryEmail' value='${appointmentform.enableMandatoryEmail?then("true", "false")}'/>                        
+							<@fieldSet legend='#i18n{appointment.modifyAppointmentForm.titleStructuralsParameters}'>
+							<#if id_reservation_rule == 0 >
+								<@formGroup labelFor='name' labelKey='#i18n{appointment.createAppointmentForm.labelName}' mandatory=true>
+									<@input type='text' name='name' id='name' value='${appointmentform.name!\'\'}' maxlength=50 />
+								</@formGroup>
+								<@formGroup labelFor='descriptionRule' labelKey='#i18n{appointment.createAppointmentForm.labelDescriptionRule}' mandatory=true>
+									<@input type='textarea' name='description_rule' id='description_rule' maxlength=255 >${appointmentform.descriptionRule!}</@input>
+								</@formGroup>
+								<#if !appointmentform.isMultislotAppointment >
+								<@formGroup labelFor='max_people_per_appointment' mandatory=true labelKey='#i18n{appointment.createAppointmentForm.labelMaxPeoplePerAppointment}' helpKey='#i18n{appointment.createAppointmentForm.labelMaxPeoplePerAppointment.help}' mandatory=true>
+									<@input type='number' name='max_people_per_appointment' id='max_people_per_appointment' value=appointmentform.maxPeoplePerAppointment!'' maxlength=3 />
+								</@formGroup>
+								</#if>
+								<@formGroup labelFor='color' labelKey='#i18n{appointment.createAppointmentForm.labelColor}' mandatory=true>
+									<input type="color" id="color" name="color" value="${appointmentform.color!'#3769D9'}" > 
+								</@formGroup>
+							</#if>
+							<@formGroup labelFor='max_capacity_per_slot' labelKey='#i18n{appointment.createAppointmentForm.labelMaxCapacityPerSlot}' helpKey='#i18n{appointment.createAppointmentForm.labelMaxCapacityPerSlot.help}' mandatory=true>
+								<@input type='number' name='max_capacity_per_slot' id='max_capacity_per_slot' value=appointmentform.maxCapacityPerSlot!'' maxlength=3 />
+							</@formGroup>                                                
+							<@formGroup labelFor='time_start' labelKey='#i18n{appointment.createAppointmentForm.labelTimeStart}' helpKey='#i18n{appointment.createAppointmentForm.labelTimeStart.help}' mandatory=true>
+								<@inputGroup>
+									<@inputGroupItem type='text'>
+										<@icon style='clock-o' />
+									</@inputGroupItem>
+									<@input type='text' name='time_start' id='time_start' value=appointmentform.timeStart!'' />
+								</@inputGroup>
+							</@formGroup>
+							<@formGroup labelFor='time_end' labelKey='#i18n{appointment.createAppointmentForm.labelTimeEnd}' helpKey='#i18n{appointment.createAppointmentForm.labelTimeEnd.help}' mandatory=true>
+								<@inputGroup>
+									<@inputGroupItem type='text'>
+									<@icon style='clock-o' />
+									</@inputGroupItem>
+									<@input type='text' name='time_end' id='time_end' value=appointmentform.timeEnd!'' />
+								</@inputGroup>
+							</@formGroup>
+							<@formGroup labelFor='duration_appointments' labelKey='#i18n{appointment.createAppointmentForm.labelDurationAppointments}' helpKey='#i18n{appointment.createAppointmentForm.labelDurationAppointments.help}' mandatory=true>
+								<@input type='number' name='duration_appointments' id='duration_appointments' value=appointmentform.durationAppointments!'' maxlength=3 />
+							</@formGroup>
+							<@formGroup labelFor='is_open_monday'>
+								<@checkBox labelFor='is_open_monday' labelKey='#i18n{appointment.label.OpenMonday}' name='is_open_monday' id='is_open_monday' value='true' checked=appointmentform.isOpenMonday!false />
+							</@formGroup>
+							<@formGroup labelFor='is_open_tuesday'>
+								<@checkBox labelFor='is_open_tuesday' labelKey='#i18n{appointment.label.OpenTuesday}' name='is_open_tuesday' id='is_open_tuesday' value='true' checked=appointmentform.isOpenTuesday!false />
+							</@formGroup>
+							<@formGroup labelFor='is_open_wednesday'>
+								<@checkBox labelFor='is_open_wednesday' labelKey='#i18n{appointment.label.OpenWednesday}' name='is_open_wednesday' id='is_open_wednesday' value='true' checked=appointmentform.isOpenWednesday!false />
+							</@formGroup>
+							<@formGroup labelFor='is_open_thursday'>
+								<@checkBox labelFor='is_open_thursday' labelKey='#i18n{appointment.label.OpenThursday}' name='is_open_thursday' id='is_open_thursday' value='true' checked=appointmentform.isOpenThursday!false />
+							</@formGroup>
+							<@formGroup labelFor='is_open_friday'>
+								<@checkBox labelFor='is_open_friday' labelKey='#i18n{appointment.label.OpenFriday}' name='is_open_friday' id='is_open_friday' value='true' checked=appointmentform.isOpenFriday!false />
+							</@formGroup>
+							<@formGroup labelFor='is_open_saturday'>
+								<@checkBox labelFor='is_open_saturday' labelKey='#i18n{appointment.label.OpenSaturday}' name='is_open_saturday' id='is_open_saturday' value='true' checked=appointmentform.isOpenSaturday!false />
+							</@formGroup>
+							<@formGroup labelFor='is_open_sunday'>
+								<@checkBox labelFor='is_open_sunday' labelKey='#i18n{appointment.label.OpenSunday}' name='is_open_sunday' id='is_open_sunday' value='true' checked=appointmentform.isOpenSunday!false />
+							</@formGroup>
+							</@fieldSet>
+							<@formGroup>
+							<#if id_reservation_rule != 0 >
+								<@input type='hidden' name='action_modifyAdvancedParameters' value='' />
+								<@button type='submit' title='#i18n{portal.util.labelModify}' buttonIcon='check' />
+							<#else>
+								<@input type='hidden' name='action_createTypicalWeek' value='' />
+								<@button type='submit' title='#i18n{portal.util.labelCreate}' buttonIcon='check' />
+							</#if>
+								<@input type='hidden' name='view_manageAppointmentForms' value='' />
+								<@button type='submit' title='#i18n{portal.util.labelCancel}' buttonIcon='times' cancel=true />
+							</@formGroup>
+						</@tform>
+					</#if>
+					</div>
+					<div id="calendar"></div>
+				</@tabContent>
+			</@columns>
+		</@row>
 	</@tabs>
 </@appointmentTabs>
 
