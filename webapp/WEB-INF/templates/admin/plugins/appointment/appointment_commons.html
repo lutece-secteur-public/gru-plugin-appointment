@@ -194,7 +194,7 @@ $('#feature-title').html("<a href=\"jsp/admin/plugins/appointment/ManageAppointm
 			</@columns>
 		</@row>
 		<@row>
-			<@columns offsetSm=1 sm=4>
+			<@columns offsetSm=1 sm=5>
 				<@formGroup labelFor='startingValidityDate' labelKey=startDateLabel mandatory=true rows=2>
 					<@inputGroup class='date' id='${idStartingDate}Group'>
 						<@input type='text' name='startingValidityDate' id=idStartingDate />
@@ -204,11 +204,11 @@ $('#feature-title').html("<a href=\"jsp/admin/plugins/appointment/ManageAppointm
 					</@inputGroup>
 				</@formGroup>
 			</@columns>
-			<@columns sm=3>
+			<@columns sm=5>
 				<@formGroup labelFor='startingValidityTime' labelKey=startTimeLabel rows=2>
 					<@inputGroup id='${idStartingTime}Group' class='date'>
 						<@input type='text' name='startingValidityTime' id=idStartingTime value='00:00' />
-						<@inputGroupItem type='addon' >
+						<@inputGroupItem type='text' >
 							<@icon style='clock' />
 						</@inputGroupItem>
 					</@inputGroup>
@@ -216,7 +216,7 @@ $('#feature-title').html("<a href=\"jsp/admin/plugins/appointment/ManageAppointm
 				</@columns>
 			</@row>
 			<@row>
-				<@columns offsetSm=1 sm=4>
+				<@columns offsetSm=1 sm=5>
 					<@formGroup labelFor=idEndingDate labelKey=endDateLabel helpKey=endDateHelp mandatory=true rows=2>
 						<@inputGroup class='date' id='${idEndingDate}Group'>
 							<@input type='text' name='endingValidityDate' id=idEndingDate />
@@ -226,11 +226,11 @@ $('#feature-title').html("<a href=\"jsp/admin/plugins/appointment/ManageAppointm
 						</@inputGroup>
 					</@formGroup>
 				</@columns>
-				<@columns sm=3>
+				<@columns sm=5>
 					<@formGroup labelFor='endingValidityTime' labelKey=endTimeLabel helpKey=' ' rows=0>
 						<@inputGroup class='date' id='${idEndingTime}Group'>
 							<@input type='text' name='endingValidityTime' id=idEndingTime value='00:00' />
-							<@inputGroupItem type='addon'>
+							<@inputGroupItem type='text'>
 								<@icon style='clock' />
 							</@inputGroupItem>
 						</@inputGroup>
@@ -252,9 +252,11 @@ $('#feature-title').html("<a href=\"jsp/admin/plugins/appointment/ManageAppointm
 			</@row>
 			<@row>
 				<@columns offsetSm=1 sm=10 params=' style="display:flex;justify-content: space-around" '>
-					<@button type='submit' name='action_${action}' buttonIcon='save' title='#i18n{portal.util.labelValidate}' /> 
-					<@button type='submit' id='commentDelete'  name='action_confirmRemoveComment' buttonIcon='trash' title='#i18n{portal.util.labelDelete}'  class='btn btn-danger' /> 
-					<@button type='button' params='data-dismiss="modal"' title='#i18n{portal.util.labelCancel}' buttonIcon='times' color='default' />
+					<@btnGroup>
+						<@button type='submit' name='action_${action}' buttonIcon='save' title='#i18n{portal.util.labelValidate}' /> 
+						<@button type='submit' id='commentDelete' name='action_confirmRemoveComment' buttonIcon='trash' title='#i18n{portal.util.labelDelete}' color='danger' /> 
+						<@button type='button' params='data-dismiss="modal"' title='#i18n{portal.util.labelCancel}' buttonIcon='times' color='default' />
+					</@btnGroup>
 				</@columns>
 			</@row>
 		</@tform>
@@ -310,32 +312,46 @@ $(function(){
 		$('#commentDelete').remove()
 	}
 
+	// Click on validation button events
 	$( '[name="action_${action}"]' ).click( function(e){
-		$('#endingValidityTime_help').html('');
+		$('#endingValidityTime ~ *').html('');
 		$('#${idEndingTime}').parents('.form-group').removeClass('has-error');
-		$('#${idEndingDate}_help').html('');
+		$('#${idEndingDate} ~ *').html('');
 		$('#${idEndingDate}').parents('.form-group').removeClass('has-error');
-		$('#${idComment}_help').html('');
+		$('#${idComment} ~ *').html('');
 		$('#${idComment}').parents('.form-group').removeClass('has-error');
-		var dStart=$('#${idStartingDate}').val(),dEnd=$('#${idEndingDate}').val();
+		dStart=$('#${idStartingDate}').val(),dEnd=$('#${idEndingDate}').val();
+
 		if( moment(dEnd).isBefore( dStart ) ){
 			$('#${idEndingDate}').parents('.form-group').addClass('has-error');
-			$('#${idEndingDate}_help').html('La date de fin ne peut être supérieure à la date de début !');
+			$('#${idEndingDate}Group ~ *').html('La date de fin ne peut être antérieure à la date de début !');
 			e.preventDefault();
 		}
 		
-		/* Check if hour is at less 5min */
-		if( dEnd === dStart && $('#${idStartingTime}').val() != '00:00') {
-			if( $('#${idEndingTime}').val() == $('#${idStartingTime}').val() ){
-				$('#${idEndingTime}').parents('.form-group').addClass('has-error');
-				$('#endingValidityTime_help').html('L\'heure de fin ne peut être égale à l\'heure de début !');
-				e.preventDefault();
+		tStart=$('#${idStartingTime}').val(),tEnd=$('#${idEndingTime}').val();		
+		var startDateAndTime = moment(dStart + ' ' + tStart, 'YYYY-MM-DD HH:mm');
+		var endDateAndTime = moment(dEnd + ' ' + tEnd, 'YYYY-MM-DD HH:mm');
+		
+		if(( moment(endDateAndTime).isBefore( startDateAndTime ) ) || ( moment(endDateAndTime).isSame( startDateAndTime )) && ($('#${idStartingTime}').val() != '00:00') && ($('#${idEndingTime}').val() != '00:00')) {
+			$('#${idEndingTime}').parents('.form-group').addClass('has-error');
+			$('#${idEndingTime}Group ~ *').removeClass('text-muted').addClass('text-danger');
+			
+			if( moment(endDateAndTime).isBefore( startDateAndTime )) {
+				$('#${idEndingTime}Group ~ *').html('L\'heure de fin ne peut être antérieure à la date de début !');
 			}
+			
+			if ((moment(endDateAndTime).isSame( startDateAndTime )) && ($('#${idStartingTime}').val() != '00:00') && ($('#${idEndingTime}').val() != '00:00'))  {
+				$('#${idEndingTime}Group ~ *').html('L\'heure de fin ne peut être égale à la date de début !');
+			}
+			e.preventDefault();
 		}
+		
+
 
 		if( tinyMCE.activeEditor.getContent().trim().length === 0 ){
 			$('#${idComment}').parents('.form-group').addClass('has-error');
-			$('#${idComment}_help').html('<span class="color-danger">Vous devez saisir un texte !</span>');
+			$('#${idComment} ~ *').removeClass('text-muted').addClass('text-danger');
+			$('#${idComment} ~ *').html('Vous devez saisir un texte !');
 			e.preventDefault();
 		}
 	});
