@@ -360,7 +360,7 @@ public class AppointmentApp extends MVCApplication
         // will end to the (n) next sunday
         TemporalField fieldISO = WeekFields.of( locale ).dayOfWeek( );
         LocalDate dateOfSunday = startingDateOfDisplay.with( fieldISO, DayOfWeek.SUNDAY.getValue( ) );
-        LocalDate endingDateOfDisplay = dateOfSunday.plusWeeks( (long) nNbWeeksToDisplay - 1 );
+        LocalDate endingDateOfDisplay = dateOfSunday.plusWeeks( (long) nNbWeeksToDisplay - 2 ).plusDays( _appointmentForm.getNbDaysToLiberate( ) );
         // if the ending date of display is after the ending validity date of
         // the form
         // assign the ending date of display with the ending validity date of

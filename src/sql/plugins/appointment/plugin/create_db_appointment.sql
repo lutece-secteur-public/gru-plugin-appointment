@@ -322,6 +322,7 @@ CREATE TABLE IF NOT EXISTS appointment_display (
   is_displayed_on_portlet BOOLEAN DEFAULT TRUE NOT NULL,
   id_calendar_template INT NOT NULL,
   id_form INT NOT NULL,
+  nb_days_to_liberate INT DEFAULT 7 NOT NULL,
   PRIMARY KEY (id_display),
   CONSTRAINT fk_appointment_display_appointment_calendar_template
     FOREIGN KEY (id_calendar_template)

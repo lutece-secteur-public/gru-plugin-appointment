@@ -1141,7 +1141,7 @@ public final class AppointmentUtilities
             // We calculate the number of weeks including the current week, so it
             // will end to the (n) next sunday
             LocalDate dateOfSunday = startingDateOfDisplay.with( WeekFields.of( locale ).dayOfWeek( ), DayOfWeek.SUNDAY.getValue( ) );
-            LocalDate endingDateOfDisplay = dateOfSunday.plusWeeks( (long) appointmentFormDTO.getNbWeeksToDisplay( ) - 1 );
+            LocalDate endingDateOfDisplay = dateOfSunday.plusWeeks( (long) appointmentFormDTO.getNbWeeksToDisplay( ) - 2 ).plusDays( appointmentFormDTO.getNbDaysToLiberate( ) );
             Date endingValidityDate = appointmentFormDTO.getDateEndValidity( );
             if ( endingValidityDate != null && endingDateOfDisplay.isAfter( endingValidityDate.toLocalDate( ) ) )
             {
