@@ -72,6 +72,7 @@ public final class DisplayService
         display.setIsDisplayedOnPortlet( appointmentForm.getIsDisplayedOnPortlet( ) );
         display.setIdCalendarTemplate( appointmentForm.getCalendarTemplateId( ) );
         display.setIdForm( nIdForm );
+        display.setNbDaysToLiberate( appointmentForm.getNbDaysToLiberate( ) );
         return display;
     }
 
