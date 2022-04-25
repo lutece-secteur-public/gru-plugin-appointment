@@ -358,9 +358,7 @@ public class AppointmentApp extends MVCApplication
         // since today
         // We calculate the number of weeks including the current week, so it
         // will end to the (n) next sunday
-        TemporalField fieldISO = WeekFields.of( locale ).dayOfWeek( );
-        LocalDate dateOfSunday = startingDateOfDisplay.with( fieldISO, DayOfWeek.SUNDAY.getValue( ) );
-        LocalDate endingDateOfDisplay = dateOfSunday.plusWeeks( (long) nNbWeeksToDisplay - 2 ).plusDays( _appointmentForm.getNbDaysToLiberate( ) );
+        LocalDate endingDateOfDisplay = startingDateOfDisplay.plusWeeks( (long) nNbWeeksToDisplay ).plusDays( _appointmentForm.getNbDaysToLiberate( ) - 1 );
         // if the ending date of display is after the ending validity date of
         // the form
         // assign the ending date of display with the ending validity date of
