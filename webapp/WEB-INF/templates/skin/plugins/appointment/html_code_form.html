@@ -221,7 +221,7 @@
 										<div class="form-group <#if formGroupError!=''>has-error</#if>">
 											<label class="col-xs-12 control-label" for="emailConfirm">${formMessages.fieldConfirmationEmail!}<#if form.enableMandatoryEmail>*</#if></label>
 											<div class="col-xs-12">
-												<input type="email" value="" maxlength="255" id="emailConfirm" name="emailConfirm" class="form-control">
+												<input type="email" value="<#if appointment??>${appointment.email!}</#if>" maxlength="255" id="emailConfirm" name="emailConfirm" class="form-control">
 												<#if formGroupError!=''>
 													${formGroupError}
 												<#else>
