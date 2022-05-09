@@ -97,6 +97,7 @@ import fr.paris.lutece.portal.business.file.FileHome;
 import fr.paris.lutece.portal.business.physicalfile.PhysicalFileHome;
 import fr.paris.lutece.portal.service.admin.AccessDeniedException;
 import fr.paris.lutece.portal.service.captcha.CaptchaSecurityService;
+import fr.paris.lutece.portal.service.datastore.DatastoreService;
 import fr.paris.lutece.portal.service.i18n.I18nService;
 import fr.paris.lutece.portal.service.image.ImageResource;
 import fr.paris.lutece.portal.service.message.SiteMessageException;
@@ -215,6 +216,7 @@ public class AppointmentApp extends MVCApplication
     // Mark
     private static final String MARK_MODIFICATION_DATE_APPOINTMENT = "modifDateAppointment";
     private static final String MARK_NBPLACESTOTAKE = "nbPlacesToTake";
+    private static final String MARK_MAX_NBPLACESTOTAKE = "maxNbPlacesToTake";
     private static final String MARK_INFOS = "infos";
     private static final String MARK_LOCALE = "locale";
     private static final String MARK_FORM = "form";
@@ -266,6 +268,7 @@ public class AppointmentApp extends MVCApplication
     private static final String ERROR_MESSAGE_FORM_NO_MORE_VALID = "appointment.validation.appointment.formNoMoreValid";
     private static final String ERROR_MESSAGE_NO_AVAILABLE_SLOT = "appointment.validation.appointment.noAvailableSlot";
     private static final String ERROR_MESSAGE_REPORT_APPOINTMENT = "appointment.message.error.report.appointment";
+    private static final String ERROR_MESSAGE_NB_PLACE_TO_TAKE_TO_BIG = "appointment.message.error.nbplacestotake.toobig";
 
     // Messages
     private static final String MESSAGE_CANCEL_APPOINTMENT_PAGE_TITLE = "appointment.cancelAppointment.pageTitle";
@@ -280,12 +283,14 @@ public class AppointmentApp extends MVCApplication
     private static final String BASIC_WEEK = "basicWeek";
     private static final String AGENDA_DAY = "agendaDay";
     private static final String BASIC_DAY = "basicDay";
+    private static final String PROPERTY_NB_PLACES = "appointment.site_property.nbplaces";
 
     private static final String STEP_3 = "step3";
 
     // Local variables
     private transient CaptchaSecurityService _captchaSecurityService;
     private int _nNbPlacesToTake;
+    private String _strNbPlacesToTakeLength;
     private AppointmentFormDTO _appointmentForm;
     private AppointmentDTO _notValidatedAppointment;
     private AppointmentDTO _validatedAppointment;
@@ -295,16 +300,17 @@ public class AppointmentApp extends MVCApplication
      * 
      * @param request
      * @return the Xpage
-     * @throws UserNotSignedException
      * @throws AccessDeniedException
      */
     @SuppressWarnings( "unchecked" )
     @View( VIEW_APPOINTMENT_CALENDAR )
-    public XPage getViewAppointmentCalendar( HttpServletRequest request ) throws AccessDeniedException, UserNotSignedException
+    public XPage getViewAppointmentCalendar( HttpServletRequest request ) throws AccessDeniedException
     {
         Map<String, Object> model = getModel( );
         Locale locale = getLocale( request );
         _nNbPlacesToTake = 0;
+        
+        _strNbPlacesToTakeLength = DatastoreService.getDataValue( PROPERTY_NB_PLACES, "10" );
         int nIdForm = Integer.parseInt( request.getParameter( PARAMETER_ID_FORM ) );
         String nbPlacesToTake = request.getParameter( PARAMETER_NB_PLACE_TO_TAKE );
         String refAppointment = request.getParameter( PARAMETER_REF_APPOINTMENT );
@@ -316,7 +322,7 @@ public class AppointmentApp extends MVCApplication
             addError( ERROR_MESSAGE_FORM_NOT_ACTIVE, locale );
             bError = true;
         }
-        checkMyLuteceAuthentication( _appointmentForm, request );
+        
         FormMessage formMessages = FormMessageService.findFormMessageByIdForm( nIdForm );
 
         if ( StringUtils.isNotEmpty( refAppointment ) )
@@ -414,6 +420,11 @@ public class AppointmentApp extends MVCApplication
             {
                 _nNbPlacesToTake = 0;
                 listSlots = SlotService.buildListSlot( nIdForm, mapReservationRule, startingDateOfDisplay, endingDateOfDisplay );
+            }
+            
+            if ( _nNbPlacesToTake > Integer.valueOf( _strNbPlacesToTakeLength ) )
+            {
+            	addError( ERROR_MESSAGE_NB_PLACE_TO_TAKE_TO_BIG, locale );
             }
             // Get the min time from now before a user can take an appointment (in hours)
             int minTimeBeforeAppointment = _appointmentForm.getMinTimeBeforeAppointment( );
@@ -540,11 +551,12 @@ public class AppointmentApp extends MVCApplication
         model.put( PARAMETER_MIN_TIME, AppointmentUtilities.getMinTimeToDisplay( minStartingTime ) );
         model.put( PARAMETER_MAX_TIME, AppointmentUtilities.getMaxTimeToDisplay( maxEndingTime ) );
         model.put( PARAMETER_MIN_DURATION, LocalTime.MIN.plusMinutes( AppointmentUtilities.THIRTY_MINUTES ) );
-
+        model.put( MARK_NBPLACESTOTAKE, _nNbPlacesToTake );
         model.put( PARAMETER_EVENTS, listSlots );
         model.put( PARAMETER_HIDDEN_DAYS, listHiddenDays );
         model.put( PARAMETER_DAY_VIEW, dayView );
         model.put( PARAMETER_WEEK_VIEW, weekView );
+        model.put( MARK_MAX_NBPLACESTOTAKE, Integer.valueOf( _strNbPlacesToTakeLength ) );
 
         return getXPage( calendarTemplate.getTemplatePath( ), locale, model );
 
@@ -760,7 +772,7 @@ public class AppointmentApp extends MVCApplication
         }
         return xPage;
     }
-
+    
     /**
      * Do validate data entered by a user to fill a form
      * 
