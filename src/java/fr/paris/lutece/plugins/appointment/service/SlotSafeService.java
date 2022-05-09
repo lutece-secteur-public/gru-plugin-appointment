@@ -385,6 +385,8 @@ public final class SlotSafeService
                     AppointmentUtilities.cancelTaskTimer( request, apptSlot.getIdSlot( ) );
                 }
             }
+            appointmentDTO.setReference(appointment.getReference( ));
+            appointmentDTO.setUser( user );
             return appointment.getIdAppointment( );
 
         }
