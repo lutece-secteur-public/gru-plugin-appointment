@@ -1002,19 +1002,18 @@ public class AppointmentApp extends MVCApplication
         XPage xPage = null;
         _nNbPlacesToTake = 0;
         int nIdForm = _validatedAppointment.getIdForm( );
-        _validatedAppointment = null;
+       // _validatedAppointment = null;
         String anchor = request.getParameter( PARAMETER_ANCHOR );
         if ( StringUtils.isNotEmpty( anchor ) )
         {
             LinkedHashMap<String, String> additionalParameters = new LinkedHashMap<>( );
             additionalParameters.put( PARAMETER_ID_FORM, String.valueOf( nIdForm ) );
-            additionalParameters.put( PARAMETER_ID_APPOINTMENT, String.valueOf( nIdAppointment ) );
             additionalParameters.put( PARAMETER_ANCHOR, MARK_ANCHOR + anchor );
             xPage = redirect( request, VIEW_GET_APPOINTMENT_CREATED, additionalParameters );
         }
         else
         {
-            xPage = redirect( request, VIEW_GET_APPOINTMENT_CREATED, PARAMETER_ID_FORM, nIdForm, PARAMETER_ID_APPOINTMENT, nIdAppointment );
+            xPage = redirect( request, VIEW_GET_APPOINTMENT_CREATED, PARAMETER_ID_FORM, nIdForm );
         }
         return xPage;
     }
@@ -1029,40 +1028,35 @@ public class AppointmentApp extends MVCApplication
     @View( VIEW_GET_APPOINTMENT_CREATED )
     public XPage getAppointmentCreated( HttpServletRequest request )
     {
+    	if( _validatedAppointment == null )
+    	{
+    		return redirectView( request, VIEW_APPOINTMENT_FORM_LIST );
+    	}
         int nIdForm = Integer.parseInt( request.getParameter( PARAMETER_ID_FORM ) );
-        int nIdAppointment = Integer.parseInt( request.getParameter( PARAMETER_ID_APPOINTMENT ) );
-        AppLogService.debug( "n Id Appointment :" + nIdAppointment );
-        Appointment appointment = AppointmentService.findAppointmentById( nIdAppointment );
         FormMessage formMessages = FormMessageService.findFormMessageByIdForm( nIdForm );
-        List<AppointmentSlot> listAppointmentSlot = appointment.getListAppointmentSlot( );
-
-        Slot firstSlot = SlotService.findSlotById( listAppointmentSlot.get( 0 ).getIdSlot( ) );
-        Slot lastSlot = firstSlot;
-        if ( listAppointmentSlot.size( ) > 1 )
-        {
-
-            lastSlot = SlotService.findSlotById( listAppointmentSlot.get( listAppointmentSlot.size( ) - 1 ).getIdSlot( ) );
-        }
-
         AppointmentFormDTO form = FormService.buildAppointmentForm( nIdForm, 0 );
+        Slot firstSlot = _validatedAppointment.getSlot().get(0);
+        Slot lastSlot = firstSlot;
+        if (  _validatedAppointment.getSlot().size( ) > 1 )
+        {
+                    lastSlot = _validatedAppointment.getSlot().get(_validatedAppointment.getSlot().size( ) -1 );
+        }
         String strTimeBegin = firstSlot.getStartingDateTime( ).toLocalTime( ).toString( );
         String strTimeEnd = lastSlot.getEndingDateTime( ).toLocalTime( ).toString( );
-        formMessages.setTextAppointmentCreated( formMessages.getTextAppointmentCreated( ).replace( MARK_REF, appointment.getReference( ) )
-                .replace( MARK_DATE_APP, firstSlot.getStartingDateTime( ).toLocalDate( ).format( Utilities.getFormatter( ) ) )
-                .replace( MARK_TIME_BEGIN, strTimeBegin ).replace( MARK_TIME_END, strTimeEnd ) );
+        formMessages.setTextAppointmentCreated( formMessages.getTextAppointmentCreated( ).replace( MARK_REF, _validatedAppointment.getReference( ) )
+                .replace( MARK_DATE_APP, firstSlot.getStartingDateTime().format( Utilities.getFormatter( ) ) )
+                .replace( MARK_TIME_BEGIN, strTimeBegin ).replace( MARK_TIME_END, strTimeEnd) );
         Map<String, Object> model = new HashMap<>( );
-        AppointmentDTO appointmentDTO = AppointmentService.buildAppointmentDTOFromIdAppointment( nIdAppointment );
-        appointmentDTO.setListResponse( AppointmentResponseService.findAndBuildListResponse( nIdAppointment, request ) );
-        appointmentDTO.setMapResponsesByIdEntry( AppointmentResponseService.buildMapFromListResponse( appointmentDTO.getListResponse( ) ) );
-        model.put( MARK_LIST_RESPONSE_RECAP_DTO, AppointmentUtilities.buildListResponse( appointmentDTO, request, getLocale( request ) ) );
-        model.put( MARK_DATE_APPOINTMENT, firstSlot.getDate( ).format( Utilities.getFormatter( ) ) );
+        model.put( MARK_LIST_RESPONSE_RECAP_DTO, AppointmentUtilities.buildListResponse( _validatedAppointment, request, getLocale( request ) ) );
+        model.put( MARK_DATE_APPOINTMENT, firstSlot.getDate().format( Utilities.getFormatter( ) ) );
         model.put( MARK_STARTING_TIME_APPOINTMENT, firstSlot.getStartingTime( ) );
         model.put( MARK_ENDING_TIME_APPOINTMENT, lastSlot.getEndingTime( ) );
-        model.put( MARK_USER, UserService.findUserById( appointment.getIdUser( ) ) );
-        model.put( MARK_PLACES, appointment.getNbPlaces( ) );
+        model.put( MARK_USER,  _validatedAppointment.getUser( ) );
+        model.put( MARK_PLACES, _validatedAppointment.getNbPlaces( ) );
         model.put( MARK_FORM, form );
         model.put( MARK_FORM_MESSAGES, formMessages );
         _appointmentForm = null;
+        _validatedAppointment = null;
         return getXPage( TEMPLATE_APPOINTMENT_CREATED, getLocale( request ), model );
     }
 
