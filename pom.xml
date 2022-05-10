@@ -2,14 +2,14 @@
     <parent>
         <artifactId>lutece-global-pom</artifactId>
         <groupId>fr.paris.lutece.tools</groupId>
-        <version>5.2.1</version>
+        <version>6.0.0</version>
     </parent>   
 
     <modelVersion>4.0.0</modelVersion>
     <groupId>fr.paris.lutece.plugins</groupId>
     <artifactId>plugin-appointment</artifactId>
     <packaging>lutece-plugin</packaging>    
-    <version>3.0.1</version>
+    <version>3.0.2-SNAPSHOT</version>
     <name>Lutece appointment plugin</name>
     
     <properties>  
