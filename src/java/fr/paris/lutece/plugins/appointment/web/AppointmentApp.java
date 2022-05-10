@@ -159,7 +159,6 @@ public class AppointmentApp extends MVCApplication
     public static final String VIEW_APPOINTMENT_CALENDAR = "getViewAppointmentCalendar";
     private static final String VIEW_APPOINTMENT_FORM_LIST = "getViewFormList";
     private static final String VIEW_DISPLAY_RECAP_APPOINTMENT = "displayRecapAppointment";
-    private static final String VIEW_GET_APPOINTMENT_CREATED = "getAppointmentCreated";
     private static final String VIEW_APPOINTMENT_CANCELED = "getAppointmentCanceled";
     private static final String VIEW_GET_MY_APPOINTMENTS = "getMyAppointments";
     private static final String VIEW_GET_VIEW_CANCEL_APPOINTMENT = "getViewCancelAppointment";
@@ -249,6 +248,8 @@ public class AppointmentApp extends MVCApplication
     private static final String ERROR_MESSAGE_NO_STARTING_VALIDITY_DATE = "appointment.validation.appointment.noStartingValidityDate";
     private static final String ERROR_MESSAGE_FORM_NO_MORE_VALID = "appointment.validation.appointment.formNoMoreValid";
     private static final String ERROR_MESSAGE_NO_AVAILABLE_SLOT = "appointment.validation.appointment.noAvailableSlot";
+    private static final String MESSAGE_SUCCESS= "appointment.validation.appointmentSuccess";
+    private static final String MESSAGE_FAILED = "appointment.validation.appointmentFailed";
 
     // Session keys
     private static final String SESSION_APPOINTMENT_FORM_ERRORS = "appointment.session.formErrors";
@@ -893,56 +894,15 @@ public class AppointmentApp extends MVCApplication
             additionalParameters.put( PARAMETER_ID_FORM, String.valueOf( appointment.getIdForm( ) ) );
             additionalParameters.put( PARAMETER_ID_APPOINTMENT, String.valueOf( nIdAppointment ) );
             additionalParameters.put( PARAMETER_ANCHOR, MARK_ANCHOR + anchor );
-            xPage = redirect( request, VIEW_GET_APPOINTMENT_CREATED, additionalParameters );
+            addInfo( MESSAGE_SUCCESS, request.getLocale() );
+            xPage = redirect( request, VIEW_APPOINTMENT_FORM_LIST, additionalParameters );
         }
         else
         {
-            xPage = redirect( request, VIEW_GET_APPOINTMENT_CREATED, PARAMETER_ID_FORM, appointment.getIdForm( ), PARAMETER_ID_APPOINTMENT, nIdAppointment );
+        	addInfo( MESSAGE_FAILED, request.getLocale( ) );
+            xPage = redirect( request, VIEW_APPOINTMENT_FORM_LIST, PARAMETER_ID_FORM, appointment.getIdForm( ), PARAMETER_ID_APPOINTMENT, nIdAppointment );
         }
         return xPage;
-    }
-
-    /**
-     * Get the page to notify the user that the appointment has been created
-     * 
-     * @param request
-     *            The request
-     * @return The XPage to display
-     */
-    @View( VIEW_GET_APPOINTMENT_CREATED )
-    public XPage getAppointmentCreated( HttpServletRequest request )
-    {
-        int nIdForm = Integer.parseInt( request.getParameter( PARAMETER_ID_FORM ) );
-        int nIdAppointment = Integer.parseInt( request.getParameter( PARAMETER_ID_APPOINTMENT ) );
-        AppLogService.debug( "n Id Appointment :" + nIdAppointment );
-        Appointment appointment = AppointmentService.findAppointmentById( nIdAppointment );
-        FormMessage formMessages = FormMessageService.findFormMessageByIdForm( nIdForm );
-        Slot slot = SlotService.findSlotById( appointment.getIdSlot( ) );
-        AppointmentFormDTO form = FormService.buildAppointmentForm( nIdForm, 0, 0 );
-        String strTimeBegin = slot.getStartingDateTime( ).toLocalTime( ).toString( );
-        String strTimeEnd = slot.getEndingDateTime( ).toLocalTime( ).toString( );
-        String strReference = StringUtils.EMPTY;
-        if ( !StringUtils.isEmpty( form.getReference( ) ) )
-        {
-            strReference = Strings.toUpperCase( form.getReference( ).trim( ) ) + " - ";
-        }
-        strReference += appointment.getReference( );
-        formMessages.setTextAppointmentCreated( formMessages.getTextAppointmentCreated( ).replaceAll( MARK_REF, strReference )
-                .replaceAll( MARK_DATE_APP, slot.getStartingDateTime( ).toLocalDate( ).format( Utilities.getFormatter( ) ) )
-                .replaceAll( MARK_TIME_BEGIN, strTimeBegin ).replaceAll( MARK_TIME_END, strTimeEnd ) );
-        Map<String, Object> model = new HashMap<String, Object>( );
-        AppointmentDTO appointmentDTO = AppointmentService.buildAppointmentDTOFromIdAppointment( nIdAppointment );
-        appointmentDTO.setListResponse( AppointmentResponseService.findAndBuildListResponse( nIdAppointment, request ) );
-        appointmentDTO.setMapResponsesByIdEntry( AppointmentResponseService.buildMapFromListResponse( appointmentDTO.getListResponse( ) ) );
-        model.put( MARK_LIST_RESPONSE_RECAP_DTO, AppointmentUtilities.buildListResponse( appointmentDTO, request, getLocale( request ) ) );
-        model.put( MARK_DATE_APPOINTMENT, slot.getDate( ).format( Utilities.getFormatter( ) ) );
-        model.put( MARK_STARTING_TIME_APPOINTMENT, slot.getStartingTime( ) );
-        model.put( MARK_ENDING_TIME_APPOINTMENT, slot.getEndingTime( ) );
-        model.put( MARK_USER, UserService.findUserById( appointment.getIdUser( ) ) );
-        model.put( MARK_PLACES, appointment.getNbPlaces( ) );
-        model.put( MARK_FORM, form );
-        model.put( MARK_FORM_MESSAGES, formMessages );
-        return getXPage( TEMPLATE_APPOINTMENT_CREATED, getLocale( request ), model );
     }
 
     /**
