@@ -160,6 +160,7 @@ public class AppointmentApp extends MVCApplication
     private static final String TEMPLATE_APPOINTMENT_CANCELED = "skin/plugins/appointment/appointment_canceled.html";
     private static final String TEMPLATE_MY_APPOINTMENTS = "skin/plugins/appointment/my_appointments.html";
     private static final String TEMPLATE_HTML_CODE_FORM = "skin/plugins/appointment/html_code_form.html";
+    private static final String TEMPLATE_HTML_CODE_NB_PLACES_TO_TAKE_FORM = "skin/plugins/appointment/appointment_nb_places_to_take_form.html";
     private static final String TEMPLATE_TASKS_FORM_WORKFLOW = "skin/plugins/appointment/tasks_form_workflow.html";
 
     // Views
@@ -231,6 +232,7 @@ public class AppointmentApp extends MVCApplication
     private static final String MARK_ENDING_TIME_APPOINTMENT = "endingTimeAppointment";
     private static final String MARK_FORM_LIST = "form_list";
     private static final String MARK_FORM_HTML = "form_html";
+    private static final String MARK_FORM_NB_PLACES_TO_TAKE_HTML = "mark_nb_places_to_take_form";
     private static final String MARK_FORM_ERRORS = "form_errors";
     private static final String MARK_FORM_CALENDAR_ERRORS = "formCalendarErrors";
     private static final String MARK_CAPTCHA = "captcha";
@@ -557,9 +559,10 @@ public class AppointmentApp extends MVCApplication
         model.put( PARAMETER_DAY_VIEW, dayView );
         model.put( PARAMETER_WEEK_VIEW, weekView );
         model.put( MARK_MAX_NBPLACESTOTAKE, Integer.valueOf( _strNbPlacesToTakeLength ) );
+        HtmlTemplate templateNbPlacesToTakeForm = AppTemplateService.getTemplate( TEMPLATE_HTML_CODE_NB_PLACES_TO_TAKE_FORM, locale, model );
+        model.put( MARK_FORM_NB_PLACES_TO_TAKE_HTML, templateNbPlacesToTakeForm.getHtml( ) );
 
         return getXPage( calendarTemplate.getTemplatePath( ), locale, model );
-
     }
 
     /**
