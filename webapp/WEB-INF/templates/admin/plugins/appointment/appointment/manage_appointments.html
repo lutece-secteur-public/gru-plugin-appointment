@@ -140,7 +140,7 @@
 								<td>${appointment.adminUser}</td>
 								<td>
 									<#if appointment.isCancelled>
-										<@tag color='important'>#i18n{appointment.message.labelStatusUnreserved}</@tag>
+										<@tag color='danger'>#i18n{appointment.message.labelStatusUnreserved}</@tag>
 									<#else>
 										<@tag color='success'>#i18n{appointment.message.labelStatusReserved}</@tag>
 									</#if>
