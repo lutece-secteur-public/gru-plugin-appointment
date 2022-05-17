@@ -143,6 +143,7 @@ public class TypicalWeekJspBean extends AbstractAppointmentFormAndSlotJspBean
     // Views
     private static final String VIEW_MANAGE_TYPICAL_WEEK = "manageTypicalWeek";
     private static final String VIEW_MODIFY_TIME_SLOT = "viewModifyTimeSlot";
+    private static final String VIEW_MANAGE_APPOINTMENTFORMS = "manageAppointmentForms";
 
     // Actions
     private static final String ACTION_DO_MODIFY_TIME_SLOT = "doModifyTimeSlot";
@@ -817,6 +818,20 @@ public class TypicalWeekJspBean extends AbstractAppointmentFormAndSlotJspBean
 
         addInfo( MESSAGE_INFO_SLOT_UPDATED, getLocale( ) );
         return redirect( request, VIEW_MANAGE_TYPICAL_WEEK, PARAMETER_ID_FORM, nIdForm, PARAMETER_ID_RULE, nIdReservationRule );
+    }
+    
+    /**
+     * Get the view of the appointment forms management
+     * 
+     * @param request
+     *            the request
+     * @return the page
+     */
+    @View( VIEW_MANAGE_APPOINTMENTFORMS )
+    public String getManageAppointmentForms( HttpServletRequest request )
+    {
+		String strUrl = AppointmentFormJspBean.getURLManageAppointmentForms( request );
+		return redirect( null, strUrl );
     }
 
     /**
