@@ -33,12 +33,15 @@
  */
 package fr.paris.lutece.plugins.appointment.web;
 
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
 import javax.servlet.http.HttpServletRequest;
+
+import org.apache.commons.lang.math.NumberUtils;
 
 import fr.paris.lutece.api.user.User;
 import fr.paris.lutece.plugins.appointment.service.AppointmentPlugin;
@@ -71,7 +74,13 @@ public class AppointmentFormDashboardComponent extends DashboardComponent
     private static final String MARK_APPOINTMENTFORM_LIST = "appointmentform_list";
     private static final String MARK_PERMISSION_CREATE = "permission_create";
     private static final String MARK_BASE_URL = "baseUrl";
+    private static final String MARK_AVAILABLE_SUFFIX = "_available";
+    
+    // VIEWS
     private static final String VIEW_PERMISSIONS_FORM = "permissions";
+    
+    // PARAMETERS
+    private static final String PARAMETER_APPOINTMENT = "appointment";
 
     // TEMPLATES
     private static final String TEMPLATE_DASHBOARD = "/admin/plugins/appointment/appointment_form_dashboard.html";
@@ -82,18 +91,27 @@ public class AppointmentFormDashboardComponent extends DashboardComponent
     @Override
     public String getDashboardData( AdminUser user, HttpServletRequest request )
     {
+    	Collection<Plugin> pluginsList = PluginService.getPluginList( );
         List<AppointmentFormDTO> listAppointmentForm = FormService.buildAllAppointmentFormLight( );
-        listAppointmentForm = (List<AppointmentFormDTO>) AdminWorkgroupService.getAuthorizedCollection( listAppointmentForm, (User) user );
+        listAppointmentForm = ( List<AppointmentFormDTO> ) AdminWorkgroupService.getAuthorizedCollection( listAppointmentForm, ( User ) user );
         listAppointmentForm = listAppointmentForm.stream( ).sorted( ( a1, a2 ) -> a1.getTitle( ).compareTo( a2.getTitle( ) ) ).collect( Collectors.toList( ) );
         Map<String, Object> model = new HashMap<>( );
         Plugin plugin = PluginService.getPlugin( AppointmentPlugin.PLUGIN_NAME );
         model.put( MARK_APPOINTMENTFORM_LIST, RBACService.getAuthorizedCollection( listAppointmentForm, AppointmentResourceIdService.PERMISSION_VIEW_FORM,
-                (User) AdminUserService.getAdminUser( request ) ) );
+                ( User ) AdminUserService.getAdminUser( request ) ) );
         model.put( MARK_ICON, plugin.getIconUrl( ) );
         model.put( MARK_BASE_URL, AppPathService.getProdUrl( request ) );
         model.put( MARK_URL, AppointmentFormJspBean.getURLManageAppointmentForms( request ) );
         model.put( MARK_PERMISSION_CREATE, String.valueOf(
-                RBACService.isAuthorized( AppointmentFormDTO.RESOURCE_TYPE_CREATE, "0", AppointmentResourceIdService.PERMISSION_CREATE_FORM, (User) user ) ) );
+                RBACService.isAuthorized( AppointmentFormDTO.RESOURCE_TYPE_CREATE, NumberUtils.INTEGER_ZERO.toString( ) , AppointmentResourceIdService.PERMISSION_CREATE_FORM, ( User ) user ) ) );
+        for( Plugin currentPlugin : pluginsList )
+        {
+        	if ( currentPlugin.getName().contains( PARAMETER_APPOINTMENT ))
+        	{
+        		model.put( currentPlugin.getName( ).replaceAll( "-","_" ) + MARK_AVAILABLE_SUFFIX, currentPlugin.isInstalled( ) );
+        	}
+        }
+        
         model.put( VIEW_PERMISSIONS_FORM, AppointmentUtilities.getPermissions( listAppointmentForm, AdminUserService.getAdminUser( request ) ) );
         HtmlTemplate template = AppTemplateService.getTemplate( TEMPLATE_DASHBOARD, AdminUserService.getLocale( request ), model );
         return template.getHtml( );
