@@ -50,9 +50,9 @@
 								</#if>	
 							</#list>
 						</#if>
-						
+						<#assign disableLastName=appointment.lastName?? />
 						<@formGroup class='${formGroupClass!}' labelFor='lastname' labelKey='${formMessages.fieldLastNameTitle!}' helpKey='${formGroupHelpKey!}' mandatory=true>
-							<@input type='text' name='lastname' id='lastname' value='${appointment.lastName!}' maxlength=255 />
+							<@input type='text' name='lastname' id='lastname' value='${appointment.lastName!}' maxlength=255 disabled=disableLastName />
 						</@formGroup>
 						
 						
@@ -68,8 +68,9 @@
 							</#list>
 						</#if>
 						
+						<#assign disableFirstName=appointment.firstName?? />
 						<@formGroup class='${formGroupClass!}' labelFor='firstname' labelKey='${formMessages.fieldFirstNameTitle!}' helpKey='${formGroupHelpKey!}' mandatory=true>
-							<@input type='text' name='firstname' id='firstname' value='${appointment.firstName!}' maxlength=255 />
+							<@input type='text' name='firstname' id='firstname' value='${appointment.firstName!}' maxlength=255 disabled=disableFirstName />
 						</@formGroup>
 						
 						
@@ -85,8 +86,9 @@
 							</#list>
 						</#if>
 						
+						<#assign disableEmail=appointment.email?? />
 						<@formGroup class='${formGroupClass!}' labelFor='email' labelKey='${formMessages.fieldEmailTitle!}' helpKey='${formGroupHelpKey!}' mandatory=true>
-							<@input type='email' name='email' id='email' value='${appointment.email!}' maxlength=255 />
+							<@input type='email' name='email' id='email' value='${appointment.email!}' maxlength=255 disabled=disableEmail />
 						</@formGroup>
 						
 						
@@ -103,7 +105,7 @@
 						</#if>
 						
 						<@formGroup class='${formGroupClass!}' labelFor='emailConfirm' labelKey='${formMessages.fieldConfirmationEmail!}' helpKey='${formGroupHelpKey!}' mandatory=true>
-							<@input type='email' name='emailConfirm' id='emailConfirm' value='${appointment.email!}' maxlength=255 />
+							<@input type='email' name='emailConfirm' id='emailConfirm' value='${appointment.email!}' maxlength=255 disabled=disableEmail />
 						</@formGroup>
 						
 						
