@@ -59,7 +59,7 @@
 						</@formGroup>
 							<@formGroup>
 								<@button type='submit' name='action_modifyGlobalParameters' title='#i18n{portal.util.labelModify}' buttonIcon='check' />                            
-								<@button type='submit' name='view_manageAppointmentForms' title='#i18n{portal.util.labelCancel}' buttonIcon='times' cancel=true />
+								<@aButton href='jsp/admin/plugins/appointment/ManageAppointmentSlots.jsp?view=manageTypicalWeek&id_form=${appointmentform.idForm}&id_reservation_rule=${id_reservation_rule}' buttonIcon='times' title='#i18n{portal.util.labelCancel}' color='btn-default' />
 							</@formGroup>                  
 						</@tform>
 					</#if>
@@ -140,7 +140,7 @@
 								<@button type='submit' title='#i18n{portal.util.labelCreate}' buttonIcon='check' />
 							</#if>
 								<@input type='hidden' name='view_manageAppointmentForms' value='' />
-								<@button type='submit' title='#i18n{portal.util.labelCancel}' buttonIcon='times' cancel=true />
+								<@aButton href='jsp/admin/plugins/appointment/ManageAppointmentSlots.jsp?view=manageTypicalWeek&id_form=${appointmentform.idForm}&id_reservation_rule=${id_reservation_rule}' buttonIcon='times' title='#i18n{portal.util.labelCancel}' color='btn-default' />
 							</@formGroup>
 						</@tform>
 					</#if>
