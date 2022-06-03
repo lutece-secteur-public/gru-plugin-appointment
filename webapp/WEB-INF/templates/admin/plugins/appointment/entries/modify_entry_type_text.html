@@ -34,6 +34,7 @@
 					<@formGroup labelFor='value' labelKey='#i18n{appointment.defaultValue.name}'>
 						<#assign field=getFieldByCode( entry, "text_config")>
 						<@input type='text' name='value' id='value' value='${field.value}' />
+						<#assign id_field=field.idField> 
 					</@formGroup>
 					
 					<@formGroup labelKey='#i18n{appointment.createEntry.labelMandatory}'>
@@ -51,7 +52,6 @@
 					<@formGroup labelFor='width' labelKey='#i18n{appointment.createEntry.labelWidth}' mandatory=true>
 						<#assign field=getFieldByCode( entry, "width")>
 						<@input type='text' name='width' id='width' value='${field.value}' />
-						<#assign id_field=field.idField> 
 					</@formGroup>
 					
 					<@formGroup labelFor='max_size_enter' labelKey='#i18n{appointment.createEntry.labelMaxSizeEnter}'>

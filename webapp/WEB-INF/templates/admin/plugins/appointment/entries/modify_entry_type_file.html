@@ -10,6 +10,7 @@
 						<@formGroup labelKey='#i18n{appointment.createEntry.labelType}'>
 							<@staticText><@tag color='info'>${entry.entryType.title}</@tag></@staticText>
 						</@formGroup>
+						<#assign field=getFieldByCode( entry, "exportable")>
 						<@formGroup labelFor='title' labelKey='#i18n{appointment.labelTitle}' helpKey='#i18n{appointment.createEntry.labelTitleComment}' mandatory=true>
 							<@input type='text' name='title' id='title' value='${entry.title}' maxlength=255 />
 						</@formGroup>
