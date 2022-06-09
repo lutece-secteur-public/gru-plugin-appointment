@@ -1,8 +1,6 @@
-<link rel='stylesheet' href='css/plugins/appointment/bootstrap-datetimepicker.css' />
 <script src="js/jquery/jquery.min.js"></script>
 <script src="js/jquery/jquery-ui.min.js"></script>
 <script src="js/plugins/appointment/moment.min.js"></script>
-<script src="js/plugins/appointment/bootstrap-datetimepicker.min.js"></script>
 <script src="js/bootstrap-filestyle.min.js"></script>
 <@row>
 	<@columns>
@@ -11,7 +9,7 @@
 			<@boxHeader title='#i18n{appointment.createAppointmentForm.title}' />
 			<@boxBody>			
 				<@messages errors=errors />
-				<input type="hidden" id="id_form" name="id_form">
+				<@input type='hidden' id='id_form' name='id_form' />
 					<@formGroup labelFor='title' labelKey='#i18n{appointment.createAppointmentForm.labelTitle}' mandatory=true>
 						<@input type='text' name='title' id='title' value='${appointmentform.title!\'\'}' maxlength=255 />
 					</@formGroup>
@@ -23,22 +21,20 @@
 					</@formGroup>
                         <@formGroup labelFor='date_start_validity' labelKey='#i18n{appointment.createAppointmentForm.labelDateStartValidity}' helpKey='#i18n{appointment.createAppointmentForm.labelDateStartValidity.help}'>
 						<@inputGroup>
-							<@input type='text' name='date_start_validity' id='date_start_validity' value=appointmentform.dateStartValidity!'' />
+							<@input type='date' name='date_start_validity' id='date_start_validity' value=appointmentform.dateStartValidity!'' />
 							<@inputGroupItem type='text'>
 								<@icon style='calendar' />
 							</@inputGroupItem>
 						</@inputGroup>
-						<@getDatePickerBootstrap idField="date_start_validity" language=language />
 					</@formGroup>
 					
 					<@formGroup labelFor='date_end_validity' labelKey='#i18n{appointment.createAppointmentForm.labelDateEndValidity}' helpKey='#i18n{appointment.createAppointmentForm.labelDateEndValidity.help}'>
 						<@inputGroup>
-							<@input type='text' name='date_end_validity' id='date_end_validity' value=appointmentform.dateEndValidity!'' />
+							<@input type='date' name='date_end_validity' id='date_end_validity' value=appointmentform.dateEndValidity!'' />
 							<@inputGroupItem type='text'>
 								<@icon style='calendar' />
 							</@inputGroupItem>
 						</@inputGroup>
-						<@getDatePickerBootstrap idField="date_end_validity" language=language />
 					</@formGroup>
 					<@formGroup labelFor='bo_overbooking' labelKey='#i18n{appointment.label.BoOverbooking}' helpKey='#i18n{appointment.label.BoOverbooking.help}'>
                       <@checkBox labelFor='bo_overbooking' name='bo_overbooking' id='bo_overbooking' value='true' checked=appointmentform.boOverbooking!false />

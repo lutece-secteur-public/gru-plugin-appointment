@@ -1,4 +1,3 @@
-<link rel="stylesheet" href="css/datepicker.css">
 <link rel="stylesheet" href="css/admin/plugins/appointment/appointment.css">
 <#macro appointmentTabs tab appointmentform>
 	<@tabs>
@@ -44,7 +43,7 @@
 			<@inputGroupItem type='text'>
 				<@icon style='calendar' />
 			</@inputGroupItem>
-			<@input type='text' name='date_start_validity' id='date_start_validity' value=appointmentform.dateStartValidity!'' />
+			<@input type='date' name='date_start_validity' id='date_start_validity' value=appointmentform.dateStartValidity!'' />
 		</@inputGroup>
 	</@formGroup>
 	
@@ -53,7 +52,7 @@
 			<@inputGroupItem type='text'>
 				<@icon style='calendar' />
 			</@inputGroupItem>
-			<@input type='text' name='date_end_validity' id='date_end_validity' value=appointmentform.dateEndValidity!''  />
+			<@input type='date' name='date_end_validity' id='date_end_validity' value=appointmentform.dateEndValidity!''  />
 		</@inputGroup>
 	</@formGroup>
 	<@formGroup labelFor='is_multislot_appointment' labelKey='#i18n{appointment.label.isMultislotAppointment}' helpKey='#i18n{appointment.label.isMultislotAppointment.help}'>

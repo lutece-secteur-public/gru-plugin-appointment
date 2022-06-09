@@ -1,67 +1,1 @@
-<@row>
-    <@columns>
-        <@box color='primary'>
-            <@boxHeader title='#i18n{appointment.createEntry.titleQuestion} : ${form.title}' />
-            <@boxBody>
-                <@tform action='jsp/admin/plugins/appointment/ManageAppointmentFormEntries.jsp' method='post'>
-                    <fieldset>
-                        <legend class="hidden">#i18n{appointment.createEntry.titleQuestion} : '${form.title}'</legend>
-                        <@input type='hidden' name='id_form' value='${form.idForm}' />
-                        <@input type='hidden' name='action' value='doCreateEntry' />
-                        <@input type='hidden' name='id_type' value='${entry.entryType.idType}' />
-                        <#if entry.fieldDepend?exists>
-                            <@input type='hidden' name='id_field' value='${entry.fieldDepend.idField}' />
-                        </#if>
-                        <@formGroup labelKey='#i18n{appointment.createEntry.labelType}'>
-                            <@staticText>
-                                <@tag color='info'>
-                                    ${entry.entryType.title}
-                                </@tag>
-                            </@staticText>
-                        </@formGroup>
-                        <@formGroup labelFor='title' labelKey='#i18n{appointment.labelTitle}' mandatory=true
-                            helpKey='#i18n{appointment.createEntry.labelTitleComment}'>
-                            <@input type='text' name='title' id='title' value='' maxlength=255 />
-                        </@formGroup>
-                        <@formGroup labelFor='help_message' labelKey='#i18n{appointment.createEntry.labelHelpMessage}'
-                            helpKey='#i18n{appointment.createEntry.labelHelpMessageComment}'>
-                            <@input type='textarea' name='help_message' id='help_message' rows=5 />
-                        </@formGroup>
-                        <@formGroup labelFor='comment' labelKey='#i18n{appointment.comment.name}'>
-                            <@input type='textarea' name='comment' rows=2 />
-                        </@formGroup>
-                        <@formGroup labelFor='date' labelKey='#i18n{appointment.defaultValue.name}'>
-                            <@inputGroup>
-                                <@input type='text' name='value' id='date' value='' />
-                                <@inputGroupItem type='text'>
-                                    <@icon style='calendar' />
-                                </@inputGroupItem>
-                            </@inputGroup>
-                        </@formGroup>
-                        <@formGroup labelFor='mandatory' labelKey='#i18n{appointment.createEntry.labelMandatory}'>
-                            <@checkBox name='mandatory' id='mandatory' value='1' />
-                        </@formGroup>
-                        <@formGroup labelFor='only_display_in_back'
-                            labelKey='#i18n{appointment.createEntry.labelOnlyDisplayInBack}'>
-                            <@checkBox name='only_display_in_back' id='only_display_in_back' value='1' />
-                        </@formGroup>
-                        <@formGroup labelFor='css_class' labelKey='#i18n{appointment.createEntry.labelCSSClass}'
-                            helpKey='#i18n{appointment.createEntry.labelCSSClassComment}'>
-                            <@input type='text' name='css_class' value='' maxlength=255 />
-                        </@formGroup>
-                        <@formGroup>
-                            <@button type='submit' name='save' buttonIcon='save' title='#i18n{appointment.labelSave}' />
-                            <@button type='submit' name='cancel' buttonIcon='times'
-                                title='#i18n{appointment.labelCancel}' cancel=true />
-                        </@formGroup>
-                    </fieldset>
-                </@tform>
-            </@boxBody>
-        </@box>
-    </@columns>
-</@row>
-<#include "/admin/util/editor/editor.html" />
-<@initEditor />
-<script src="js/jquery/plugins/ui/jquery-ui-1.9.2.custom.min.js"></script>
-<script src="js/jquery/plugins/ui/ui.datepicker-fr.js"></script>
-<@getDatePickerBootstrap idField="date" language=locale format='Y-m-d H:i:S' />
+<@row>    <@columns>        <@box color='primary'>            <@boxHeader title='#i18n{appointment.createEntry.titleQuestion} : ${form.title}' />            <@boxBody>                <@tform action='jsp/admin/plugins/appointment/ManageAppointmentFormEntries.jsp' method='post'>                    <@fieldSet legend='#i18n{appointment.createEntry.titleQuestion} : "${form.title}"'>                        <@input type='hidden' name='id_form' value='${form.idForm}' />                        <@input type='hidden' name='action' value='doCreateEntry' />                        <@input type='hidden' name='id_type' value='${entry.entryType.idType}' />                        <#if entry.fieldDepend?exists>                            <@input type='hidden' name='id_field' value='${entry.fieldDepend.idField}' />                        </#if>                        <@formGroup labelKey='#i18n{appointment.createEntry.labelType}'>                            <@staticText>                                <@tag color='info'>                                    ${entry.entryType.title}                                </@tag>                            </@staticText>                        </@formGroup>                        <@formGroup labelFor='title' labelKey='#i18n{appointment.labelTitle}' mandatory=true                            helpKey='#i18n{appointment.createEntry.labelTitleComment}'>                            <@input type='text' name='title' id='title' value='' maxlength=255 />                        </@formGroup>                        <@formGroup labelFor='help_message' labelKey='#i18n{appointment.createEntry.labelHelpMessage}'                            helpKey='#i18n{appointment.createEntry.labelHelpMessageComment}'>                            <@input type='textarea' name='help_message' id='help_message' rows=5 />                        </@formGroup>                        <@formGroup labelFor='comment' labelKey='#i18n{appointment.comment.name}'>                            <@input type='textarea' name='comment' rows=2 />                        </@formGroup>                        <@formGroup labelFor='date' labelKey='#i18n{appointment.defaultValue.name}'>                            <@inputGroup>                                <@input type='date' name='value' id='date' value='' />                                <@inputGroupItem type='text'>                                    <@icon style='calendar' />                                </@inputGroupItem>                            </@inputGroup>                        </@formGroup>                        <@formGroup labelFor='mandatory' labelKey='#i18n{appointment.createEntry.labelMandatory}'>                            <@checkBox name='mandatory' id='mandatory' value='1' />                        </@formGroup>                        <@formGroup labelFor='only_display_in_back'                            labelKey='#i18n{appointment.createEntry.labelOnlyDisplayInBack}'>                            <@checkBox name='only_display_in_back' id='only_display_in_back' value='1' />                        </@formGroup>                        <@formGroup labelFor='css_class' labelKey='#i18n{appointment.createEntry.labelCSSClass}'                            helpKey='#i18n{appointment.createEntry.labelCSSClassComment}'>                            <@input type='text' name='css_class' value='' maxlength=255 />                        </@formGroup>                        <@formGroup>                            <@button type='submit' name='save' buttonIcon='save' title='#i18n{appointment.labelSave}' />                            <@button type='submit' name='cancel' buttonIcon='times'                                title='#i18n{appointment.labelCancel}' cancel=true />                        </@formGroup>                    </@fieldSet>                </@tform>            </@boxBody>        </@box>    </@columns></@row><#include "/admin/util/editor/editor.html" /><@initEditor /><script src="js/jquery/plugins/ui/jquery-ui-1.9.2.custom.min.js"></script><script src="js/jquery/plugins/ui/ui.datepicker-fr.js"></script><@getDatePickerBootstrap idField="date" language=locale format='Y-m-d H:i:S' />

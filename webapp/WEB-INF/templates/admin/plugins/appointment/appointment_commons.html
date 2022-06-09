@@ -197,7 +197,7 @@ $('#feature-title').html("<a href=\"jsp/admin/plugins/appointment/ManageAppointm
 			<@columns offsetSm=1 sm=5>
 				<@formGroup labelFor='startingValidityDate' labelKey=startDateLabel mandatory=true rows=2>
 					<@inputGroup class='date' id='${idStartingDate}Group'>
-						<@input type='text' name='startingValidityDate' id=idStartingDate />
+						<@input type='date name='startingValidityDate' id=idStartingDate />
 						<@inputGroupItem type='text'>
 							<@icon style='calendar' />
 						</@inputGroupItem>
@@ -207,7 +207,7 @@ $('#feature-title').html("<a href=\"jsp/admin/plugins/appointment/ManageAppointm
 			<@columns sm=5>
 				<@formGroup labelFor='startingValidityTime' labelKey=startTimeLabel rows=2>
 					<@inputGroup id='${idStartingTime}Group' class='date'>
-						<@input type='text' name='startingValidityTime' id=idStartingTime value='00:00' />
+						<@input type='time' name='startingValidityTime' id=idStartingTime value='00:00' />
 						<@inputGroupItem type='text' >
 							<@icon style='clock' />
 						</@inputGroupItem>
@@ -219,7 +219,7 @@ $('#feature-title').html("<a href=\"jsp/admin/plugins/appointment/ManageAppointm
 				<@columns offsetSm=1 sm=5>
 					<@formGroup labelFor=idEndingDate labelKey=endDateLabel helpKey=endDateHelp mandatory=true rows=2>
 						<@inputGroup class='date' id='${idEndingDate}Group'>
-							<@input type='text' name='endingValidityDate' id=idEndingDate />
+							<@input type='date' name='endingValidityDate' id=idEndingDate />
 							<@inputGroupItem type='text'>
 								<@icon style='calendar' />
 							</@inputGroupItem>
@@ -229,7 +229,7 @@ $('#feature-title').html("<a href=\"jsp/admin/plugins/appointment/ManageAppointm
 				<@columns sm=5>
 					<@formGroup labelFor='endingValidityTime' labelKey=endTimeLabel helpKey=' ' rows=0>
 						<@inputGroup class='date' id='${idEndingTime}Group'>
-							<@input type='text' name='endingValidityTime' id=idEndingTime value='00:00' />
+							<@input type='time' name='endingValidityTime' id=idEndingTime value='00:00' />
 							<@inputGroupItem type='text'>
 								<@icon style='clock' />
 							</@inputGroupItem>

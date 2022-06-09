@@ -43,7 +43,7 @@
 							<@columns sm=2>
 								<@formGroup labelFor='startingDateOfSearch' labelKey='#i18n{appointment.manageAppointments.startingDateOfSearch}'  rows=2>
 									<@inputGroup>
-										<@input type='text' name='startingDateOfSearch' id='startingDateOfSearch' value='${filter.startingDateOfSearch!}' />
+										<@input type='date' name='startingDateOfSearch' id='startingDateOfSearch' value='${filter.startingDateOfSearch!}' />
 										<@inputGroupItem type='text'>
 											<@icon style='calendar' />
 										</@inputGroupItem>
@@ -53,7 +53,7 @@
 							<@columns sm=2>
 								<@formGroup labelFor='startingTimeOfSearch' labelKey='#i18n{appointment.labelTo}' rows=2>
 									<@inputGroup>
-										<@input type='text' name='startingTimeOfSearch' id='startingTimeOfSearch' value='${filter.startingTimeOfSearch!\'\'}' />
+										<@input type='time' name='startingTimeOfSearch' id='startingTimeOfSearch' value='${filter.startingTimeOfSearch!\'\'}' />
 										<@inputGroupItem type='text'>
 											<@icon style='clock-o' />
 										</@inputGroupItem>
@@ -63,7 +63,7 @@
 							<@columns sm=2>
 								<@formGroup labelFor='endingDateOfSearch' labelKey='#i18n{appointment.manageAppointments.endingDateOfSearch}'  rows=2>
 									<@inputGroup>
-										<@input type='text' name='endingDateOfSearch' id='endingDateOfSearch' value='${filter.endingDateOfSearch!}' />
+										<@input type='date' name='endingDateOfSearch' id='endingDateOfSearch' value='${filter.endingDateOfSearch!}' />
 										<@inputGroupItem type='text'>
 											<@icon style='calendar' />
 										</@inputGroupItem>
@@ -73,7 +73,7 @@
 							<@columns sm=2>
 								<@formGroup labelFor='endingTimeOfSearch' labelKey='#i18n{appointment.labelTo}'  rows=2>
 									<@inputGroup>
-										<@input type='text' name='endingTimeOfSearch' id='endingTimeOfSearch' value='${filter.endingTimeOfSearch!\'\'}' />
+										<@input type='time' name='endingTimeOfSearch' id='endingTimeOfSearch' value='${filter.endingTimeOfSearch!\'\'}' />
 										<@inputGroupItem type='text'>
 											<@icon style='clock-o' />
 										</@inputGroupItem>

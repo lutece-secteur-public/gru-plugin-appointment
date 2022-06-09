@@ -33,7 +33,7 @@
 			<@input type='hidden' name='id_week_definition' value='' />
 			<@formGroup labelFor='date_of_apply' labelKey='#i18n{appointment.manageAppointments.startingDateOfSearch}'>
 				<@inputGroup>
-					<@input type='text' name='date_of_apply' id='date_of_apply' value="" />
+					<@input type='date' name='date_of_apply' id='date_of_apply' value="" />
 					<@inputGroupItem type='text'>
 						<@icon style='calendar' />
 					</@inputGroupItem>
@@ -41,20 +41,20 @@
 			</@formGroup>
 			<@formGroup labelFor='endingDate' labelKey='#i18n{appointment.manageAppointments.endingDateOfSearch}'>
 				<@inputGroup>
-					<@input type='text' name='ending_date_of_apply' id='ending_date_of_apply' value="" />
+					<@input type='date' name='ending_date_of_apply' id='ending_date_of_apply' value="" />
 					<@inputGroupItem type='text'>
 						<@icon style='calendar' />
 					</@inputGroupItem>
 				</@inputGroup>
 			</@formGroup>	
 			<@formGroup labelFor='type' labelKey='#i18n{appointment.week.toApplay}'>
-				<select name="id_reservation_rule" id="id_reservation_rule" class="form-control">
-                <#list listReservationRule as rule>
-				    <option value="${rule.idReservationRule}">${rule.name}</option>
-                </#list>
-				</select>
+				<@select name='id_reservation_rule' id='id_reservation_rule'>
+					<#list listReservationRule as rule>
+						<option value="${rule.idReservationRule}">${rule.name}</option>
+					</#list>
+				</@select>
 			</@formGroup>		
-			<@formGroup rows=2 class="text-center">
+			<@formGroup rows=2>
                 <@button type='submit' name='save' id='save' buttonIcon='check' title='#i18n{appointment.labelSave}' />
                 <@button type='submit' name='delete' id='delete' title='#i18n{portal.util.labelDelete}' buttonIcon='trash' color='danger'  />
                 <@button type='button' params='data-dismiss="modal"' title='#i18n{portal.util.labelCancel}' buttonIcon='times' color='default' />   
