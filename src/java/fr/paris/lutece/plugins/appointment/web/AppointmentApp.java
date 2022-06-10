@@ -658,9 +658,9 @@ public class AppointmentApp extends MVCApplication
 
         }
 
-        if ( _notValidatedAppointment == null )
+        if ( _notValidatedAppointment == null || _notValidatedAppointment.getIdForm( ) != _appointmentForm.getIdForm( ) )
         {
-            if ( _validatedAppointment != null )
+            if ( _validatedAppointment != null && _validatedAppointment.getIdForm( ) == _appointmentForm.getIdForm( ) )
             {
 
                 // Try to get the validated appointment in session
