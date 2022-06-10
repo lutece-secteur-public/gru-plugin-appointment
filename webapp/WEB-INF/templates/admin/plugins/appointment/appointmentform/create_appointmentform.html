@@ -98,7 +98,7 @@
 					</@formGroup>
 					<@formGroup labelFor='time_start' labelKey='#i18n{appointment.createAppointmentForm.labelTimeStart}' helpKey='#i18n{appointment.createAppointmentForm.labelTimeStart.help}' mandatory=true>
 						<@inputGroup>
-							<@input type='text' name='time_start' id='time_start' value=appointmentform.timeStart!'' />
+							<@input type='time' name='time_start' id='time_start' value=appointmentform.timeStart!'' />
 							<@inputGroupItem type='text'>
 								<@icon style='clock-o' />
 							</@inputGroupItem>
@@ -106,7 +106,7 @@
 					</@formGroup>
 					<@formGroup labelFor='time_end' labelKey='#i18n{appointment.createAppointmentForm.labelTimeEnd}' helpKey='#i18n{appointment.createAppointmentForm.labelTimeEnd.help}' mandatory=true>
 						<@inputGroup>
-							<@input type='text' name='time_end' id='time_end' value=appointmentform.timeEnd!'' />
+							<@input type='time' name='time_end' id='time_end' value=appointmentform.timeEnd!'' />
 							<@inputGroupItem type='text'>
 								<@icon style='clock-o' />
 							</@inputGroupItem>
@@ -335,7 +335,8 @@
 	}
 	else return true;
 	};
-    $('#date_start_validity').datepicker({
+    
+	/*$('#date_start_validity').datepicker({
 		    language:		"${language}",
 		    startDate: 		new Date(),
 		    weekStart: 1,
@@ -360,5 +361,5 @@
 		  format: 'HH:mm',
 		  stepping: 5
 	    });		
-	});
+	});*/
 </script>

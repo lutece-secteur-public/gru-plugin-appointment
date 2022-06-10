@@ -184,81 +184,59 @@ $('#feature-title').html("<a href=\"jsp/admin/plugins/appointment/ManageAppointm
 	<@modalHeader modalTitle=modalTitle />
 	<@modalBody>
 		<@tform action='jsp/admin/plugins/appointment/Comments.jsp' id='commentUpdate'>
-		<@input type='hidden' name='id_form' value='${idForm!}' />
-		<@input type='hidden' name='id_comment' id='id_comment' />
-		<@row>
-			<@columns offsetSm=1 sm=10>
-				<@formGroup labelFor='comment' labelKey='#i18n{appointment.comment.name}' helpKey='#i18n{appointment.comment.name}' mandatory=true rows=2>
-					<@input type='textarea' name='comment' id=idComment richtext=true />
-				</@formGroup>
-			</@columns>
-		</@row>
-		<@row>
-			<@columns offsetSm=1 sm=5>
-				<@formGroup labelFor='startingValidityDate' labelKey=startDateLabel mandatory=true rows=2>
-					<@inputGroup class='date' id='${idStartingDate}Group'>
-						<@input type='date' name='startingValidityDate' id=idStartingDate />
-						<@inputGroupItem type='text'>
-							<@icon style='calendar' />
-						</@inputGroupItem>
-					</@inputGroup>
-				</@formGroup>
-			</@columns>
-			<@columns sm=5>
-				<@formGroup labelFor='startingValidityTime' labelKey=startTimeLabel rows=2>
-					<@inputGroup id='${idStartingTime}Group' class='date'>
-						<@input type='time' name='startingValidityTime' id=idStartingTime value='00:00' />
-						<@inputGroupItem type='text' >
-							<@icon style='clock' />
-						</@inputGroupItem>
-					</@inputGroup>
-				</@formGroup>
-				</@columns>
-			</@row>
-			<@row>
-				<@columns offsetSm=1 sm=5>
-					<@formGroup labelFor=idEndingDate labelKey=endDateLabel helpKey=endDateHelp mandatory=true rows=2>
-						<@inputGroup class='date' id='${idEndingDate}Group'>
-							<@input type='date' name='endingValidityDate' id=idEndingDate />
-							<@inputGroupItem type='text'>
-								<@icon style='calendar' />
-							</@inputGroupItem>
-						</@inputGroup>
-					</@formGroup>
-				</@columns>
-				<@columns sm=5>
-					<@formGroup labelFor='endingValidityTime' labelKey=endTimeLabel helpKey=' ' rows=0>
-						<@inputGroup class='date' id='${idEndingTime}Group'>
-							<@input type='time' name='endingValidityTime' id=idEndingTime value='00:00' />
-							<@inputGroupItem type='text'>
-								<@icon style='clock' />
-							</@inputGroupItem>
-						</@inputGroup>
-					</@formGroup>
-				</@columns>							
-			</@row>
-			<@row>			
-				<@columns offsetSm=1 sm=10>
-					<@formGroup labelFor='idMailingList' labelKey='#i18n{appointment.create_comment.labelMailingList}' helpKey='#i18n{appointment.create_comment.labelMailingList.help}' mandatory=false rows=2>
-						<#assign default='1'>
-						<@select name="idMailingList" size='sm'>
-							<option value="-1">#i18n{appointment.create_comment.labelNoNotification}</option>
-							<#list mailing_list as item>
-								<option <#if default="${item.code}">selected="selected"</#if> value="${item.code}" <#if !item.name?has_content>label="${i18n("portal.util.labelEmpty")}"</#if>>${item.name}</option>
-							</#list>
-						</@select>
-					</@formGroup>
-				</@columns>							
-			</@row>
-			<@row>
-				<@columns offsetSm=1 sm=10 params=' style="display:flex;justify-content: space-around" '>
-					<@btnGroup>
-						<@button type='submit' name='action_${action}' buttonIcon='save' title='#i18n{portal.util.labelValidate}' /> 
-						<@button type='submit' id='commentDelete' name='action_confirmRemoveComment' buttonIcon='trash' title='#i18n{portal.util.labelDelete}' color='danger' /> 
-						<@button type='button' params='data-dismiss="modal"' title='#i18n{portal.util.labelCancel}' buttonIcon='times' color='default' />
-					</@btnGroup>
-				</@columns>
-			</@row>
+			<@input type='hidden' name='id_form' value='${idForm!}' />
+			<@input type='hidden' name='id_comment' id='id_comment' />
+			<@formGroup labelFor='comment' labelKey='#i18n{appointment.comment.name}' helpKey='#i18n{appointment.comment.name}' mandatory=true rows=2>
+				<@input type='textarea' name='comment' id=idComment richtext=true />
+			</@formGroup>
+			<@formGroup labelFor='startingValidityDate' labelKey=startDateLabel mandatory=true rows=2>
+				<@inputGroup class='date' id='${idStartingDate}Group'>
+					<@input type='date' name='startingValidityDate' id=idStartingDate />
+					<@inputGroupItem type='text'>
+						<@icon style='calendar' />
+					</@inputGroupItem>
+				</@inputGroup>
+			</@formGroup>
+			<@formGroup labelFor='startingValidityTime' labelKey=startTimeLabel rows=2>
+				<@inputGroup id='${idStartingTime}Group' class='date'>
+					<@input type='time' name='startingValidityTime' id=idStartingTime value='00:00' />
+					<@inputGroupItem type='text' >
+						<@icon style='clock' />
+					</@inputGroupItem>
+				</@inputGroup>
+			</@formGroup>
+			<@formGroup labelFor=idEndingDate labelKey=endDateLabel helpKey=endDateHelp mandatory=true rows=2>
+				<@inputGroup class='date' id='${idEndingDate}Group'>
+					<@input type='date' name='endingValidityDate' id=idEndingDate />
+					<@inputGroupItem type='text'>
+						<@icon style='calendar' />
+					</@inputGroupItem>
+				</@inputGroup>
+			</@formGroup>
+			<@formGroup labelFor='endingValidityTime' labelKey=endTimeLabel helpKey=' ' rows=0>
+				<@inputGroup class='date' id='${idEndingTime}Group'>
+					<@input type='time' name='endingValidityTime' id=idEndingTime value='00:00' />
+					<@inputGroupItem type='text'>
+						<@icon style='clock' />
+					</@inputGroupItem>
+				</@inputGroup>
+			</@formGroup>		
+			<@formGroup labelFor='idMailingList' labelKey='#i18n{appointment.create_comment.labelMailingList}' helpKey='#i18n{appointment.create_comment.labelMailingList.help}' mandatory=false rows=2>
+				<#assign default='1'>
+				<@select name="idMailingList" size='sm'>
+					<option value="-1">#i18n{appointment.create_comment.labelNoNotification}</option>
+					<#list mailing_list as item>
+						<option <#if default="${item.code}">selected="selected"</#if> value="${item.code}" <#if !item.name?has_content>label="${i18n("portal.util.labelEmpty")}"</#if>>${item.name}</option>
+					</#list>
+				</@select>
+			</@formGroup>
+			<@formGroup rows=2>
+				<@btnGroup>
+					<@button type='submit' name='action_${action}' buttonIcon='save' title='#i18n{portal.util.labelValidate}' /> 
+					<@button type='submit' id='commentDelete' name='action_confirmRemoveComment' buttonIcon='trash' title='#i18n{portal.util.labelDelete}' color='danger' /> 
+					<@button type='button' params='data-dismiss="modal"' title='#i18n{portal.util.labelCancel}' buttonIcon='times' color='default' />
+				</@btnGroup>
+			</@formGroup>
 		</@tform>
 	</@modalBody>
 </@modal>
@@ -267,7 +245,7 @@ $('#feature-title').html("<a href=\"jsp/admin/plugins/appointment/ManageAppointm
 $(function(){
 	$('#${idEndingDate}_help').html('');
 
-	$('#${idStartingDate}').datetimepicker({locale: '${locale}', format: 'DD/MM/YYYY'});
+	/*$('#${idStartingDate}').datetimepicker({locale: '${locale}', format: 'DD/MM/YYYY'});
 	$('#${idStartingDate}').val( moment().format('DD/MM/YYYY') );
 	$('#${idStartingDate}Group').click(function(event){
 		$('#${idStartingDate}').data("DateTimePicker").show();
@@ -288,7 +266,7 @@ $(function(){
 	$('#${idEndingTime}').datetimepicker({format: 'HH:mm', stepping: 5});
 	$('#${idEndingTime}Group').click(function(event){
 		$('#${idEndingTime}').data("DateTimePicker").show();
-	});
+	});*/
 
 	<#if action !='doModifyComment'>
 	/* Set current date */
@@ -299,7 +277,8 @@ $(function(){
 		localStorage.setItem( 'commentContext', workingDate );
   	});
 	</#if>
-
+	
+	/*
 	$("#${idStartingDate}").on("dp.change", function (e) {
 		$('#${idEndingDate}').data("DateTimePicker").minDate(e.date);
 	});
@@ -307,6 +286,7 @@ $(function(){
 	$("#${idEndingDate}").on("dp.change", function (e) {
 		$('#${idStartingDate}').data("DateTimePicker").maxDate(e.date);
 	});
+	*/
 
 	if( '${action!}' === 'doAddComment' ){
 		$('#commentDelete').remove()

@@ -7,13 +7,13 @@
 				<@input type='hidden' name='view' value='manageAppointments' />    
 				<@input type='hidden' name='id_form' value='${form.idForm}' />
 				<@div align='right' params=' style="margin-bottom: 15px;"'>
-					<@button style='card-control collapse' buttonTargetId='#searchAppointment' title='#i18n{appointment.manageAppointments.labelSearch}' hideTitle=['xs','sm'] buttonIcon='search' />
+					<@button style='card-control collapse' buttonTargetId='#searchAppointment' title='#i18n{appointment.manageAppointments.labelSearch}' hideTitle=['xs','sm'] buttonIcon='search' size='sm' />
 					<#if rightDelete?? && rightDelete>
-						<@button type='submit' id='eraseAll' name='eraseAll' value='eraseAll' disabled=true buttonIcon='trash' title='#i18n{appointment.permission.label.deleteMassAppointment}' color='danger' />
+						<@button type='submit' id='eraseAll' name='eraseAll' value='eraseAll' disabled=true buttonIcon='trash' title='#i18n{appointment.permission.label.deleteMassAppointment}' color='danger' size='sm' />
 					</#if>
-					<@aButton params='data-toggle="modal" data-target="#export_modal"' buttonIcon='download' title='#i18n{appointment.permission.label.exportMassAppointment}' />
+					<@aButton params='data-toggle="modal" data-target="#export_modal"' buttonIcon='download' title='#i18n{appointment.permission.label.exportMassAppointment}' size='sm' />
 				</@div>
-				<@div class='container' id='searchAppointment'>
+				<@div class='container' id='searchAppointment' params='style="margin-bottom:50px;"'>
 				
 					<@fieldSet legend='#i18n{appointment.manageAppointments.labelSearch}'>
 						<@row>
@@ -81,12 +81,10 @@
 								</@formGroup>
 							</@columns>
 						</@row>
-						<@row>
-							<@columns>
-								<@button name='Search' type='submit' title='#i18n{appointment.manageAppointments.labelSearch}' buttonIcon='search' /> 
-								<@aButton href='jsp/admin/plugins/appointment/ManageAppointments.jsp?view=manageAppointments&id_form=${form.idForm}&reset=\'true\'' title='#i18n{appointment.displayAppointmentForm.labelReset}' name='Reset' buttonIcon='undo' /> 
-							</@columns>
-						</@row>
+						<@formGroup labelKey='&nbsp;' rows=2>
+							<@button name='Search' type='submit' title='#i18n{appointment.manageAppointments.labelSearch}' buttonIcon='search' /> 
+							<@aButton href='jsp/admin/plugins/appointment/ManageAppointments.jsp?view=manageAppointments&id_form=${form.idForm}&reset=\'true\'' title='#i18n{appointment.displayAppointmentForm.labelReset}' name='Reset' buttonIcon='undo' /> 
+						</@formGroup>
 					</@fieldSet>
 					
 				</@div>
