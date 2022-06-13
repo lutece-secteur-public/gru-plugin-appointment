@@ -17,22 +17,22 @@
 				
 					<@fieldSet legend='#i18n{appointment.manageAppointments.labelSearch}'>
 						<@row>
-							<@columns sm=3>
+							<@columns md=3>
 								<@formGroup labelFor='lastName' labelKey='${formMessages.fieldLastNameTitle}' rows=2>
 									<@input type='text' id='lastName' name='lastName' value='${filter.lastName!}' />
 								</@formGroup>
 							</@columns>
-							<@columns sm=2>
+							<@columns md=3>
 								<@formGroup labelFor='firstName' labelKey='${formMessages.fieldFirstNameTitle}' rows=2>
 									<@input type='text' id='firstName' name='firstName' value='${filter.firstName!}'/>
 								</@formGroup>
 							</@columns>
-							<@columns sm=3>
+							<@columns md=3>
 								<@formGroup labelFor='email' labelKey='${formMessages.fieldEmailTitle}'  rows=2>
 									<@input type='text' id='email' name='email' value='${filter.email!}' />
 								</@formGroup>
 							</@columns>
-							<@columns sm=2>
+							<@columns md=3>
 								<@formGroup labelFor='status' labelKey='#i18n{appointment.labelStatus}'  rows=2>
 									<@select name='status' id='status' items=listStatus default_value='${filter.status!}' />
 								</@formGroup>
@@ -40,7 +40,7 @@
 							
 						</@row>
 						<@row id='dates'>
-							<@columns sm=2>
+							<@columns md=3>
 								<@formGroup labelFor='startingDateOfSearch' labelKey='#i18n{appointment.manageAppointments.startingDateOfSearch}' rows=2>
 									<@inputGroup>
 										<@input type='date' name='startingDateOfSearch' id='startingDateOfSearch' value='${filter.startingDateOfSearch!}' />
@@ -50,7 +50,7 @@
 									</@inputGroup>
 								</@formGroup>
 							</@columns>
-							<@columns sm=2>
+							<@columns md=3>
 								<@formGroup labelFor='startingTimeOfSearch' labelKey='#i18n{appointment.labelTo}' rows=2>
 									<@inputGroup>
 										<@input type='time' name='startingTimeOfSearch' id='startingTimeOfSearch' value='${filter.startingTimeOfSearch!\'\'}' />
@@ -60,7 +60,7 @@
 									</@inputGroup>
 								</@formGroup>
 							</@columns>
-							<@columns sm=2>
+							<@columns md=3>
 								<@formGroup labelFor='endingDateOfSearch' labelKey='#i18n{appointment.manageAppointments.endingDateOfSearch}'  rows=2>
 									<@inputGroup>
 										<@input type='date' name='endingDateOfSearch' id='endingDateOfSearch' value='${filter.endingDateOfSearch!}' />
@@ -70,7 +70,7 @@
 									</@inputGroup>
 								</@formGroup>
 							</@columns>
-							<@columns sm=2>
+							<@columns md=3>
 								<@formGroup labelFor='endingTimeOfSearch' labelKey='#i18n{appointment.labelTo}'  rows=2>
 									<@inputGroup>
 										<@input type='time' name='endingTimeOfSearch' id='endingTimeOfSearch' value='${filter.endingTimeOfSearch!\'\'}' />
