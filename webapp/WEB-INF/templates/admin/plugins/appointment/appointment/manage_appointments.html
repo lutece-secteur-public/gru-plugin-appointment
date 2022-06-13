@@ -39,9 +39,9 @@
 							</@columns>
 							
 						</@row>
-						<@row>
+						<@row id='dates'>
 							<@columns sm=2>
-								<@formGroup labelFor='startingDateOfSearch' labelKey='#i18n{appointment.manageAppointments.startingDateOfSearch}'  rows=2>
+								<@formGroup labelFor='startingDateOfSearch' labelKey='#i18n{appointment.manageAppointments.startingDateOfSearch}' rows=2>
 									<@inputGroup>
 										<@input type='date' name='startingDateOfSearch' id='startingDateOfSearch' value='${filter.startingDateOfSearch!}' />
 										<@inputGroupItem type='text'>
@@ -80,6 +80,9 @@
 									</@inputGroup>
 								</@formGroup>
 							</@columns>
+						</@row>
+						<@row id='error_messages_container' params='style="display:none;"'>
+							<@alert color='danger' id='error_message'></@alert>
 						</@row>
 						<@formGroup labelKey='&nbsp;' rows=2>
 							<@button name='Search' type='submit' title='#i18n{appointment.manageAppointments.labelSearch}' buttonIcon='search' /> 
@@ -185,7 +188,7 @@
 
 <@getDatePickerBootstrap idField="dateAppointment" language=language />
 <script type="text/javascript">
-    $(function () {
+    /*$(function () {
         $('#startingTimeOfSearch').datetimepicker({
             format: 'HH:mm',
             stepping: 1
@@ -194,7 +197,7 @@
             format: 'HH:mm',
             stepping: 1
         });
-    });
+    }); */
     $('#allCheck').click(function() {
         var etat = this.checked;
         $("input[name='apmt']").each(function() {
@@ -210,7 +213,7 @@
             }
         });
     });
-    $('#startingDateOfSearch').datepicker({
+    /*$('#startingDateOfSearch').datepicker({
         language : "${language}",
         weekStart : 1,
         todayBtn : true,
@@ -223,5 +226,25 @@
         todayBtn : true,
         todayHighLight : true,
         autoclose : true
-    });    
+    });*/
+	
+	// Click on validation button events
+	$( '[name="Search"]' ).click( function(e){
+		dStart=$('#startingDateOfSearch').val(),dEnd=$('#endingDateOfSearch').val();
+		tStart=$('#startingTimeOfSearch').val(),tEnd=$('#endingTimeOfSearch').val();		
+		var startDateAndTime = moment(dStart + ' ' + tStart, 'YYYY-MM-DD HH:mm');
+		var endDateAndTime = moment(dEnd + ' ' + tEnd, 'YYYY-MM-DD HH:mm');
+		
+		if( moment(endDateAndTime).isBefore( startDateAndTime )) {
+			$('#error_message').html('La date de fin ne peut être antérieure à la date de début !');
+			$('#error_messages_container').css('display','block');
+			e.preventDefault();
+		}
+		
+		if ((moment(endDateAndTime).isSame( startDateAndTime )) && ($('#startingTimeOfSearch').val() != '00:00') && ($('#endingTimeOfSearch').val() != '00:00'))  {
+			$('#error_message').html('La date de fin ne peut être égale à la date de début !');
+			$('#error_messages_container').css('display','block');
+			e.preventDefault();
+		}
+	});
 </script>
