@@ -95,7 +95,7 @@
 									<@inputGroupItem type='text'>
 										<@icon style='clock-o' />
 									</@inputGroupItem>
-									<@input type='text' name='time_start' id='time_start' value=appointmentform.timeStart!'' />
+									<@input type='time' name='time_start' id='time_start' value=appointmentform.timeStart!'' />
 								</@inputGroup>
 							</@formGroup>
 							<@formGroup labelFor='time_end' labelKey='#i18n{appointment.createAppointmentForm.labelTimeEnd}' helpKey='#i18n{appointment.createAppointmentForm.labelTimeEnd.help}' mandatory=true>
@@ -103,7 +103,7 @@
 									<@inputGroupItem type='text'>
 									<@icon style='clock-o' />
 									</@inputGroupItem>
-									<@input type='text' name='time_end' id='time_end' value=appointmentform.timeEnd!'' />
+									<@input type='time' name='time_end' id='time_end' value=appointmentform.timeEnd!'' />
 								</@inputGroup>
 							</@formGroup>
 							<@formGroup labelFor='duration_appointments' labelKey='#i18n{appointment.createAppointmentForm.labelDurationAppointments}' helpKey='#i18n{appointment.createAppointmentForm.labelDurationAppointments.help}' mandatory=true>

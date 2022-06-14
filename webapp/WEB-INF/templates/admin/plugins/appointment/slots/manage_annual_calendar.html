@@ -31,7 +31,7 @@
 			<@input type='hidden' name='action' value='doAssignWeek' />
 			<@input type='hidden' name='id_form' value='${id_form}' />
 			<@input type='hidden' name='id_week_definition' value='' />
-			<@formGroup labelFor='date_of_apply' labelKey='#i18n{appointment.manageAppointments.startingDateOfSearch}'>
+			<@formGroup labelFor='date_of_apply' labelKey='#i18n{appointment.manageAppointments.startingDateOfSearch}' rows=2>
 				<@inputGroup>
 					<@input type='date' name='date_of_apply' id='date_of_apply' value="" />
 					<@inputGroupItem type='text'>
@@ -39,7 +39,7 @@
 					</@inputGroupItem>
 				</@inputGroup>
 			</@formGroup>
-			<@formGroup labelFor='endingDate' labelKey='#i18n{appointment.manageAppointments.endingDateOfSearch}'>
+			<@formGroup labelFor='endingDate' labelKey='#i18n{appointment.manageAppointments.endingDateOfSearch}' rows=2>
 				<@inputGroup>
 					<@input type='date' name='ending_date_of_apply' id='ending_date_of_apply' value="" />
 					<@inputGroupItem type='text'>
@@ -47,7 +47,7 @@
 					</@inputGroupItem>
 				</@inputGroup>
 			</@formGroup>	
-			<@formGroup labelFor='type' labelKey='#i18n{appointment.week.toApplay}'>
+			<@formGroup labelFor='type' labelKey='#i18n{appointment.week.toApplay}' rows=2>
 				<@select name='id_reservation_rule' id='id_reservation_rule'>
 					<#list listReservationRule as rule>
 						<option value="${rule.idReservationRule}">${rule.name}</option>
