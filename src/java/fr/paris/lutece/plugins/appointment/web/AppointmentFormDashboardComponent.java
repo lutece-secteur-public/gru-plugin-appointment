@@ -41,7 +41,7 @@ import java.util.stream.Collectors;
 
 import javax.servlet.http.HttpServletRequest;
 
-import org.apache.commons.lang.math.NumberUtils;
+import org.apache.commons.lang3.math.NumberUtils;
 
 import fr.paris.lutece.api.user.User;
 import fr.paris.lutece.plugins.appointment.service.AppointmentPlugin;
