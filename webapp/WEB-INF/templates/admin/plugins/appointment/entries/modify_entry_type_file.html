@@ -10,7 +10,6 @@
 						<@formGroup labelKey='#i18n{appointment.createEntry.labelType}'>
 							<@staticText><@tag color='info'>${entry.entryType.title}</@tag></@staticText>
 						</@formGroup>
-						<#assign field=getFieldByCode( entry, "exportable")>
 						<@formGroup labelFor='title' labelKey='#i18n{appointment.labelTitle}' helpKey='#i18n{appointment.createEntry.labelTitleComment}' mandatory=true>
 							<@input type='text' name='title' id='title' value='${entry.title}' maxlength=255 />
 						</@formGroup>
@@ -47,6 +46,7 @@
 		<@box>
 			<@boxHeader title='#i18n{appointment.createEntry.manageRegularExpression.title}' />
 			<@boxBody>
+			<#assign field=getFieldByCode( entry, "used_in_correct_form_response")>
 				<@tform action='jsp/admin/plugins/appointment/ManageAppointmentFormEntries.jsp#list'>
 					<@input type='hidden' name='id_field' value='${field.idField!}' />
 					<@input type='hidden' name='action' value='doInsertRegularExpression' />
