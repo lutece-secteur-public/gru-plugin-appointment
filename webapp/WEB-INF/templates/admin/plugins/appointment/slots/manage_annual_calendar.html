@@ -92,11 +92,11 @@ function editEvent( event) {
     } else {
         $('#event-modal #delete').hide();
     }
-    
+
     $('#event-modal input[name="date_of_apply"]').val( moment( event.startDate ).format('L') );
-    $('#event-modal input[name="date_of_apply"]').datetimepicker({ locale: '${language}', format: 'L' });
+    $('#event-modal input[name="date_of_apply"]').flatpickr({defaultDate : moment(event.startDate)});
     $('#event-modal input[name="ending_date_of_apply"]').val( moment( event.endDate ).format('L') );
-    $('#event-modal input[name="ending_date_of_apply"]').datetimepicker({ locale: '${language}', format: 'L'});
+    $('#event-modal input[name="ending_date_of_apply"]').flatpickr({defaultDate : moment(event.endDate)});
     $('#event-modal').modal();
 }
 

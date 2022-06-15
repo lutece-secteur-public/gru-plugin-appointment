@@ -161,28 +161,28 @@
             <@input type="hidden" id="idWorkingDay" name="id_working_day" value="" />
             <@input type="hidden" id="timeForm" name="id_form" value="${appointmentform.idForm}" />
             <@input type="hidden" name="id_reservation_rule" value="${id_reservation_rule}" />
-			<@formGroup labelFor='timeIsOpen9' labelKey='#i18n{appointment.modifySlot.labelOpen}' helpKey='#i18n{appointment.modifySlot.labelOpenHelp}' >
+			<@formGroup labelFor='timeIsOpen9' labelKey='#i18n{appointment.modifySlot.labelOpen}' helpKey='#i18n{appointment.modifySlot.labelOpenHelp}' rows=2>
                 <@checkBox name='is_open' id='timeIsOpen' value='true' />
             </@formGroup>
-            <@formGroup labelFor='maxCapacity' labelKey='#i18n{appointment.modifySlot.labelMaxCapacityForThisSlot}' mandatory=true>
+            <@formGroup labelFor='maxCapacity' labelKey='#i18n{appointment.modifySlot.labelMaxCapacityForThisSlot}' mandatory=true rows=2>
                 <@input type='number' name='max_capacity' id='maxCapacity' value='' min=0 max=99 maxlength=3 />
             </@formGroup>
-            <@formGroup labelKey='#i18n{appointment.model.entity.appointmentform.attribute.timeStart}'>
+            <@formGroup labelKey='#i18n{appointment.model.entity.appointmentform.attribute.timeStart}' rows=2>
                 <@staticText id='timeStart'></@staticText>
             </@formGroup>
-            <@formGroup labelFor='timeEnd' labelKey='#i18n{appointment.model.entity.appointmentform.attribute.timeEnd}' helpKey='#i18n{appointment.modifySlot.helpModifyEndSlot}' mandatory=true>
+            <@formGroup labelFor='timeEnd' labelKey='#i18n{appointment.model.entity.appointmentform.attribute.timeEnd}' helpKey='#i18n{appointment.modifySlot.helpModifyEndSlot}' mandatory=true rows=2>
                 <@inputGroup>
-                    <@input type='text' id='timeEnd' name='ending_time' value='' />
+                    <@input type='time' id='timeEnd' name='ending_time' value='' />
                     <@inputGroupItem type='text'>
                         <@icon style='clock-o' />
                     </@inputGroupItem>
                 </@inputGroup>
             </@formGroup>
-            <@formGroup labelFor='shift_slot'>
+            <@formGroup labelFor='shift_slot' rows=2>
                 <@radioButton labelFor='shift_slotok' labelKey='#i18n{appointment.modifySlot.notShiftSlot}' id='shift_slotok' name='shift_slot' value='false' checked=true />
                 <@radioButton labelFor='shift_slotnok' labelKey='#i18n{appointment.modifySlot.shiftSlot}' id='shift_slotnok' name='shift_slot' value='true' />
             </@formGroup>
-            <@formGroup>
+            <@formGroup rows=2>
                 <@button type='submit' title='#i18n{portal.util.labelModify}' buttonIcon='check' />
                 <@aButton href='jsp/admin/plugins/appointment/ManageAppointmentSlots.jsp?view=manageTypicalWeek&id_form=${appointmentform.idForm}&id_reservation_rule=${id_reservation_rule}' buttonIcon='times' title='#i18n{portal.util.labelBack}' color='btn-default' />
             </@formGroup>
@@ -197,21 +197,17 @@
             <@input type="hidden" id="timeForm" name="id_form" value="${appointmentform.idForm}" />
             <@input type="hidden" name="id_reservation_rule" value="${id_reservation_rule}" />
             <@input type="hidden" id="timeSlotData" name="timeSlotData" value="" />
-            <@formGroup labelKey='#i18n{appointment.modifySlot.labelSlotStatus}' helpKey='#i18n{appointment.modifySlot.labelOpenHelp}'>
+            <@formGroup labelKey='#i18n{appointment.modifySlot.labelSlotStatus}' helpKey='#i18n{appointment.modifySlot.labelOpenHelp}' rows=2>
                 <@radioButton orientation='inline' labelFor='shift_slot_open' id='shift_slot_open' labelKey='#i18n{appointment.modifySlot.labelOpen}' name='is_open' value='true' />
                 <@radioButton orientation='inline' labelFor='shift_slot_close' id='shift_slot_close' labelKey='#i18n{appointment.modifySlot.labelClose}' name='is_open' value='false' />
                 <@radioButton orientation='inline' labelFor='shift_slot_null' id='shift_slot_null' labelKey='#i18n{appointment.modifySlot.labelNoValue}' name='is_open' value='' checked=true  />
             </@formGroup>
-            <@row>
-            <@columns>
-				<@formGroup>
-                    <@radioButton labelFor='var_cap' labelKey='Variation de capacité' name='capacity' id='var_cap' checked=true value='var_cap' />
-                    <@radioButton labelFor='new_cap' labelKey='Nouvelle capacité' name='capacity' id='new_cap' value='new_cap' />
-                    <@input type='number' id='newCapacity' name='max_capacity' value='0' min=-99 max=99 />
-                </@formGroup>
-            </@columns>
-            </@row>
-            <@formGroup rows=1>
+			<@formGroup rows=2>
+				<@radioButton labelFor='var_cap' labelKey='Variation de capacité' name='capacity' id='var_cap' checked=true value='var_cap' />
+				<@radioButton labelFor='new_cap' labelKey='Nouvelle capacité' name='capacity' id='new_cap' value='new_cap' />
+				<@input type='number' id='newCapacity' name='max_capacity' value='0' min=-99 max=99 />
+			</@formGroup>
+            <@formGroup rows=2>
                 <@button type='submit' color='primary' title='Enregistrer' />
                 <@button color='secondary' title='Annuler' params=' data-dismiss="modal" aria-label="Close"' />
             </@formGroup>
@@ -262,7 +258,7 @@ var startingDateOfDisplay = moment().subtract(1, 'year');
 var endingDateOfDisplay = moment().add(1, 'year');
 
 <@fullCalendarScript isTypical=true showComments=false locale='fr'>
-$('#date_of_modification').datepicker({
+/*$('#date_of_modification').datepicker({
     language: "${language}",
     startDate: new Date(),
     weekStart: 1,
@@ -303,7 +299,7 @@ $("#time_start_new").on("dp.change", function (e) {
 $('#ending_time').datetimepicker({
     format: 'HH:mm',
     stepping: 5
-});
+});*/
 
 $('#new_cap').click(function(){
     $('#newCapacity').attr('min','0');
