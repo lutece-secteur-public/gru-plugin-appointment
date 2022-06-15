@@ -294,7 +294,7 @@ public final class AppointmentUtilities
                         .max( LocalDateTime::compareTo ).orElse( null );
 
                 if ( dateOfTheLastAppointmentTaken != null
-                        && Math.abs( dateOfTheLastAppointmentTaken.until( LocalDateTime.now( ), ChronoUnit.DAYS ) ) <= nbDaysBetweenTwoAppointments )
+                        && Math.abs( dateOfTheLastAppointmentTaken.until( LocalDateTime.now( ), ChronoUnit.DAYS ) ) < nbDaysBetweenTwoAppointments )
                 {
                     bCheckPassed = false;
                 }
