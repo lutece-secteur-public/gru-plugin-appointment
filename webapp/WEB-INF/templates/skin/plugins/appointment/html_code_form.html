@@ -123,7 +123,7 @@
 										<div class="form-group <#if formGroupError!=''>has-error</#if>">
 											<label class="col-xs-12 control-label" for="lastname">${formMessages.fieldLastNameTitle!} *</label>
 											<div class="col-xs-12">
-												<input type="text" class="form-control" value="<#if appointment??>${appointment.lastName!}</#if>" maxlength="255" id="lastname" name="lastname" <#if user.lastName?has_content>readonly</#if>>
+												<input type="text" class="form-control" value="<#if appointment??>${appointment.lastName!}</#if>" maxlength="255" id="lastname" name="lastname" <#if user?? && user.lastName?has_content>readonly</#if>>
 												<#if formGroupError!=''>
 													${formGroupError}
 												<#else>
@@ -155,7 +155,7 @@
 										<div class="form-group <#if formGroupError!=''>has-error</#if>">
 											<label class="col-xs-12 control-label" for="firstname">${formMessages.fieldFirstNameTitle!} *</label>
 											<div class="col-xs-12">
-												<input type="text" class="form-control" value="<#if appointment??>${appointment.firstName!}</#if>" maxlength="255" id="firstname" name="firstname" <#if user.firstName?has_content>readonly</#if>>
+												<input type="text" class="form-control" value="<#if appointment??>${appointment.firstName!}</#if>" maxlength="255" id="firstname" name="firstname" <#if user?? && user.firstName?has_content>readonly</#if>>
 												<#if formGroupError!=''>
 													${formGroupError}
 												<#else>
@@ -189,7 +189,7 @@
 										<div class="form-group <#if formGroupError!=''>has-error</#if>">
 											<label class="col-xs-12 control-label" for="email">${formMessages.fieldEmailTitle!} <#if form.enableMandatoryEmail>*</#if></label>
 											<div class="col-xs-12">
-												<input type="email" class="form-control" value="<#if appointment??>${appointment.email!}</#if>" maxlength="255" id="email" name="email" <#if user.email?has_content>readonly</#if>>
+												<input type="email" class="form-control" value="<#if appointment??>${appointment.email!}</#if>" maxlength="255" id="email" name="email" <#if user?? && user.email?has_content>readonly</#if>>
 												<#if formGroupError!=''>
 													${formGroupError}
 												<#else>
@@ -221,7 +221,7 @@
 										<div class="form-group <#if formGroupError!=''>has-error</#if>">
 											<label class="col-xs-12 control-label" for="emailConfirm">${formMessages.fieldConfirmationEmail!}<#if form.enableMandatoryEmail>*</#if></label>
 											<div class="col-xs-12">
-												<input type="email" value="<#if appointment??>${appointment.email!}</#if>" maxlength="255" id="emailConfirm" name="emailConfirm" class="form-control" <#if user.email?has_content>readonly</#if>>
+												<input type="email" value="<#if appointment??>${appointment.email!}</#if>" maxlength="255" id="emailConfirm" name="emailConfirm" class="form-control" <#if user?? && user.email?has_content>readonly</#if>>
 												<#if formGroupError!=''>
 													${formGroupError}
 												<#else>
