@@ -212,7 +212,7 @@ public class CommentJspBean extends AbstractAppointmentFormAndSlotJspBean
         _comment.setComment( request.getParameter( PARAMETER_COMMENT ) );
 		_comment.setStartingValidityDate( DateUtil.parseIsoDate( request.getParameter( PARAMETER_STARTING_VALIDITY_DATE )).toInstant( )
                 .atZone( ZoneId.systemDefault( ) ).toLocalDate( ) );		
-		_comment.setEndingValidityDate( DateUtil.parseIsoDate( request.getParameter( PARAMETER_STARTING_VALIDITY_DATE )).toInstant( )
+		_comment.setEndingValidityDate( DateUtil.parseIsoDate( request.getParameter( PARAMETER_ENDING_VALIDITY_DATE )).toInstant( )
                 .atZone( ZoneId.systemDefault( ) ).toLocalDate( ) );		
         if ( !request.getParameter( PARAMETER_STARTING_VALIDITY_TIME ).isEmpty( ) )
         {
@@ -304,7 +304,7 @@ public class CommentJspBean extends AbstractAppointmentFormAndSlotJspBean
         _comment.setComment( request.getParameter( PARAMETER_COMMENT ) );
         _comment.setStartingValidityDate( DateUtil.parseIsoDate( request.getParameter( PARAMETER_STARTING_VALIDITY_DATE )).toInstant( )
                 .atZone( ZoneId.systemDefault( ) ).toLocalDate( ) );
-        _comment.setEndingValidityDate( DateUtil.parseIsoDate( request.getParameter( PARAMETER_STARTING_VALIDITY_DATE )).toInstant( )
+        _comment.setEndingValidityDate( DateUtil.parseIsoDate( request.getParameter( PARAMETER_ENDING_VALIDITY_DATE )).toInstant( )
                 .atZone( ZoneId.systemDefault( ) ).toLocalDate( ) );
         if ( !request.getParameter( PARAMETER_STARTING_VALIDITY_TIME ).isEmpty( ) )
         {
