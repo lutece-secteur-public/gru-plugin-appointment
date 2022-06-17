@@ -310,8 +310,16 @@ $(function(){
 		}
 		
 		tStart=$('#${idStartingTime}').val(),tEnd=$('#${idEndingTime}').val();		
-		var startDateAndTime = moment(dStart + ' ' + tStart, 'YYYY-MM-DD HH:mm');
+		//var startDateAndTime = moment(dStart + ' ' + tStart, 'YYYY-MM-DD HH:mm');
+		var startDateAndTime = dStart;
+		//console.log("valeur startDateAndTime 1 : " + startDateAndTime);
+		var startDateAndTime = moment().add( moment.duration(tStart) );
+		//console.log("valeur startDateAndTime 2 : " + startDateAndTime);
 		var endDateAndTime = moment(dEnd + ' ' + tEnd, 'YYYY-MM-DD HH:mm');
+		var endDateAndTime = dEnd;
+		//console.log("valeur endDateAndTime 1 : " + endDateAndTime);
+		var endDateAndTime = moment().add( moment.duration(tEnd) );
+		//console.log("valeur endDateAndTime 2 : " + endDateAndTime);
 		
 		if(( moment(endDateAndTime).isBefore( startDateAndTime ) ) || ( moment(endDateAndTime).isSame( startDateAndTime )) && ($('#${idStartingTime}').val() != '00:00') && ($('#${idEndingTime}').val() != '00:00')) {
 			$('#${idEndingTime}').parents('.form-group').addClass('has-error');
