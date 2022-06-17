@@ -245,29 +245,6 @@ $('#feature-title').html("<a href=\"jsp/admin/plugins/appointment/ManageAppointm
 $(function(){
 	$('#${idEndingDate}_help').html('');
 
-	/*$('#${idStartingDate}').datetimepicker({locale: '${locale}', format: 'DD/MM/YYYY'});
-	$('#${idStartingDate}').val( moment().format('DD/MM/YYYY') );
-	$('#${idStartingDate}Group').click(function(event){
-		$('#${idStartingDate}').data("DateTimePicker").show();
-	});
-
-	$('#${idEndingDate}').datetimepicker({locale: '${locale}', format: 'DD/MM/YYYY', useCurrent: false});
-	$('#${idEndingDate}').val( moment().format('DD/MM/YYYY') );
-	$('#${idEndingDate}Group').click(function(event){
-		$('#${idEndingDate}').data("DateTimePicker").show();
-	});
-
-
-	$('#${idStartingTime}').datetimepicker({format: 'HH:mm', stepping: 5});
-	$('#${idStartingTime}Group').click( function(event){
-		$('#${idStartingTime}').data("DateTimePicker").show();
-	});
-	
-	$('#${idEndingTime}').datetimepicker({format: 'HH:mm', stepping: 5});
-	$('#${idEndingTime}Group').click(function(event){
-		$('#${idEndingTime}').data("DateTimePicker").show();
-	});*/
-
 	<#if action !='doModifyComment'>
 	/* Set current date */
 	$('#${modalId}').on('shown.bs.modal', function(){
@@ -436,9 +413,13 @@ localStorage.setItem( 'appointmentContext', '${context}' );
 	tinyMCE.activeEditor.setContent( formValues.comment_text );
 	$( '#modify-comment input[name="id_comment"]' ).val( formValues.id_comment.slice(1) );
 	$( '#modify-comment input[name="startingValidityDate"]' ).val( moment(formValues.comment_start).format('DD/MM/YYYY') );
+	$( '#modify-comment input[name="startingValidityDate"] + input').val( moment(formValues.comment_start).format('DD/MM/YYYY') );
 	$( '#modify-comment input[name="endingValidityDate"]' ).val( moment(formValues.comment_end).format('DD/MM/YYYY')  );
+	$( '#modify-comment input[name="endingValidityDate"] + input').val( moment(formValues.comment_end).format('DD/MM/YYYY')  );
 	$( '#modify-comment input[name="startingValidityTime"]' ).val( formValues.comment_start_time );
+	$( '#modify-comment input[name="startingValidityTime"] + input').val( formValues.comment_start_time );
 	$( '#modify-comment input[name="endingValidityTime"]' ).val( formValues.comment_end_time );
+	$( '#modify-comment input[name="endingValidityTime"] + input' ).val( formValues.comment_end_time );
 </#if>
 $( '#modify-comment' ).modal('show');
 </#macro> 
