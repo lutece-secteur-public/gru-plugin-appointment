@@ -688,6 +688,7 @@ $( function(){
 								$('#date_of_display_slot').val( moment(evt.startingDateTime).format('YYYY-MM-DD') );
 								$('#timeStart').text( evt.startingTime );
 								$('#timeEnd').val( evt.endingTime );
+								$('#timeEnd.flatpickr-input + input').val( evt.endingTime );
 								$('#updatePlanningSlot').modal('show');
 							}
 						</#if>  
@@ -709,6 +710,7 @@ $( function(){
 								$('#date_of_display_slotmaxCapacity').val( evt.maxCapacity );
 								$('#timeStart').text( evt.startingTime );
 								$('#timeEnd').val( evt.endingTime );
+								$('#timeEnd.flatpickr-input + input').val( evt.endingTime );
 								$('#updatePlanningSlot').modal('show');
 							}
 						</#if> 
@@ -733,7 +735,7 @@ $( function(){
 			</#if>  
 			<#if isTypical>
 				$(element).attr( 'data-event', '"idTimeSlot":"' + event.id +'","startingDateTime":"' + event.start.toISOString()+ '","startingTime":"' + event.start.format('HH:mm') + '","endingDateTime":"' + event.end.toISOString() + '","endingTime":"' + event.end.format('HH:mm')+ '","isOpen":"' + event.isOpen + '","idForm":"' + event.idForm +'","maxCapacity":"' + event.maxCapacity + '"' );
-			</#if>  
+			</#if>
 			}
 
 			var json = { "container": "body", "placement" : "bottom", "html" : true, "trigger" : "hover" };
@@ -745,7 +747,7 @@ $( function(){
 					/* Add comment render */
 					labelEventDate=setLabelComment( event, '${locale}' );
 					var creator = event.creator_name.trim() !== '' ? event.creator_name : event.creator_user;
-					json.content = '<p>' + labelEventDate +'</p><p>Créé par <em>' + creator + '</em> le <date>' + event.creation_date + '</date><hr>'+ event.title + '</p>'  ;
+					json.content = '<p>' + labelEventDate +'</p><p>Créé par <em>' + creator + '</em> le ' + event.creation_date + '</span><hr>'+ event.title + '</p>'  ;
 					var dateDebut='', dateFin='';
 					if ( ! ( event.start_time == null || event.start_time == undefined || event.start_time == '00:00' ) ){
 						if( event.start.format('DDMM') != moment(event.validity_end).format('DDMM') ){
