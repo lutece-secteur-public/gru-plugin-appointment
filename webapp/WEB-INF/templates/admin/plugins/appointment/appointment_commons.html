@@ -412,10 +412,9 @@ localStorage.setItem( 'appointmentContext', '${context}' );
 	localStorage.setItem( 'commentContext', moment(formValues.comment_start).format('DD/MM/YYYY') );
 	tinyMCE.activeEditor.setContent( formValues.comment_text );
 	$( '#modify-comment input[name="id_comment"]' ).val( formValues.id_comment.slice(1) );
-	$( '#modify-comment input[name="startingValidityDate"]' ).val( moment(formValues.comment_start).format('DD/MM/YYYY') );
-	$( '#modify-comment input[name="startingValidityDate"] + input').val( moment(formValues.comment_start).format('DD/MM/YYYY') );
-	$( '#modify-comment input[name="endingValidityDate"]' ).val( moment(formValues.comment_end).format('DD/MM/YYYY')  );
-	$( '#modify-comment input[name="endingValidityDate"] + input').val( moment(formValues.comment_end).format('DD/MM/YYYY')  );
+	// Update FlatPickr (function updateInputDate in macro_datetimepicker.html)
+	updateInputDate(modifyStartingValidityDate_fp,moment(formValues.comment_start).format('DD/MM/YYYY'));
+	updateInputDate(modifyEndingValidityDate_fp,moment(formValues.comment_end).format('DD/MM/YYYY'));
 	$( '#modify-comment input[name="startingValidityTime"]' ).val( formValues.comment_start_time );
 	$( '#modify-comment input[name="startingValidityTime"] + input').val( formValues.comment_start_time );
 	$( '#modify-comment input[name="endingValidityTime"]' ).val( formValues.comment_end_time );
