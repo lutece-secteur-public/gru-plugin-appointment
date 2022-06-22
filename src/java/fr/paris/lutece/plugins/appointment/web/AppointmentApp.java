@@ -826,6 +826,7 @@ public class AppointmentApp extends MVCApplication
             addError( ERROR_MESSAGE_NB_MAX_APPOINTMENTS_ON_A_PERIOD, locale );
             bErrors = true;
         }
+        
         List<AppointmentDTO> listAppointments = new ArrayList<>( );
         if ( _appointmentForm.getEnableMandatoryEmail( )
                 && !AppointmentUtilities.checkNbMaxAppointmentsDefinedOnCategory( _notValidatedAppointment, strEmail, _appointmentForm, listAppointments ) )
