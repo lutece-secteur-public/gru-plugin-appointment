@@ -200,7 +200,7 @@
 						document.getElementsByTagName("head")[0].appendChild(loadresource);
 				}
 
-				$(window).load(function() {
+				$(window).on('load', function() {
 						var map = L.map('map_address').setView([39.290736,-76.610838], 12);
 						var markers_layer = L.featureGroup().addTo(map);
 						// create the tile layer with correct attribution
