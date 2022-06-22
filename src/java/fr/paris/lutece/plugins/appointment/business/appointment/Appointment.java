@@ -38,6 +38,8 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.validation.Valid;
+
 import fr.paris.lutece.plugins.appointment.business.slot.Slot;
 import fr.paris.lutece.plugins.appointment.business.user.User;
 
@@ -112,6 +114,7 @@ public class Appointment extends User
     /**
      * The user of the appointment
      */
+    @Valid
     private User _user;
     /**
      * The date appointment taken
