@@ -123,7 +123,7 @@
 										<div class="form-group <#if formGroupError!=''>has-error</#if>">
 											<label class="col-xs-12 control-label" for="lastname">${formMessages.fieldLastNameTitle!} *</label>
 											<div class="col-xs-12">
-												<input type="text" class="form-control" value="<#if appointment??>${appointment.lastName!}</#if>" maxlength="255" id="lastname" name="lastname" <#if user?? && user.lastName?has_content>readonly</#if>>
+												<input type="text" class="form-control" value="<#if appointment??>${appointment.lastName!}</#if>" maxlength="255" id="lastname" name="lastname" <#if user?? && user.lastName?has_content || preferred_user_name?has_content>readonly</#if>>
 												<#if formGroupError!=''>
 													${formGroupError}
 												<#else>
