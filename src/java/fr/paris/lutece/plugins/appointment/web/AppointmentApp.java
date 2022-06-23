@@ -37,7 +37,6 @@ import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
-import java.time.temporal.TemporalField;
 import java.time.temporal.WeekFields;
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -257,6 +256,7 @@ public class AppointmentApp extends MVCApplication
     private static final String MARK_APPOINTMENT_PASSED = "appointmentPassed";
     private static final String MARK_TASKS_FORM = "tasks_form";
     private static final String MARK_LOCALE_DATE_TIME = "localeDateTime";
+    private static final String MARK_USER_PREFERRED_NAME = "preferred_user_name";
 
     // Errors
     private static final String ERROR_MESSAGE_SLOT_FULL = "appointment.message.error.slotFull";
@@ -276,6 +276,7 @@ public class AppointmentApp extends MVCApplication
     private static final String MESSAGE_CANCEL_APPOINTMENT_PAGE_TITLE = "appointment.cancelAppointment.pageTitle";
     private static final String MESSAGE_MY_APPOINTMENTS_PAGE_TITLE = "appointment.myAppointments.name";
     private static final String MESSAGE_WF_ACTION_SUCESS = "appointment.wf.action.success";
+    
     // Properties
     private static final String PROPERTY_USER_ATTRIBUTE_FIRST_NAME = "appointment.userAttribute.firstName";
     private static final String PROPERTY_USER_ATTRIBUTE_LAST_NAME = "appointment.userAttribute.lastName";
@@ -761,9 +762,11 @@ public class AppointmentApp extends MVCApplication
         model.put( MARK_LOCALE, locale );
         model.put( MARK_PLACES, _notValidatedAppointment.getNbMaxPotentialBookedSeats( ) );
         model.put( MARK_LIST_ERRORS, AppointmentDTO.getAllErrors( locale ) );
-        if( SecurityService.getInstance( ).getRegisteredUser( request ) != null )
+        LuteceUser user = SecurityService.getInstance( ).getRegisteredUser( request );
+        if( user != null )
         {
-        	model.put( MARK_USER,  SecurityService.getInstance( ).getRegisteredUser( request ) );
+        	model.put( MARK_USER,  user );
+        	model.put( MARK_USER_PREFERRED_NAME, user.getUserInfo( AppPropertiesService.getProperty( PROPERTY_USER_ATTRIBUTE_PREFERED_NAME, StringUtils.EMPTY ) ) );
         }
         else
         {
