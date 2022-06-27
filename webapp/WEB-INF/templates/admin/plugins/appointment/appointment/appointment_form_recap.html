@@ -4,7 +4,8 @@
             <@boxHeader title='#i18n{appointment.appointmentApp.recap.title}' />
 			<@boxBody>
 				<@tform id='form-validate' action='jsp/admin/plugins/appointment/ManageAppointments.jsp' params='enctype="multipart/form-data"'>
-					<input type='hidden' name='action' value='doMakeAppointment' />                        
+					<input type='hidden' name='action' value='doMakeAppointment' />
+					<@input type='hidden' name='token' value='${token}' />                     
 					<fieldset>
 						<legend>
 							#i18n{appointment.appointmentApp.recap.title} - 
