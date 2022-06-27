@@ -180,6 +180,7 @@ $('#feature-title').html("<a href=\"jsp/admin/plugins/appointment/ManageAppointm
 		<#assign endDateLabel='#i18n{appointment.create_comment.labelEndingValidityDate}'>
 		<#assign endDateHelp='#i18n{appointment.create_comment.labelEndingValidityDate}'>
 		<#assign endTimeLabel='#i18n{appointment.create_comment.labelEndingValidityTime}'>
+		<#assign startDateValueParams = 'today'/>
 	</#switch>
 	<@modalHeader modalTitle=modalTitle />
 	<@modalBody>
@@ -191,7 +192,11 @@ $('#feature-title').html("<a href=\"jsp/admin/plugins/appointment/ManageAppointm
 			</@formGroup>
 			<@formGroup labelFor='startingValidityDate' labelKey=startDateLabel mandatory=true rows=2>
 				<@inputGroup class='date' id='${idStartingDate}Group'>
-					<@input type='date' name='startingValidityDate' id=idStartingDate />
+					<#if startDateValueParams??>
+						<@input type='date' name='startingValidityDate' id=idStartingDate defaultDate=startDateValueParams />
+					<#else>
+						<@input type='date' name='startingValidityDate' id=idStartingDate />
+					</#if>
 					<@inputGroupItem type='text'>
 						<@icon style='calendar' />
 					</@inputGroupItem>
@@ -205,7 +210,7 @@ $('#feature-title').html("<a href=\"jsp/admin/plugins/appointment/ManageAppointm
 					</@inputGroupItem>
 				</@inputGroup>
 			</@formGroup>
-			<@formGroup labelFor=idEndingDate labelKey=endDateLabel helpKey=endDateHelp mandatory=true rows=2>
+			<@formGroup labelFor=idEndingDate labelKey=endDateLabel helpKey='' mandatory=true rows=2>
 				<@inputGroup class='date' id='${idEndingDate}Group'>
 					<@input type='date' name='endingValidityDate' id=idEndingDate />
 					<@inputGroupItem type='text'>
@@ -213,7 +218,7 @@ $('#feature-title').html("<a href=\"jsp/admin/plugins/appointment/ManageAppointm
 					</@inputGroupItem>
 				</@inputGroup>
 			</@formGroup>
-			<@formGroup labelFor='endingValidityTime' labelKey=endTimeLabel helpKey=' ' rows=0>
+			<@formGroup labelFor='endingValidityTime' labelKey=endTimeLabel helpKey='' rows=0>
 				<@inputGroup class='date' id='${idEndingTime}Group'>
 					<@input type='time' name='endingValidityTime' id=idEndingTime value='00:00' />
 					<@inputGroupItem type='text'>
@@ -277,6 +282,13 @@ $(function(){
 		$('#${idEndingDate}').parents('.form-group').removeClass('has-error');
 		$('#${idComment} ~ *').html('');
 		$('#${idComment}').parents('.form-group').removeClass('has-error');
+		
+		if(!$('#${idStartingDate}').val()) {
+			console.log("test test");
+		}
+		
+		
+		
 		dStart=$('#${idStartingDate}').val(),dEnd=$('#${idEndingDate}').val();
 
 		if( moment(dEnd).isBefore( dStart ) ){
