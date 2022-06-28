@@ -107,6 +107,8 @@ public final class AppointmentUtilities
     public static final String ERROR_MESSAGE_EMPTY_NB_BOOKED_SEAT = "appointment.validation.appointment.NbBookedSeat.notEmpty";
     public static final String ERROR_MESSAGE_FORMAT_NB_BOOKED_SEAT = "appointment.validation.appointment.NbBookedSeat.notNumberFormat";
     public static final String ERROR_MESSAGE_ERROR_NB_BOOKED_SEAT = "appointment.validation.appointment.NbBookedSeat.error";
+    private static final String ERROR_MESSAGE_LAST_NAME_EMPTY = "appointment.validation.appointment.FirstName.notEmpty";
+    private static final String ERROR_MESSAGE_FIRST_NAME_EMPTY = "appointment.validation.appointment.LastName.notEmpty";
 
     public static final String MARK_PERMISSION_ADD_COMMENT = "permission_add_comment";
     public static final String MARK_PERMISSION_MODERATE_COMMENT = "permission_moderate_comment";
@@ -129,6 +131,32 @@ public final class AppointmentUtilities
     {
     }
 
+    /**
+     * Check that the email is correct and matches the confirm email
+     * 
+     * @param appointmentDTO
+     *            the appointmentDTO
+     * @param locale
+     *            the locale
+     * @param listFormErrors
+     *            the list of errors that can be fill in with the errors found for the email
+     */
+    public static void checkAppointmentsNames( AppointmentDTO appointmentDTO, Locale locale, List<GenericAttributeError> listFormErrors )
+    {
+    	GenericAttributeError genAttError = new GenericAttributeError( );
+    	if( StringUtils.isBlank( appointmentDTO.getLastName( ) ) )
+        {
+            genAttError.setErrorMessage( I18nService.getLocalizedString( ERROR_MESSAGE_LAST_NAME_EMPTY, locale ) );
+            listFormErrors.add( genAttError );
+        }
+    	
+    	if( StringUtils.isBlank( appointmentDTO.getFirstName( ) ) )
+        {
+    		genAttError.setErrorMessage( I18nService.getLocalizedString( ERROR_MESSAGE_FIRST_NAME_EMPTY, locale ) );
+    		listFormErrors.add( genAttError );
+        }
+    }
+    
     /**
      * Check that the email is correct and matches the confirm email
      * 
@@ -266,7 +294,7 @@ public final class AppointmentUtilities
                         .max( LocalDateTime::compareTo ).orElse( null );
 
                 if ( dateOfTheLastAppointmentTaken != null
-                        && Math.abs( dateOfTheLastAppointmentTaken.until( LocalDateTime.now( ), ChronoUnit.DAYS ) ) <= nbDaysBetweenTwoAppointments )
+                        && Math.abs( dateOfTheLastAppointmentTaken.until( LocalDateTime.now( ), ChronoUnit.DAYS ) ) < nbDaysBetweenTwoAppointments )
                 {
                     bCheckPassed = false;
                 }
@@ -560,6 +588,7 @@ public final class AppointmentUtilities
             boolean allEntries )
     {
         Set<ConstraintViolation<AppointmentDTO>> listErrors = BeanValidationUtil.validate( appointmentDTO );
+        checkAppointmentsNames( appointmentDTO, request.getLocale( ), listFormErrors );
         if ( CollectionUtils.isNotEmpty( listErrors ) )
         {
             for ( ConstraintViolation<AppointmentDTO> constraintViolation : listErrors )
@@ -569,6 +598,7 @@ public final class AppointmentUtilities
                 listFormErrors.add( genAttError );
             }
         }
+        
         EntryFilter filter = EntryService.buildEntryFilter( appointmentDTO.getIdForm( ) );
         if ( allEntries )
         {

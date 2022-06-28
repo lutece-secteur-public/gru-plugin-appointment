@@ -8,7 +8,12 @@
 		</#if>
 	</#list>
 </#if>
-<@formGroup labelFor='attribute${entry.idEntry}' labelKey='${entry.title}' helpKey='${entry.helpMessage!}' id='form${entry.idEntry}' mandatory=entry.mandatory>
+<#if entry.mandatory>
+<#assign mandatory_sign=' *'>
+<#else>
+<#assign mandatory_sign=''>
+</#if>
+<@formGroup labelFor='attribute${entry.idEntry}' labelKey='${entry.title}${mandatory_sign}' helpKey='${entry.helpMessage!}' id='form${entry.idEntry}'>
 	<#assign fieldName='attribute'+entry.idEntry >
 	<@addFileInput fieldName=fieldName handler=uploadHandler cssClass=cssClass multiple=true />
 	<#if list_responses?? && list_responses?has_content>
@@ -34,4 +39,5 @@
 <#else>
 	<#assign listFiles = ''>
 </#if>
-<@addUploadedFilesBox fieldName=fieldName handler=uploadHandler listFiles=listFiles />
+<@addRequiredJsFiles />
+<@addUploadedFilesBox fieldName=fieldName handler=uploadHandler listFiles=listFiles!'' />
