@@ -180,7 +180,8 @@ $('#feature-title').html("<a href=\"jsp/admin/plugins/appointment/ManageAppointm
 		<#assign endDateLabel='#i18n{appointment.create_comment.labelEndingValidityDate}'>
 		<#assign endDateHelp='#i18n{appointment.create_comment.labelEndingValidityDate}'>
 		<#assign endTimeLabel='#i18n{appointment.create_comment.labelEndingValidityTime}'>
-		<#assign startDateValueParams = 'today'/>
+		
+		<#assign startDateIsToday = true />
 	</#switch>
 	<@modalHeader modalTitle=modalTitle />
 	<@modalBody>
@@ -192,8 +193,8 @@ $('#feature-title').html("<a href=\"jsp/admin/plugins/appointment/ManageAppointm
 			</@formGroup>
 			<@formGroup labelFor='startingValidityDate' labelKey=startDateLabel mandatory=true rows=2>
 				<@inputGroup class='date' id='${idStartingDate}Group'>
-					<#if startDateValueParams??>
-						<@input type='date' name='startingValidityDate' id=idStartingDate defaultDate=startDateValueParams />
+					<#if startDateIsToday>
+						<@input type='date' name='startingValidityDate' id=idStartingDate defaultDate='today' />
 					<#else>
 						<@input type='date' name='startingValidityDate' id=idStartingDate />
 					</#if>
@@ -282,12 +283,6 @@ $(function(){
 		$('#${idEndingDate}').parents('.form-group').removeClass('has-error');
 		$('#${idComment} ~ *').html('');
 		$('#${idComment}').parents('.form-group').removeClass('has-error');
-		
-		if(!$('#${idStartingDate}').val()) {
-			console.log("test test");
-		}
-		
-		
 		
 		dStart=$('#${idStartingDate}').val(),dEnd=$('#${idEndingDate}').val();
 
@@ -424,7 +419,7 @@ localStorage.setItem( 'appointmentContext', '${context}' );
 	localStorage.setItem( 'commentContext', moment(formValues.comment_start).format('DD/MM/YYYY') );
 	tinyMCE.activeEditor.setContent( formValues.comment_text );
 	$( '#modify-comment input[name="id_comment"]' ).val( formValues.id_comment.slice(1) );
-	// Update FlatPickr (function updateInputDate in macro_datetimepicker.html)
+	// Update Date fields (function updateInputDate in macro_datetimepicker.html)
 	updateInputDate(modifyStartingValidityDate_fp,moment(formValues.comment_start).format('DD/MM/YYYY'));
 	updateInputDate(modifyEndingValidityDate_fp,moment(formValues.comment_end).format('DD/MM/YYYY'));
 	$( '#modify-comment input[name="startingValidityTime"]' ).val( formValues.comment_start_time );
