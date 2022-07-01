@@ -102,6 +102,7 @@ import fr.paris.lutece.portal.service.image.ImageResource;
 import fr.paris.lutece.portal.service.message.SiteMessageException;
 import fr.paris.lutece.portal.service.security.LuteceUser;
 import fr.paris.lutece.portal.service.security.SecurityService;
+import fr.paris.lutece.portal.service.security.SecurityTokenService;
 import fr.paris.lutece.portal.service.security.UserNotSignedException;
 import fr.paris.lutece.portal.service.spring.SpringContextService;
 import fr.paris.lutece.portal.service.template.AppTemplateService;
@@ -276,6 +277,7 @@ public class AppointmentApp extends MVCApplication
     private static final String MESSAGE_CANCEL_APPOINTMENT_PAGE_TITLE = "appointment.cancelAppointment.pageTitle";
     private static final String MESSAGE_MY_APPOINTMENTS_PAGE_TITLE = "appointment.myAppointments.name";
     private static final String MESSAGE_WF_ACTION_SUCESS = "appointment.wf.action.success";
+    private static final String ERROR_INVALID_TOKEN = "Invalid security token";
     
     // Properties
     private static final String PROPERTY_USER_ATTRIBUTE_FIRST_NAME = "appointment.userAttribute.firstName";
@@ -762,6 +764,7 @@ public class AppointmentApp extends MVCApplication
         model.put( MARK_LOCALE, locale );
         model.put( MARK_PLACES, _notValidatedAppointment.getNbMaxPotentialBookedSeats( ) );
         model.put( MARK_LIST_ERRORS, AppointmentDTO.getAllErrors( locale ) );
+        model.put( SecurityTokenService.MARK_TOKEN, SecurityTokenService.getInstance( ).getToken( request, TEMPLATE_APPOINTMENT_FORM ) );
         LuteceUser user = SecurityService.getInstance( ).getRegisteredUser( request );
         if( user != null )
         {
@@ -799,6 +802,10 @@ public class AppointmentApp extends MVCApplication
     public XPage doValidateForm( HttpServletRequest request ) throws UserNotSignedException, AccessDeniedException
     {
         checkMyLuteceAuthentication( _appointmentForm, request );
+        if ( !SecurityTokenService.getInstance( ).validate( request, TEMPLATE_APPOINTMENT_FORM ) )
+        {
+            throw new AccessDeniedException( ERROR_INVALID_TOKEN );
+        }
         String strIdForm = request.getParameter( PARAMETER_ID_FORM );
         if ( _notValidatedAppointment == null || _appointmentForm == null || _notValidatedAppointment.getIdForm( ) != _appointmentForm.getIdForm( ) )
         {

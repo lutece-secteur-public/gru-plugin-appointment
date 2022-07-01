@@ -121,6 +121,7 @@ import fr.paris.lutece.portal.service.message.AdminMessageService;
 import fr.paris.lutece.portal.service.plugin.Plugin;
 import fr.paris.lutece.portal.service.plugin.PluginService;
 import fr.paris.lutece.portal.service.rbac.RBACService;
+import fr.paris.lutece.portal.service.security.SecurityTokenService;
 import fr.paris.lutece.portal.service.spring.SpringContextService;
 import fr.paris.lutece.portal.service.template.AppTemplateService;
 import fr.paris.lutece.portal.service.util.AppLogService;
@@ -1035,6 +1036,7 @@ public class AppointmentJspBean extends MVCAdminJspBean
         HtmlTemplate templateForm = AppTemplateService.getTemplate( TEMPLATE_HTML_CODE_FORM_ADMIN, getLocale( ), model );
         model.put( MARK_FORM_HTML, templateForm.getHtml( ) );
         model.put( MARK_LOCALE, getLocale( ) );
+        
 
         return getPage( PROPERTY_PAGE_TITLE_CREATE_APPOINTMENT, TEMPLATE_CREATE_APPOINTMENT, model );
     }
@@ -1251,6 +1253,7 @@ public class AppointmentJspBean extends MVCAdminJspBean
         model.put( MARK_LIST_RESPONSE_RECAP_DTO, AppointmentUtilities.buildListResponse( _validatedAppointment, request, locale ) );
         model.put( MARK_FORM, _appointmentForm );
         model.put( MARK_LOCALE, getLocale( ) );
+        model.put( SecurityTokenService.MARK_TOKEN, SecurityTokenService.getInstance( ).getToken( request, TEMPLATE_APPOINTMENT_FORM_RECAP ) );
         return getPage( PROPERTY_PAGE_TITLE_RECAP_APPOINTMENT, TEMPLATE_APPOINTMENT_FORM_RECAP, model );
     }
 
@@ -1270,6 +1273,10 @@ public class AppointmentJspBean extends MVCAdminJspBean
         if ( StringUtils.isNotEmpty( request.getParameter( PARAMETER_BACK ) ) )
         {
             return redirect( request, VIEW_CREATE_APPOINTMENT, PARAMETER_ID_FORM, _validatedAppointment.getIdForm( ) );
+        }
+        if ( !SecurityTokenService.getInstance( ).validate( request, TEMPLATE_APPOINTMENT_FORM_RECAP ) )
+        {
+            throw new AccessDeniedException( ERROR_INVALID_TOKEN );
         }
         if ( _appointmentForm.getBoOverbooking( ) && RBACService.isAuthorized( AppointmentFormDTO.RESOURCE_TYPE,
                 Integer.toString( _appointmentForm.getIdForm( ) ), AppointmentResourceIdService.PERMISSION_OVERBOOKING_FORM, (User) getUser( ) ) )

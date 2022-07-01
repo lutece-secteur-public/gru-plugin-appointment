@@ -67,6 +67,7 @@
 		<div class="container" id="current_step">
 			<form class="form-horizontal" role="form" id="form-validate" action="jsp/site/Portal.jsp" method="post" enctype="multipart/form-data">
 				<input name="page" value="appointment" type="hidden">
+				<input name="token" value="${token}" type="hidden">
 				<input name="action" value="doValidateForm" type="hidden">
 				<input name="id_form" value="${form.idForm}" type="hidden">
 				<input type="hidden" name="date_of_display" value="${date_of_display}">
