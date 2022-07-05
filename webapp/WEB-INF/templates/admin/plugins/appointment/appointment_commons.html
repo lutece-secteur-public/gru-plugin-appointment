@@ -191,7 +191,7 @@ $('#feature-title').html("<a href=\"jsp/admin/plugins/appointment/ManageAppointm
 			<@formGroup labelFor='comment' labelKey='#i18n{appointment.comment.name}' helpKey='#i18n{appointment.comment.name}' mandatory=true rows=2>
 				<@input type='textarea' name='comment' id=idComment richtext=true />
 			</@formGroup>
-			<@formGroup labelFor='startingValidityDate' labelKey=startDateLabel mandatory=true rows=2>
+			<@formGroup labelFor='startingValidityDate' labelKey=startDateLabel helpKey='&nbsp;' mandatory=true rows=2>
 				<@inputGroup class='date' id='${idStartingDate}Group'>
 					<#if startDateIsToday>
 						<@input type='date' name='startingValidityDate' id=idStartingDate defaultDate='today' />
@@ -203,7 +203,7 @@ $('#feature-title').html("<a href=\"jsp/admin/plugins/appointment/ManageAppointm
 					</@inputGroupItem>
 				</@inputGroup>
 			</@formGroup>
-			<@formGroup labelFor='startingValidityTime' labelKey=startTimeLabel rows=2>
+			<@formGroup labelFor='startingValidityTime' labelKey=startTimeLabel helpKey='&nbsp;' rows=2>
 				<@inputGroup id='${idStartingTime}Group' class='date'>
 					<@input type='time' name='startingValidityTime' id=idStartingTime value='00:00' />
 					<@inputGroupItem type='text' >
@@ -211,7 +211,7 @@ $('#feature-title').html("<a href=\"jsp/admin/plugins/appointment/ManageAppointm
 					</@inputGroupItem>
 				</@inputGroup>
 			</@formGroup>
-			<@formGroup labelFor=idEndingDate labelKey=endDateLabel helpKey='' mandatory=true rows=2>
+			<@formGroup labelFor=idEndingDate labelKey=endDateLabel helpKey='&nbsp;' mandatory=true rows=2>
 				<@inputGroup class='date' id='${idEndingDate}Group'>
 					<@input type='date' name='endingValidityDate' id=idEndingDate />
 					<@inputGroupItem type='text'>
@@ -219,7 +219,7 @@ $('#feature-title').html("<a href=\"jsp/admin/plugins/appointment/ManageAppointm
 					</@inputGroupItem>
 				</@inputGroup>
 			</@formGroup>
-			<@formGroup labelFor='endingValidityTime' labelKey=endTimeLabel helpKey='' rows=0>
+			<@formGroup labelFor='endingValidityTime' labelKey=endTimeLabel helpKey='&nbsp;' rows=2>
 				<@inputGroup class='date' id='${idEndingTime}Group'>
 					<@input type='time' name='endingValidityTime' id=idEndingTime value='00:00' />
 					<@inputGroupItem type='text'>
