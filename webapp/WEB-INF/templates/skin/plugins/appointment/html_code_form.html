@@ -250,17 +250,19 @@
 												</#list>
 											</#if>
 										</#if>
-										<div class="form-group <#if formGroupError!=''>has-error</#if>">
-											<label class="col-xs-12"for="nbBookedSeats">#i18n{appointment.createAppointmentForm.labelMaxPeoplePerAppointment}*</label>
-											<div class="col-xs-12">
-												<input type="number" <#if nbPlacesToTake != 0 > readonly</#if> maxlength="3" id="nbBookedSeats" value="<#if appointment??>${appointment.nbBookedSeats!}</#if>" name="nbBookedSeats" class="form-control" min="1" max="${nbplaces}" onkeypress='return validateQty(event);'>
-												<#if formGroupError!=''>
-													${formGroupError}
-												<#else>
-													<#if nbplaces != 0 >
-														<span class="help-block">${nbplaces!} place(s) maximum</span>
+										<div class="col-xs-12">
+											<div class="form-group <#if formGroupError!=''>has-error</#if>">
+												<label class="col-xs-12 control-label" for="nbBookedSeats">#i18n{appointment.createAppointmentForm.labelMaxPeoplePerAppointment}*</label>
+												<div class="col-xs-12">
+													<input type="number" <#if nbPlacesToTake != 0 > readonly</#if> maxlength="3" id="nbBookedSeats" value="<#if appointment??>${appointment.nbBookedSeats!}</#if>" name="nbBookedSeats" class="form-control" min="1" max="${nbplaces}" onkeypress='return validateQty(event);'>
+													<#if formGroupError!=''>
+														${formGroupError}
+													<#else>
+														<#if nbplaces != 0 >
+															<span class="help-block">${nbplaces!} place(s) maximum</span>
+														</#if>
 													</#if>
-												</#if>
+												</div>
 											</div>
 										</div>
 									</#if>
