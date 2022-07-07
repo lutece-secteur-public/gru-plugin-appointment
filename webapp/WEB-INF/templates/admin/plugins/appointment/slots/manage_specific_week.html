@@ -86,7 +86,6 @@ var defaultDate = '${date_of_display}';
 var startingDateOfDisplay = '${date_of_display}';
 var endingDateOfDisplay = '${ending_date_of_display}';
 var dow = [<#if dow??><#list dow as day>'${day}',</#list></#if>];
-var eventUrl = 'jsp/admin/plugins/appointment/ManageSpecificWeek.jsp?view=viewModifySlot&id_form=${appointmentform.idForm}';
 var events = [
 <#if comment_events??>
     <@getComments comment_events />
@@ -100,22 +99,22 @@ var events = [
         <#assign eventTitle='${maxCap} / ${realCap}'>
         <#assign strCustomColor><#if event.isOpen & ( maxCap > realCap )>rgba(255,165,0,1)<#elseif event.isOpen &  ( maxCap <= realCap )>rgba(204,235,255,1)<#else>rgba(255,0,0,1)</#if></#assign>
          {
-            title   : '${event.maxCapacity} / ${appointmentform.capacityPerSlot} ' + <#if event.isSpecific>' (*)'<#else>''</#if>,
-            start   : '${event.startingDateTime}',
-            end     : '${event.endingDateTime}',
-            id      : '${event.idSlot}',
-            color   : <#if event.isOpen>'transparent'<#else>'#bebebe'</#if>,
-            textColor: '#2c2c2d',
-            url     : eventUrl + '&id_slot=${event.idSlot}&starting_date_time=${event.startingDateTime}&ending_date_time=${event.endingDateTime}&is_open=<#if event.isOpen>true<#else>false</#if>&is_specific=<#if event.isSpecific>true<#else>false</#if>&max_capacity=${event.maxCapacity}',
-            customStyle : <#if event.isOpen>'linear-gradient( 90deg, ${strCustomColor} 0%, ${strCustomColor} ${nbFull?floor}%, rgba(255,255,255,1) ${nbFull?floor}% )',<#else>'',</#if>
-            customClass : 'fc-custom',
-            backgroundColor : <#if event.isOpen>'#fff'<#else>'#bebebe'</#if>,
-            borderColor : '#bebebe',
-            isOpen : '${event.isOpen?c}',
-            isSpecific : '${event.isSpecific?c}',
-            maxCapacity: '${event.maxCapacity}',
-            idForm: '${event.idForm}',
-            date: '${event.date}',
+            "title"   : "${event.maxCapacity} / ${appointmentform.capacityPerSlot}<#if event.isSpecific> (*)</#if>",
+            "start"   : "${event.startingDateTime}",
+            "end"     : "${event.endingDateTime}",
+            "id"      : "${event.idSlot}",
+            "color"   : <#if event.isOpen>"transparent"<#else>"#bebebe"</#if>,
+            "textColor" : "#2c2c2d",
+            "url"     : "jsp/admin/plugins/appointment/ManageSpecificWeek.jsp?view=viewModifySlot&id_form=${appointmentform.idForm}&id_slot=${event.idSlot}&starting_date_time=${event.startingDateTime}&ending_date_time=${event.endingDateTime}&is_open=<#if event.isOpen>true<#else>false</#if>&is_specific=<#if event.isSpecific>true<#else>false</#if>&max_capacity=${event.maxCapacity}",
+            "customStyle" : <#if event.isOpen>"linear-gradient( 90deg, ${strCustomColor} 0%, ${strCustomColor} ${nbFull?floor}%, rgba(255,255,255,1) ${nbFull?floor}% )",<#else>"",</#if>
+            "customClass" : "fc-custom",
+            "backgroundColor" : <#if event.isOpen>"#fff"<#else>"#bebebe"</#if>,
+            "borderColor" : "#bebebe",
+            "isOpen" : "${event.isOpen?c}",
+            "isSpecific" : "${event.isSpecific?c}",
+            "maxCapacity" : "${event.maxCapacity}",
+            "idForm" : "${event.idForm}",
+            "date" : "${event.date}",
         },
     </#list>
 </#if>
