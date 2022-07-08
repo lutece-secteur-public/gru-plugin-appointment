@@ -28,12 +28,12 @@
 }
 
 /* Message */
-#messages_infos_div{
+/*#messages_infos_div{
     position: absolute;
     right: 30px;
     top: 0;
     width: 50%;
-}
+}*/
 
 /* Aspet graphique */
 .ui-widget-header {
