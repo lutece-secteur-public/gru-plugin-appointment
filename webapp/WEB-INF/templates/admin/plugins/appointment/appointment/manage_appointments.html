@@ -226,5 +226,25 @@
         todayBtn : true,
         todayHighLight : true,
         autoclose : true
-    });    
+    });
+    
+    // Click on validation button events
+	$( '[name="Search"]' ).click( function(e){
+		dStart=$('#startingDateOfSearch').val(),dEnd=$('#endingDateOfSearch').val();
+		tStart=$('#startingTimeOfSearch').val(),tEnd=$('#endingTimeOfSearch').val();		
+		var startDateAndTime = moment(dStart + ' ' + tStart, 'YYYY-MM-DD HH:mm');
+		var endDateAndTime = moment(dEnd + ' ' + tEnd, 'YYYY-MM-DD HH:mm');
+		
+		if( moment(endDateAndTime).isBefore( startDateAndTime )) {
+			$('#error_message').html('La date de fin ne peut être antérieure à la date de début !');
+			$('#error_messages_container').css('display','block');
+			e.preventDefault();
+		}
+		
+		if ((moment(endDateAndTime).isSame( startDateAndTime )) && ($('#startingTimeOfSearch').val() != '00:00') && ($('#endingTimeOfSearch').val() != '00:00'))  {
+			$('#error_message').html('La date de fin ne peut être égale à la date de début !');
+			$('#error_messages_container').css('display','block');
+			e.preventDefault();
+		}
+	});
 </script>
