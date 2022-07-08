@@ -11,7 +11,7 @@
 			<@boxHeader title='#i18n{appointment.createAppointmentForm.title}' />
 			<@boxBody>			
 				<@messages errors=errors />
-				<input type="hidden" id="id_form" name="id_form">
+				 <@input type='hidden' id='id_form' name='id_form' />
 					<@formGroup labelFor='title' labelKey='#i18n{appointment.createAppointmentForm.labelTitle}' mandatory=true>
 						<@input type='text' name='title' id='title' value='${appointmentform.title!\'\'}' maxlength=255 />
 					</@formGroup>
