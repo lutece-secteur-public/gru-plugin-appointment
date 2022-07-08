@@ -307,6 +307,7 @@ $(function(){
 		if( moment(dEnd).isBefore( dStart ) ){
 			$('#${idEndingDate}').parents('.form-group').addClass('has-error');
 			$('#${idEndingDate}Group ~ *').html('La date de fin ne peut être antérieure à la date de début !');
+			$('#${idEndingDate}Group ~ *').removeClass('text-muted').addClass('text-danger');
 			e.preventDefault();
 		}
 		
