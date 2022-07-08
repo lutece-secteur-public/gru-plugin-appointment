@@ -557,25 +557,21 @@ $( function(){
 				var selected=$('.fc-event-container .fc-time-grid-event.fc-v-event.fc-event.fc-start.fc-end.fc-custom.ui-selectee');
 				selected.each( function(  ){ 
 					var evt='{' + $(this).data('event') + '}';
-					console.log("not direct:", $(this).data('event'));
-					const event = JSON.parse(evt); 
-					if(  moment( event.startingDateTime ).isSameOrAfter( startDate.format() ) && moment( event.endingDateTime ).isSameOrBefore( endDate.format() ) ){
+					const event = JSON.parse( evt ); 
+					if( moment( event.startingDateTime ).isSameOrAfter( startDate.format() ) && moment( event.endingDateTime ).isSameOrBefore( endDate.format() ) ){
 						selData += JSON.stringify( event ) + ',' ;
 						selIdx++;
 					} 
 				}) ;
 				if ( selIdx > 1 ){
 					evtData='['+ selData.slice(0, -1) + ']';
-					console.log("evtdata:",evtData);
 					const evt = JSON.parse(evtData); 
-					console.log("evt",evt);
-					<#if isTypical>$('#timeSlotData')<#else>$('#slotData')</#if>.val(evtData);
+					<#if isTypical>$('#timeSlotData')<#else>$('#slotsData')</#if>.val(evtData);
 					$('#date_of_display_multi').val( moment(evt[0].startingDateTime).format('YYYY-MM-DD') );
 					$('#updatePlanningMultiSlot').modal('show');
 				} else {
 					evtData=selData.slice(0, -1) ;
 					const evt = JSON.parse(evtData); 
-					console.log("else evtdata:",evt);
 					<#if isTypical>$('#timeSlotData')<#else>$('#slotData')</#if>.val( '['+evtData+']' );
 					const isOpen = JSON.parse( evt.isOpen )
 					$('#is_open').prop( "checked", isOpen );
@@ -693,7 +689,6 @@ $( function(){
             $( ".fc-content-skeleton" )<#if isSpecific>.not(":has(.comments)")</#if>.not(":has(.btn-comments)").selectable({
                 filter: ".fc-time-grid-event.fc-v-event",
 				selecting: function( event, ui ) {
-				console.log("direct :",event);
 					eventIdx++;
 				},
 				unselecting: function( event, ui ) {
