@@ -132,7 +132,7 @@
 						</tr>
 						<#list appointment_list as appointment >
 							<tr>
-								<td><@checkBox name='apmt' id='apmt' value='${appointment.idAppointment}' /></td>
+								<td><@checkBox name='apmt' id='apmt'+appointment?index value='${appointment.idAppointment}' /></td>
 								<td>${appointment.lastName}</td>
 								<td>${appointment.firstName}</td>
 								<td>${appointment.email}</td>
