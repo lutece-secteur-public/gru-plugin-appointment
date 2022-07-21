@@ -866,6 +866,10 @@ public class AppointmentApp extends MVCApplication
         if ( CollectionUtils.isNotEmpty( listFormErrors ) )
         {
             getModel( ).put( MARK_FORM_ERRORS, listFormErrors );
+            for ( GenericAttributeError error : listFormErrors )
+            {
+            	addError( error.getErrorMessage( ) );
+            }
             bErrors = true;
         }
         if ( bErrors )
