@@ -107,8 +107,8 @@ public final class AppointmentUtilities
     public static final String ERROR_MESSAGE_EMPTY_NB_BOOKED_SEAT = "appointment.validation.appointment.NbBookedSeat.notEmpty";
     public static final String ERROR_MESSAGE_FORMAT_NB_BOOKED_SEAT = "appointment.validation.appointment.NbBookedSeat.notNumberFormat";
     public static final String ERROR_MESSAGE_ERROR_NB_BOOKED_SEAT = "appointment.validation.appointment.NbBookedSeat.error";
-    private static final String ERROR_MESSAGE_LAST_NAME_EMPTY = "appointment.validation.appointment.FirstName.notEmpty";
-    private static final String ERROR_MESSAGE_FIRST_NAME_EMPTY = "appointment.validation.appointment.LastName.notEmpty";
+    private static final String ERROR_MESSAGE_LAST_NAME_EMPTY = "appointment.validation.appointment.LastName.notEmpty";
+    private static final String ERROR_MESSAGE_FIRST_NAME_EMPTY = "appointment.validation.appointment.FirstName.notEmpty";
 
     public static final String MARK_PERMISSION_ADD_COMMENT = "permission_add_comment";
     public static final String MARK_PERMISSION_MODERATE_COMMENT = "permission_moderate_comment";
@@ -143,15 +143,16 @@ public final class AppointmentUtilities
      */
     public static void checkAppointmentsNames( AppointmentDTO appointmentDTO, Locale locale, List<GenericAttributeError> listFormErrors )
     {
-    	GenericAttributeError genAttError = new GenericAttributeError( );
     	if( StringUtils.isBlank( appointmentDTO.getLastName( ) ) )
         {
+    		GenericAttributeError genAttError = new GenericAttributeError( );
             genAttError.setErrorMessage( I18nService.getLocalizedString( ERROR_MESSAGE_LAST_NAME_EMPTY, locale ) );
             listFormErrors.add( genAttError );
         }
     	
     	if( StringUtils.isBlank( appointmentDTO.getFirstName( ) ) )
         {
+    		GenericAttributeError genAttError = new GenericAttributeError( );
     		genAttError.setErrorMessage( I18nService.getLocalizedString( ERROR_MESSAGE_FIRST_NAME_EMPTY, locale ) );
     		listFormErrors.add( genAttError );
         }
