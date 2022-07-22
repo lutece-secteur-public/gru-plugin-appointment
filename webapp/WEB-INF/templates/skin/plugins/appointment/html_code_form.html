@@ -79,7 +79,26 @@
 						<div class="col-xs-12 col-sm-8 col-sm-pull-4">
 							<div class="col-xs-12 formGroupContainer">
 								<#if infos?? || errors??>
-									<@messages infos=infos errors=errors />			
+									<#if infos??>
+										<#if infos?size &gt; 0 >
+											<div class="alert alert-info" id='messages_infos_div'>
+												<button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+												<#list infos as info>
+													<i class='fa fa-info-circle' /></i> ${info.message}<br />
+												</#list>
+											</div>
+										</#if>
+									</#if>
+									<#if errors??>
+										<#if errors?size &gt; 0 >
+											<div class="alert alert-danger" id='messages_infos_div'>
+												<button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+												<#list errors as error>
+												<i class='fa fa-exclamation-circle' /></i> ${error.message}<br />
+												</#list>
+											</div>
+										</#if>
+									</#if>
 								</#if>
 								<#if form_errors??>
 									<#assign hasDisplayableError = false>
