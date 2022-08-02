@@ -33,7 +33,7 @@
 			<#list list_responses as response>
 				<#if response.entry.idEntry == entry.idEntry && response.entry.error?? && response.entry.error.isDisplayableError>
 					<#assign error = response.entry.error>
-					<span class="help-block"><#if error.mandatoryError>${error.errorMessage}<#else>#i18n{appointment.message.mandatory.entry}</#if></span>
+					<span class="help-block"><#if error.mandatoryError>#i18n{appointment.message.mandatory.entry}<#else>${error.errorMessage}</#if></span>
 				</#if>
 			</#list>
 		</#if>
