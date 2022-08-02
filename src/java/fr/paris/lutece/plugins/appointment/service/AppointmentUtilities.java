@@ -134,33 +134,6 @@ public final class AppointmentUtilities
     /**
      * Check that the email is correct and matches the confirm email
      * 
-     * @param appointmentDTO
-     *            the appointmentDTO
-     * @param locale
-     *            the locale
-     * @param listFormErrors
-     *            the list of errors that can be fill in with the errors found for the email
-     */
-    public static void checkAppointmentsNames( AppointmentDTO appointmentDTO, Locale locale, List<GenericAttributeError> listFormErrors )
-    {
-    	if( StringUtils.isBlank( appointmentDTO.getLastName( ) ) )
-        {
-    		GenericAttributeError genAttError = new GenericAttributeError( );
-            genAttError.setErrorMessage( I18nService.getLocalizedString( ERROR_MESSAGE_LAST_NAME_EMPTY, locale ) );
-            listFormErrors.add( genAttError );
-        }
-    	
-    	if( StringUtils.isBlank( appointmentDTO.getFirstName( ) ) )
-        {
-    		GenericAttributeError genAttError = new GenericAttributeError( );
-    		genAttError.setErrorMessage( I18nService.getLocalizedString( ERROR_MESSAGE_FIRST_NAME_EMPTY, locale ) );
-    		listFormErrors.add( genAttError );
-        }
-    }
-    
-    /**
-     * Check that the email is correct and matches the confirm email
-     * 
      * @param strEmail
      *            the email
      * @param strConfirmEmail
@@ -589,7 +562,7 @@ public final class AppointmentUtilities
             boolean allEntries )
     {
         Set<ConstraintViolation<AppointmentDTO>> listErrors = BeanValidationUtil.validate( appointmentDTO );
-        checkAppointmentsNames( appointmentDTO, request.getLocale( ), listFormErrors );
+
         if ( CollectionUtils.isNotEmpty( listErrors ) )
         {
             for ( ConstraintViolation<AppointmentDTO> constraintViolation : listErrors )
