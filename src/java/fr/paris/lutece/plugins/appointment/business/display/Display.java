@@ -35,9 +35,7 @@ package fr.paris.lutece.plugins.appointment.business.display;
 
 import java.io.Serializable;
 
-import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
-import javax.validation.constraints.NotNull;
 
 import fr.paris.lutece.portal.service.image.ImageResource;
 
@@ -90,11 +88,6 @@ public final class Display implements Serializable
      * Form id (foreign key)
      */
     private int _nIdForm;
-
-    @NotNull( message = "#i18n{portal.validation.message.notEmpty}" )
-    @Min( value = 1, message = "#i18n{appointment.validation.appointmentform.NbDaysToLiberate.notEmpty}" )
-    @Max( value = 7, message = "#i18n{appointment.validation.appointmentform.NbDaysToLiberate.notEmpty}" )
-    private int _nNbDaysToLiberate;
 
     /**
      * Get the Display Id
@@ -240,16 +233,6 @@ public final class Display implements Serializable
     public void setIdForm( int nIdForm )
     {
         this._nIdForm = nIdForm;
-    }
-
-    public int getNbDaysToLiberate( )
-    {
-        return _nNbDaysToLiberate;
-    }
-
-    public void setNbDaysToLiberate( int nNbDaysToLiberate )
-    {
-        this._nNbDaysToLiberate = nNbDaysToLiberate;
     }
 
 }

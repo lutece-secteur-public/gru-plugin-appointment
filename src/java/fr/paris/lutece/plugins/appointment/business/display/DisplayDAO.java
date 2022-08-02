@@ -48,11 +48,11 @@ import fr.paris.lutece.util.sql.DAOUtil;
 public final class DisplayDAO implements IDisplayDAO
 {
 
-    private static final String SQL_QUERY_INSERT = "INSERT INTO appointment_display ( display_title_fo, icon_form_content, icon_form_mime_type, nb_weeks_to_display, is_displayed_on_portlet, id_calendar_template, id_form, nb_days_to_liberate) VALUES ( ?, ?, ?, ?, ?, ?, ?, ?)";
-    private static final String SQL_QUERY_UPDATE = "UPDATE appointment_display SET display_title_fo = ?, icon_form_content = ?, icon_form_mime_type = ?, nb_weeks_to_display = ?, is_displayed_on_portlet = ?, id_calendar_template = ?, id_form = ?, nb_days_to_liberate = ? WHERE id_display = ?";
+    private static final String SQL_QUERY_INSERT = "INSERT INTO appointment_display ( display_title_fo, icon_form_content, icon_form_mime_type, nb_weeks_to_display, is_displayed_on_portlet, id_calendar_template, id_form) VALUES ( ?, ?, ?, ?, ?, ?, ?)";
+    private static final String SQL_QUERY_UPDATE = "UPDATE appointment_display SET display_title_fo = ?, icon_form_content = ?, icon_form_mime_type = ?, nb_weeks_to_display = ?, is_displayed_on_portlet = ?, id_calendar_template = ?, id_form = ? WHERE id_display = ?";
     private static final String SQL_QUERY_DELETE = "DELETE FROM appointment_display WHERE id_display = ?";
     private static final String SQL_QUERY_DELETE_BY_ID_FORM = "DELETE FROM appointment_display WHERE id_form = ?";
-    private static final String SQL_QUERY_SELECT_COLUMNS = "SELECT id_display, display_title_fo, icon_form_content, icon_form_mime_type, nb_weeks_to_display, is_displayed_on_portlet, id_calendar_template, id_form, nb_days_to_liberate FROM appointment_display";
+    private static final String SQL_QUERY_SELECT_COLUMNS = "SELECT id_display, display_title_fo, icon_form_content, icon_form_mime_type, nb_weeks_to_display, is_displayed_on_portlet, id_calendar_template, id_form FROM appointment_display";
     private static final String SQL_QUERY_SELECT = SQL_QUERY_SELECT_COLUMNS + " WHERE id_display = ?";
     private static final String SQL_QUERY_SELECT_BY_ID_FORM = SQL_QUERY_SELECT_COLUMNS + " WHERE id_form = ?";
 
@@ -147,8 +147,7 @@ public final class DisplayDAO implements IDisplayDAO
         display.setNbWeeksToDisplay( daoUtil.getInt( nIndex++ ) );
         display.setIsDisplayedOnPortlet( daoUtil.getBoolean( nIndex++ ) );
         display.setIdCalendarTemplate( daoUtil.getInt( nIndex++ ) );
-        display.setIdForm( daoUtil.getInt( nIndex++ ) );
-        display.setNbDaysToLiberate( daoUtil.getInt( nIndex ) );
+        display.setIdForm( daoUtil.getInt( nIndex ) );
         return display;
     }
 
@@ -185,7 +184,6 @@ public final class DisplayDAO implements IDisplayDAO
         daoUtil.setBoolean( nIndex++, display.isDisplayedOnPortlet( ) );
         daoUtil.setInt( nIndex++, display.getIdCalendarTemplate( ) );
         daoUtil.setInt( nIndex++, display.getIdForm( ) );
-        daoUtil.setInt( nIndex++, display.getNbDaysToLiberate( ) );
         if ( !isInsert )
         {
             daoUtil.setInt( nIndex, display.getIdDisplay( ) );

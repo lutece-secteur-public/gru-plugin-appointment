@@ -38,7 +38,6 @@ import java.time.temporal.ChronoUnit;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
-import java.util.stream.IntStream;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -110,8 +109,6 @@ public abstract class AbstractAppointmentFormAndSlotJspBean extends MVCAdminJspB
     private static final String MARK_REF_LIST_ROLES = "refListRoles";
     private static final String MARK_LIST_CATEGORIES = "listCategories";
     protected static final String MARK_LOCALE = "language";
-    private static final String MARK_REF_LIST_DAYS_WEEK = "refListDaysWeek";
-
     // Variables
     private static final CaptchaSecurityService _captchaSecurityService = new CaptchaSecurityService( );
     private String _strCurrentPageIndex;
@@ -347,8 +344,6 @@ public abstract class AbstractAppointmentFormAndSlotJspBean extends MVCAdminJspB
         Plugin pluginAppointmentResource = PluginService.getPlugin( AppPropertiesService.getProperty( PROPERTY_MODULE_APPOINTMENT_RESOURCE_NAME ) );
         Plugin moduleAppointmentDesk = PluginService.getPlugin( AppPropertiesService.getProperty( PROPERTY_MODULE_APPOINTMENT_DESK_NAME ) );
         ReferenceList listRoles = RoleHome.getRolesList( user );
-        ReferenceList listDaysWeek = new ReferenceList( 7 );
-        IntStream.rangeClosed( 1, 7 ).forEach( i -> listDaysWeek.addItem( i, Integer.toString( i ) ) );
         model.put( MARK_APPOINTMENT_FORM, appointmentForm );
         model.put( MARK_LOCALE, locale );
         model.put( MARK_LIST_WORKFLOWS, WorkflowService.getInstance( ).getWorkflowsEnabled( (User) user, locale ) );
@@ -365,7 +360,6 @@ public abstract class AbstractAppointmentFormAndSlotJspBean extends MVCAdminJspB
         model.put( AppointmentUtilities.MARK_PERMISSION_MODERATE_COMMENT, String.valueOf( RBACService.isAuthorized( AppointmentFormDTO.RESOURCE_TYPE,
                 String.valueOf( appointmentForm.getIdForm( ) ), AppointmentResourceIdService.PERMISSION_MODERATE_COMMENT_FORM, (User) user ) ) );
         model.put( AppointmentUtilities.MARK_PERMISSION_ACCESS_CODE, user.getAccessCode( ) );
-        model.put( MARK_REF_LIST_DAYS_WEEK, listDaysWeek );
     }
 
 }

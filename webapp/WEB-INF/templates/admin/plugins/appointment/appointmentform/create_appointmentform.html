@@ -59,10 +59,6 @@
 						<@input type='text' name='nb_weeks_to_display' id='nb_weeks_to_display' value=appointmentform.nbWeeksToDisplay!'' params='onkeypress="return validateQty(event);"' maxlength=2 />
 					</@formGroup>
 					
-					<@formGroup labelFor='nb_days_to_liberate' labelKey='#i18n{appointment.label.nbDaysToLiberate}' helpKey='#i18n{appointment.label.nbDaysToLiberate.help}' mandatory=true>
-						<@select name='nb_days_to_liberate' id='nb_days_to_liberate' items=refListDaysWeek default_value='${appointmentform.nbDaysToLiberate!}' />
-					</@formGroup>
-					
 					<@formGroup labelFor='nb_days_before_new_appointment' labelKey='#i18n{appointment.createAppointmentForm.labelNbDaysBeforeNewAppointment}' helpKey='#i18n{appointment.createAppointmentForm.labelNbDaysBeforeNewAppointment.help}' mandatory=true>
 						<@input type='text' name='nb_days_before_new_appointment' id='nb_days_before_new_appointment' value=appointmentform.nbDaysBeforeNewAppointment!'' params='onkeypress="return validateQty(event);"' maxlength=2 />
 					</@formGroup>

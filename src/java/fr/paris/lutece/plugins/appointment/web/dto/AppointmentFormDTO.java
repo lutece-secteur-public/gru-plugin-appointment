@@ -35,7 +35,6 @@ package fr.paris.lutece.plugins.appointment.web.dto;
 
 import java.sql.Date;
 
-import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
@@ -265,12 +264,6 @@ public final class AppointmentFormDTO extends ReservationRule implements RBACRes
      */
     @Min( value = 1, message = "#i18n{portal.validation.message.notEmpty}" )
     private int _nCapacityPerSlot = 1;
-
-    /** The number of days to liberate. */
-    @NotNull( message = "#i18n{portal.validation.message.notEmpty}" )
-    @Min( value = 1, message = "#i18n{appointment.validation.appointmentform.NbDaysToLiberate.notEmpty}" )
-    @Max( value = 7, message = "#i18n{appointment.validation.appointmentform.NbDaysToLiberate.notEmpty}" )
-    private int _nNbDaysToLiberate;
 
     /**
      * Get the maximum number of appointments authorized for a same user
@@ -1115,27 +1108,6 @@ public final class AppointmentFormDTO extends ReservationRule implements RBACRes
     public void setCapacityPerSlot( int nCapacityPerSlot )
     {
         _nCapacityPerSlot = nCapacityPerSlot;
-    }
-    
-    /**
-     * Gets the nb days to liberate.
-     *
-     * @return the nb days to liberate
-     */
-    public int getNbDaysToLiberate( )
-    {
-        return _nNbDaysToLiberate;
-    }
-
-    /**
-     * Sets the nb days to liberate.
-     *
-     * @param nNbDaysToLiberate
-     *            the new nb days to liberate
-     */
-    public void setNbDaysToLiberate( int nNbDaysToLiberate )
-    {
-        this._nNbDaysToLiberate = nNbDaysToLiberate;
     }
 
 }
