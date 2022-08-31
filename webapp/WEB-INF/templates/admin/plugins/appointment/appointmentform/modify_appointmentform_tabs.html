@@ -1,7 +1,7 @@
 <link rel="stylesheet" href="css/datepicker.css">
 <link rel="stylesheet" href="css/admin/plugins/appointment/appointment.css">
 <#macro appointmentTabs tab appointmentform>
-	<@tabs>
+	<@tabs id='${tab}'>
 		<@tabList>
 			<#if tab="params"><#assign active = true /><#else><#assign active = false /></#if>
 			<@tabLink href='jsp/admin/plugins/appointment/ManageAppointmentForms.jsp?view=modifyAppointmentForm&id_form=${appointmentform.idForm}' title='	#i18n{appointment.modifyAppointmentForm.titleAlterablesParameters}' active=active />
@@ -12,7 +12,7 @@
 			<@tabLink href='jsp/admin/plugins/appointment/modules/resource/ManageAppointmentFormResources.jsp?view=manageFormResources&id_form=${appointmentform.idForm}' title='#i18n{module.appointment.resource.manageAppointmentFormResources.pageTitle}' active=active />
 			</#if>
 		</@tabList>
-		<@tabContent>
+		<@tabContent id='${tab}-content'>
 			<@messages infos=infos errors=errors />
 			<#nested>
 		</@tabContent>
