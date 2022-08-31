@@ -61,6 +61,7 @@
 								<@aButton href='jsp/admin/plugins/appointment/ManageAppointments.jsp?view=viewCalendarManageAppointment&id_form=${form.idForm}&date_of_display=${date_of_display}&id_appointment=${appointment.idAppointment}' buttonIcon='times' title='#i18n{portal.util.labelBack}' color='btn-default' />
 							<#else>
 								<@button name='back' id='back' value='back' buttonIcon='times' title='#i18n{portal.util.labelBack}' color='btn-default' />
+								<script>$('#back').on('click', function(){ window.history.go(-1);});</script>
 							</#if>
 						</@formGroup>
 					</fieldset>
