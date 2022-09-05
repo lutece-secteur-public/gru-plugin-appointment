@@ -241,10 +241,6 @@
 			e.preventDefault();
 		}
 		
-		if ((moment(endDateAndTime).isSame( startDateAndTime )) && ($('#startingTimeOfSearch').val() != '00:00') && ($('#endingTimeOfSearch').val() != '00:00'))  {
-			$('#error_message').html('La date de fin ne peut être égale à la date de début !');
-			$('#error_messages_container').css('display','block');
-			e.preventDefault();
-		}
+		
 	});
 </script>
