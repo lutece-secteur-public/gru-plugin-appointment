@@ -354,7 +354,7 @@ $(function(){
 </#macro>
 
 <#macro tabsComment tab>
-<@tabList id='${tab}' params=' style="margin-top:15px"'>
+<@tabList id='${tab}-tab' params=' style="margin-top:15px"'>
 	<#if tab='comment'><#assign active = true /><#else><#assign active = false /></#if>
 	<@tabLink href='jsp/admin/plugins/appointment/Comments.jsp?view=manageComment' title='#i18n{appointment.manage_comments.title}' active=active />
 	<#if tab='notif'><#assign active = true /><#else><#assign active = false /></#if>
@@ -396,8 +396,8 @@ $(function(){
 
 <#macro appointmentTabs tab form context>
 <@commonsAppJS />
-<@row id='${tab}'>
-    <@columns>
+<@row id='${tab}-tab'>
+	<@columns>
 		<@tabs params=' style="margin-top:15px"'>
 			<@tabList>
 				<@appointmentTabList tab form context />
@@ -421,7 +421,7 @@ $(function(){
 				</#if>
 			</@tabContent>
 		</@tabs>
-    </@columns>
+	</@columns>
 </@row>
 <script>
 <@headerTitle form=form />
