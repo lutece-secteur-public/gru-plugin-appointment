@@ -308,7 +308,7 @@ public class AppointmentApp extends MVCApplication
      */
     @SuppressWarnings( "unchecked" )
     @View( VIEW_APPOINTMENT_CALENDAR )
-    public XPage getViewAppointmentCalendar( HttpServletRequest request ) throws AccessDeniedException
+    public synchronized XPage getViewAppointmentCalendar( HttpServletRequest request ) throws AccessDeniedException
     {
         Map<String, Object> model = getModel( );
         Locale locale = getLocale( request );
@@ -576,7 +576,7 @@ public class AppointmentApp extends MVCApplication
      * @throws UserNotSignedException
      */
     @View( VIEW_APPOINTMENT_FORM )
-    public XPage getViewAppointmentForm( HttpServletRequest request ) throws UserNotSignedException, AccessDeniedException
+    public synchronized XPage getViewAppointmentForm( HttpServletRequest request ) throws UserNotSignedException, AccessDeniedException
     {
         String strIdForm = request.getParameter( PARAMETER_ID_FORM );
         String strNbPlacesToTake = request.getParameter( PARAMETER_NB_PLACE_TO_TAKE );
@@ -799,7 +799,7 @@ public class AppointmentApp extends MVCApplication
      * @throws AccessDeniedException
      */
     @Action( ACTION_DO_VALIDATE_FORM )
-    public XPage doValidateForm( HttpServletRequest request ) throws UserNotSignedException, AccessDeniedException
+    public synchronized XPage doValidateForm( HttpServletRequest request ) throws UserNotSignedException, AccessDeniedException
     {
         checkMyLuteceAuthentication( _appointmentForm, request );
         String strIdForm = request.getParameter( PARAMETER_ID_FORM );
@@ -911,7 +911,7 @@ public class AppointmentApp extends MVCApplication
      * @throws AccessDeniedException
      */
     @View( VIEW_DISPLAY_RECAP_APPOINTMENT )
-    public XPage displayRecapAppointment( HttpServletRequest request ) throws UserNotSignedException, AccessDeniedException
+    public synchronized XPage displayRecapAppointment( HttpServletRequest request ) throws UserNotSignedException, AccessDeniedException
     {
         checkMyLuteceAuthentication( _appointmentForm, request );
         String anchor = request.getParameter( PARAMETER_ANCHOR );
@@ -974,7 +974,7 @@ public class AppointmentApp extends MVCApplication
      * @throws AccessDeniedException
      */
     @Action( ACTION_DO_MAKE_APPOINTMENT )
-    public XPage doMakeAppointment( HttpServletRequest request ) throws UserNotSignedException, AccessDeniedException
+    public synchronized XPage doMakeAppointment( HttpServletRequest request ) throws UserNotSignedException, AccessDeniedException
     {
         checkMyLuteceAuthentication( _appointmentForm, request );
         if ( _validatedAppointment == null || _appointmentForm == null || _validatedAppointment.getIdForm( ) != _appointmentForm.getIdForm( ) )
@@ -1058,7 +1058,7 @@ public class AppointmentApp extends MVCApplication
      * @return The XPage to display
      */
     @View( VIEW_GET_APPOINTMENT_CREATED )
-    public XPage getAppointmentCreated( HttpServletRequest request )
+    public synchronized XPage getAppointmentCreated( HttpServletRequest request )
     {
     	if( _validatedAppointment == null )
     	{
@@ -1103,7 +1103,7 @@ public class AppointmentApp extends MVCApplication
      */
 
     @View( VIEW_CHANGE_DATE_APPOINTMENT )
-    public XPage getViewChangeDateAppointment( HttpServletRequest request )
+    public synchronized XPage getViewChangeDateAppointment( HttpServletRequest request )
     {
         String strIdForm = request.getParameter( PARAMETER_ID_FORM );
         LocalDateTime startingDateTime = LocalDateTime.parse( request.getParameter( PARAMETER_STARTING_DATE_TIME ) );
@@ -1201,7 +1201,7 @@ public class AppointmentApp extends MVCApplication
      * @return the xpage
      */
     @View( value = VIEW_APPOINTMENT_FORM_LIST, defaultView = true )
-    public XPage getFormList( HttpServletRequest request )
+    public synchronized XPage getFormList( HttpServletRequest request )
     {
         Locale locale = getLocale( request );
         _appointmentForm = null;
@@ -1221,7 +1221,7 @@ public class AppointmentApp extends MVCApplication
      * @return the view
      */
     @View( VIEW_GET_VIEW_CANCEL_APPOINTMENT )
-    public XPage getViewCancelAppointment( HttpServletRequest request )
+    public synchronized XPage getViewCancelAppointment( HttpServletRequest request )
     {
         String refAppointment = request.getParameter( PARAMETER_REF_APPOINTMENT );
         Appointment appointment = null;
@@ -1277,7 +1277,7 @@ public class AppointmentApp extends MVCApplication
      * @return the confirmation view of the appointment cancelled
      */
     @Action( ACTION_DO_CANCEL_APPOINTMENT )
-    public XPage doCancelAppointment( HttpServletRequest request )
+    public synchronized XPage doCancelAppointment( HttpServletRequest request )
     {
         String strRef = request.getParameter( PARAMETER_REF_APPOINTMENT );
         if ( StringUtils.isNotEmpty( strRef ) )
@@ -1333,7 +1333,7 @@ public class AppointmentApp extends MVCApplication
      * @return The XPage to display
      */
     @View( VIEW_APPOINTMENT_CANCELED )
-    public XPage getAppointmentCanceled( HttpServletRequest request )
+    public synchronized XPage getAppointmentCanceled( HttpServletRequest request )
     {
         String strIdForm = request.getParameter( PARAMETER_ID_FORM );
         if ( StringUtils.isNotEmpty( strIdForm ) && StringUtils.isNumeric( strIdForm ) )
@@ -1361,7 +1361,7 @@ public class AppointmentApp extends MVCApplication
      *             If the authentication is enabled and the user has not signed in
      */
     @View( VIEW_GET_MY_APPOINTMENTS )
-    public XPage getMyAppointments( HttpServletRequest request ) throws UserNotSignedException
+    public synchronized XPage getMyAppointments( HttpServletRequest request ) throws UserNotSignedException
     {
         if ( !SecurityService.isAuthenticationEnable( ) )
         {
@@ -1475,7 +1475,7 @@ public class AppointmentApp extends MVCApplication
      * @return The HTML content to display, or the next URL to redirect the user to
      */
     @View( VIEW_WORKFLOW_ACTION_FORM )
-    public XPage getWorkflowActionForm( HttpServletRequest request ) throws UserNotSignedException
+    public synchronized XPage getWorkflowActionForm( HttpServletRequest request ) throws UserNotSignedException
     {
         String strIdAction = request.getParameter( PARAMETER_ID_ACTION );
         String refAppointment = request.getParameter( PARAMETER_REF_APPOINTMENT );
@@ -1518,7 +1518,7 @@ public class AppointmentApp extends MVCApplication
      * @return The next URL to redirect to
      */
     @Action( ACTION_DO_PROCESS_WORKFLOW_ACTION )
-    public XPage doProcessWorkflowAction( HttpServletRequest request ) throws UserNotSignedException
+    public synchronized XPage doProcessWorkflowAction( HttpServletRequest request ) throws UserNotSignedException
     {
         LuteceUser luteceUser = SecurityService.getInstance( ).getRegisteredUser( request );
         String strIdAction = request.getParameter( PARAMETER_ID_ACTION );

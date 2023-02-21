@@ -331,7 +331,7 @@ public class AppointmentJspBean extends MVCAdminJspBean
      * @throws AccessDeniedException
      */
     @View( value = VIEW_CALENDAR_MANAGE_APPOINTMENTS, defaultView = true )
-    public String getViewCalendarManageAppointments( HttpServletRequest request ) throws AccessDeniedException
+    public synchronized String getViewCalendarManageAppointments( HttpServletRequest request ) throws AccessDeniedException
     {
         String strIdForm = request.getParameter( PARAMETER_ID_FORM );
 
@@ -509,7 +509,7 @@ public class AppointmentJspBean extends MVCAdminJspBean
      * @throws AccessDeniedException
      */
     @View( value = VIEW_MANAGE_APPOINTMENTS )
-    public String getManageAppointments( HttpServletRequest request ) throws AccessDeniedException
+    public synchronized String getManageAppointments( HttpServletRequest request ) throws AccessDeniedException
     {
         String strIdForm = request.getParameter( PARAMETER_ID_FORM );
 
@@ -634,7 +634,7 @@ public class AppointmentJspBean extends MVCAdminJspBean
      * @return the HTML code to confirm
      */
     @Action( ACTION_CONFIRM_REMOVE_APPOINTMENT )
-    public String getConfirmRemoveAppointment( HttpServletRequest request )
+    public synchronized String getConfirmRemoveAppointment( HttpServletRequest request )
     {
         UrlItem url = new UrlItem( getActionUrl( ACTION_REMOVE_APPOINTMENT ) );
         url.addParameter( PARAMETER_ID_APPOINTMENT, request.getParameter( PARAMETER_ID_APPOINTMENT ) );
@@ -654,7 +654,7 @@ public class AppointmentJspBean extends MVCAdminJspBean
      */
 
     @Action( ACTION_REMOVE_APPOINTMENT )
-    public String doRemoveAppointment( HttpServletRequest request ) throws AccessDeniedException
+    public synchronized String doRemoveAppointment( HttpServletRequest request ) throws AccessDeniedException
     {
         int nIdAppointment = Integer.parseInt( request.getParameter( PARAMETER_ID_APPOINTMENT ) );
         Integer idForm = Integer.parseInt( request.getParameter( PARAMETER_ID_FORM ) );
@@ -678,7 +678,7 @@ public class AppointmentJspBean extends MVCAdminJspBean
      * @return the HTML code to confirm
      */
     @Action( ACTION_CONFIRM_REMOVE_MASS_APPOINTMENT )
-    public String getConfirmRemoveMassAppointment( HttpServletRequest request, int nIdForm )
+    public synchronized String getConfirmRemoveMassAppointment( HttpServletRequest request, int nIdForm )
     {
         UrlItem url = new UrlItem( getActionUrl( ACTION_REMOVE_MASSAPPOINTMENT ) );
         url.addParameter( PARAMETER_ID_FORM, nIdForm );
@@ -697,7 +697,7 @@ public class AppointmentJspBean extends MVCAdminJspBean
      *             If the user is not authorized to access this feature
      */
     @Action( ACTION_REMOVE_MASSAPPOINTMENT )
-    public String doRemoveMassAppointment( HttpServletRequest request ) throws AccessDeniedException
+    public synchronized String doRemoveMassAppointment( HttpServletRequest request ) throws AccessDeniedException
     {
         String [ ] tabIdAppointmentToDelete = (String [ ]) request.getSession( ).getAttribute( PARAMETER_ID_APPOINTMENT_DELETE );
         request.getSession( ).removeAttribute( PARAMETER_ID_APPOINTMENT_DELETE );
@@ -730,7 +730,7 @@ public class AppointmentJspBean extends MVCAdminJspBean
      *             If the user is not authorized to access this feature
      */
     @View( VIEW_VIEW_APPOINTMENT )
-    public String getViewAppointment( HttpServletRequest request ) throws AccessDeniedException
+    public synchronized String getViewAppointment( HttpServletRequest request ) throws AccessDeniedException
     {
         String strIdAppointment = request.getParameter( PARAMETER_ID_APPOINTMENT );
         String strIdForm = request.getParameter( PARAMETER_ID_FORM );
@@ -816,7 +816,7 @@ public class AppointmentJspBean extends MVCAdminJspBean
      *             If the user is not authorized to access this feature
      */
     @Action( ACTION_EXPORT_APPOINTMENTS )
-    public String doExportAppointments( HttpServletRequest request ) throws AccessDeniedException
+    public synchronized String doExportAppointments( HttpServletRequest request ) throws AccessDeniedException
     {
         String strIdForm = request.getParameter( PARAMETER_ID_FORM );
         if ( StringUtils.isEmpty( strIdForm ) || !StringUtils.isNumeric( strIdForm ) )
@@ -866,7 +866,7 @@ public class AppointmentJspBean extends MVCAdminJspBean
      *             If the user is not authorized to access this feature
      */
     @View( VIEW_CREATE_APPOINTMENT )
-    public String getViewCreateAppointment( HttpServletRequest request ) throws AccessDeniedException
+    public synchronized String getViewCreateAppointment( HttpServletRequest request ) throws AccessDeniedException
     {
         clearUploadFilesIfNeeded( request.getSession( ) );
         String strIdForm = request.getParameter( PARAMETER_ID_FORM );
@@ -1049,7 +1049,7 @@ public class AppointmentJspBean extends MVCAdminJspBean
      *             If the user is not authorized to access this feature
      */
     @Action( ACTION_DO_VALIDATE_FORM )
-    public String doValidateForm( HttpServletRequest request ) throws AccessDeniedException
+    public synchronized String doValidateForm( HttpServletRequest request ) throws AccessDeniedException
     {
         String strIdForm = request.getParameter( PARAMETER_ID_FORM );
         int nIdForm = Integer.parseInt( strIdForm );
@@ -1134,7 +1134,7 @@ public class AppointmentJspBean extends MVCAdminJspBean
      * @throws AccessDeniedException
      */
     @View( VIEW_CHANGE_DATE_APPOINTMENT )
-    public String getViewChangeDateAppointment( HttpServletRequest request )
+    public synchronized String getViewChangeDateAppointment( HttpServletRequest request )
     {
         String strIdForm = request.getParameter( PARAMETER_ID_FORM );
         Locale locale = getLocale( );
@@ -1234,7 +1234,7 @@ public class AppointmentJspBean extends MVCAdminJspBean
      * @return The HTML content to display or the next URL to redirect to
      */
     @View( VIEW_DISPLAY_RECAP_APPOINTMENT )
-    public String displayRecapAppointment( HttpServletRequest request )
+    public synchronized String displayRecapAppointment( HttpServletRequest request )
     {
 
         Map<String, Object> model = getModel( );
@@ -1264,7 +1264,7 @@ public class AppointmentJspBean extends MVCAdminJspBean
      *             If the user is not authorized to access this feature
      */
     @Action( ACTION_DO_MAKE_APPOINTMENT )
-    public String doMakeAppointment( HttpServletRequest request ) throws AccessDeniedException
+    public synchronized String doMakeAppointment( HttpServletRequest request ) throws AccessDeniedException
     {
         boolean overbookingAllowed = false;
         if ( StringUtils.isNotEmpty( request.getParameter( PARAMETER_BACK ) ) )
@@ -1332,7 +1332,7 @@ public class AppointmentJspBean extends MVCAdminJspBean
      * @throws AccessDeniedException
      *             If the user is not authorized to access this feature
      */
-    public String getDownloadFileFromSession( HttpServletRequest request, HttpServletResponse httpResponse ) throws AccessDeniedException
+    public synchronized String getDownloadFileFromSession( HttpServletRequest request, HttpServletResponse httpResponse ) throws AccessDeniedException
     {
         String strIdResponse = request.getParameter( PARAMETER_ID_RESPONSE );
         File respfile = null;
@@ -1393,7 +1393,7 @@ public class AppointmentJspBean extends MVCAdminJspBean
      * @throws AccessDeniedException
      *             If the user is not authorized to access this feature
      */
-    public String getDownloadFile( HttpServletRequest request, HttpServletResponse httpResponse ) throws AccessDeniedException
+    public synchronized String getDownloadFile( HttpServletRequest request, HttpServletResponse httpResponse ) throws AccessDeniedException
     {
         String strIdResponse = request.getParameter( PARAMETER_ID_RESPONSE );
 
@@ -1554,7 +1554,7 @@ public class AppointmentJspBean extends MVCAdminJspBean
      * @return The HTML content to display, or the next URL to redirect the user to
      */
     @View( VIEW_WORKFLOW_ACTION_FORM )
-    public String getWorkflowActionForm( HttpServletRequest request )
+    public synchronized String getWorkflowActionForm( HttpServletRequest request )
     {
         String strIdAction = request.getParameter( PARAMETER_ID_ACTION );
         String strIdAppointment = request.getParameter( PARAMETER_ID_APPOINTMENT );
@@ -1602,7 +1602,7 @@ public class AppointmentJspBean extends MVCAdminJspBean
      * @return The next URL to redirect to
      */
     @Action( ACTION_DO_PROCESS_WORKFLOW_ACTION )
-    public String doProcessWorkflowAction( HttpServletRequest request )
+    public synchronized String doProcessWorkflowAction( HttpServletRequest request )
     {
         String strIdAction = request.getParameter( PARAMETER_ID_ACTION );
         String strIdAppointment = request.getParameter( PARAMETER_ID_APPOINTMENT );
@@ -1681,7 +1681,7 @@ public class AppointmentJspBean extends MVCAdminJspBean
      *             If the user is not authorized to access this feature
      */
     @Action( ACTION_DO_CHANGE_APPOINTMENT_STATUS )
-    public String doChangeAppointmentStatus( HttpServletRequest request ) throws AccessDeniedException
+    public synchronized String doChangeAppointmentStatus( HttpServletRequest request ) throws AccessDeniedException
     {
         String strIdAppointment = request.getParameter( PARAMETER_ID_APPOINTMENT );
         String strStatusCancelled = request.getParameter( PARAMETER_STATUS_CANCELLED );
