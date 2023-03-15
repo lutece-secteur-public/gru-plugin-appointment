@@ -162,7 +162,7 @@ public final class AppointmentUtilities
                 listFormErrors.add( genAttError );
             }
         }
-        if ( !StringUtils.equals( strEmail, strConfirmEmail ) )
+        if ( !StringUtils.equalsIgnoreCase( strEmail, strConfirmEmail ) )
         {
             GenericAttributeError genAttError = new GenericAttributeError( );
             genAttError.setErrorMessage( I18nService.getLocalizedString( ERROR_MESSAGE_CONFIRM_EMAIL, locale ) );
