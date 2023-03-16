@@ -162,7 +162,8 @@ public class AppointmentApp extends MVCApplication
     private static final String TEMPLATE_HTML_CODE_FORM = "skin/plugins/appointment/html_code_form.html";
     private static final String TEMPLATE_HTML_CODE_NB_PLACES_TO_TAKE_FORM = "skin/plugins/appointment/appointment_nb_places_to_take_form.html";
     private static final String TEMPLATE_TASKS_FORM_WORKFLOW = "skin/plugins/appointment/tasks_form_workflow.html";
-
+    private static final String TEMPLATE_ERROR_APPOINTMENT_REFERENCE = "skin/plugins/appointment/error_appointment_reference.html";
+    
     // Views
     public static final String VIEW_APPOINTMENT_FORM = "getViewAppointmentForm";
     public static final String VIEW_APPOINTMENT_CALENDAR = "getViewAppointmentCalendar";
@@ -333,6 +334,12 @@ public class AppointmentApp extends MVCApplication
         {
             // If we want to change the date of an appointment
             AppointmentDTO appointmentDTO = AppointmentService.buildAppointmentDTOFromRefAppointment( refAppointment );
+            // Check if an appointment Object was found and built with the given reference
+            if( appointmentDTO == null )
+            {
+            	// When the appointment Object doesn't exist, we display an error message to the user
+            	return getAppointmentNotFoundXPage( locale, model );
+            }
             if ( appointmentDTO.getIsCancelled( ) || appointmentDTO.getStartingDateTime( ).isBefore( LocalDateTime.now( ) ) )
             {
                 addError( ERROR_MESSAGE_REPORT_APPOINTMENT, locale );
@@ -1215,7 +1222,7 @@ public class AppointmentApp extends MVCApplication
     }
 
     /**
-     * Get the view for he user who wants to cancel its appointment
+     * Get the view for the user who wants to cancel its appointment
      * 
      * @param request
      * @return the view
@@ -1485,6 +1492,12 @@ public class AppointmentApp extends MVCApplication
             if ( WorkflowService.getInstance( ).isDisplayTasksForm( nIdAction, getLocale( request ) ) )
             {
                 AppointmentDTO appointment = AppointmentService.buildAppointmentDTOFromRefAppointment( refAppointment );
+                // Check if an appointment Object was found and built with the given reference
+                if( appointment == null )
+                {
+                	// When the appointment Object doesn't exist, we display an error message to the user
+                	return getAppointmentNotFoundXPage( getLocale( request ), null );
+                }
                 ITaskService taskService = SpringContextService.getBean( TaskService.BEAN_SERVICE );
                 List<ITask> listActionTasks = taskService.getListTaskByIdAction( nIdAction, getLocale( request ) );
                 if ( listActionTasks.stream( ).anyMatch( task -> task.getTaskType( ).getKey( ).equals( "taskReportAppointment" ) ) )
@@ -1527,6 +1540,12 @@ public class AppointmentApp extends MVCApplication
         {
             int nIdAction = Integer.parseInt( strIdAction );
             Appointment appointment = AppointmentService.findAppointmentByReference( refAppointment );
+            // Check if an appointment Object was found and built with the given reference
+            if( appointment == null )
+            {
+            	// When the appointment Object doesn't exist, we display an error message to the user
+            	return getAppointmentNotFoundXPage( getLocale( request ), null );
+            }
             int nIdAppointment = appointment.getIdAppointment( );
 
             List<AppointmentSlot> listApptSlot = appointment.getListAppointmentSlot( );
@@ -1598,6 +1617,41 @@ public class AppointmentApp extends MVCApplication
             }
         }
         return getMyAppointments( request );
+    }
+    
+    /**
+     * Get the XPage to display an error when an appointment's reference does not exist
+     *
+     * @param locale
+     *            The locale
+     * @param model
+     *            Values to insert in the HTML
+     * @return The generated XPage
+     */
+    public static XPage getAppointmentNotFoundXPage( Locale locale, Map<String, Object> model )
+    {
+    	model = ( model == null ) ? new HashMap<>( ) : model;
+    	model.put( MARK_NO_APPOINTMENT_WITH_THIS_REFERENCE, Boolean.TRUE );
+    	
+        XPage xpage = new XPage( );
+        xpage.setContent( getAppointmentNotFoundHtml( locale, model ) );
+        xpage.setTitle( I18nService.getLocalizedString( MESSAGE_MY_APPOINTMENTS_PAGE_TITLE, locale ) );
+        return xpage;
+    }
+    
+    /**
+     * Get the HTML content to display an error when an appointment does not exist
+     *
+     * @param locale
+     *            The locale
+     * @param model
+     *            Values to insert in the HTML
+     * @return The HTML content to display
+     */
+    public static String getAppointmentNotFoundHtml( Locale locale, Map<String, Object> model )
+    {
+        HtmlTemplate template = AppTemplateService.getTemplate( TEMPLATE_ERROR_APPOINTMENT_REFERENCE, locale, model ); 
+        return template.getHtml( );
     }
 
     /**
