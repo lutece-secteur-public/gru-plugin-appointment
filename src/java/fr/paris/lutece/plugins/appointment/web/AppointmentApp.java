@@ -814,10 +814,11 @@ public class AppointmentApp extends MVCApplication
         List<GenericAttributeError> listFormErrors = new ArrayList<>( );
         Locale locale = request.getLocale( );
         String strEmail = request.getParameter( PARAMETER_EMAIL );
+        String strEmailConfirm = request.getParameter( PARAMETER_EMAIL_CONFIRMATION );
         String strFirstName = request.getParameter( PARAMETER_FIRST_NAME );
         String strLastName = request.getParameter( PARAMETER_LAST_NAME );
         AppointmentUtilities.checkDateOfTheAppointmentIsNotBeforeNow( _notValidatedAppointment, locale, listFormErrors );
-        AppointmentUtilities.checkEmail( strEmail, request.getParameter( PARAMETER_EMAIL_CONFIRMATION ), _appointmentForm, locale, listFormErrors );
+        AppointmentUtilities.checkEmail( strEmail, strEmailConfirm, _appointmentForm, locale, listFormErrors );
         int nbBookedSeats = _nNbPlacesToTake;
         if ( _nNbPlacesToTake == 0 )
         {
@@ -826,7 +827,7 @@ public class AppointmentApp extends MVCApplication
                     _notValidatedAppointment, locale, listFormErrors );
 
         }
-        AppointmentUtilities.fillAppointmentDTO( _notValidatedAppointment, nbBookedSeats, strEmail, strFirstName, strLastName );
+        AppointmentUtilities.fillAppointmentDTO( _notValidatedAppointment, nbBookedSeats, strEmail, strEmailConfirm, strFirstName, strLastName );
         AppointmentUtilities.validateFormAndEntries( _notValidatedAppointment, request, listFormErrors, false );
         AppointmentUtilities.fillInListResponseWithMapResponse( _notValidatedAppointment );
         boolean bErrors = false;

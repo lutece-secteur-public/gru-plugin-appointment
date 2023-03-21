@@ -539,11 +539,12 @@ public final class AppointmentUtilities
      * @param strLastName
      *            the last name of the user
      */
-    public static void fillAppointmentDTO( AppointmentDTO appointmentDTO, int nbBookedSeats, String strEmail, String strFirstName, String strLastName )
+    public static void fillAppointmentDTO( AppointmentDTO appointmentDTO, int nbBookedSeats, String strEmail, String strEmailConfirm, String strFirstName, String strLastName )
     {
         appointmentDTO.setDateOfTheAppointment( appointmentDTO.getSlot( ).get( 0 ).getDate( ).format( Utilities.getFormatter( ) ) );
         appointmentDTO.setNbBookedSeats( nbBookedSeats );
         appointmentDTO.setEmail( strEmail );
+        appointmentDTO.setConfirmEmail(strEmailConfirm);
         appointmentDTO.setFirstName( strFirstName );
         appointmentDTO.setLastName( strLastName );
     }

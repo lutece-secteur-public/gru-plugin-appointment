@@ -150,6 +150,11 @@ public final class AppointmentDTO extends Appointment
     private boolean _bOverbookingAllowed;
 
     /**
+     * Email confirm of the User
+     */
+    private String _strEmailConfirm;
+
+    /**
      * Get the name of the admin user
      * 
      * @return the admin user name
@@ -466,6 +471,25 @@ public final class AppointmentDTO extends Appointment
     public void setOverbookingAllowed( boolean bOverbookingAllowed )
     {
         _bOverbookingAllowed = bOverbookingAllowed;
+    }
+
+    /**
+     * Returns the email confirm
+     *
+     * @return The email confirm
+     */
+    public String getEmailConfirm() {
+        return _strEmailConfirm;
+    }
+
+    /**
+     * Sets the email confirm
+     *
+     * @param strEmailConfirm
+     *            The email confirm
+     */
+    public void setConfirmEmail(String strEmailConfirm) {
+        this._strEmailConfirm = strEmailConfirm;
     }
 
     /**

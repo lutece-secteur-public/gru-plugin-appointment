@@ -54,41 +54,46 @@
 						<@formGroup class='${formGroupClass!}' labelFor='lastname' labelKey='${formMessages.fieldLastNameTitle!}' helpKey='${formGroupHelpKey!}' mandatory=true>
 							<@input type='text' name='lastname' id='lastname' value='${appointment.lastName!}' maxlength=255 />
 						</@formGroup>
-						
+						<#assign formGroupHelpKey = '' />
+						<#assign formGroupClass='' />
 						
 						<#if formMessages.fieldFirstNameHelp?? && formMessages.fieldFirstNameHelp != ''>
 							<#assign formGroupHelpKey = '${formMessages.fieldFirstNameHelp}' />
 						</#if>
 						<#if form_errors??>
-							<#list form_errors as form_error>	
+							<#list form_errors as form_error>
 								<#if form_error.isDisplayableError && form_error.errorMessage==listAllErrors[1]>
 									<#assign formGroupHelpKey = '${form_error.errorMessage}' />
 									<#assign formGroupClass='has-error' />
-								</#if>	
+								</#if>
 							</#list>
 						</#if>
 						<@formGroup class='${formGroupClass!}' labelFor='firstname' labelKey='${formMessages.fieldFirstNameTitle!}' helpKey='${formGroupHelpKey!}' mandatory=true>
 							<@input type='text' name='firstname' id='firstname' value='${appointment.firstName!}' maxlength=255 />
 						</@formGroup>
+						<#assign formGroupHelpKey = '' />
+						<#assign formGroupClass='' />
 						<#if formMessages.fieldEmailHelp?? && formMessages.fieldEmailHelp != ''>
 							<#assign formGroupHelpKey = '${formMessages.fieldEmailHelp}' />
 						</#if>
 						<#if form_errors??>
-							<#list form_errors as form_error>	
+							<#list form_errors as form_error>
 								<#if  form_error.isDisplayableError && (form_error.errorMessage==listAllErrors[2] || form_error.errorMessage==listAllErrors[3])>
 									<#assign formGroupHelpKey = '${form_error.errorMessage}' />
 									<#assign formGroupClass='has-error' />
-								</#if>	
+								</#if>
 							</#list>
 						</#if>
 						<@formGroup class='${formGroupClass!}' labelFor='email' labelKey='${formMessages.fieldEmailTitle!}' helpKey='${formGroupHelpKey!}' mandatory=form.enableMandatoryEmail! >
 							<@input type='email' name='email' id='email' value='${appointment.email!}' maxlength=255 />
 						</@formGroup>
+						<#assign formGroupHelpKey = '' />
+						<#assign formGroupClass='' />
 						<#if formMessages.fieldConfirmationEmail?? && formMessages.fieldConfirmationEmailHelp != ''>
 							<#assign formGroupHelpKey = '${formMessages.fieldConfirmationEmailHelp!}' />
 						</#if>
 						<#if form_errors??>
-							<#list form_errors as form_error>	
+							<#list form_errors as form_error>
 								<#if form_error.isDisplayableError && (form_error.errorMessage == listAllErrors[4] || form_error.errorMessage == listAllErrors[5] )>
 									<#assign formGroupHelpKey = '${form_error.errorMessage}' />
 									<#assign formGroupClass='has-error' />
@@ -96,8 +101,10 @@
 							</#list>
 						</#if>
 						<@formGroup class='${formGroupClass!}' labelFor='emailConfirm' labelKey='${formMessages.fieldConfirmationEmail!}' helpKey='${formGroupHelpKey!}' mandatory=form.enableMandatoryEmail! >
-							<@input type='email' name='emailConfirm' id='emailConfirm' value='${appointment.email!}' maxlength=255 />
+							<@input type='email' name='emailConfirm' id='emailConfirm' value='${appointment.emailConfirm!}' maxlength=255 />
 						</@formGroup>
+						<#assign formGroupHelpKey = '' />
+						<#assign formGroupClass='' />
 						<#if nbplaces != 0 && isOverbooking>
 							<#assign nbplaces= 999 >
 							<#assign formGroupHelpKey = '#i18n{appointment.message.appointmentForm.placesMax}' />
@@ -107,7 +114,7 @@
 						<#if form.maxPeoplePerAppointment &gt; 1 || isOverbooking >				
 							<#assign formGroupError = '' />
 							<#if form_errors??>
-								<#list form_errors as form_error>	
+								<#list form_errors as form_error>
 									<#if form_error.isDisplayableError && (form_error.errorMessage==listAllErrors[6] || form_error.errorMessage == listAllErrors[7]) >
 										<#assign formGroupHelpKey = '${form_error.errorMessage}' />
 										<#assign formGroupClass='has-error' />
