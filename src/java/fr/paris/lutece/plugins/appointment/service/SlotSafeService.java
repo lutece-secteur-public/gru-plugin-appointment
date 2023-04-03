@@ -1020,17 +1020,26 @@ public final class SlotSafeService
             for ( AppointmentSlot appointmentSlot : oldAppointment.getListAppointmentSlot( ) )
             {
                 Lock lock = getLockOnSlot( appointmentSlot.getIdSlot( ) );
-                if ( lock.tryLock( 3, TimeUnit.SECONDS ) )
+
+                lock.lock();
+                try
                 {
-                    listLock.add( lock );
+                    if ( lock.tryLock( 3, TimeUnit.SECONDS ) )
+                    {
+                        listLock.add( lock );
+                    }
+                    else
+                    {
+                        throw new SlotFullException( "ERROR SLOT LOCKED" );
+                    }
+                    Slot slt = SlotService.findSlotById( appointmentSlot.getIdSlot( ) );
+                    slt = updateRemaningPlacesWithAppointmentMoved( appointmentSlot.getNbPlaces( ), slt );
+                    listOldSlot.add( slt );
                 }
-                else
+                finally
                 {
-                    throw new SlotFullException( "ERROR SLOT LOCKED" );
+                    lock.unlock( );
                 }
-                Slot slt = SlotService.findSlotById( appointmentSlot.getIdSlot( ) );
-                slt = updateRemaningPlacesWithAppointmentMoved( appointmentSlot.getNbPlaces( ), slt );
-                listOldSlot.add( slt );
             }
         }
 
@@ -1046,15 +1055,23 @@ public final class SlotSafeService
             else
             {
                 Lock lock = getLockOnSlot( appSlot.getIdSlot( ) );
-                if ( lock.tryLock( 3, TimeUnit.SECONDS ) )
+                lock.lock();
+                try
                 {
-                    listLock.add( lock );
+                    if ( lock.tryLock( 3, TimeUnit.SECONDS ) )
+                    {
+                        listLock.add( lock );
+                    }
+                    else
+                    {
+                        throw new SlotFullException( "ERROR SLOT LOCKED" );
+                    }
+                    slt = SlotService.findSlotById( appSlot.getIdSlot( ) );
                 }
-                else
+                finally
                 {
-                    throw new SlotFullException( "ERROR SLOT LOCKED" );
+                    lock.unlock( );
                 }
-                slt = SlotService.findSlotById( appSlot.getIdSlot( ) );
             }
             if ( slt == null || ( ( appSlot.getNbPlaces( ) > slt.getNbRemainingPlaces( ) && !appointmentDTO.getOverbookingAllowed( ) )
                     || slt.getEndingDateTime( ).isBefore( LocalDateTime.now( ) ) ) )
