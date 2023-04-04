@@ -33,6 +33,11 @@
 								</@formGroup>
 							</@columns>
 							<@columns md=3>
+								<@formGroup labelFor='phoneNumber' labelKey='#i18n{appointment.labelPhoneNumber}'  rows=2>
+									<@input type='text' id='phoneNumber' name='phoneNumber' value='${filter.phoneNumber!}' />
+								</@formGroup>
+							</@columns>
+							<@columns md=3>
 								<@formGroup labelFor='status' labelKey='#i18n{appointment.labelStatus}'  rows=2>
 									<@select name='status' id='status' items=listStatus default_value='${filter.status!}' />
 								</@formGroup>
@@ -109,6 +114,9 @@
 							<th>#i18n{appointment.manageAppointments.columnEmail} 
 								<@aButton href='jsp/admin/plugins/appointment/ManageAppointments.jsp?view=manageAppointments&id_form=${form.idForm}&orderBy=email&orderAsc=true' buttonIcon='chevron-up' size='xs' color='default' />
 								<@aButton href='jsp/admin/plugins/appointment/ManageAppointments.jsp?view=manageAppointments&id_form=${form.idForm}&orderBy=email&orderAsc=false' buttonIcon='chevron-down' size='xs' color='default' />
+							<th>#i18n{appointment.manageAppointments.columnPhoneNumber} 
+								<@aButton href='jsp/admin/plugins/appointment/ManageAppointments.jsp?view=manageAppointments&id_form=${form.idForm}&orderBy=phone_number&orderAsc=true' buttonIcon='chevron-up' size='xs' color='default' />
+								<@aButton href='jsp/admin/plugins/appointment/ManageAppointments.jsp?view=manageAppointments&id_form=${form.idForm}&orderBy=phone_number&orderAsc=false' buttonIcon='chevron-down' size='xs' color='default' />
 							<th>#i18n{appointment.manageAppointments.columnNbBookedSeats} 
 								<@aButton href='jsp/admin/plugins/appointment/ManageAppointments.jsp?view=manageAppointments&id_form=${form.idForm}&orderBy=nbBookedSeats&orderAsc=true' buttonIcon='chevron-up' size='xs' color='default' />
 								<@aButton href='jsp/admin/plugins/appointment/ManageAppointments.jsp?view=manageAppointments&id_form=${form.idForm}&orderBy=nbBookedSeats&orderAsc=false' buttonIcon='chevron-down' size='xs' color='default' />
@@ -136,6 +144,7 @@
 								<td>${appointment.lastName}</td>
 								<td>${appointment.firstName}</td>
 								<td>${appointment.email}</td>
+								<td>${appointment.phoneNumber!}</td>
 								<td>${appointment.nbBookedSeats}</td>
 								<td>${appointment.dateOfTheAppointment} #i18n{appointment.labelFrom} ${appointment.startingTime} #i18n{appointment.labelTo} ${appointment.endingTime}</td>
 								<td>${appointment.adminUser}</td>
