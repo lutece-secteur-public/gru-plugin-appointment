@@ -13,31 +13,31 @@
 					</#if>
 					<@aButton params='data-toggle="modal" data-target="#export_modal"' buttonIcon='download' title='#i18n{appointment.permission.label.exportMassAppointment}' size='sm' />
 				</@div>
-				<@div class='container' id='searchAppointment' params='style="margin-bottom:50px;"'>
+				<@div class='container-md' id='searchAppointment' params='style="margin-bottom:50px;"'>
 				
 					<@fieldSet legend='#i18n{appointment.manageAppointments.labelSearch}'>
 						<@row>
-							<@columns md=3>
-								<@formGroup labelFor='lastName' labelKey='${formMessages.fieldLastNameTitle}' rows=2>
+							<@columns class='col-md'>
+								<@formGroup labelFor='lastName' labelKey='#i18n{appointment.labelLastName}' rows=2>
 									<@input type='text' id='lastName' name='lastName' value='${filter.lastName!}' />
 								</@formGroup>
 							</@columns>
-							<@columns md=3>
-								<@formGroup labelFor='firstName' labelKey='${formMessages.fieldFirstNameTitle}' rows=2>
+							<@columns class='col-md'>
+								<@formGroup labelFor='firstName' labelKey='#i18n{appointment.labelFirstName}' rows=2>
 									<@input type='text' id='firstName' name='firstName' value='${filter.firstName!}'/>
 								</@formGroup>
 							</@columns>
-							<@columns md=3>
-								<@formGroup labelFor='email' labelKey='${formMessages.fieldEmailTitle}'  rows=2>
+							<@columns class='col-md'>
+								<@formGroup labelFor='email' labelKey='#i18n{appointment.labelEmail}' rows=2>
 									<@input type='text' id='email' name='email' value='${filter.email!}' />
 								</@formGroup>
 							</@columns>
-							<@columns md=3>
+							<@columns class='col-md'>
 								<@formGroup labelFor='phoneNumber' labelKey='#i18n{appointment.labelPhoneNumber}'  rows=2>
 									<@input type='text' id='phoneNumber' name='phoneNumber' value='${filter.phoneNumber!}' />
 								</@formGroup>
 							</@columns>
-							<@columns md=3>
+							<@columns class='col-md'>
 								<@formGroup labelFor='status' labelKey='#i18n{appointment.labelStatus}'  rows=2>
 									<@select name='status' id='status' items=listStatus default_value='${filter.status!}' />
 								</@formGroup>
@@ -45,7 +45,7 @@
 							
 						</@row>
 						<@row id='dates'>
-							<@columns md=3>
+							<@columns class='col-md'>
 								<@formGroup labelFor='startingDateOfSearch' labelKey='#i18n{appointment.manageAppointments.startingDateOfSearch}'  rows=2>
 									<@inputGroup>
 										<@input type='text' name='startingDateOfSearch' id='startingDateOfSearch' value='${filter.startingDateOfSearch!}' />
@@ -55,7 +55,7 @@
 									</@inputGroup>
 								</@formGroup>
 							</@columns>
-							<@columns md=3>
+							<@columns class='col-md'>
 								<@formGroup labelFor='startingTimeOfSearch' labelKey='#i18n{appointment.labelTo}' rows=2>
 									<@inputGroup>
 										<@input type='text' name='startingTimeOfSearch' id='startingTimeOfSearch' value='${filter.startingTimeOfSearch!\'\'}' />
@@ -65,7 +65,7 @@
 									</@inputGroup>
 								</@formGroup>
 							</@columns>
-							<@columns md=3>
+							<@columns class='col-md'>
 								<@formGroup labelFor='endingDateOfSearch' labelKey='#i18n{appointment.manageAppointments.endingDateOfSearch}'  rows=2>
 									<@inputGroup>
 										<@input type='text' name='endingDateOfSearch' id='endingDateOfSearch' value='${filter.endingDateOfSearch!}' />
@@ -75,7 +75,7 @@
 									</@inputGroup>
 								</@formGroup>
 							</@columns>
-							<@columns md=3>
+							<@columns class='col-md'>
 								<@formGroup labelFor='endingTimeOfSearch' labelKey='#i18n{appointment.labelTo}'  rows=2>
 									<@inputGroup>
 										<@input type='text' name='endingTimeOfSearch' id='endingTimeOfSearch' value='${filter.endingTimeOfSearch!\'\'}' />
@@ -84,6 +84,9 @@
 										</@inputGroupItem>
 									</@inputGroup>
 								</@formGroup>
+							</@columns>
+							<@columns class='col-md'>
+								<!-- EMPTY COLUMN: set so the fields in this row have the same width as the ones in the row above (purely visual) -->
 							</@columns>
 						</@row>
 						<@row id='error_messages_container' params='style="display:none;"'>
