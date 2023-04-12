@@ -83,6 +83,25 @@ var events = [
                 "id"            : '${event.idSlot}',
                 "textColor"     :  <#if event.isOpen & !event.isPassed & (nbAppointments > maxCap)>'#000'<#else>'#2c2c2d'</#if>,
                 "createUrl"     : '<#if eventCreate !='' && nbAppointments !=0>jsp/admin/plugins/appointment/ManageAppointments.jsp?view=${eventCreate}</#if>',
+                "manageUrl"     :  <#if modifDateAppointment>
+                                        eventUrl + "viewChangeDateAppointment&id_form=${event.idForm}&id_slot=${event.idSlot}&starting_date_time=${event.startingDateTime}&ending_date_time=${event.endingDateTime}&is_open=${event.isOpen?c}&is_specific=${event.isSpecific?c}&max_capacity=${event.maxCapacity}"
+                                   <#elseif event.isOpen & !event.isPassed & overbookingAllowed && (event.nbRemainingPlaces = event.nbPotentialRemainingPlaces)>
+                                        eventUrl + "manageAppointments&id_form=${event.idForm}&starting_date_time=${event.startingDateTime}&ending_date_time=${event.endingDateTime}"
+                                   <#elseif event.isOpen & !event.isPassed & (event.nbRemainingPlaces > 0) & (event.nbRemainingPlaces = event.nbPotentialRemainingPlaces)>
+                                        eventUrl + "manageAppointments&id_form=${event.idForm}&starting_date_time=${event.startingDateTime}&ending_date_time=${event.endingDateTime}"
+                                   <#elseif event.isOpen & (event.nbRemainingPlaces == 0)>
+                                        eventUrl + "manageAppointments&id_form=${event.idForm}&starting_date_time=${event.startingDateTime}&ending_date_time=${event.endingDateTime}"
+                                   <#elseif event.isOpen & (event.nbRemainingPlaces > 0) & (event.nbPotentialRemainingPlaces == 0)>
+                                        ""
+                                   <#elseif event.isOpen & !event.isPassed & (event.nbRemainingPlaces > 0) & (event.nbPotentialRemainingPlaces > 0) & (event.nbRemainingPlaces > event.nbPotentialRemainingPlaces)>
+                                        eventUrl + "manageAppointments&id_form=${event.idForm}&starting_date_time=${event.startingDateTime}&ending_date_time=${event.endingDateTime}"
+                                   <#elseif event.isOpen>
+                                        eventUrl + "manageAppointments&id_form=${event.idForm}&starting_date_time=${event.startingDateTime}&ending_date_time=${event.endingDateTime}"
+                                   <#elseif !event.isOpen & ((event.maxCapacity - event.nbRemainingPlaces) > 0)>
+                                        eventUrl + "manageAppointments&id_form=${event.idForm}&starting_date_time=${event.startingDateTime}&ending_date_time=${event.endingDateTime}"
+                                   <#else>
+                                        eventUrl + "manageAppointments&id_form=${event.idForm}&starting_date_time=${event.startingDateTime}&ending_date_time=${event.endingDateTime}"
+                                   </#if>,
                 "customClass"   : 'fc-custom ${strEventClass!}',
                 "customStyle"   : <#if event.isOpen & !event.isPassed>'linear-gradient( 90deg, ${strCustomColor} 0%, ${strCustomColor} ${nbFull?floor}%, rgba(255,255,255,1) ${nbFull?floor}% )',<#else>'',</#if>
                 "backgroundColor" : <#if event.isOpen & !event.isPassed & (nbAppointments > maxCap)>bgOpenColor

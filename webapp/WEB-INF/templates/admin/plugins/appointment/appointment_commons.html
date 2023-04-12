@@ -578,8 +578,10 @@ $( function(){
 		<#if showComments>
 			// Comments
 			var isCommentModerator=${permission_moderate_comment};
-			if( calEvent.type = "comment" && ( calEvent.creator_user === '${permission_access_code}' || isCommentModerator ) ){
+			if( calEvent.type == "comment" && ( calEvent.creator_user === '${permission_access_code}' || isCommentModerator ) ){
 				<@commentModal update=true />
+			} else if( calEvent.type == "appointment" ) {
+				location.href = calEvent.manageUrl;
 			}
 		<#else>
 			// Typical week
