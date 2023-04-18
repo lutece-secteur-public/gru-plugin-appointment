@@ -338,7 +338,7 @@ public class AppointmentApp extends MVCApplication
             if( appointmentDTO == null )
             {
             	// When the appointment Object doesn't exist, we display an error message to the user
-            	return getAppointmentNotFoundXPage( locale, model );
+            	return getXPage( TEMPLATE_ERROR_APPOINTMENT_REFERENCE, locale, model );
             }
             if ( appointmentDTO.getIsCancelled( ) || appointmentDTO.getStartingDateTime( ).isBefore( LocalDateTime.now( ) ) )
             {
@@ -1496,7 +1496,7 @@ public class AppointmentApp extends MVCApplication
                 if( appointment == null )
                 {
                 	// When the appointment Object doesn't exist, we display an error message to the user
-                	return getAppointmentNotFoundXPage( getLocale( request ), null );
+                	return getXPage( TEMPLATE_ERROR_APPOINTMENT_REFERENCE, getLocale( request ), null );
                 }
                 ITaskService taskService = SpringContextService.getBean( TaskService.BEAN_SERVICE );
                 List<ITask> listActionTasks = taskService.getListTaskByIdAction( nIdAction, getLocale( request ) );
@@ -1544,7 +1544,7 @@ public class AppointmentApp extends MVCApplication
             if( appointment == null )
             {
             	// When the appointment Object doesn't exist, we display an error message to the user
-            	return getAppointmentNotFoundXPage( getLocale( request ), null );
+            	return getXPage( TEMPLATE_ERROR_APPOINTMENT_REFERENCE, getLocale( request ), null );
             }
             int nIdAppointment = appointment.getIdAppointment( );
 
@@ -1619,41 +1619,6 @@ public class AppointmentApp extends MVCApplication
         return getMyAppointments( request );
     }
     
-    /**
-     * Get the XPage to display an error when an appointment's reference does not exist
-     *
-     * @param locale
-     *            The locale
-     * @param model
-     *            Values to insert in the HTML
-     * @return The generated XPage
-     */
-    public static XPage getAppointmentNotFoundXPage( Locale locale, Map<String, Object> model )
-    {
-    	model = ( model == null ) ? new HashMap<>( ) : model;
-    	model.put( MARK_NO_APPOINTMENT_WITH_THIS_REFERENCE, Boolean.TRUE );
-    	
-        XPage xpage = new XPage( );
-        xpage.setContent( getAppointmentNotFoundHtml( locale, model ) );
-        xpage.setTitle( I18nService.getLocalizedString( MESSAGE_MY_APPOINTMENTS_PAGE_TITLE, locale ) );
-        return xpage;
-    }
-    
-    /**
-     * Get the HTML content to display an error when an appointment does not exist
-     *
-     * @param locale
-     *            The locale
-     * @param model
-     *            Values to insert in the HTML
-     * @return The HTML content to display
-     */
-    public static String getAppointmentNotFoundHtml( Locale locale, Map<String, Object> model )
-    {
-        HtmlTemplate template = AppTemplateService.getTemplate( TEMPLATE_ERROR_APPOINTMENT_REFERENCE, locale, model ); 
-        return template.getHtml( );
-    }
-
     /**
      * Get the captcha security service
      * 
