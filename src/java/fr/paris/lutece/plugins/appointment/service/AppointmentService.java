@@ -443,16 +443,20 @@ public final class AppointmentService
     }
 
     /**
-     * Build an appointment DTO from the id of an appointment business object
+     * Build an appointment DTO from the reference of an appointment business object
      * 
-     * @param nIdAppointment
-     *            the id of the appointment
-     * @return the appointment DTO
+     * @param refAppointment
+     *            the reference of the appointment
+     * @return the appointment DTO, or null if the appointment wasn't found
      */
     public static AppointmentDTO buildAppointmentDTOFromRefAppointment( String refAppointment )
     {
         Appointment appointment = AppointmentService.findAppointmentByReference( refAppointment );
 
+        if ( appointment == null )
+        {
+        	return null;
+        }
         User user = UserService.findUserById( appointment.getIdUser( ) );
         List<Slot> listSlot = SlotService.findListSlotByIdAppointment( appointment.getIdAppointment( ) );
         appointment.setSlot( listSlot );
