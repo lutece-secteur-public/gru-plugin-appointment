@@ -1,4 +1,5 @@
 ALTER TABLE appointment_form_rule  ADD bo_overbooking BOOLEAN NOT NULL DEFAULT FALSE;
+ALTER TABLE appointment_appointment DROP FOREIGN KEY fk_appointment_appointment_appointment_slot;
 ALTER TABLE appointment_appointment DROP COLUMN id_slot;
 ALTER TABLE appointment_appointment ADD  COLUMN id_action_reported INT;
 ALTER TABLE appointment_form ADD COLUMN is_multislot_appointment BOOLEAN NOT NULL DEFAULT FALSE;
@@ -8,7 +9,7 @@ ALTER TABLE appointment_form ADD COLUMN is_multislot_appointment BOOLEAN NOT NUL
 
 CREATE TABLE IF NOT EXISTS appointment_appointment_slot (
 
-	id_appointment INT NOT NULL, 
+	id_appointment INT NOT NULL,
 	id_slot INT NOT NULL,
 	nb_places INT NOT NULL,
 	PRIMARY KEY (id_appointment, id_slot ),
@@ -23,24 +24,24 @@ INSERT INTO appointment_calendar_template (id_calendar_template, title, descript
 --
 -- New table appointment_comment since 3.0.0
 --
-CREATE TABLE appointment_comment ( 
-id_comment int AUTO_INCREMENT, 
-id_form int default '0' NOT NULL, 
-starting_validity_date date NOT NULL, 
+CREATE TABLE appointment_comment (
+id_comment int AUTO_INCREMENT,
+id_form int default '0' NOT NULL,
+starting_validity_date date NOT NULL,
 starting_validity_time TIME,
 ending_validity_date date NOT NULL,
-ending_validity_time TIME, 
-comment long varchar NOT NULL, 
-comment_creation_date date NOT NULL, 
-comment_user_creator VARCHAR(255) NOT NULL, 
-PRIMARY KEY (id_comment), 
-CONSTRAINT fk_appointment_comment FOREIGN KEY (id_form) REFERENCES appointment_form (id_form) 
+ending_validity_time TIME,
+comment long varchar NOT NULL,
+comment_creation_date date NOT NULL,
+comment_user_creator VARCHAR(255) NOT NULL,
+PRIMARY KEY (id_comment),
+CONSTRAINT fk_appointment_comment FOREIGN KEY (id_form) REFERENCES appointment_form (id_form)
 );
 CREATE TABLE appointment_comment_notification_cf
 (
 	notify_type VARCHAR(45) NOT NULL,
-	sender_name VARCHAR(255) DEFAULT NULL, 
-	subject VARCHAR(255) DEFAULT NULL, 
+	sender_name VARCHAR(255) DEFAULT NULL,
+	subject VARCHAR(255) DEFAULT NULL,
 	message LONG VARCHAR DEFAULT NULL
 );
 INSERT INTO appointment_comment_notification_cf values ('CREATE', 'noreplay','Notification comment appointment',' ');
@@ -104,10 +105,10 @@ ALTER TABLE appointment_reservation_rule MODIFY id_reservation_rule INT AUTO_INC
 
 ALTER  TABLE appointment_week_definition  ADD ending_date_of_apply DATE NOT NULL;
 ALTER  TABLE appointment_week_definition  ADD id_reservation_rule INT NOT NULL;
-ALTER  TABLE appointment_week_definition ADD CONSTRAINT CONSTRAINT fk_appointment_week_definition_appointment_form
+ALTER  TABLE appointment_week_definition DROP CONSTRAINT fk_appointment_week_definition_appointment_form;
+ALTER  TABLE appointment_week_definition ADD CONSTRAINT fk_appointment_week_definition_appointment_form
     FOREIGN KEY (id_form)
     REFERENCES appointment_form (id_form);
-ALTER  TABLE appointment_week_definition DROP CONSTRAINT fk_appointment_week_definition_appointment_form;
 ALTER  TABLE appointment_week_definition DROP INDEX fk_appointment_week_type_appointment_form_idx;
 ALTER  TABLE appointment_week_definition DROP INDEX appointment_week_definition_unique_date;
 ALTER  TABLE appointment_week_definition DROP COLUMN id_form;
@@ -131,7 +132,7 @@ CREATE INDEX fk_appointment_working_day_appointment_reservation_rule_idx ON appo
 CREATE UNIQUE INDEX appointment_working_day_unique ON appointment_working_day (id_reservation_rule,day_of_week);
 
 
-DROP INDEX IF EXISTS appointment_user_unique_email ON appointment_user ;
+ALTER  TABLE appointment_user DROP INDEX appointment_user_unique_email;
 
 ALTER  TABLE appointment_category  ADD  nb_max_appointments_per_user INT DEFAULT 0 NOT NULL;
 

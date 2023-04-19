@@ -8,8 +8,9 @@ INSERT INTO core_admin_right (id_right,name,level_right,admin_url,description,is
 ('APPOINTMENT_CALENDAR_TEMPLATE','appointment.adminFeature.manageCalendarTemplates.name',0,'jsp/admin/plugins/appointment/ManageCalendarTemplates.jsp','appointment.adminFeature.manageCalendarTemplates.name',0,'appointment','APPLICATIONS',NULL,NULL,5);
 
 
-INSERT INTO core_admin_role_resource (rbac_id,role_key,resource_type,resource_id,permission) VALUES (1026,'super_admin','APPOINTMENT_FORM','*','*');
-
+INSERT INTO core_admin_role_resource (rbac_id,role_key,resource_type,resource_id,permission) VALUES
+    (1026,'super_admin','APPOINTMENT_FORM','*','*'),
+    (1029, 'super_admin', 'APPOINTMENT_FORM_CREATE', '*', '*');
 --
 -- Data for table core_user_right
 --
