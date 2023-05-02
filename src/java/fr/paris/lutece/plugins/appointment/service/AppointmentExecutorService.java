@@ -106,7 +106,7 @@ public enum AppointmentExecutorService
             // (Re-)Cancel if current thread also interrupted
             AppLogService.error( e.getMessage( ), e );
             _executorService.shutdownNow( );
-
+            Thread.currentThread().interrupt();
         }
     }
 
