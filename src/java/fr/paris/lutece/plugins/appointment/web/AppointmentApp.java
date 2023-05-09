@@ -199,7 +199,6 @@ public class AppointmentApp extends MVCApplication
     private static final String PARAMETER_FIRST_NAME = "firstname";
     private static final String PARAMETER_LAST_NAME = "lastname";
     private static final String PARAMETER_NUMBER_OF_BOOKED_SEATS = "nbBookedSeats";
-    private static final String PARAMETER_ID_APPOINTMENT = "id_appointment";
     private static final String PARAMETER_BACK = "back";
     private static final String PARAMETER_REF_APPOINTMENT = "refAppointment";
     private static final String PARAMETER_FROM_MY_APPOINTMENTS = "fromMyappointments";
@@ -270,8 +269,9 @@ public class AppointmentApp extends MVCApplication
     private static final String ERROR_MESSAGE_FORM_NOT_ACTIVE = "appointment.validation.appointment.formNotActive";
     private static final String ERROR_MESSAGE_NO_STARTING_VALIDITY_DATE = "appointment.validation.appointment.noStartingValidityDate";
     private static final String ERROR_MESSAGE_FORM_NO_MORE_VALID = "appointment.validation.appointment.formNoMoreValid";
-    private static final String ERROR_MESSAGE_NO_AVAILABLE_SLOT = "appointment.validation.appointment.noAvailableSlot";
     private static final String ERROR_MESSAGE_REPORT_APPOINTMENT = "appointment.message.error.report.appointment";
+    private static final String ERROR_MESSAGE_NO_AVAILABLE_SLOT = "appointment.validation.appointment.noAvailableSlot";
+
     private static final String ERROR_MESSAGE_NB_PLACE_TO_TAKE_TO_BIG = "appointment.message.error.nbplacestotake.toobig";
 
     // Messages
@@ -473,9 +473,12 @@ public class AppointmentApp extends MVCApplication
                             .get( ).getDate( );
                 }
             }
-            if ( firstDateOfFreeOpenSlot == null )
-            {
-                addError( ERROR_MESSAGE_NO_AVAILABLE_SLOT, locale );
+            if (firstDateOfFreeOpenSlot == null) {
+                if (formMessages != null && StringUtils.isNotEmpty(formMessages.getNoAvailableSlot())) {
+                    addError(formMessages.getNoAvailableSlot());
+                } else {
+                    addError(ERROR_MESSAGE_NO_AVAILABLE_SLOT, locale);
+                }
                 bError = true;
             }
             // Display the week with the first available slot
