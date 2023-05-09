@@ -270,6 +270,8 @@ public class AppointmentApp extends MVCApplication
     private static final String ERROR_MESSAGE_NO_STARTING_VALIDITY_DATE = "appointment.validation.appointment.noStartingValidityDate";
     private static final String ERROR_MESSAGE_FORM_NO_MORE_VALID = "appointment.validation.appointment.formNoMoreValid";
     private static final String ERROR_MESSAGE_REPORT_APPOINTMENT = "appointment.message.error.report.appointment";
+    private static final String ERROR_MESSAGE_NO_AVAILABLE_SLOT = "appointment.validation.appointment.noAvailableSlot";
+
     private static final String ERROR_MESSAGE_NB_PLACE_TO_TAKE_TO_BIG = "appointment.message.error.nbplacestotake.toobig";
 
     // Messages
@@ -471,10 +473,12 @@ public class AppointmentApp extends MVCApplication
                             .get( ).getDate( );
                 }
             }
-            if ( firstDateOfFreeOpenSlot == null && formMessages != null
-                    && StringUtils.isNotEmpty( formMessages.getNoAvailableSlot() ) )
-            {
-                addError( formMessages.getNoAvailableSlot() );
+            if (firstDateOfFreeOpenSlot == null) {
+                if (formMessages != null && StringUtils.isNotEmpty(formMessages.getNoAvailableSlot())) {
+                    addError(formMessages.getNoAvailableSlot());
+                } else {
+                    addError(ERROR_MESSAGE_NO_AVAILABLE_SLOT, locale);
+                }
                 bError = true;
             }
             // Display the week with the first available slot
