@@ -42,6 +42,7 @@ import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -305,6 +306,7 @@ public class AppointmentJspBean extends MVCAdminJspBean
     private static final String LAST_NAME = "last_name";
     private static final String FIRST_NAME = "first_name";
     private static final String EMAIL = "email";
+    private static final String PHONE_NUMBER = "phone_number";
     private static final String NB_BOOKED_SEATS = "nbBookedSeats";
     private static final String DATE_APPOINTMENT = "date_appointment";
     private static final String ADMIN = "admin";
@@ -1506,6 +1508,10 @@ public class AppointmentJspBean extends MVCAdminJspBean
                 break;
             case EMAIL:
                 stream = sortedList.stream( ).sorted( ( a1, a2 ) -> a1.getEmail( ).compareTo( a2.getEmail( ) ) );
+                break;
+            case PHONE_NUMBER:
+            	// Added 'Comparator.nullsLast' to avoid NullPointerException when comparing null values (a user's phone number might be NULL in the database)
+            	stream = sortedList.stream( ).sorted( Comparator.comparing( AppointmentDTO::getPhoneNumber, Comparator.nullsLast( Comparator.naturalOrder() ) ) );
                 break;
             case NB_BOOKED_SEATS:
                 stream = sortedList.stream( ).sorted( ( a1, a2 ) -> Integer.compare( a1.getNbBookedSeats( ), a2.getNbBookedSeats( ) ) );
