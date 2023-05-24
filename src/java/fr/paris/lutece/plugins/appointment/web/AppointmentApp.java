@@ -602,6 +602,10 @@ public class AppointmentApp extends MVCApplication
             addError( ERROR_MESSAGE_FORM_NOT_ACTIVE, getLocale( request ) );
             return redirect( request, VIEW_APPOINTMENT_CALENDAR, PARAMETER_ID_FORM, nIdForm, PARAMETER_NB_PLACE_TO_TAKE, _nNbPlacesToTake );
         }
+        if(!_appointmentForm.getIsMultislotAppointment())
+        {
+            _nNbPlacesToTake = 0;
+        }
         checkMyLuteceAuthentication( _appointmentForm, request );
         // Patch needed for authentication after being on the form
         String secondAttempt = request.getParameter( "secondAttempt" );
