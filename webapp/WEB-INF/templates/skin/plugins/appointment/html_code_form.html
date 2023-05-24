@@ -238,17 +238,21 @@
 									</#if>
 									<div class="col-xs-12 col-sm-6">
 										<div class="form-group <#if formGroupError!=''>has-error</#if>">
-											<label class="col-xs-12 control-label" for="emailConfirm">${formMessages.fieldConfirmationEmail!}<#if form.enableMandatoryEmail>*</#if></label>
-											<div class="col-xs-12">
-												<input type="email" value="<#if appointment??>${appointment.emailConfirm!}</#if>" maxlength="255" id="emailConfirm" name="emailConfirm" class="form-control" <#if user?? && user.email?has_content>readonly</#if>>
-												<#if formGroupError!=''>
-													${formGroupError}
-												<#else>
-													<#if formMessages.fieldConfirmationEmail?? && formMessages.fieldConfirmationEmailHelp != ''>
-														<span class="help-block">${formMessages.fieldConfirmationEmailHelp!}</span>
+											<#if user?? && user.email?has_content>
+												<input type="hidden" value="<#if appointment??>${appointment.email!}</#if>" maxlength="255" id="emailConfirm" name="emailConfirm" class="form-control" readonly>
+											<#else>
+												<label class="col-xs-12 control-label" for="emailConfirm">${formMessages.fieldConfirmationEmail!}<#if form.enableMandatoryEmail>*</#if></label>
+												<div class="col-xs-12">
+													<input type="email" value="<#if appointment??>${appointment.emailConfirm!}</#if>" maxlength="255" id="emailConfirm" name="emailConfirm" class="form-control">
+													<#if formGroupError!=''>
+														${formGroupError}
+													<#else>
+														<#if formMessages.fieldConfirmationEmail?? && formMessages.fieldConfirmationEmailHelp != ''>
+															<span class="help-block">${formMessages.fieldConfirmationEmailHelp!}</span>
+														</#if>
 													</#if>
-												</#if>
-											</div>
+												</div>
+											</#if>
 										</div>							
 									</div>							
 									<#if form.maxPeoplePerAppointment &gt; 1>
