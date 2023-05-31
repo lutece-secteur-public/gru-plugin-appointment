@@ -33,7 +33,9 @@
  */
 package fr.paris.lutece.plugins.appointment.service;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import fr.paris.lutece.plugins.genericattributes.business.EntryType;
@@ -119,5 +121,26 @@ public final class EntryTypeService
         }
 
         return refListEntryType;
+    }
+    
+    /**
+     * Build a list with the different entry types
+     * 
+     * @return list of entry type
+     */
+    public static List<EntryType> initListEntryType( )
+    {
+        List<EntryType> listEntryType = new ArrayList<>( );
+        List<EntryType> listRefEntryType = EntryTypeHome.getList( AppointmentPlugin.PLUGIN_NAME );
+
+        for ( EntryType entryType : listRefEntryType )
+        {
+            if ( !entryType.isInactive( ) )
+            {
+                listEntryType.add( entryType );
+            }
+        }
+
+        return listEntryType;
     }
 }

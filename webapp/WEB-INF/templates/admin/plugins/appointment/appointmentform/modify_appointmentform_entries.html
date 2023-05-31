@@ -1,11 +1,10 @@
 <#include "/admin/plugins/appointment/appointmentform/modify_appointmentform_tabs.html" />
-<#assign entryIconList = ['dot-circle','check-square','comment','calendar','list-alt','file-alt','file-alt','phone','indent','database','map','sign-in-alt','user','image','file','phone'] />
 
 <@row>
 	<@columns>
 		<@appointmentTabs tab="entries" appointmentform=appointmentform>
 			<@row>
-				<@columns md=9>
+				<@columns sm=10 class='appointment-list-group'>
 					<@tform action='jsp/admin/plugins/appointment/ManageAppointmentFormEntries.jsp'>
 							<@input type='hidden' name='action' value='doChangeOrderEntry' />
 							<@input type='hidden' name='id_form' value='${appointmentform.idForm}' />
@@ -20,39 +19,40 @@
 									</@inputGroup>
 								</@formGroup>
 							</#if>
-							<hr/>
 						<@table>
 							<thead>
-								<tr>
-									<th>
+								<@tr>
+									<@th>
 										<@checkBox labelFor='selectAll' name='selectAll' id='selectAll' value='selectAll' title='#i18n{appointment.modifyAppointmentForm.selectAll}' mandatory=false />
-									</th>
-									<th>#i18n{appointment.labelTitle}</th>
-									<th>#i18n{appointment.type.name}</th>
-									<th>
+									</@th>
+									<@th>#i18n{appointment.labelTitle}</@th>
+									<@th>#i18n{appointment.type.name}</@th>
+									<@th>
 										<@icon style='question-circle' title='#i18n{appointment.createEntry.manageField.rowConditionalQuestion}' /></i>
-									</th>
-									<th>#i18n{appointment.createEntry.manageField.rowOrder}</th>
-									<th>#i18n{appointment.actions.label}&nbsp;</th>
-								</tr>
+									</@th>
+									<@th>#i18n{appointment.createEntry.manageField.rowOrder}</@th>
+									<@th>#i18n{appointment.actions.label}&nbsp;</@th>
+								</@tr>
 							</thead>
 							<tbody>
 								<#list entry_list as entry>
 									<#if entry.entryType.group>
 										<#assign lastGroup = entry>
+										<#assign trClass='group tr-group' />
+									<#else><#assign trClass='' />
 									</#if>
-									<tr>
-										<td>
-											<!--  add checkbox if entry isn't a group --> 
+									<@tr class=trClass>
+										<@td>
+											<!-- add checkbox if entry isn't a group --> 
 											<#if entry.entryType.group>
 												<@icon style='indent' />
 											<#else>
 												<@checkBox labelFor='entry_id_move' name='entry_id_move' id='entry_id_${entry.idEntry}' value='${entry.idEntry!}' title='#i18n{appointment.modifyAppointmentForm.select}' mandatory=false />
 											</#if>
-										</td>
-										<td>
+										</@td>
+										<@td>
 											<#if entry.entryType.group>
-												<h4 class="text-primary">${entry.title}</h4>
+												<h4>${entry.title}</h4>
 											<#elseif entry.parent?exists>
 												<span class="text-primary"><@icon style='caret-right' /></span>
 												<#if entry.entryType.comment>
@@ -61,9 +61,9 @@
 													${entry.title}
 												</#if>
 											<#elseif entry.entryType.myLuteceUser>
-													<span class="text-primary">
-														<@icon style='caret-right' />
-													</span>
+												<span class="text-primary">
+													<@icon style='caret-right' />
+												</span>
 													${entry.title}
 											<#else>
 												<#if entry.entryType.comment>
@@ -72,25 +72,21 @@
 													${entry.title}
 												</#if>
 											</#if>
-										</td>
-										<td>
+										</@td>
+										<@td>
 											<#if !entry.entryType.group>
 												<@tag>
-													<#list entryIconList as entryIcon>
-														<#if entry.entryType.idType == 100+entryIcon?index+1>
-															<@icon style='${entryIcon}' />
-														</#if>
-													</#list>
+												<@icon style='${entry.entryType.iconName}' />
 													&#160;${entry.entryType.title}
 												</@tag>
 											</#if>
-										</td>
-										<td>
+										</@td>
+										<@td>
 											<#if entry.numberConditionalQuestion!=0>${entry.numberConditionalQuestion}</#if>
-										</td>
+										</@td>
 										<!--  Change the order of the attribute -->
 										<#if entry.parent?exists>
-											<td>
+											<@td>
 												<@formGroup rows=2>
 													<@inputGroup>
 														<@comboOrders name="order_id_${entry.idEntry!}" default_value=entry.position idParent=entry.parent.idEntry />
@@ -99,18 +95,18 @@
 														</@inputGroupItem>
 													</@inputGroup>
 												</@formGroup>
-											</td>
+											</@td>
 										<#else>
-											<td>
-													<@inputGroup>
-														<@comboOrders name="order_id_${entry.idEntry!}" default_value=entry.position idParent=0 />
-														<@inputGroupItem>
-															<@button type='submit' name='id_entry' title='#i18n{appointment.move.name}' hideTitle=['all'] value='${entry.idEntry}' buttonIcon='check' size='sm' />
-														</@inputGroupItem>
-													</@inputGroup>
-											</td>
+											<@td>
+												<@inputGroup>
+													<@comboOrders name="order_id_${entry.idEntry!}" default_value=entry.position idParent=0 />
+													<@inputGroupItem>
+														<@button type='submit' name='id_entry' title='#i18n{appointment.move.name}' hideTitle=['all'] value='${entry.idEntry}' buttonIcon='check' size='sm' />
+													</@inputGroupItem>
+												</@inputGroup>
+											</@td>
 										</#if>
-										<td>
+										<@td>
 											<#if !entry.entryType.myLuteceUser>
 												<@aButton href='jsp/admin/plugins/appointment/ManageAppointmentFormEntries.jsp?view=getModifyEntry&id_entry=${entry.idEntry}' buttonIcon='edit' size='sm' />
 											</#if>
@@ -121,28 +117,26 @@
 												<@aButton href='jsp/admin/plugins/appointment/ManageAppointmentFormEntries.jsp?action=doCopyEntry&id_entry=${entry.idEntry}#list' title='#i18n{appointment.createEntry.manageField.titleCopy}' hideTitle=['all'] buttonIcon='copy' size='sm' />
 											</#if>
 												<@aButton href='jsp/admin/plugins/appointment/ManageAppointmentFormEntries.jsp?view=confirmRemoveEntry&id_entry=${entry.idEntry}#list' title='#i18n{appointment.delete.title}' hideTitle=['all'] buttonIcon='trash' color='danger' size='sm' />
-											</td>
-										</tr>
+											</@td>
+										</@tr>
 									</#list>
 								</tbody>
 							</@table>
 						</@tform>
 				</@columns>
-				<@columns md=3>
-					<@listGroup>
-						<@listGroupItem>#i18n{appointment.modifyAppointmentForm.labelInsertEntry}</@listGroupItem>
-						<#list entry_type_list as item>
-							<@listGroupItem>	<@link href='jsp/admin/plugins/appointment/ManageAppointmentFormEntries.jsp?view=getCreateEntry&id_form=${appointmentform.idForm}&id_type=${item.code}'>
-							<#list entryIconList as entryIcon>
-								<#if item.code?number == 100+entryIcon?index+1>
-									<@icon style='${entryIcon}' />
-								</#if>
-							</#list>
-								&#160;${item.name}
-							</@link>
-							</@listGroupItem>
-						</#list>
-					</@listGroup>
+				<@columns class='appointment-list-group' sm=2 id='sticky-container'>
+					<!-- Insert a space above the entryType List if a group selection list is available -->
+					<#if entry_group_list?has_content>
+						<div style="margin-bottom:1cm;"/></div>	
+					</#if>
+					<@ul class='list-group' id='info-right'>
+						<@li>#i18n{appointment.modifyAppointmentForm.labelInsertEntry}</@li>
+						<#list entry_type_list as entry>
+							<@li>
+								<@aButton href='jsp/admin/plugins/appointment/ManageAppointmentFormEntries.jsp?view=getCreateEntry&id_form=${appointmentform.idForm}&id_type=${entry.idType}' buttonIcon='${entry.iconName}' title='${entry.title}' class='btn btn-add-entry' style='btn-block' color='primary' />
+							</@li>
+                        </#list>
+                    </@ul>
 				</@columns>
 			</@row>
 		</@appointmentTabs>

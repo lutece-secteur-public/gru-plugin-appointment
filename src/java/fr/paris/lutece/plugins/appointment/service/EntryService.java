@@ -442,8 +442,8 @@ public final class EntryService extends RemovalListenerService implements Serial
                 listEntry.addAll( listEntryGroup );
             }
         }
+        model.put( MARK_ENTRY_TYPE_LIST, EntryTypeService.initListEntryType( ) );
         model.put( MARK_GROUP_ENTRY_LIST, getRefListGroups( nIdForm ) );
-        model.put( MARK_ENTRY_TYPE_LIST, EntryTypeService.getInstance( ).getEntryTypeReferenceList( ) );
         model.put( MARK_ENTRY_LIST, listEntry );
         model.put( MARK_LIST_ORDER_FIRST_LEVEL, listOrderFirstLevel );
     }
