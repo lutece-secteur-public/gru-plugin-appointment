@@ -82,6 +82,7 @@ public abstract class AbstractAppointmentFormAndSlotJspBean extends MVCAdminJspB
     private static final String MESSAGE_MULTI_SLOT_ERROR_NUMBER_OF_SEATS_BOOKED = "appointment.message.error.multiSlot.numberOfSeatsBookedAndConcurrentAppointments";
     private static final String MESSAGE_ERROR_NUMBER_DAY_BETWEEN_TWO_APPOINTMENTS = "appointment.message.error.nbDaysBetweenTwoAppointments";
     private static final String MESSAGE_ERROR_MAX_APPOINTMENTS_PER_USER = "appointment.message.error.nbMaxAppointmentsPerUser";
+    private static final String MESSAGE_ERROR_NB_CONSECUTIVE_SLOTS = "appointment.message.error.nbConsecutiveSlots";
 
     // Constantes
     protected static final String VAR_CAP = "var_cap";
@@ -124,7 +125,8 @@ public abstract class AbstractAppointmentFormAndSlotJspBean extends MVCAdminJspB
     {
         return checkStartingAndEndingTime( appointmentForm ) && checkStartingAndEndingValidityDate( appointmentForm )
                 && checkSlotCapacityAndPeoplePerAppointment( appointmentForm ) && checkAtLeastOneWorkingDayOpen( appointmentForm )
-                && checkMultiSlotFormTypeBookablePlaces( appointmentForm ) && checkControlMaxAppointmentsPerUser( appointmentForm );
+                && checkMultiSlotFormTypeBookablePlaces( appointmentForm ) && checkControlMaxAppointmentsPerUser( appointmentForm )
+                && checkNbConsecutiveSlots(appointmentForm);
     }
 
     /**
@@ -360,6 +362,17 @@ public abstract class AbstractAppointmentFormAndSlotJspBean extends MVCAdminJspB
         model.put( AppointmentUtilities.MARK_PERMISSION_MODERATE_COMMENT, String.valueOf( RBACService.isAuthorized( AppointmentFormDTO.RESOURCE_TYPE,
                 String.valueOf( appointmentForm.getIdForm( ) ), AppointmentResourceIdService.PERMISSION_MODERATE_COMMENT_FORM, (User) user ) ) );
         model.put( AppointmentUtilities.MARK_PERMISSION_ACCESS_CODE, user.getAccessCode( ) );
+    }
+
+    protected boolean checkNbConsecutiveSlots( AppointmentFormDTO appointmentForm )
+    {
+        boolean bReturn = true;
+        if ( appointmentForm.getIsMultislotAppointment( ) && appointmentForm.getNbConsecutiveSlots( ) < 2 )
+        {
+            bReturn = false;
+            addError( MESSAGE_ERROR_NB_CONSECUTIVE_SLOTS, getLocale( ) );
+        }
+        return bReturn;
     }
 
 }

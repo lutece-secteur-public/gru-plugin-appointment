@@ -89,6 +89,8 @@ ALTER TABLE appointment_form_rule MODIFY id_form_rule INT NOT NULL;
 ALTER TABLE appointment_form_rule DROP PRIMARY KEY, ADD PRIMARY KEY (id_form_rule);
 ALTER TABLE appointment_form_rule MODIFY id_form_rule INT AUTO_INCREMENT;
 ALTER  TABLE appointment_form  ADD capacity_per_slot INT DEFAULT 0 NOT NULL ;
+ALTER  TABLE appointment_form  ADD nb_consecutive_slots INT DEFAULT 0 NOT NULL ;
+ALTER  TABLE appointment_form  ADD label_consecutive_slots VARCHAR(255) NULL ;
 
 
 ALTER TABLE appointment_closing_day MODIFY id_closing_day INT NOT NULL;

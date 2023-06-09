@@ -9,7 +9,7 @@
 		<@tform id='formid' class='horizontal' method='post' action='jsp/admin/plugins/appointment/ManageAppointmentForms.jsp' params='enctype=\'multipart/form-data\''>
 		<@box>
 			<@boxHeader title='#i18n{appointment.createAppointmentForm.title}' />
-			<@boxBody>			
+			<@boxBody>
 				<@messages errors=errors />
 				 <@input type='hidden' id='id_form' name='id_form' />
 					<@formGroup labelFor='title' labelKey='#i18n{appointment.createAppointmentForm.labelTitle}' mandatory=true>
@@ -42,9 +42,16 @@
 					</@formGroup>
 					<@formGroup labelFor='bo_overbooking' labelKey='#i18n{appointment.label.BoOverbooking}' helpKey='#i18n{appointment.label.BoOverbooking.help}'>
                       <@checkBox labelFor='bo_overbooking' name='bo_overbooking' id='bo_overbooking' value='true' checked=appointmentform.boOverbooking!false />
-     				</@formGroup> 
+     				</@formGroup>
 					<@formGroup labelFor='is_multislot_appointment' labelKey='#i18n{appointment.label.isMultislotAppointment}' helpKey='#i18n{appointment.label.isMultislotAppointment.help}'>
-						<@checkBox name='is_multislot_appointment' id='is_multislot_appointment' value='true' checked=appointmentform.isMultislotAppointment!false />
+						<@checkBox name='is_multislot_appointment' id='is_multislot_appointment' value='true' checked=appointmentform.isMultislotAppointment!false	params='onchange="javascript:toggleConsecutiveSlots();"'/>
+					</@formGroup>
+					<@formGroup labelFor='nb_consecutive_slots' labelKey='#i18n{appointment.label.nbConsecutiveSlots}' helpKey='#i18n{appointment.label.nbConsecutiveSlots.help}' mandatory=true>
+						<@input type='text' name='nb_consecutive_slots' id='nb_consecutive_slots' value=appointmentform.nb_consecutive_slots!'1' params='onkeypress="return validateQty(event);"' maxlength=2 />
+					</@formGroup>
+
+					<@formGroup labelFor='label_consecutive_slots' labelKey='#i18n{appointment.label.labelConsecutiveSlots}' helpKey='#i18n{appointment.label.labelConsecutiveSlots.help}' mandatory=true>
+						<@input type='text' name='label_consecutive_slots' id='label_consecutive_slots' value=appointmentform.label_consecutive_slots!'' />
 					</@formGroup>
 					
 					<@formGroup labelFor='display_title_fo' labelKey='#i18n{appointment.label.displayTitleFo}' helpKey='#i18n{appointment.label.displayTitleFo.help}'>
@@ -92,7 +99,7 @@
 						<@input type='textarea' name='description_rule' id='description_rule' maxlength=255 >${appointmentform.descriptionRule!}</@input>
 					</@formGroup>
 					<@input type='hidden' name='color' id='color' value='${appointmentform.color!"#1AF355"}' maxlength=255 />
-                                       
+
 					<@formGroup labelFor='max_people_per_appointment' labelKey='#i18n{appointment.createAppointmentForm.labelMaxPeoplePerAppointment}' helpKey='#i18n{appointment.createAppointmentForm.labelMaxPeoplePerAppointment.help}' mandatory=true>
 						<@input type='text' name='max_people_per_appointment' id='max_people_per_appointment' value=appointmentform.maxPeoplePerAppointment!'' params='onkeypress="return validateQty(event);"' maxlength=3 />
 					</@formGroup>
@@ -155,7 +162,7 @@
 						</@formGroup>
 						<@formGroup labelFor='calendarTemplateId' labelKey='#i18n{appointment.createAppointmentForm.labelCalendarTemplate}' mandatory=true>
 							<@select name='calendarTemplateId' id='calendarTemplateId' items=refListCalendarTemplates default_value='${appointmentform.calendarTemplateId!}' />
-						</@formGroup>						
+						</@formGroup>
 						<#if isCaptchaEnabled>
 							<@formGroup>
 								<@checkBox name='enableCaptcha' id='enableCaptcha' value='true' checked=appointmentform.enableCaptcha!false labelFor='enableCaptcha' labelKey='#i18n{appointment.createAppointmentForm.labelEnableCaptcha}' />
@@ -315,10 +322,10 @@
 </@row>
 <script src="js/bootstrap-datepicker.js"></script>
 <script src="js/locales/bootstrap-datepicker.<@getLanguageInLocale language=language />.js"></script>
-<script>	
+<script>
 	$('#formid').on('keyup keypress', function(e) {
 	    var keyCode = e.keyCode || e.which;
-	    if (keyCode === 13) { 
+	    if (keyCode === 13) {
 	      e.preventDefault();
 	      return false;
 	    }
@@ -359,6 +366,38 @@
 		$('#time_end').datetimepicker({
 		  format: 'HH:mm',
 		  stepping: 5
-	    });		
+	    });
 	});
+	function toggleConsecutiveSlots() {
+		var nbConsecutiveSlots = document.getElementById('nb_consecutive_slots');
+		var labelConsecutiveSlots = document.getElementById('label_consecutive_slots');
+		var isMultislotAppointment = document.getElementById('is_multislot_appointment');
+
+		if (isMultislotAppointment.checked) {
+			// Checkbox is checked, enable inputs field and set value to 5
+			nbConsecutiveSlots.disabled = false;
+			labelConsecutiveSlots.disabled = false;
+			nbConsecutiveSlots.value = '5';
+		} else {
+			// Checkbox is unchecked, disable inputs field and set value to 1
+			nbConsecutiveSlots.disabled = true;
+			labelConsecutiveSlots.disabled = true;
+			nbConsecutiveSlots.value = '1';
+		}
+  	}
+	// Initial call to set the initial state of the input field
+	toggleConsecutiveSlots();
+
+	function validateNbConsecutiveSlots() {
+		var nbConsecutiveSlotsInput = document.getElementById('nb_consecutive_slots');
+		var enteredValue = parseInt(nbConsecutiveSlotsInput.value);
+
+		if (enteredValue < 2 || isNaN(enteredValue)) {
+			nbConsecutiveSlotsInput.value = '';
+		}
+	}
+
+	// Add event listener to validate the input value
+	var nbConsecutiveSlotsInput = document.getElementById('nb_consecutive_slots');
+	nbConsecutiveSlotsInput.addEventListener('change', validateNbConsecutiveSlots);
 </script>

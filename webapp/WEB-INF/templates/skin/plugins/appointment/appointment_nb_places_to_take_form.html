@@ -2,7 +2,7 @@
 <div class="row nextStepTitleRow">
 	<div class="col-xs-12">
 		<div class="container">
-			<h2>#i18n{appointment.nbPlacesToTakeForm.labelNbPlaces}</h2>
+			<h2>${labelConsecutiveSlots}</h2>
 	</div>
 <div>
 <div class="row steps">
@@ -14,9 +14,9 @@
 				<select name="nbPlacesToTake" class="form-control">
 				<#list 1..maxNbPlacesToTake as x>
 					<#if x == nbPlacesToTake>
-					<option value="${x}" selected=selected>${x} #i18n{appointment.nbPlacesToTakeForm.labelPeople}</option>
+					<option value="${x}" selected=selected>${x}</option>
 					<#else>
-					<option value="${x}">${x} #i18n{appointment.nbPlacesToTakeForm.labelPeople}</option>
+					<option value="${x}">${x}</option>
 					</#if>
 				</#list>
 				</select><br>
