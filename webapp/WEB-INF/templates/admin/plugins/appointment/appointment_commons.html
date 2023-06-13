@@ -622,12 +622,12 @@ $( function(){
 				$('.fc-today-button').attr('class', 'fc-today-button btn btn-primary btn-sm');
 				$('.fc-datePicker-button').attr('class', 'fc-datePicker-button btn btn-primary btn-sm');
 			</#if>
-			$('.open-AddBookDialog').click( function( e ) {
-				e.preventDefault();
-				$('#starting_date_time').val($(this).data('starting_date_time'));
-				var dt = $(this).data('starting_date_time');
-				$('#starting_date_time_span').val( moment(dt).format('DD/MM/YYYY hh:mm') );
-				$('#addbook_modal').modal('show');
+			$( '.open-AddBookDialog' ).click( function( e ) {
+				$( '#starting_date_time' ).val( $( this ).data( 'starting_date_time' ) );
+				var dt = $( this ).data( 'starting_date_time' );
+				$( '#starting_date_time_span' ).val( moment( dt ).format( 'DD/MM/YYYY hh:mm' ) );
+				$( '#addBookModalDialog' ).modal( 'show' );
+				return false;
 			});
 			<#if showComments>
 			// Set comments 
