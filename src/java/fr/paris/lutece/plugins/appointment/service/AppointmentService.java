@@ -331,6 +331,7 @@ public final class AppointmentService
             AdminUser adminUser = AdminUserHome.findByPrimaryKey( appointment.getIdAdminUser( ) );
             if ( adminUser != null )
             {
+                appointmentDTO.setIdAdminUser( adminUser.getUserId());
                 appointmentDTO.setAdminUser(
                         new StringBuilder( adminUser.getFirstName( ) + org.apache.commons.lang3.StringUtils.SPACE + adminUser.getLastName( ) ).toString( ) );
             }
