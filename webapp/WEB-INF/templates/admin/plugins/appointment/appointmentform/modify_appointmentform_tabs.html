@@ -65,9 +65,6 @@
 		<@formGroup labelFor='nb_consecutive_slots' labelKey='#i18n{appointment.label.nbConsecutiveSlots}' helpKey='#i18n{appointment.label.nbConsecutiveSlots.help}' mandatory=true>
 			<@input type='text' name='nb_consecutive_slots' id='nb_consecutive_slots' value=appointmentform.nbConsecutiveSlots!'' params='onkeypress="return validateQty(event);"' maxlength=2/>
 		</@formGroup>
-		<@formGroup labelFor='label_consecutive_slots' labelKey='#i18n{appointment.label.nbConsecutiveSlots}' helpKey='#i18n{appointment.label.labelConsecutiveSlots.help}' mandatory=true>
-			<@input type='text' name='label_consecutive_slots' id='label_consecutive_slots' value=appointmentform.labelConsecutiveSlots!'' />
-		</@formGroup>
 	</#if>
 	 <@formGroup labelFor='bo_overbooking' labelKey='#i18n{appointment.label.BoOverbooking}' helpKey='#i18n{appointment.label.BoOverbooking.help}'>
 		<@checkBox labelFor='bo_overbooking' name='bo_overbooking' id='bo_overbooking' value='true' checked=appointmentform.boOverbooking!false />
@@ -329,7 +326,7 @@
 		var nbConsecutiveSlotsInput = document.getElementById('nb_consecutive_slots');
 		var enteredValue = parseInt(nbConsecutiveSlotsInput.value);
 
-		if (enteredValue < 2 || isNaN(enteredValue)) {
+		if (enteredValue < 1 || isNaN(enteredValue)) {
 			nbConsecutiveSlotsInput.value = '';
 		}
 	}

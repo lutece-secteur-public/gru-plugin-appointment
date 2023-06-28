@@ -262,11 +262,6 @@ public final class AppointmentFormDTO extends ReservationRule implements RBACRes
     private int _nNbConsecutiveSlots = 1;
 
     /**
-     * The label of consecutive slots
-     */
-    private String _strLabelConsecutiveSlots;
-
-    /**
      * Role FO
      */
     private String _strRole;
@@ -1103,27 +1098,6 @@ public final class AppointmentFormDTO extends ReservationRule implements RBACRes
     public void setNbConsecutiveSlots( int nbConsecutiveSlots )
     {
         this._nNbConsecutiveSlots = nbConsecutiveSlots;
-    }
-
-    /**
-     * Get the label of consecutive slots
-     *
-     * @return the label of consecutive slots
-     */
-    public String getLabelConsecutiveSlots( )
-    {
-        return _strLabelConsecutiveSlots;
-    }
-
-    /**
-     * Set the label of consecutive slots
-     *
-     * @param labelConsecutiveSlots
-     *            the label of consecutive slots
-     */
-    public void setLabelConsecutiveSlots( String labelConsecutiveSlots )
-    {
-        this._strLabelConsecutiveSlots = labelConsecutiveSlots;
     }
 
     /**

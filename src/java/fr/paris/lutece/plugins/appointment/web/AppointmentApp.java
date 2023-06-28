@@ -217,7 +217,6 @@ public class AppointmentApp extends MVCApplication
     // Mark
     private static final String MARK_MODIFICATION_DATE_APPOINTMENT = "modifDateAppointment";
     private static final String MARK_NBPLACESTOTAKE = "nbPlacesToTake";
-    private static final String MARK_LABELCONSECUTIVESLOTS = "labelConsecutiveSlots";
     private static final String MARK_MAX_NBPLACESTOTAKE = "maxNbPlacesToTake";
     private static final String MARK_INFOS = "infos";
     private static final String MARK_LOCALE = "locale";
@@ -293,7 +292,6 @@ public class AppointmentApp extends MVCApplication
     // Local variables
     private transient CaptchaSecurityService _captchaSecurityService;
     private int _nNbPlacesToTake;
-    private String _strLabelConsecutiveSlots;
     private String _strNbPlacesToTakeLength;
     private AppointmentFormDTO _appointmentForm;
     private AppointmentDTO _notValidatedAppointment;
@@ -320,7 +318,6 @@ public class AppointmentApp extends MVCApplication
 
         _appointmentForm = FormService.buildAppointmentFormWithoutReservationRule( nIdForm );
         _strNbPlacesToTakeLength = String.valueOf(_appointmentForm.getNbConsecutiveSlots());
-        _strLabelConsecutiveSlots = _appointmentForm.getLabelConsecutiveSlots();
         boolean bError = false;
         if ( !_appointmentForm.getIsActive( ) )
         {
@@ -563,7 +560,6 @@ public class AppointmentApp extends MVCApplication
         model.put( PARAMETER_DAY_VIEW, dayView );
         model.put( PARAMETER_WEEK_VIEW, weekView );
         model.put( MARK_MAX_NBPLACESTOTAKE, Integer.valueOf( _strNbPlacesToTakeLength ) );
-        model.put( MARK_LABELCONSECUTIVESLOTS, _strLabelConsecutiveSlots);
         HtmlTemplate templateNbPlacesToTakeForm = AppTemplateService.getTemplate( TEMPLATE_HTML_CODE_NB_PLACES_TO_TAKE_FORM, locale, model );
         model.put( MARK_FORM_NB_PLACES_TO_TAKE_HTML, templateNbPlacesToTakeForm.getHtml( ) );
 

@@ -563,7 +563,6 @@ public final class FormService
         appointmentForm.setIsActive( form.getIsActive( ) );
         appointmentForm.setIsMultislotAppointment( form.getIsMultislotAppointment( ) );
         appointmentForm.setNbConsecutiveSlots( form.getNbConsecutiveSlots( ) );
-        appointmentForm.setLabelConsecutiveSlots( form.getLabelConsecutiveSlots( ) );
         appointmentForm.setRole( form.getRole( ) );
         appointmentForm.setCapacityPerSlot( form.getCapacityPerSlot( ) );
     }
@@ -686,7 +685,6 @@ public final class FormService
         form.setWorkgroup( appointmentForm.getWorkgroup( ) );
         form.setIsMultislotAppointment( appointmentForm.getIsMultislotAppointment( ) );
         form.setNbConsecutiveSlots( appointmentForm.getNbConsecutiveSlots( ) );
-        form.setLabelConsecutiveSlots( appointmentForm.getLabelConsecutiveSlots( ) );
         form.setRole( appointmentForm.getRole( ) );
         form.setCapacityPerSlot( appointmentForm.getCapacityPerSlot( ) );
         return form;
