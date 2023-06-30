@@ -464,7 +464,7 @@ public final class AppointmentDAO implements IAppointmentDAO
         {
             daoUtil.setString( ++nIndex, CONSTANT_PERCENT + appointmentFilter.getEmail( ).toUpperCase( ) + CONSTANT_PERCENT );
         }
-        if ( appointmentFilter.getPhoneNumber( ) != null )
+        if ( StringUtils.isNotEmpty( appointmentFilter.getPhoneNumber( ) ) )
         {
             daoUtil.setString( ++nIndex, CONSTANT_PERCENT + appointmentFilter.getPhoneNumber( ).toUpperCase( ) + CONSTANT_PERCENT );
         }
@@ -542,7 +542,7 @@ public final class AppointmentDAO implements IAppointmentDAO
             sbSql.append( CONSTANT_AND );
             sbSql.append( SQL_FILTER_EMAIL );
         }
-        if ( appointmentFilter.getPhoneNumber( ) != null )
+        if ( StringUtils.isNotEmpty( appointmentFilter.getPhoneNumber( ) ) )
         {
             sbSql.append( CONSTANT_AND );
             sbSql.append( SQL_FILTER_PHONE_NUMBER );
