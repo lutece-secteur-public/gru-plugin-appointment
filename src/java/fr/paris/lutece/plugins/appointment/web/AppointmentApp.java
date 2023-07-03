@@ -455,6 +455,7 @@ public class AppointmentApp extends MVCApplication
                 listSlots = listSlots.stream( ).filter( s -> s.getNbPotentialRemainingPlaces( ) >= nbBookedSeats && s.getIsOpen( ) )
                         .collect( Collectors.toList( ) );
                 model.put( MARK_MODIFICATION_DATE_APPOINTMENT, true );
+                model.put( PARAMETER_REF_APPOINTMENT, refAppointment );
             }
             else
             {
