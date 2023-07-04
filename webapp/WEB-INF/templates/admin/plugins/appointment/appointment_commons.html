@@ -226,7 +226,7 @@ $('#feature-title').html("<a href=\"jsp/admin/plugins/appointment/ManageAppointm
 						</@inputGroup>
 					</@formGroup>
 					<@formGroup labelFor='idMailingList' labelKey='#i18n{appointment.create_comment.labelMailingList}' helpKey='#i18n{appointment.create_comment.labelMailingList.help}' mandatory=false rows=2>
-						<#assign default='1'>
+						<#assign default='-1'>
 						<@select name="idMailingList" size='sm'>
 							<option value="-1">#i18n{appointment.create_comment.labelNoNotification}</option>
 							<#list mailing_list as item>
