@@ -288,8 +288,6 @@ public class AppointmentApp extends MVCApplication
     private static final String BASIC_WEEK = "basicWeek";
     private static final String AGENDA_DAY = "agendaDay";
     private static final String BASIC_DAY = "basicDay";
-    private static final String PROPERTY_NB_PLACES = "appointment.site_property.nbplaces";
-
     private static final String STEP_3 = "step3";
 
     // Local variables
@@ -315,12 +313,12 @@ public class AppointmentApp extends MVCApplication
         Locale locale = getLocale( request );
         _nNbPlacesToTake = 0;
         
-        _strNbPlacesToTakeLength = DatastoreService.getDataValue( PROPERTY_NB_PLACES, "10" );
         int nIdForm = Integer.parseInt( request.getParameter( PARAMETER_ID_FORM ) );
         String nbPlacesToTake = request.getParameter( PARAMETER_NB_PLACE_TO_TAKE );
         String refAppointment = request.getParameter( PARAMETER_REF_APPOINTMENT );
 
         _appointmentForm = FormService.buildAppointmentFormWithoutReservationRule( nIdForm );
+        _strNbPlacesToTakeLength = String.valueOf(_appointmentForm.getNbConsecutiveSlots());
         boolean bError = false;
         if ( !_appointmentForm.getIsActive( ) )
         {
@@ -433,10 +431,11 @@ public class AppointmentApp extends MVCApplication
                 listSlots = SlotService.buildListSlot( nIdForm, mapReservationRule, startingDateOfDisplay, endingDateOfDisplay );
             }
             
-            if ( _nNbPlacesToTake > Integer.valueOf( _strNbPlacesToTakeLength ) )
+            if ( _nNbPlacesToTake > Integer.parseInt( _strNbPlacesToTakeLength ) )
             {
             	addError( ERROR_MESSAGE_NB_PLACE_TO_TAKE_TO_BIG, locale );
             }
+
             // Get the min time from now before a user can take an appointment (in hours)
             int minTimeBeforeAppointment = _appointmentForm.getMinTimeBeforeAppointment( );
             LocalDateTime dateTimeBeforeAppointment = LocalDateTime.now( ).plusHours( minTimeBeforeAppointment );

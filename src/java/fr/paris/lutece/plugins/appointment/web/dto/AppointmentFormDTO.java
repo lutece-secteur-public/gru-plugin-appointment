@@ -255,6 +255,13 @@ public final class AppointmentFormDTO extends ReservationRule implements RBACRes
     private boolean _bIsMultislotAppointment;
 
     /**
+     * The number of consecutive slots
+     */
+    @NotNull( message = "#i18n{portal.validation.message.notEmpty}" )
+    @Min( value = 1, message = "#i18n{portal.validation.message.notEmpty}" )
+    private int _nNbConsecutiveSlots = 1;
+
+    /**
      * Role FO
      */
     private String _strRole;
@@ -1070,6 +1077,27 @@ public final class AppointmentFormDTO extends ReservationRule implements RBACRes
     public void setIsMultislotAppointment( boolean bIsMultislotAppointment )
     {
         _bIsMultislotAppointment = bIsMultislotAppointment;
+    }
+
+    /**
+     * Get the number of consecutive slots
+     *
+     * @return the number of consecutive slots
+     */
+    public int getNbConsecutiveSlots( )
+    {
+        return _nNbConsecutiveSlots;
+    }
+
+    /**
+     * Set the number of consecutive slots
+     *
+     * @param nbConsecutiveSlots
+     *            the number of consecutive slots
+     */
+    public void setNbConsecutiveSlots( int nbConsecutiveSlots )
+    {
+        this._nNbConsecutiveSlots = nbConsecutiveSlots;
     }
 
     /**

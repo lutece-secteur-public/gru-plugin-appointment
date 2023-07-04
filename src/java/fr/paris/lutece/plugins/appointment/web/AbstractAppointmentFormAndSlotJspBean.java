@@ -361,5 +361,4 @@ public abstract class AbstractAppointmentFormAndSlotJspBean extends MVCAdminJspB
                 String.valueOf( appointmentForm.getIdForm( ) ), AppointmentResourceIdService.PERMISSION_MODERATE_COMMENT_FORM, (User) user ) ) );
         model.put( AppointmentUtilities.MARK_PERMISSION_ACCESS_CODE, user.getAccessCode( ) );
     }
-
 }

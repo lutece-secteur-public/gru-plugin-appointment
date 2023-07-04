@@ -131,6 +131,11 @@ public final class Form implements RBACResource, AdminWorkgroupResource, Seriali
     private boolean _bIsMultislotAppointment;
 
     /**
+     * The number of consecutive slots
+     */
+    private int _nNbConsecutiveSlots;
+
+    /**
      * Role FO
      */
     private String _strRole;
@@ -442,6 +447,27 @@ public final class Form implements RBACResource, AdminWorkgroupResource, Seriali
     public void setIsMultislotAppointment( boolean bIsMultislotAppointment )
     {
         _bIsMultislotAppointment = bIsMultislotAppointment;
+    }
+
+    /**
+     * Get the number of consecutive slots
+     *
+     * @return the number of consecutive slots
+     */
+    public int getNbConsecutiveSlots( )
+    {
+        return _nNbConsecutiveSlots;
+    }
+
+    /**
+     * Set the number of consecutive slots
+     *
+     * @param nbConsecutiveSlots
+     *            the number of consecutive slots
+     */
+    public void setNbConsecutiveSlots( int nbConsecutiveSlots )
+    {
+        this._nNbConsecutiveSlots = nbConsecutiveSlots;
     }
 
     /**
