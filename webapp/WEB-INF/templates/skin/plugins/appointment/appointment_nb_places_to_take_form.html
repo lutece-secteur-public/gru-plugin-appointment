@@ -13,22 +13,22 @@
 							<input name="id_form" value="${form.idForm}" type="hidden">
 							<select name="nbPlacesToTake" class="form-control">
 								<#list 1..maxNbPlacesToTake as x>
-								<#if x == nbPlacesToTake>
-								<option value="${x}" selected="selected">${x} </option>
-								<#else>
-								<option value="${x}">${x}</option>
-							</#if>
-						</#list>
-						</select><br>
-						<button class="btn btn-primary btn-sm" type="submit" name="save" >
-							<i class="fa fa-chevron-down"></i>
-							<span class="hidden-xs">&nbsp;#i18n{appointment.nbPlacesToTakeForm.labelValidate}</span>
-						</button>
+									<#if x == nbPlacesToTake>
+										<option value="${x}" selected="selected">${x}</option>
+									<#else>
+										<option value="${x}">${x}</option>
+									</#if>
+								</#list>
+							</select><br>
+							<button class="btn btn-primary btn-sm" type="submit" name="save" >
+								<i class="fa fa-chevron-down"></i>
+								<span class="hidden-xs">&nbsp;#i18n{appointment.nbPlacesToTakeForm.labelValidate}</span>
+							</button>
 						</form><br>
 					</div>
 				</div>
 			</div>
-		</#if>
-	</div>
+			</#if>
+		</div>
 	</div>
 </#if>
