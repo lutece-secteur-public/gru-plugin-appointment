@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2002-2022, City of Paris
+ * Copyright (c) 2002-2023, City of Paris
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -96,7 +96,8 @@ public final class EntryService extends RemovalListenerService implements Serial
     private static final String PREFIX_ATTRIBUTE = "attribute";
 
     // Templates
-    private static final String TEMPLATE_DIV_CONDITIONAL_ENTRY = "skin/plugins/appointment/html_code_div_conditional_entry.html";
+    private static final String TEMPLATE_DIV_CONDITIONAL_ENTRY_FO = "skin/plugins/appointment/html_code_div_conditional_entry.html";
+    private static final String TEMPLATE_DIV_CONDITIONAL_ENTRY_BO = "admin/plugins/appointment/html_code_div_conditional_entry.html";
 
     /**
      * Get an instance of the service
@@ -544,7 +545,8 @@ public final class EntryService extends RemovalListenerService implements Serial
                     }
                     model.put( MARK_STR_LIST_CHILDREN, strGroupStringBuffer.toString( ) );
                     model.put( MARK_FIELD, field );
-                    template = AppTemplateService.getTemplate( TEMPLATE_DIV_CONDITIONAL_ENTRY, locale, model );
+                    String templateDivConditionalEntry = bDisplayFront ? TEMPLATE_DIV_CONDITIONAL_ENTRY_FO : TEMPLATE_DIV_CONDITIONAL_ENTRY_BO;
+                    template = AppTemplateService.getTemplate( templateDivConditionalEntry, locale, model );
                     strConditionalQuestionStringBuffer.append( template.getHtml( ) );
                 }
             }
