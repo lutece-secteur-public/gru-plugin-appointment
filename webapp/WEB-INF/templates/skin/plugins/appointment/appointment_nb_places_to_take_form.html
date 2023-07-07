@@ -1,34 +1,34 @@
 <#if form.isMultislotAppointment>
-	<div class="row nextStepTitleRow">
-		<div class="col-xs-12">
-			<div class="container">
-				<h2>#i18n{appointment.nbPlacesToTakeForm.labelNbPlaces} <#if refAppointment??> : ${nbPlacesToTake} </#if></h2>
-			</div>
-			<#if !refAppointment??>
-			<div class="row steps">
-				<div class="col-xs-12">
-					<div class="container">
-						<form class="form-horizontal" role="form" id="form-validate" method="post" action="jsp/site/Portal.jsp?page=appointment&view=getViewAppointmentCalendar">
-							<input name="action" value="getViewAppointmentCalendar" type="hidden">
-							<input name="id_form" value="${form.idForm}" type="hidden">
-							<select name="nbPlacesToTake" class="form-control">
-								<#list 1..maxNbPlacesToTake as x>
-									<#if x == nbPlacesToTake>
-										<option value="${x}" selected="selected">${x} #i18n{appointment.nbPlacesToTakeForm.labelPeople}</option>
-									<#else>
-										<option value="${x}">${x} #i18n{appointment.nbPlacesToTakeForm.labelPeople}</option>
-									</#if>
-								</#list>
-							</select><br>
-							<button class="btn btn-primary btn-sm" type="submit" name="save" >
-								<i class="fa fa-chevron-down"></i>
-								<span class="hidden-xs">&nbsp;#i18n{appointment.nbPlacesToTakeForm.labelValidate}</span>
-							</button>
-						</form><br>
-					</div>
+<div class="row nextStepTitleRow">
+	<div class="col-xs-12">
+		<div class="container">
+			<h2>#i18n{appointment.label.labelNbConsecutiveSlots} <#if refAppointment??> : ${nbPlacesToTake} </#if></h2>
+		</div>
+		<#if !refAppointment??>
+		<div class="row steps">
+			<div class="col-xs-12">
+				<div class="container">
+					<form class="form-horizontal" role="form" id="form-validate" method="post" action="jsp/site/Portal.jsp?page=appointment&view=getViewAppointmentCalendar">
+						<input name="action" value="getViewAppointmentCalendar" type="hidden">
+						<input name="id_form" value="${form.idForm}" type="hidden">
+						<select name="nbPlacesToTake" class="form-control">
+							<#list 1..maxNbPlacesToTake as x>
+							<#if x == nbPlacesToTake>
+							<option value="${x}" selected="selected">${x} </option>
+							<#else>
+							<option value="${x}">${x}</option>
+						</#if>
+					</#list>
+					</select><br>
+					<button class="btn btn-primary btn-sm" type="submit" name="save" >
+						<i class="fa fa-chevron-down"></i>
+						<span class="hidden-xs">&nbsp;#i18n{appointment.nbPlacesToTakeForm.labelValidate}</span>
+					</button>
+					</form><br>
 				</div>
 			</div>
-			</#if>
 		</div>
-	</div>
+	</#if>
+</div>
+</div>
 </#if>
