@@ -1,5 +1,4 @@
 ALTER TABLE appointment_form_rule  ADD bo_overbooking BOOLEAN NOT NULL DEFAULT FALSE;
-ALTER TABLE appointment_appointment DROP FOREIGN KEY fk_appointment_appointment_appointment_slot;
 ALTER TABLE appointment_appointment DROP COLUMN id_slot;
 ALTER TABLE appointment_appointment ADD  COLUMN id_action_reported INT;
 ALTER TABLE appointment_form ADD COLUMN is_multislot_appointment BOOLEAN NOT NULL DEFAULT FALSE;
@@ -90,7 +89,6 @@ ALTER TABLE appointment_form_rule MODIFY id_form_rule INT NOT NULL;
 ALTER TABLE appointment_form_rule DROP PRIMARY KEY, ADD PRIMARY KEY (id_form_rule);
 ALTER TABLE appointment_form_rule MODIFY id_form_rule INT AUTO_INCREMENT;
 ALTER  TABLE appointment_form  ADD capacity_per_slot INT DEFAULT 0 NOT NULL ;
-ALTER  TABLE appointment_form  ADD nb_consecutive_slots INT DEFAULT 0 NOT NULL ;
 
 ALTER TABLE appointment_closing_day MODIFY id_closing_day INT NOT NULL;
 ALTER TABLE appointment_closing_day DROP PRIMARY KEY, ADD PRIMARY KEY (id_closing_day);
