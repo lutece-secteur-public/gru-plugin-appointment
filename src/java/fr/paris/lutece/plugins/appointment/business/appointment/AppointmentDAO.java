@@ -33,6 +33,15 @@
  */
 package fr.paris.lutece.plugins.appointment.business.appointment;
 
+import fr.paris.lutece.plugins.appointment.business.slot.Slot;
+import fr.paris.lutece.plugins.appointment.business.slot.SlotHome;
+import fr.paris.lutece.plugins.appointment.business.user.User;
+import fr.paris.lutece.plugins.appointment.web.dto.AppointmentFilterDTO;
+import fr.paris.lutece.portal.service.plugin.Plugin;
+import fr.paris.lutece.util.sql.DAOUtil;
+import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.lang3.StringUtils;
+
 import java.sql.Statement;
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
@@ -43,19 +52,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-import org.apache.commons.collections.CollectionUtils;
-import org.apache.commons.lang3.StringUtils;
-
-import fr.paris.lutece.plugins.appointment.business.slot.Slot;
-import fr.paris.lutece.plugins.appointment.business.slot.SlotHome;
-import fr.paris.lutece.plugins.appointment.business.user.User;
-import fr.paris.lutece.plugins.appointment.web.dto.AppointmentFilterDTO;
-import fr.paris.lutece.portal.service.plugin.Plugin;
-import fr.paris.lutece.util.sql.DAOUtil;
-
 /**
  * This class provides Data Access methods for Appointment objects
- * 
+ *
  * @author Laurent Payen
  *
  */
@@ -439,7 +438,7 @@ public final class AppointmentDAO implements IAppointmentDAO
 
     /**
      * Add all the filters to the daoUtil
-     * 
+     *
      * @param appointmentFilter
      *            the filter
      * @param daoUtil
@@ -513,7 +512,7 @@ public final class AppointmentDAO implements IAppointmentDAO
 
     /**
      * Build the sql query with the elements of the filter
-     * 
+     *
      * @param appointmentFilter
      *            the filter
      * @return the query
@@ -613,7 +612,7 @@ public final class AppointmentDAO implements IAppointmentDAO
 
     /**
      * Build an Appointment business object from the resultset
-     * 
+     *
      * @param daoUtil
      *            the prepare statement util object
      * @return a new Appointment business object with all its attributes assigned
@@ -638,7 +637,7 @@ public final class AppointmentDAO implements IAppointmentDAO
 
     /**
      * Build an Slot business object from the resultset
-     * 
+     *
      * @param daoUtil
      *            the prepare statement util object
      * @return a new Slot business object with all its attributes assigned
@@ -661,7 +660,7 @@ public final class AppointmentDAO implements IAppointmentDAO
 
     /**
      * Build a User business object from the resultset
-     * 
+     *
      * @param daoUtil
      *            the prepare statement util object
      * @return a new User with all its attributes assigned
@@ -681,7 +680,7 @@ public final class AppointmentDAO implements IAppointmentDAO
 
     /**
      * Build a daoUtil object with the query and all the attributes of the Appointment
-     * 
+     *
      * @param suery
      *            the query
      * @param appointment

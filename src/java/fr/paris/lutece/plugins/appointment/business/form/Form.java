@@ -143,6 +143,16 @@ public final class Form implements RBACResource, AdminWorkgroupResource, Seriali
      * theoretical capacity per slot
      */
     private int _nCapacityPerSlot = 1;
+    
+    /**
+     * bIsAnonymizable
+     */
+    private boolean _bIsAnonymizable;
+
+    /**
+     * Anonymization pattern %f %g %n
+     */
+    private String _strAnonymizationPattern;
 
     /**
      * Get the form Id
@@ -507,5 +517,25 @@ public final class Form implements RBACResource, AdminWorkgroupResource, Seriali
     {
         _nCapacityPerSlot = nCapacityPerSlot;
     }
+
+    public String getAnonymizationPattern()
+    {
+        return _strAnonymizationPattern;
+    }
+
+    public void setAnonymizationPattern(String strAnonymizationPattern)
+    {
+        this._strAnonymizationPattern = strAnonymizationPattern;
+    }
+
+	public boolean isAnonymizable()
+	{
+		return _bIsAnonymizable;
+	}
+
+	public void setAnonymizable(boolean bIsAnonymizable)
+	{
+		this._bIsAnonymizable = bIsAnonymizable;
+	}
 
 }

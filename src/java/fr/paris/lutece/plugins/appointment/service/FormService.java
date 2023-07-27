@@ -565,6 +565,8 @@ public final class FormService
         appointmentForm.setNbConsecutiveSlots( form.getNbConsecutiveSlots( ) );
         appointmentForm.setRole( form.getRole( ) );
         appointmentForm.setCapacityPerSlot( form.getCapacityPerSlot( ) );
+        appointmentForm.setAnonymizable(form.isAnonymizable());
+        appointmentForm.setAnonymizationPattern(form.getAnonymizationPattern());
     }
 
     /**
@@ -687,6 +689,8 @@ public final class FormService
         form.setNbConsecutiveSlots( appointmentForm.getNbConsecutiveSlots( ) );
         form.setRole( appointmentForm.getRole( ) );
         form.setCapacityPerSlot( appointmentForm.getCapacityPerSlot( ) );
+        form.setAnonymizable(appointmentForm.isAnonymizable());
+        form.setAnonymizationPattern( appointmentForm.getAnonymizationPattern( ) );
         return form;
     }
 
