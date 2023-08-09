@@ -64,7 +64,7 @@ CREATE TABLE IF NOT EXISTS appointment_form (
   is_multislot_appointment BOOLEAN DEFAULT FALSE NOT NULL,
   role_fo varchar(255),
   capacity_per_slot INT DEFAULT 0 NOT NULL,
-  nb_consecutive_slots INT DEFAULT 0 NOT NULL,
+  nb_consecutive_slots INT DEFAULT 1 NOT NULL,
   is_anonymizable BOOLEAN DEFAULT FALSE NOT NULL,
   anonymization_pattern VARCHAR(2) DEFAULT NULL,
   PRIMARY KEY (id_form),
