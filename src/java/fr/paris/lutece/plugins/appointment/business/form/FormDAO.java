@@ -49,10 +49,10 @@ import fr.paris.lutece.util.sql.DAOUtil;
 public final class FormDAO implements IFormDAO
 {
 
-    private static final String SQL_QUERY_INSERT = "INSERT INTO appointment_form ( title, description, reference, id_category, starting_validity_date, ending_validity_date, is_active, id_workflow, workgroup,is_multislot_appointment, nb_consecutive_slots, role_fo, capacity_per_slot ) VALUES ( ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ? )";
-    private static final String SQL_QUERY_UPDATE = "UPDATE appointment_form SET title = ?, description = ?, reference = ?, id_category = ?, starting_validity_date = ?, ending_validity_date = ?, is_active = ?, id_workflow = ?, workgroup = ?, is_multislot_appointment = ?, nb_consecutive_slots= ?, role_fo = ?, capacity_per_slot= ? WHERE id_form = ?";
+    private static final String SQL_QUERY_INSERT = "INSERT INTO appointment_form ( title, description, reference, id_category, starting_validity_date, ending_validity_date, is_active, id_workflow, workgroup,is_multislot_appointment, nb_consecutive_slots, role_fo, capacity_per_slot, is_anonymizable, anonymization_pattern ) VALUES ( ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ? )";
+    private static final String SQL_QUERY_UPDATE = "UPDATE appointment_form SET title = ?, description = ?, reference = ?, id_category = ?, starting_validity_date = ?, ending_validity_date = ?, is_active = ?, id_workflow = ?, workgroup = ?, is_multislot_appointment = ?, nb_consecutive_slots= ?, role_fo = ?, capacity_per_slot= ?, is_anonymizable=?, anonymization_pattern=? WHERE id_form = ?";
     private static final String SQL_QUERY_DELETE = "DELETE FROM appointment_form WHERE id_form = ? ";
-    private static final String SQL_QUERY_SELECT_COLUMNS = "SELECT form.id_form, form.title, form.description, form.reference, form.id_category, form.starting_validity_date, form.ending_validity_date, form.is_active, form.id_workflow, form.workgroup, form.is_multislot_appointment, form.nb_consecutive_slots, form.role_fo, form.capacity_per_slot FROM appointment_form form";
+    private static final String SQL_QUERY_SELECT_COLUMNS = "SELECT form.id_form, form.title, form.description, form.reference, form.id_category, form.starting_validity_date, form.ending_validity_date, form.is_active, form.id_workflow, form.workgroup, form.is_multislot_appointment, form.nb_consecutive_slots, form.role_fo, form.capacity_per_slot, form.is_anonymizable, form.anonymization_pattern FROM appointment_form form";
     private static final String SQL_QUERY_SELECT_BY_TITLE = SQL_QUERY_SELECT_COLUMNS + " WHERE title = ?";
     private static final String SQL_QUERY_SELECT_ALL = SQL_QUERY_SELECT_COLUMNS;
     private static final String SQL_QUERY_SELECT = SQL_QUERY_SELECT_COLUMNS + " WHERE id_form = ?";
@@ -210,7 +210,9 @@ public final class FormDAO implements IFormDAO
         form.setIsMultislotAppointment( daoUtil.getBoolean( nIndex++ ) );
         form.setNbConsecutiveSlots( daoUtil.getInt( nIndex++ ) );
         form.setRole( daoUtil.getString( nIndex++ ) );
-        form.setCapacityPerSlot( daoUtil.getInt( nIndex ) );
+        form.setCapacityPerSlot( daoUtil.getInt( nIndex++ ) );
+        form.setAnonymizable( daoUtil.getBoolean( nIndex++ ) );
+        form.setAnonymizationPattern(daoUtil.getString(nIndex));
 
         return form;
     }
@@ -261,6 +263,8 @@ public final class FormDAO implements IFormDAO
         daoUtil.setInt( nIndex++, form.getNbConsecutiveSlots( ) );
         daoUtil.setString( nIndex++, form.getRole( ) );
         daoUtil.setInt( nIndex++, form.getCapacityPerSlot( ) );
+        daoUtil.setBoolean( nIndex++, form.isAnonymizable() );
+        daoUtil.setString( nIndex++, form.getAnonymizationPattern( ) );
 
         if ( !isInsert )
         {

@@ -271,6 +271,16 @@ public final class AppointmentFormDTO extends ReservationRule implements RBACRes
      */
     @Min( value = 1, message = "#i18n{portal.validation.message.notEmpty}" )
     private int _nCapacityPerSlot = 1;
+    
+    /**
+     * IsAnonymizable
+     */
+    private boolean _bIsAnonymizable;
+
+    /**
+     * Anonymization Pattern
+     */
+    private String _strAnonymizationPattern;
 
     /**
      * Get the maximum number of appointments authorized for a same user
@@ -1137,5 +1147,23 @@ public final class AppointmentFormDTO extends ReservationRule implements RBACRes
     {
         _nCapacityPerSlot = nCapacityPerSlot;
     }
+
+    public String getAnonymizationPattern() {
+        return _strAnonymizationPattern;
+    }
+
+    public void setAnonymizationPattern(String strAnonymizationPattern) {
+        _strAnonymizationPattern = strAnonymizationPattern;
+    }
+
+	public boolean isAnonymizable()
+	{
+		return _bIsAnonymizable;
+	}
+
+	public void setAnonymizable(boolean bIsAnonymizable)
+	{
+		this._bIsAnonymizable = bIsAnonymizable;
+	}
 
 }
