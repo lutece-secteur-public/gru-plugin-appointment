@@ -27,23 +27,103 @@
     <bean id="appointment.appointmentAsynchronousUploadHandler" class="fr.paris.lutece.plugins.appointment.service.upload.AppointmentAsynchronousUploadHandler" />
     
     <bean id="appointment.shutdownService" class="fr.paris.lutece.plugins.appointment.service.AppointmentShutdownService" />
-    <bean id="appointment.entryService" class="fr.paris.lutece.plugins.appointment.service.EntryService" />    
+    <bean id="appointment.entryService" class="fr.paris.lutece.plugins.appointment.service.EntryService" />
+    
+    <!-- EntryType -->   
     <bean id="appointment.entryTypeCheckBox" class="fr.paris.lutece.plugins.appointment.service.entrytype.EntryTypeCheckBox" />
 	<bean id="appointment.entryTypeComment" class="fr.paris.lutece.plugins.appointment.service.entrytype.EntryTypeComment" />
-	<bean id="appointment.entryTypeDate" class="fr.paris.lutece.plugins.appointment.service.entrytype.EntryTypeDate" />
-	<bean id="appointment.entryTypeGeolocation" class="fr.paris.lutece.plugins.appointment.service.entrytype.EntryTypeGeolocation" />
+	<bean id="appointment.entryTypeDate" class="fr.paris.lutece.plugins.appointment.service.entrytype.EntryTypeDate" >
+		<property name="anonymizationTypes">
+            <list>
+                <ref bean="genericattributes.date0AnonymizationType" />
+                <ref bean="genericattributes.defaultDateAnonymizationType" />
+                <ref bean="genericattributes.emptyDateAnonymizationType" />
+            </list>
+        </property>
+    </bean>
+	<bean id="appointment.entryTypeGeolocation" class="fr.paris.lutece.plugins.appointment.service.entrytype.EntryTypeGeolocation" >
+		<property name="anonymizationTypes">
+            <list>
+                <ref bean="genericattributes.defaultGeolocAnonymizationType" />
+            </list>
+        </property>
+    </bean>
 	<bean id="appointment.entryTypeGroup" class="fr.paris.lutece.plugins.appointment.service.entrytype.EntryTypeGroup" />
-	<bean id="appointment.entryTypeMyLuteceUser" class="fr.paris.lutece.plugins.appointment.service.entrytype.EntryTypeMyLuteceUser" />
+	<bean id="appointment.entryTypeMyLuteceUser" class="fr.paris.lutece.plugins.appointment.service.entrytype.EntryTypeMyLuteceUser" >
+		<property name="anonymizationTypes">
+            <list>
+                <ref bean="genericattributes.entryIdAnonymizationType" />
+                <ref bean="genericattributes.entryCodeAnonymizationType" />
+                <ref bean="genericattributes.responseIdAnonymizationType" />
+                <ref bean="genericattributes.randomGuidAnonymizationType" />
+                <ref bean="genericattributes.randomNumberAnonymizationType" />
+                <ref bean="appointment.formIdAnonymizationType" />
+            </list>
+        </property>
+    </bean>
 	<bean id="appointment.entryTypeNumbering" class="fr.paris.lutece.plugins.appointment.service.entrytype.EntryTypeNumbering" />
 	<bean id="appointment.entryTypeRadioButton" class="fr.paris.lutece.plugins.appointment.service.entrytype.EntryTypeRadioButton" />
 	<bean id="appointment.entryTypeSelect" class="fr.paris.lutece.plugins.appointment.service.entrytype.EntryTypeSelect" />
 	<bean id="appointment.entryTypeSelectSQL" class="fr.paris.lutece.plugins.appointment.service.entrytype.EntryTypeSelectSQL" />
 	<bean id="appointment.entryTypeSession" class="fr.paris.lutece.plugins.appointment.service.entrytype.EntryTypeSession" />
-	<bean id="appointment.entryTypeText" class="fr.paris.lutece.plugins.appointment.service.entrytype.EntryTypeText" />
-	<bean id="appointment.entryTypeTextArea" class="fr.paris.lutece.plugins.appointment.service.entrytype.EntryTypeTextArea" />
-	<bean id="appointment.entryTypeImage" class="fr.paris.lutece.plugins.appointment.service.entrytype.EntryTypeImage" />
-	<bean id="appointment.entryTypeFile" class="fr.paris.lutece.plugins.appointment.service.entrytype.EntryTypeFile" />
-	<bean id="appointment.entryTypePhone" class="fr.paris.lutece.plugins.appointment.service.entrytype.EntryTypePhone" />
+	<bean id="appointment.entryTypeText" class="fr.paris.lutece.plugins.appointment.service.entrytype.EntryTypeText" >
+		<property name="anonymizationTypes">
+            <list>
+                <ref bean="genericattributes.entryIdAnonymizationType" />
+                <ref bean="genericattributes.entryCodeAnonymizationType" />
+                <ref bean="genericattributes.responseIdAnonymizationType" />
+                <ref bean="genericattributes.randomGuidAnonymizationType" />
+                <ref bean="genericattributes.randomNumberAnonymizationType" />
+                <ref bean="genericattributes.defaultValueAnonymizationType" />
+                <ref bean="appointment.formIdAnonymizationType" />
+            </list>
+        </property>
+    </bean>
+	<bean id="appointment.entryTypeTextArea" class="fr.paris.lutece.plugins.appointment.service.entrytype.EntryTypeTextArea" >
+		<property name="anonymizationTypes">
+            <list>
+                <ref bean="genericattributes.entryIdAnonymizationType" />
+                <ref bean="genericattributes.entryCodeAnonymizationType" />
+                <ref bean="genericattributes.responseIdAnonymizationType" />
+                <ref bean="genericattributes.randomGuidAnonymizationType" />
+                <ref bean="genericattributes.randomNumberAnonymizationType" />
+                <ref bean="genericattributes.defaultValueAnonymizationType" />
+                <ref bean="appointment.formIdAnonymizationType" />
+            </list>
+        </property>
+    </bean>
+	<bean id="appointment.entryTypeImage" class="fr.paris.lutece.plugins.appointment.service.entrytype.EntryTypeImage" >
+		<property name="anonymizationTypes">
+            <list>
+                <ref bean="genericattributes.fileDeleteAnonymizationType" />
+                <ref bean="genericattributes.fileReplaceAnonymizationType" />
+            </list>
+        </property>
+    </bean>
+	<bean id="appointment.entryTypeFile" class="fr.paris.lutece.plugins.appointment.service.entrytype.EntryTypeFile" >
+		<property name="anonymizationTypes">
+            <list>
+                <ref bean="genericattributes.fileDeleteAnonymizationType" />
+                <ref bean="genericattributes.fileReplaceAnonymizationType" />
+            </list>
+        </property>
+    </bean>
+	<bean id="appointment.entryTypePhone" class="fr.paris.lutece.plugins.appointment.service.entrytype.EntryTypePhone" >
+		<property name="anonymizationTypes">
+            <list>
+                <ref bean="genericattributes.defaultTelephoneAnonymizationType" />
+            </list>
+        </property>
+    </bean>
+    
+    <!-- Anonymization -->
+    <bean id="appointment.formIdAnonymizationService" class="fr.paris.lutece.plugins.appointment.service.anonymization.FormIdAnonymizationService" />
+    <bean id="appointment.formIdAnonymizationType" class="fr.paris.lutece.plugins.genericattributes.service.anonymization.EntryAnonymizationType">
+        <constructor-arg type="java.lang.String" index="0" value="%f" />
+        <constructor-arg type="java.lang.String" index="1" value="appointment.anonymization.form.help" />
+        <constructor-arg type="java.lang.String" index="2" value="appointment.formIdAnonymizationService" />
+    </bean>
+	
 	<bean id="appointment.sitePropertiesGroup" class="fr.paris.lutece.portal.service.site.properties.SitePropertiesGroup" >
         <property name="nameKey">
             <value>appointment.site_properties.name</value>
@@ -55,4 +135,5 @@
             <value>appointment.site_property.</value>
         </property>   
     </bean>
+
 </beans>
