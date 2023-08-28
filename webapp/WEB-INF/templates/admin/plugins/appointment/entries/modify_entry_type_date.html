@@ -1,4 +1,4 @@
-<#include "/admin/util/editor/editor.html" />
+<#include "/admin/util/editor/editor.html" /><#include "all_entry_commons.html" />
 <@row>
     <@columns>
         <@box color='primary'>
@@ -40,7 +40,7 @@
 						</@formGroup>
 						<@formGroup labelKey='#i18n{appointment.createEntry.labelOnlyDisplayInBack}'>
 							<@checkBox labelFor='only_display_in_back' labelKey='#i18n{appointment.createEntry.labelOnlyDisplayInBack}' name='only_display_in_back' id='only_display_in_back' value='1' checked=entry.onlyDisplayInBack />
-						</@formGroup>
+						</@formGroup>												<@formGroup>							<#assign anonymizable=getFieldByCode( entry, "anonymizable")>							<#if anonymizable.value?boolean>								<#assign checkedValue = true />								<#assign anonPattern = anonymizable.title />							<#else>								<#assign checkedValue = false />								<#assign anonPattern ="" />							</#if>							<@checkBox orientation='switch' labelFor='anonymizable' labelKey='#i18n{appointment.createAppointmentForm.labelAnonymizable.genattField}' name='anonymizable' id='anonymizable' value='1' params='onchange="javascript:changeVisilityAnonymizePattern();"' checked=checkedValue />						</@formGroup>						<@formGroup labelFor='anonymize_pattern' id="anonymize_pattern_group" labelKey='#i18n{forms.createEntry.labelAnonymizePattern}' helpKey='${anonymization_help_message}' >							<@input type='text' name='anonymize_pattern' id='anonymize_pattern' value='${anonPattern!}' maxlength=255 />						</@formGroup>
 						<@formGroup labelFor='css_class' labelKey='#i18n{appointment.createEntry.labelCSSClass}' helpKey='#i18n{appointment.createEntry.labelCSSClassComment}'>
 							<@input type='text' name='css_class' id='css_class' value='${entry.CSSClass!}' maxlength=255 />
 						</@formGroup>
@@ -55,7 +55,7 @@
     </@columns>
 </@row>
 
- <@initEditor />
+ <@initEditor /> <@anonymPattern />
 <script src="js/jquery/plugins/ui/jquery-ui-1.9.2.custom.min.js"></script>
 <script src="js/jquery/plugins/ui/ui.datepicker-fr.js"></script>
 <@getDatePickerBootstrap idField="date" language=locale format='Y-m-d H:i:S' />

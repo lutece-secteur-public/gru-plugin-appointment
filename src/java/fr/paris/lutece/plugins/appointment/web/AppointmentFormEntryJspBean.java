@@ -139,6 +139,7 @@ public class AppointmentFormEntryJspBean extends MVCAdminJspBean
     private static final String MARK_LIST = "list";
     private static final String MARK_FORM = "form";
     private static final String MARK_ENTRY_TYPE_SERVICE = "entryTypeService";
+    private static final String MARK_ANONYMIZATION_HELP = "anonymization_help_message";
     private static final String MARK_APPOINTMENT_FORM = "appointmentform";
     private static final String MARK_APPOINTMENT_RESOURCE_ENABLED = "isResourceInstalled";
 
@@ -212,12 +213,14 @@ public class AppointmentFormEntryJspBean extends MVCAdminJspBean
         entry.setIdResource( nIdForm );
         entry.setResourceType( AppointmentFormDTO.RESOURCE_TYPE );
         AppointmentFormDTO appointmentForm = FormService.buildAppointmentForm( nIdForm, 0 );
+        IEntryTypeService entryTypeService = EntryTypeServiceManager.getEntryTypeService( entry );
         Map<String, Object> model = new HashMap<>( );
         model.put( MARK_ENTRY, entry );
         model.put( MARK_FORM, appointmentForm );
         model.put( MARK_WEBAPP_URL, AppPathService.getBaseUrl( request ) );
         model.put( MARK_LOCALE, AdminUserService.getLocale( request ).getLanguage( ) );
-        model.put( MARK_ENTRY_TYPE_SERVICE, EntryTypeServiceManager.getEntryTypeService( entry ) );
+        model.put( MARK_ENTRY_TYPE_SERVICE, entryTypeService );
+        model.put( MARK_ANONYMIZATION_HELP, entryTypeService.getAnonymizationHelpMessage( request.getLocale( ) ) );
         String strTemplate = EntryTypeServiceManager.getEntryTypeService( entry ).getTemplateCreate( entry, false );
         if ( strTemplate == null )
         {
@@ -330,6 +333,7 @@ public class AppointmentFormEntryJspBean extends MVCAdminJspBean
             model.put( MARK_WEBAPP_URL, AppPathService.getBaseUrl( request ) );
             model.put( MARK_LOCALE, AdminUserService.getLocale( request ).getLanguage( ) );
             model.put( MARK_ENTRY_TYPE_SERVICE, EntryTypeServiceManager.getEntryTypeService( entry ) );
+            model.put( MARK_ANONYMIZATION_HELP, entryTypeService.getAnonymizationHelpMessage( request.getLocale( ) ) );
             return getPage( PROPERTY_MODIFY_QUESTION_TITLE, entryTypeService.getTemplateModify( entry, false ), model );
         }
 

@@ -1,4 +1,4 @@
-<@row>
+<#include "all_entry_commons.html" /><@row>
     <@columns>
         <@box color='primary'>
             <@boxHeader title='#i18n{appointment.createEntry.titleQuestion} : ${form.title}' />
@@ -44,7 +44,7 @@
                         <@formGroup labelFor='only_display_in_back'
                             labelKey='#i18n{appointment.createEntry.labelOnlyDisplayInBack}'>
                             <@checkBox name='only_display_in_back' id='only_display_in_back' value='1' />
-                        </@formGroup>
+                        </@formGroup>                                                <@formGroup>							<@checkBox orientation='switch' labelFor='anonymizable' labelKey='#i18n{appointment.createAppointmentForm.labelAnonymizable.genattField}' name='anonymizable' id='anonymizable' value='1' params='onchange="javascript:changeVisilityAnonymizePattern();"' />						</@formGroup>						<@formGroup labelFor='anonymize_pattern' id="anonymize_pattern_group" labelKey='#i18n{appointment.createAppointmentForm.labelAnonymizePattern}' helpKey='${anonymization_help_message}' >							<@input type='text' name='anonymize_pattern' id='anonymize_pattern' maxlength=255 />						</@formGroup>
                         <@formGroup labelFor='css_class' labelKey='#i18n{appointment.createEntry.labelCSSClass}'
                             helpKey='#i18n{appointment.createEntry.labelCSSClassComment}'>
                             <@input type='text' name='css_class' value='' maxlength=255 />
@@ -61,7 +61,7 @@
     </@columns>
 </@row>
 <#include "/admin/util/editor/editor.html" />
-<@initEditor />
+<@initEditor /><@anonymPattern />
 <script src="js/jquery/plugins/ui/jquery-ui-1.9.2.custom.min.js"></script>
 <script src="js/jquery/plugins/ui/ui.datepicker-fr.js"></script>
 <@getDatePickerBootstrap idField="date" language=locale format='Y-m-d H:i:S' />
