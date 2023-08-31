@@ -1,23 +1,20 @@
-<link rel='stylesheet' href='css/plugins/appointment/bootstrap-datetimepicker.css' />
-<script src="js/jquery/jquery.min.js"></script>
-<script src="js/plugins/appointment/moment.min.js" ></script>
-<script src="js/plugins/appointment/bootstrap-datetimepicker.min.js"></script>
+<link rel="stylesheet" href="css/admin/plugins/appointment/bootstrap-datetimepicker.css" >
+<script src="js/admin/plugins/appointment/jquery.min.js"></script>
+<script src="js/admin/plugins/appointment/moment.min.js" ></script>
+<script src="js/admin/plugins/appointment/bootstrap-datetimepicker.min.js"></script>
 <@row>
 	<@columns>
 		<@box color='primary'>
 			<@boxHeader title='' />
 			<@boxBody>
-			
 				<@tform action='jsp/admin/plugins/appointment/ManageAppointmentSlots.jsp'>
-				<fieldset>							
 					<@messages errors=errors infos=infos/>					
-					<input type='hidden' name='action' value='doModifyTimeSlot' />
-					<input type='hidden' name='id_time_slot' value='${timeSlot.idTimeSlot}' />
-					<input type='hidden' name='id_form' value='${id_form}' />
-					<input type='hidden' name='id_reservation_rule' value='${id_reservation_rule}' />
-					
+					<@input type='hidden' name='action' value='doModifyTimeSlot' />
+					<@input type='hidden' name='id_time_slot' value='${timeSlot.idTimeSlot}' />
+					<@input type='hidden' name='id_form' value='${id_form}' />
+					<@input type='hidden' name='id_reservation_rule' value='${id_reservation_rule}' />
 					<@formGroup labelKey='#i18n{appointment.labelOpen}' helpKey='#i18n{appointment.modifySlot.labelOpenHelp}' mandatory=true>
-						<@checkBox labelFor='is_open' name='is_open' id='is_open' value='true' checked=timeSlot.isOpen />
+						<@checkBox orientation='switch' labelFor='is_open' name='is_open' id='is_open' value='true' checked=timeSlot.isOpen />
 					</@formGroup>
 					
 					<@formGroup labelKey='#i18n{appointment.modifySlot.labelMaxCapacityForThisSlot}' mandatory=true>
@@ -32,7 +29,7 @@
 						<@inputGroup id='ending_time'>
 							<@input type='text' id='ending_time' name='ending_time' value='${timeSlot.endingTime!\'\'}' />
 							<@inputGroupItem type='text'>
-								<@icon style='clock-o' />
+								<@icon style='clock' />
 							</@inputGroupItem>
                         </@inputGroup>
                     </@formGroup>
@@ -44,27 +41,25 @@
 						<@button type='submit' title='#i18n{portal.util.labelModify}' buttonIcon='check' />
 						<@aButton href='jsp/admin/plugins/appointment/ManageAppointmentSlots.jsp?view=manageTypicalWeek&id_form=${id_form}&id_reservation_rule=${id_reservation_rule}' buttonIcon='times' title='#i18n{portal.util.labelBack}' color='btn-default' />
 					</@formGroup>
-				</fieldset>
 				</@tform>
 			</@boxBody>
 		</@box>
 	</@columns>
 </@row>
-<script type="text/javascript">	
-	function validateQty(event) {
-		var key = window.event ? event.keyCode : event.which;
-	
-	if (event.keyCode == 8 || event.keyCode == 9 || event.keyCode == 46
-	 || event.keyCode == 37 || event.keyCode == 39) {
-		return true;
-	}
-	else if ( key < 48 || key > 57 ) {
-		return false;
-	}
-	else return true;
-	};
-	$('#ending_time').datetimepicker({
-      format: 'HH:mm',
-      stepping: 5
-    });
+<script>	
+function validateQty(event) {
+var key = window.event ? event.keyCode : event.which;
+if (event.keyCode == 8 || event.keyCode == 9 || event.keyCode == 46
+	|| event.keyCode == 37 || event.keyCode == 39) {
+	return true;
+}
+else if ( key < 48 || key > 57 ) {
+	return false;
+}
+else return true;
+};
+$('#ending_time').datetimepicker({
+	format: 'HH:mm',
+	stepping: 5
+});
 </script>

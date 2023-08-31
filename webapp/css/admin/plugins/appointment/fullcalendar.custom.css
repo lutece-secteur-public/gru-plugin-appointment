@@ -56,26 +56,6 @@
 }
 
 /* Comments */
-#toggle-add-comment{
-    padding: 0;
-    position: absolute;
-    top: 2px;
-    left: 22%;
-    background-color: rgb(233, 250, 0);
-    border-color:rgb(233, 250, 0);
-    color: rgb(0, 0, 0);
-    display: block;
-    height: auto;
-}
-
-#toggle-add-comment .fa-stack{
-    padding: 2px;
-}
-
-#toggle-add-comment .fa-stack-1x {
-    color: rgb(233, 250, 0);
-}
-
 .comments{
     padding-left: 5px;
     background-color: rgb(233, 250, 0);
@@ -101,18 +81,22 @@
 .comment-link:hover{ 
     color:rgb(83, 83, 83);
 }
+
 /* Button */
 #btn-comment-main{
     display: none;
 }
 
 .btn-comments{ 
-    position:absolute; right:5px; top: 0 ;z-index:99; 
+    position:absolute; 
+    right: 5px; 
+    top: 0 ; 
+    z-index: 99; 
 }
 
 /* Event Content */
 .fc-content{ 
-    text-align:center;
+    text-align: center;
 }
 
 .fc-time-grid-event .fc-content{ 
@@ -125,11 +109,11 @@
 
 .fc-content .fc-title .badge{
     position: absolute;
-    right: 30px;
+    right: 1rem;
     top: 50%;
-    transform: translateY(-50%);
+    transform: translateY( -50% );
     z-index: 1;
-    padding: 6px;
+    padding: 6px 4px;
     display: none;
     width: 14px;
     border-radius: 50%;
@@ -171,6 +155,10 @@ th.fc-day-header {
     vertical-align: middle;
     height: auto;
     padding: 5px 20px;
+}
+
+.fc th button {
+    width: auto;
 }
 
 /* Add to let space to background comment hovering*/

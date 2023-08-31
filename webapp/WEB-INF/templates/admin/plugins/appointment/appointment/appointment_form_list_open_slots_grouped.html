@@ -3,8 +3,7 @@
         <@appointmentTabs tab="calendar" form=form context='app' />
     </@columns>
 </@row>
-
-<script type="text/javascript">
+<script>
     var slotDuration = '${min_duration}';
     var minTime = '${min_time}';
     var maxTime = '${max_time}';
@@ -159,7 +158,7 @@
                     trigger : 'hover'
                 };
                 json.content = "<center>"+event.start.format('ddd DD/MM')+"</center>" + "<center><b>" + event.start.format('HH:mm') + "</b> - <b>" + event.end.format('HH:mm')+"</b></center>";
-                $(element).popover( json );
+                const popover = new bootstrap.Popover( element.context, json )
                 $(element).contextmenu(function() {
                     return false;
                 });

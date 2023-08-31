@@ -1,69 +1,65 @@
-<link rel='stylesheet' href='css/plugins/appointment/bootstrap-datetimepicker.css' />
-<script src="js/jquery/jquery.min.js"></script>
-<script src="js/plugins/appointment/moment.min.js" ></script>
-<script src="js/plugins/appointment/bootstrap-datetimepicker.min.js"></script>
-
+<link rel="stylesheet" href="css/admin/plugins/appointment/bootstrap-datetimepicker.css" >
+<script src="js/admin/plugins/appointment/jquery.min.js"></script>
+<script src="js/admin/plugins/appointment/moment.min.js" ></script>
+<script src="js/admin/plugins/appointment/bootstrap-datetimepicker.min.js"></script>
 <@row>
 	<@columns>
 		<@box color='primary'>
 			<@boxHeader title='' />
 			<@boxBody>
+				<@messages errors=errors infos=infos/>					
 				<@tform action='jsp/admin/plugins/appointment/ManageAppointmentSlots.jsp'>
-					<fieldset>					
-						<@messages errors=errors infos=infos/>					
-						<input type='hidden' name='action' value='doModifySlot' />
-						<input type='hidden' name='id_slot' value='${slot.idSlot}' />		
-						<input type='hidden' name='id_form' value='${id_form}' />										
-						<input type='hidden' name='date_of_display' value='${date_of_display}' />						
-						<@formGroup labelKey='#i18n{appointment.modifySlot.labelDate}'>
-							<@staticText>${slot.date}</@staticText>
-						</@formGroup>
-						<@formGroup labelFor='is_open' labelKey='#i18n{appointment.labelOpen}' helpKey='#i18n{appointment.modifySlot.labelOpenHelp}' mandatory=true>
-							<@checkBox name='is_open' id='is_open' value='true' checked=slot.isOpen />
-						</@formGroup>
-						<@formGroup labelKey='#i18n{appointment.modifySlot.labelMaxCapacityForThisSlot}' mandatory=true>
-							<@input type='text' name='max_capacity' value='${slot.maxCapacity}' params='onkeypress="return validateQty(event);"' maxlength=3 />	
-						</@formGroup>
-						<@formGroup labelFor='#i18n{appointment.model.entity.appointmentform.attribute.timeStart}'>
-							<@staticText>${slot.startingTime}</@staticText>
-						</@formGroup>
-						<@formGroup labelFor='time_end' labelKey='#i18n{appointment.model.entity.appointmentform.attribute.timeEnd}' helpKey='#i18n{appointment.modifySlot.helpModifyEndSlot}' mandatory=true>
-							<@inputGroup>
-								<@input type='text' name='ending_time' id='ending_time' value='${slot.endingTime!\'\'}' />
-								<@inputGroupItem type='text'>
-									<@icon style='clock-o' />
-								</@inputGroupItem>
-							</@inputGroup>
-						</@formGroup>
-						<@formGroup labelFor='shift_slot'>
-							<@radioButton labelFor='shift_slot' labelKey='#i18n{appointment.modifySlot.notShiftSlot}' name='shift_slot' id='shift_slot' checked=true value='false' />
-							<@radioButton labelFor='shift_slot' labelKey='#i18n{appointment.modifySlot.shiftSlot}' name='shift_slot' value='true' />
-						</@formGroup>
-						<@formGroup>
-							<@button type='submit' buttonIcon='check' name='modify' id='modify' title='#i18n{portal.util.labelModify}' />
-							<@aButton href='jsp/admin/plugins/appointment/ManageSpecificWeek.jsp?view=manageSpecificWeek&id_form=${slot.idForm}&date_of_display=${date_of_display}' buttonIcon='times' title='#i18n{portal.util.labelBack}' color='btn-secondary' />
-						</@formGroup>
-					</fieldset>
+					<@input type='hidden' name='action' value='doModifySlot' />
+					<@input type='hidden' name='id_slot' value='${slot.idSlot}' />		
+					<@input type='hidden' name='id_form' value='${id_form}' />										
+					<@input type='hidden' name='date_of_display' value='${date_of_display}' />						
+					<@formGroup labelKey='#i18n{appointment.modifySlot.labelDate}'>
+						<@staticText>${slot.date}</@staticText>
+					</@formGroup>
+					<@formGroup labelFor='is_open' labelKey='#i18n{appointment.labelOpen}' helpKey='#i18n{appointment.modifySlot.labelOpenHelp}' mandatory=true>
+						<@checkBox orientation='switch' name='is_open' id='is_open' value='true' checked=slot.isOpen />
+					</@formGroup>
+					<@formGroup labelKey='#i18n{appointment.modifySlot.labelMaxCapacityForThisSlot}' mandatory=true>
+						<@input type='text' name='max_capacity' value='${slot.maxCapacity}' params='onkeypress="return validateQty(event);"' maxlength=3 />	
+					</@formGroup>
+					<@formGroup labelFor='#i18n{appointment.model.entity.appointmentform.attribute.timeStart}'>
+						<@staticText>${slot.startingTime}</@staticText>
+					</@formGroup>
+					<@formGroup labelFor='time_end' labelKey='#i18n{appointment.model.entity.appointmentform.attribute.timeEnd}' helpKey='#i18n{appointment.modifySlot.helpModifyEndSlot}' mandatory=true>
+						<@inputGroup>
+							<@input type='text' name='ending_time' id='ending_time' value='${slot.endingTime!\'\'}' />
+							<@inputGroupItem type='text'>
+								<@icon style='clock' />
+							</@inputGroupItem>
+						</@inputGroup>
+					</@formGroup>
+					<@formGroup labelFor='shift_slot'>
+						<@radioButton labelFor='shift_slot' labelKey='#i18n{appointment.modifySlot.notShiftSlot}' name='shift_slot' id='shift_slot' checked=true value='false' />
+						<@radioButton labelFor='shift_slot' labelKey='#i18n{appointment.modifySlot.shiftSlot}' name='shift_slot' value='true' />
+					</@formGroup>
+					<@formGroup>
+						<@button type='submit' buttonIcon='check' name='modify' id='modify' title='#i18n{portal.util.labelModify}' />
+						<@aButton href='jsp/admin/plugins/appointment/ManageSpecificWeek.jsp?view=manageSpecificWeek&id_form=${slot.idForm}&date_of_display=${date_of_display}' buttonIcon='times' title='#i18n{portal.util.labelBack}' color='btn-secondary' />
+					</@formGroup>
 				</@tform>
 			</@boxBody>
 		</@box>
 	</@columns>
 </@row>
-<script type="text/javascript">		
-	function validateQty(event) {
-		var key = window.event ? event.keyCode : event.which;
-	
-	if (event.keyCode == 8 || event.keyCode == 9 || event.keyCode == 46
-	 || event.keyCode == 37 || event.keyCode == 39) {
-		return true;
-	}
-	else if ( key < 48 || key > 57 ) {
-		return false;
-	}
-	else return true;
-	};
-	$('#ending_time').datetimepicker({
-      format: 'HH:mm',
-      stepping: 5
-    });
+<script>		
+function validateQty(event) {
+var key = window.event ? event.keyCode : event.which;
+if (event.keyCode == 8 || event.keyCode == 9 || event.keyCode == 46
+	|| event.keyCode == 37 || event.keyCode == 39) {
+	return true;
+}
+else if ( key < 48 || key > 57 ) {
+	return false;
+}
+else return true;
+};
+$('#ending_time').datetimepicker({
+	format: 'HH:mm',
+	stepping: 5
+});
 </script>

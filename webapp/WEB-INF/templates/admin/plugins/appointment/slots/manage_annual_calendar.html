@@ -1,15 +1,13 @@
 <link rel="stylesheet" href="css/admin/plugins/appointment/js-year-calendar.min.css">
 <link rel="stylesheet" href="css/admin/plugins/appointment/appointment.css">
-
 <@appointmentTabs tab='year' form=appointmentform context='slot'>
     <@row>
         <@columns sm=10>
-            <div id="calendar"></div>
+            <@div id="calendar"></@div>
         </@columns>
         <@columns sm=2>
 			<@p params=' style="border-bottom: 1px solid #000;margin-bottom: 15px; padding:15px 0"'>
-                <span style="border-radius: 50%;background-color:#DDD;width: 20px;height: 20px;display: inline-block;vertical-align: middle;"></span>
-					#i18n{appointment.annual.label.daySpecifity}
+                <@span params='style="border-radius: 50%;background-color:#DDD;width: 20px;height: 20px;display: inline-block;vertical-align: middle;"'></@span> #i18n{appointment.annual.label.daySpecifity}
             </@p>
             <@ul class="list-unstyled">
                 <#list listReservationRule as rule>
@@ -23,8 +21,7 @@
         </@columns>
     </@row>
 </@appointmentTabs>
-
-<div id="context-menu"></div>
+<@div id="context-menu"></@div>
 <@modal id='event-modal' size='md' >
 	<@modalHeader modalTitle='#i18n{appointment.assign.typicalWeek.defaultTitle}' />
 	<@modalBody>
@@ -51,26 +48,23 @@
 			<@formGroup labelFor='type' labelKey='#i18n{appointment.week.toApplay}' rows=2>
                 <@select name='id_reservation_rule' id='id_reservation_rule'>
                 <#list listReservationRule as rule>
-				    <option value="${rule.idReservationRule}">${rule.name}</option>
+				    <@option value=rule.idReservationRule label=rule.name />
                 </#list>
 				</@select>
 			</@formGroup>		
 			<@formGroup rows=2>
                 <@button type='submit' name='save' id='save' buttonIcon='check' title='#i18n{appointment.labelSave}' />
                 <@button type='submit' name='delete' id='delete' title='#i18n{portal.util.labelDelete}' buttonIcon='trash' color='danger'  />
-                <@button type='button' params='data-dismiss="modal"' title='#i18n{portal.util.labelCancel}' buttonIcon='times' color='default' />   
+                <@button type='button' params='data-bs-dismiss="modal"' title='#i18n{portal.util.labelCancel}' buttonIcon='times' color='default' />   
 			</@formGroup>	
 		</@tform>
 	</@modalBody>
 </@modal>
-
-
 <script src="js/admin/plugins/appointment/moment.min.js"></script>
 <script src="js/admin/plugins/appointment/locale-all.js"></script>
 <script src="js/admin/plugins/appointment/bootstrap-datetimepicker.min.js"></script>
 <script src="js/admin/plugins/appointment/js-year-calendar.min.js"></script>
 <script src="js/admin/plugins/appointment/locales/js-year-calendar.fr.js"></script>
-
 <script>
 moment.locale( '${language}' );
 function isOlderThanToday( dtCompare ) {    
@@ -98,7 +92,9 @@ function editEvent( event) {
     $('#event-modal input[name="date_of_apply"]').datetimepicker({ locale: '${language}', format: 'L' });
     $('#event-modal input[name="ending_date_of_apply"]').val( moment( event.endDate ).format('L') );
     $('#event-modal input[name="ending_date_of_apply"]').datetimepicker({ locale: '${language}', format: 'L'});
-    $('#event-modal').modal();
+    //$('#event-modal').modal();
+    const eventModal = bootstrap.Modal.getOrCreateInstance('#event-modal')
+    eventModal.toggle()
 }
 
 function deleteEvent(event) {
@@ -106,7 +102,7 @@ function deleteEvent(event) {
 }
 
 var specDates = [<#list specificSlotDates as sDate>'${sDate}',</#list>];
-
+var popover = null;
 $(function() {
     calendar = new Calendar('#calendar', { 
         language: 'fr',
@@ -139,22 +135,31 @@ $(function() {
                             + '<div class="event-location">' + e.events[i].location + '</div>'
                             + '</div>';
                 }
-                $(e.element).popover({ 
+                // $(e.element).popover({ 
+                //     trigger: 'manual',
+                //     container: 'body',
+                //     html:true,
+                //     content: content
+                // });
+                //$(e.element).popover('show');
+                popover = new bootstrap.Popover( e.element, { 
                     trigger: 'manual',
                     container: 'body',
-                    html:true,
+                    html: true,
                     content: content
                 });
-                $(e.element).popover('show');
+                popover.show()
             }
         },
         mouseOutDay: function(e) {
             if(e.events.length > 0) {
-                $(e.element).popover('hide');
+                //$(e.element).popover('hide');
+                popover.hide();
             }
         },
         dayContextMenu: function(e) {
-            $(e.element).popover('hide');
+            //$(e.element).popover('hide');
+            popover.hide();
         },
         customDayRenderer: function( e, date){
             const cDay = moment( date ).format('YYYY-MM-DD');
