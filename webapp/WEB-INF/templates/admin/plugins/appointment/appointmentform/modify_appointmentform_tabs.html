@@ -20,6 +20,7 @@
 </#macro>
 
 <#macro modifyAppointmentFormLeftColumn appointmentform >
+<script src="js/admin/plugins/appointment/jquery.min.js"></script>
 <@tform id='formid' action='jsp/admin/plugins/appointment/ManageAppointmentForms.jsp' params='enctype="multipart/form-data"'>
 	<@input type='hidden' id='id_form' name='id_form' value='${appointmentform.idForm}' />
 	
@@ -173,7 +174,7 @@
 		<!-- used to keep state if the user presses back button -->
 		<@input type='hidden' name='hidden_address' id='hidden_address' />
 		<p class="help-block">#i18n{appointment.label.addressDescription}</p>
-		<script type='text/javascript'>
+		<script>
 				$('#geoloc_address').clone().attr('type','hidden').insertAfter('#geoloc_address').prev().remove();
 				$('#geoloc_longitude').clone().attr('type','hidden').insertAfter('#geoloc_longitude').prev().remove();
 				$('#geoloc_latitude').clone().attr('type','hidden').insertAfter('#geoloc_latitude').prev().remove();
@@ -306,57 +307,53 @@
 	</@formGroup>        
 </@tform>
 </fieldset>
-
 <@getDatePickerBootstrap idField="date_start_validity" language=language  />
 <@getDatePickerBootstrap idField="date_end_validity" language=language />
-<script type="text/javascript">
-	$('#formid').on('keyup keypress', function(e) {
-	    var keyCode = e.keyCode || e.which;
-	    if (keyCode === 13) { 
-      		e.preventDefault();
-      		return false;
-    	}
-	});
-	function validateQty(event) {
-		var key = window.event ? event.keyCode : event.which;
-	
-	if (event.keyCode == 8 || event.keyCode == 9 || event.keyCode == 46
-	 || event.keyCode == 37 || event.keyCode == 39) {
-		return true;
-	}
-	else if ( key < 48 || key > 57 ) {
+<script>
+$('#formid').on('keyup keypress', function(e) {
+	var keyCode = e.keyCode || e.which;
+	if (keyCode === 13) { 
+		e.preventDefault();
 		return false;
 	}
-	else return true;
-	};
-	function validateNbConsecutiveSlots() {
-		var nbConsecutiveSlotsInput = document.getElementById('nb_consecutive_slots');
-		var enteredValue = parseInt(nbConsecutiveSlotsInput.value);
+});
+function validateQty(event) {
+	var key = window.event ? event.keyCode : event.which;
 
-		if (enteredValue < 1 || isNaN(enteredValue)) {
-			nbConsecutiveSlotsInput.value = '';
-		}
-	}
-
-	// Add event listener to validate the input value
+if (event.keyCode == 8 || event.keyCode == 9 || event.keyCode == 46
+	|| event.keyCode == 37 || event.keyCode == 39) {
+	return true;
+}
+else if ( key < 48 || key > 57 ) {
+	return false;
+}
+else return true;
+};
+function validateNbConsecutiveSlots() {
 	var nbConsecutiveSlotsInput = document.getElementById('nb_consecutive_slots');
-	nbConsecutiveSlotsInput.addEventListener('change', validateNbConsecutiveSlots);
-</script>
+	var enteredValue = parseInt(nbConsecutiveSlotsInput.value);
 
-</script>
-<script type="text/javascript">
-	changeVisilityAnonymizePattern();
-	function changeVisilityAnonymizePattern()
-	{
-		if(document.getElementById("anonymizable").checked)
-		{
-			document.getElementById("anonymization_pattern_group").style.display = 'block';
-			document.getElementById("anonymization_pattern").required = true;
-		}
-		else
-		{
-			document.getElementById("anonymization_pattern_group").style.display = 'none';
-		}
+	if (enteredValue < 1 || isNaN(enteredValue)) {
+		nbConsecutiveSlotsInput.value = '';
 	}
+}
+
+// Add event listener to validate the input value
+var nbConsecutiveSlotsInput = document.getElementById('nb_consecutive_slots');
+nbConsecutiveSlotsInput.addEventListener('change', validateNbConsecutiveSlots);
+
+changeVisilityAnonymizePattern();
+function changeVisilityAnonymizePattern()
+{
+	if(document.getElementById("anonymizable").checked)
+	{
+		document.getElementById("anonymization_pattern_group").style.display = 'block';
+		document.getElementById("anonymization_pattern").required = true;
+	}
+	else
+	{
+		document.getElementById("anonymization_pattern_group").style.display = 'none';
+	}
+}
 </script>
 </#macro> 

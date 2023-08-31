@@ -83,7 +83,7 @@
 								</@formGroup>
 							</@columns>
 							<@columns class='col-md'>
-								<!-- EMPTY COLUMN: set so @the fields in @this row have @the same wid@th as @the ones in @the row above (purely visual) -->
+								<!-- EMPTY COLUMN: set so the fields in this row have the same width as the ones in the row above (purely visual) -->
 							</@columns>
 						</@row>
 						<@row id='error_messages_container' params='style="display:none;"'>
@@ -101,28 +101,38 @@
 							<@th>
 								<@checkBox name='allcheck' id='allCheck' title='#i18n{appointment.appointmentApp.infos}' />
 							</@th>
-							<@th>#i18n{appointment.manageAppointments.columnLastName} 
+							<@th>
+								#i18n{appointment.manageAppointments.columnLastName} 
 								<@aButton href='jsp/admin/plugins/appointment/ManageAppointments.jsp?view=manageAppointments&id_form=${form.idForm}&orderBy=last_name&orderAsc=true' buttonIcon='chevron-up' size='xs' color='default' />
 								<@aButton href='jsp/admin/plugins/appointment/ManageAppointments.jsp?view=manageAppointments&id_form=${form.idForm}&orderBy=last_name&orderAsc=false' buttonIcon='chevron-down' size='xs' color='default' />
 							</@th>
-							<@th>#i18n{appointment.manageAppointments.columnFirstName}
+							<@th>
+								#i18n{appointment.manageAppointments.columnFirstName}
 								<@aButton href='jsp/admin/plugins/appointment/ManageAppointments.jsp?view=manageAppointments&id_form=${form.idForm}&orderBy=first_name&orderAsc=true' buttonIcon='chevron-up' size='xs' color='default' />
 								<@aButton href='jsp/admin/plugins/appointment/ManageAppointments.jsp?view=manageAppointments&id_form=${form.idForm}&orderBy=first_name&orderAsc=false' buttonIcon='chevron-down' size='xs' color='default' />
 							</@th>                                
-							<@th>#i18n{appointment.manageAppointments.columnEmail} 
+							<@th>
+								#i18n{appointment.manageAppointments.columnEmail} 
 								<@aButton href='jsp/admin/plugins/appointment/ManageAppointments.jsp?view=manageAppointments&id_form=${form.idForm}&orderBy=email&orderAsc=true' buttonIcon='chevron-up' size='xs' color='default' />
 								<@aButton href='jsp/admin/plugins/appointment/ManageAppointments.jsp?view=manageAppointments&id_form=${form.idForm}&orderBy=email&orderAsc=false' buttonIcon='chevron-down' size='xs' color='default' />
-							<@th>#i18n{appointment.manageAppointments.columnPhoneNumber} 
+							</@th> 
+							<@th>
+								#i18n{appointment.manageAppointments.columnPhoneNumber} 
 								<@aButton href='jsp/admin/plugins/appointment/ManageAppointments.jsp?view=manageAppointments&id_form=${form.idForm}&orderBy=phone_number&orderAsc=true' buttonIcon='chevron-up' size='xs' color='default' />
 								<@aButton href='jsp/admin/plugins/appointment/ManageAppointments.jsp?view=manageAppointments&id_form=${form.idForm}&orderBy=phone_number&orderAsc=false' buttonIcon='chevron-down' size='xs' color='default' />
-							<@th>#i18n{appointment.manageAppointments.columnNbBookedSeats} 
+							</@th> 
+							<@th>
+								#i18n{appointment.manageAppointments.columnNbBookedSeats} 
 								<@aButton href='jsp/admin/plugins/appointment/ManageAppointments.jsp?view=manageAppointments&id_form=${form.idForm}&orderBy=nbBookedSeats&orderAsc=true' buttonIcon='chevron-up' size='xs' color='default' />
 								<@aButton href='jsp/admin/plugins/appointment/ManageAppointments.jsp?view=manageAppointments&id_form=${form.idForm}&orderBy=nbBookedSeats&orderAsc=false' buttonIcon='chevron-down' size='xs' color='default' />
-							<@th>#i18n{appointment.dateAppointment.title} 
+							</@th> 
+							<@th>
+								#i18n{appointment.dateAppointment.title} 
 								<@aButton href='jsp/admin/plugins/appointment/ManageAppointments.jsp?view=manageAppointments&id_form=${form.idForm}&orderBy=date_appointment&orderAsc=true' buttonIcon='chevron-up' size='xs' color='default' />
 								<@aButton href='jsp/admin/plugins/appointment/ManageAppointments.jsp?view=manageAppointments&id_form=${form.idForm}&orderBy=date_appointment&orderAsc=false' buttonIcon='chevron-down' size='xs' color='default' />
 							</@th>
-							<@th>#i18n{appointment.manageAppointments.columnAdmin} 
+							<@th>
+								#i18n{appointment.manageAppointments.columnAdmin} 
 								<@aButton href='jsp/admin/plugins/appointment/ManageAppointments.jsp?view=manageAppointments&id_form=${form.idForm}&orderBy=admin&orderAsc=true' buttonIcon='chevron-up' size='xs' color='default' />
 								<@aButton href='jsp/admin/plugins/appointment/ManageAppointments.jsp?view=manageAppointments&id_form=${form.idForm}&orderBy=admin&orderAsc=false' buttonIcon='chevron-down' size='xs' color='default' />
 							</@th>
@@ -145,7 +155,7 @@
 								<@td>${appointment.email}</@td>
 								<@td>${appointment.phoneNumber!}</@td>
 								<@td>${appointment.nbBookedSeats}</@td>
-								<@td>${appointment.dateOf@theAppointment} #i18n{appointment.labelFrom} ${appointment.startingTime} #i18n{appointment.labelTo} ${appointment.endingTime}</@td>
+								<@td>${appointment.dateOfTheAppointment} #i18n{appointment.labelFrom} ${appointment.startingTime} #i18n{appointment.labelTo} ${appointment.endingTime}</@td>
 								<@td>${appointment.adminUser}</@td>
 								<@td>
 									<#if appointment.isCancelled>
@@ -166,7 +176,7 @@
 									<#if appointment.listWorkflowActions?? && appointment.listWorkflowActions?size &gt; 0> 
 										<#list appointment.listWorkflowActions as action> 
 											<@aButton href='jsp/admin/plugins/appointment/ManageAppointments.jsp?view=viewWorkflowActionForm&id_action=${action.id}&amp;id_appointment=${appointment.idAppointment}' size='sm'>
-												<img src="image?resource_type=workflow_icon_img&id=${action.icon.id}"<#if action.icon.wid@th!=-1> wid@th="${action.icon.wid@th}" </#if><#if action.icon.height!=-1> height="${action.icon.height}"</#if>title="${action.name}" alt="${action.name}" />
+												<img src="image?resource_type=workflow_icon_img&id=${action.icon.id}"<#if action.icon.width!=-1> width="${action.icon.width}" </#if><#if action.icon.height!=-1> height="${action.icon.height}"</#if>title="${action.name}" alt="${action.name}" />
 											</@aButton> 
 										</#list>
 									</#if> 
@@ -206,17 +216,17 @@ $(function () {
 	});
 });
 $('#allCheck').click(function() {
-	var etat = @this.checked;
+	var etat = this.checked;
 	$("input[name='apmt']").each(function() {
-		@this.checked = etat;
+		this.checked = etat;
 	});
 	$('#eraseAll').prop("disabled", !etat);
 });
 $("input[name='apmt']").change(function() {
 	$('#eraseAll').prop("disabled", true);
 	$("input[name='apmt']").each(function() {
-		if (@this.checked) {
-			$('#eraseAll').prop("disabled", !@this.checked);
+		if (this.checked) {
+			$('#eraseAll').prop("disabled", !this.checked);
 		}
 	});
 });
