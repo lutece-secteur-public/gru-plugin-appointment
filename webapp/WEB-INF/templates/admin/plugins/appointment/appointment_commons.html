@@ -381,12 +381,12 @@ $(function(){
 						</#if>	
 					</#if>	
 					<#if tab !='typicalWeek' || tab !='year' || tab !='day'>
-						<div id="calendar">
+						<!-- <div id="calendar">
 							<div id="loader" class="d-flex justify-content-center align-items-center vh-100 h-75">
 								<strong>Loading...</strong>
 								<div class="spinner-border" role="status" aria-hidden="true"></div>
 							</div>
-						</div>
+						</div> -->
 					</#if>
 				</#if>
 			</@tabContent>
@@ -582,7 +582,7 @@ $( function(){
 		},
 		</#if>
 		eventAfterAllRender: function( view ) {
-			document.getElementById('loader').remove();
+			// document.getElementById('loader').remove();
 			sessionStorage.setItem( 'appCurrentDate', moment(view.start).format('DD/MM/YYYY') );
 			$('.fc-event').css('cursor', 'pointer');
 			<#if !isTypical>
