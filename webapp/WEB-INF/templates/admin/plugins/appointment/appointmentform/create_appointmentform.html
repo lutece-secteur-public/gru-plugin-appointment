@@ -228,7 +228,7 @@
 								var markers_layer = L.featureGroup().addTo(map);
 								// create the tile layer with correct attribution
 								var osmUrl='http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png';
-								var osmAttrib='Map data � <a href="http://openstreetmap.org">OpenStreetMap</a> contributors';
+								var osmAttrib='Map data &copy; <a href="http://openstreetmap.org">OpenStreetMap</a> contributors';
 								var osm = new L.TileLayer(osmUrl, {minZoom: 8, maxZoom: 16, attribution: osmAttrib}).addTo(map);
 
 								var jAdresse = $('#address_address');
