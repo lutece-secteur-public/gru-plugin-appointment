@@ -18,8 +18,7 @@
 }
 
 /* Tabs for typical week */
-.tablink-actions > a{
-	display: flex !important;
+.tablink-actions{
 	justify-content: space-between;
 }
 
