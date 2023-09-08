@@ -9,14 +9,15 @@
 			<@boxBody>
 				<@messages errors=errors warnings=warnings infos=infos/>
 				<@paginationAdmin paginator=paginator combo=1 />
-				<@table>
-					<tr>
-						<th>#i18n{appointment.labelTitle}</th>
-						<th>#i18n{portal.util.labelActions}</th>
-					</tr>
-					<#list appointmentform_list as appointmentform >
-						<tr>
-							<td>
+				<@table headBody=true>
+				<@tr>
+					<@th>#i18n{appointment.labelTitle}</@th>
+					<@th>#i18n{portal.util.labelActions}</@th>
+				</@tr>
+				<@tableHeadBodySeparator />
+				<#list appointmentform_list as appointmentform >
+						<@tr>
+							<@td>
 								<#if appointmentform.isActive>
 									<@tag color='success'>
 										<@icon style='check' />
@@ -26,41 +27,41 @@
 										<@icon style='times' />
 									</@tag>
 								</#if>
-								&nbsp;${appointmentform.title}
+								${appointmentform.title}
 								<#if appointmentform.isActive>
 									<a target="_blank" href="${baseUrl!}jsp/site/Portal.jsp?page=appointment&view=getViewAppointmentCalendar&id_form=${appointmentform.idForm}">
 										<@icon style='globe' />
 									</a>
 								</#if>
-							</td>
-							<td>
+							</@td>
+							<@td>
 								<#if permissions[appointmentform?index][0]=="true">
-									<@aButton href='jsp/admin/plugins/appointment/ManageAppointments.jsp?view=viewCalendarManageAppointment&id_form=${appointmentform.idForm}' title='#i18n{appointment.manageAppointmentForms.labelManageAppointments}' hideTitle=['all'] buttonIcon='calendar' size='sm' />
+									<@aButton href='jsp/admin/plugins/appointment/ManageAppointments.jsp?view=viewCalendarManageAppointment&id_form=${appointmentform.idForm}' title='#i18n{appointment.manageAppointmentForms.labelManageAppointments}' hideTitle=['all'] buttonIcon='calendar' size='' />
 								</#if>
 								<#if permissions[appointmentform?index][1]=="true">
-									<@aButton href='jsp/admin/plugins/appointment/ManageAppointmentSlots.jsp?view=manageTypicalWeek&id_form=${appointmentform.idForm}' title='#i18n{appointment.manageAppointmentForms.labelPlanning}' hideTitle=['all'] buttonIcon='clock' size='sm' />
+									<@aButton href='jsp/admin/plugins/appointment/ManageAppointmentSlots.jsp?view=manageTypicalWeek&id_form=${appointmentform.idForm}' title='#i18n{appointment.manageAppointmentForms.labelPlanning}' hideTitle=['all'] buttonIcon='clock' size='' />
 								</#if>
 								<#if permissions[appointmentform?index][2]=="true">
-									<@aButton href='jsp/admin/plugins/appointment/ManageAppointmentForms.jsp?view=modifyAppointmentForm&id_form=${appointmentform.idForm}' title='#i18n{appointment.manageAppointmentForms.labelConfig}' hideTitle=['all'] buttonIcon='wrench' size='sm' />	
+									<@aButton href='jsp/admin/plugins/appointment/ManageAppointmentForms.jsp?view=modifyAppointmentForm&id_form=${appointmentform.idForm}' title='#i18n{appointment.manageAppointmentForms.labelConfig}' hideTitle=['all'] buttonIcon='wrench' size='' />	
 								</#if>
 								<#if permissions[appointmentform?index][3]=="true">
-									<@aButton href='jsp/admin/plugins/appointment/ManageAppointmentForms.jsp?view=modifyAppointmentFormMessages&id_form=${appointmentform.idForm}' title='#i18n{appointment.manageAppointmentForms.labelModifyMessages}' hideTitle=['all'] buttonIcon='comment' size='sm' />
+									<@aButton href='jsp/admin/plugins/appointment/ManageAppointmentForms.jsp?view=modifyAppointmentFormMessages&id_form=${appointmentform.idForm}' title='#i18n{appointment.manageAppointmentForms.labelModifyMessages}' hideTitle=['all'] buttonIcon='comment' size='' />
 								</#if>
 								<#if permission_create=="true">
-									<@aButton href='jsp/admin/plugins/appointment/ManageAppointmentForms.jsp?action=doCopyAppointmentForm&id_form=${appointmentform.idForm}' title='#i18n{appointment.manageAppointmentForms.labelCopy}' hideTitle=['all'] buttonIcon='copy' size='sm' />
+									<@aButton href='jsp/admin/plugins/appointment/ManageAppointmentForms.jsp?action=doCopyAppointmentForm&id_form=${appointmentform.idForm}' title='#i18n{appointment.manageAppointmentForms.labelCopy}' hideTitle=['all'] buttonIcon='copy' size='' />
 								</#if>										
 								<#if permissions[appointmentform?index][4]=="true">					
 									<#if appointmentform.isActive>
-										<@aButton href='jsp/admin/plugins/appointment/ManageAppointmentForms.jsp?action=doChangeFormActivation&id_form=${appointmentform.idForm}' title='#i18n{appointment.manageAppointmentForms.labelDisable}' hideTitle=['all'] buttonIcon='stop' color='danger' size='sm' />
+										<@aButton href='jsp/admin/plugins/appointment/ManageAppointmentForms.jsp?action=doChangeFormActivation&id_form=${appointmentform.idForm}' title='#i18n{appointment.manageAppointmentForms.labelDisable}' hideTitle=['all'] buttonIcon='stop' color='danger' size='' />
 									<#else>
-										<@aButton href='jsp/admin/plugins/appointment/ManageAppointmentForms.jsp?action=doChangeFormActivation&id_form=${appointmentform.idForm}' title='#i18n{appointment.manageAppointmentForms.labelEnable}' hideTitle=['all'] buttonIcon='check' color='success' size='sm' />
+										<@aButton href='jsp/admin/plugins/appointment/ManageAppointmentForms.jsp?action=doChangeFormActivation&id_form=${appointmentform.idForm}' title='#i18n{appointment.manageAppointmentForms.labelEnable}' hideTitle=['all'] buttonIcon='check' color='success' size='' />
 									</#if>
 								</#if>
 								<#if permissions[appointmentform?index][5]=="true">
-									<@aButton href='jsp/admin/plugins/appointment/ManageAppointmentForms.jsp?action=confirmRemoveAppointmentForm&id_form=${appointmentform.idForm}' title='#i18n{portal.util.labelDelete}' hideTitle=['all'] buttonIcon='trash' color='danger' size='sm' />
+									<@aButton href='jsp/admin/plugins/appointment/ManageAppointmentForms.jsp?action=confirmRemoveAppointmentForm&id_form=${appointmentform.idForm}' title='#i18n{portal.util.labelDelete}' hideTitle=['all'] buttonIcon='trash' color='danger' size='' />
 								</#if>
-							</td>
-						</tr>
+							</@td>
+						</@tr>
 					</#list>
 				</@table>
 				<@paginationAdmin paginator=paginator />
