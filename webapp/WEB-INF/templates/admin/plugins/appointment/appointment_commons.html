@@ -1,50 +1,50 @@
 <#macro commonsAppJS>
 <!--  CSS admin -->
+<link rel="stylesheet" href="css/admin/plugins/appointment/bootstrap-datepicker.css" >
 <link rel="stylesheet" href="css/admin/plugins/appointment/bootstrap-datetimepicker.css" >
 <link rel="stylesheet" href="css/admin/plugins/appointment/fullcalendar.min.css" >
-<link rel="stylesheet" href="css/admin/plugins/appointment/appointment.css" >
 <link rel="stylesheet" href="css/admin/plugins/appointment/fullcalendar.custom.css" >
-<link rel="stylesheet" href="css/admin/datepicker.css" >
+<link rel="stylesheet" href="css/admin/plugins/appointment/appointment.css" >
 <!--  JS admin -->
+<script src="themes/admin/shared/js/lib/bootstrap/bootstrap.bundle.min.js"></script>
 <script src="js/admin/plugins/appointment/jquery.min.js"></script>
-<script src="js/admin/bootstrap.min.js"></script>
 <script src="js/admin/plugins/appointment/moment.min.js" ></script>
 <script src="js/admin/plugins/appointment/fullcalendar.min.js"></script>
 <script src="js/admin/plugins/appointment/locale-all.js"></script>
-<script src="js/admin/bootstrap-datepicker.js" ></script>
-<script src="js/admin/locales/bootstrap-datepicker.fr.js" ></script>
+<!-- <script src="js/admin/bootstrap-datepicker.js" ></script> -->
+<script src="js/admin/plugins/appointment/bootstrap-datepicker.js" ></script>
+<script src="js/admin/plugins/appointment/locales/bootstrap-datepicker.fr.js" ></script>
 <script src="js/admin/plugins/appointment/bootstrap-datetimepicker.min.js"></script>
 <script src="js/admin/plugins/appointment/tinycolor-min.js"></script>
 <script src="js/admin/plugins/appointment/appointment.js" ></script>
+<script>
+document.querySelector('body').classList.add('loaded')
+</script>
 </#macro>
 <#macro headerTitle form=form >
 /* Add Form title */
-$('#feature-title').html('<a href="jsp/admin/plugins/appointment/ManageAppointmentForms.jsp" title="#i18n{appointment.adminFeature.ManageAppointmentForm.name}">#i18n{appointment.adminFeature.ManageAppointmentForm.name}</a> <small>${form.title!}</small>');
+document.querySelector('#feature-title').innerHTML = '<a href="jsp/admin/plugins/appointment/ManageAppointmentForms.jsp" title="#i18n{appointment.adminFeature.ManageAppointmentForm.name}">#i18n{appointment.adminFeature.ManageAppointmentForm.name}</a> <small>${form.title!}</small>';
 </#macro> 
 <#--
 -- Check if the checkbox must be checked or not
 -- @param code the checkbox code
--- @param referecen_list the default values list
+-- @param referecenlist the default values list
 -- @return the String 'checked="checked" if the checkbox must be checked, an empty String otherwise
 -->
 <#function getChecked code reference_list>
-	<#if reference_list?has_content>
-		<#list reference_list as reference_item>
-			<#if reference_item.code = code>
-				<#if reference_item.checked>
-  					<#return "checked='checked'">
-  				<#else>
-  					<#return "">
-  				</#if>
-  			</#if>
-  		</#list>
+<#if reference_list?has_content>
+<#list reference_list as reference_item>
+	<#if reference_item.code = code>
+		<#if reference_item.checked><#return "checked='checked'"><#else><#return ""></#if>
 	</#if>
-	<#return "">
+</#list>
+</#if>
+<#return "">
 </#function>
 <#--
 -- Get the value of the parameter
 -- @param code the code of the parameter
--- @param referecen_list the default values list
+-- @param referecenlist the default values list
 -- @return the value of the parameter
 -->
 <#function getName code reference_list>
@@ -179,7 +179,7 @@ $('#feature-title').html('<a href="jsp/admin/plugins/appointment/ManageAppointme
 		<@formGroup labelFor='comment' labelKey='#i18n{appointment.comment.name}' helpKey='#i18n{appointment.comment.name}' mandatory=true rows=2>
 			<@input type='textarea' name='comment' id=idComment richtext=true />
 		</@formGroup>
-		<@formGroup labelFor='startingValidityDate' labelKey=startDateLabel helpKey='&nbsp;' mandatory=true rows=2>
+		<@formGroup labelFor='startingValidityDate' labelKey=startDateLabel mandatory=true rows=2>
 			<@inputGroup class='date' id='${idStartingDate}Group'>
 				<@input type='text' name='startingValidityDate' id=idStartingDate />
 				<@inputGroupItem type='text'>
@@ -187,7 +187,7 @@ $('#feature-title').html('<a href="jsp/admin/plugins/appointment/ManageAppointme
 				</@inputGroupItem>
 			</@inputGroup>
 		</@formGroup>
-		<@formGroup labelFor='startingValidityTime' labelKey=startTimeLabel helpKey='&nbsp;' rows=2>
+		<@formGroup labelFor='startingValidityTime' labelKey=startTimeLabel rows=2>
 			<@inputGroup id='${idStartingTime}Group' class='date'>
 				<@input type='text' name='startingValidityTime' id=idStartingTime value='00:00' />
 				<@inputGroupItem type='text' >
@@ -195,7 +195,7 @@ $('#feature-title').html('<a href="jsp/admin/plugins/appointment/ManageAppointme
 				</@inputGroupItem>
 			</@inputGroup>
 		</@formGroup>
-		<@formGroup labelFor=idEndingDate labelKey=endDateLabel helpKey='&nbsp;' mandatory=true rows=2>
+		<@formGroup labelFor=idEndingDate labelKey=endDateLabel mandatory=true rows=2>
 			<@inputGroup class='date' id='${idEndingDate}Group'>
 				<@input type='text' name='endingValidityDate' id=idEndingDate />
 				<@inputGroupItem type='text'>
@@ -203,7 +203,7 @@ $('#feature-title').html('<a href="jsp/admin/plugins/appointment/ManageAppointme
 				</@inputGroupItem>
 			</@inputGroup>
 		</@formGroup>
-		<@formGroup labelFor='endingValidityTime' labelKey=endTimeLabel helpKey='&nbsp;' rows=2>
+		<@formGroup labelFor='endingValidityTime' labelKey=endTimeLabel rows=2>
 			<@inputGroup class='date' id='${idEndingTime}Group'>
 				<@input type='text' name='endingValidityTime' id=idEndingTime value='00:00' />
 				<@inputGroupItem type='text'>
@@ -312,7 +312,7 @@ $(function(){
 </#macro>
 <#macro btnComment >
 <#if permission_add_comment?boolean>
-	<@button id='toggle-add-comment' style='none' color='info mt-2 me-1' title='#i18n{appointment.create_comment.pageTitle}' hideTitle=[''] params=' data-toggle="modal" data-target="#commentModal" ' buttonNested=true>
+	<@button id='toggle-add-comment' style='none' color='info mt-2 me-1' title='#i18n{appointment.create_comment.pageTitle}' hideTitle=[''] params='data-bs-toggle="modal" data-bs-target="#commentModal"' >
 		<@iconStack class='fa-xs'>
 			<@icon prefix='' style='far fa-comment fa-stack-2x' />
 			<@icon prefix='' style='fas fa-plus fa-stack-1x' />
@@ -381,12 +381,12 @@ $(function(){
 						</#if>	
 					</#if>	
 					<#if tab !='typicalWeek' || tab !='year' || tab !='day'>
-						<!-- <div id="calendar">
+						<div id="calendar">
 							<div id="loader" class="d-flex justify-content-center align-items-center vh-100 h-75">
-								<strong>Loading...</strong>
+								<strong>#i18n{appointment.labelLoading}...</strong>
 								<div class="spinner-border" role="status" aria-hidden="true"></div>
 							</div>
-						</div> -->
+						</div>
 					</#if>
 				</#if>
 			</@tabContent>
@@ -409,7 +409,8 @@ localStorage.setItem( 'appointmentContext', '${context}' );
 	$( '#modify-comment input[name="startingValidityTime"]' ).val( formValues.comment_start_time );
 	$( '#modify-comment input[name="endingValidityTime"]' ).val( formValues.comment_end_time );
 </#if>
-const commentModal = new bootstrap.Modal( document.getElementById('modify-comment') )
+// const commentModal = new bootstrap.Modal( document.getElementById('modify-comment') )
+const commentModal = bootstrap.Modal.getOrCreateInstance('#modify-comment');
 commentModal.toggle();
 </#macro> 
 <#macro getComments comments_list>
@@ -582,7 +583,7 @@ $( function(){
 		},
 		</#if>
 		eventAfterAllRender: function( view ) {
-			// document.getElementById('loader').remove();
+			if( document.getElementById('loader') != undefined ){ document.getElementById('loader').remove() };
 			sessionStorage.setItem( 'appCurrentDate', moment(view.start).format('DD/MM/YYYY') );
 			$('.fc-event').css('cursor', 'pointer');
 			<#if !isTypical>
@@ -596,7 +597,7 @@ $( function(){
 				$('#starting_date_time').val($(this).data('starting_date_time'));
 				var dt = $(this).data('starting_date_time');
 				$('#starting_date_time_span').val( moment(dt).format('DD/MM/YYYY hh:mm') );
-				const addbookModal = new bootstrap.Modal( 'addBookModalDialog' )
+				const addbookModal = new bootstrap.Modal( '#addBookModalDialog' )
 				addbookModal.toggle();
 				return false;
 			});
