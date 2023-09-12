@@ -18,27 +18,27 @@
 					<@fieldSet legend='#i18n{appointment.manageAppointments.labelSearch}'>
 						<@row>
 							<@columns class='col-md'>
-								<@formGroup labelFor='lastName' labelKey='#i18n{appointment.labelLastName}' rows=2>
+								<@formGroup labelFor='lastName' labelKey='#i18n{appointment.manageAppointments.columnLastName}' rows=2>
 									<@input type='text' id='lastName' name='lastName' value='${filter.lastName!}' />
 								</@formGroup>
 							</@columns>
 							<@columns class='col-md'>
-								<@formGroup labelFor='firstName' labelKey='#i18n{appointment.labelFirstName}' rows=2>
+								<@formGroup labelFor='firstName' labelKey='#i18n{appointment.manageAppointments.columnFirstName}' rows=2>
 									<@input type='text' id='firstName' name='firstName' value='${filter.firstName!}'/>
 								</@formGroup>
 							</@columns>
 							<@columns class='col-md'>
-								<@formGroup labelFor='email' labelKey='#i18n{appointment.labelEmail}' rows=2>
+								<@formGroup labelFor='email' labelKey='#i18n{appointment.manageAppointments.columnEmail}' rows=2>
 									<@input type='text' id='email' name='email' value='${filter.email!}' />
 								</@formGroup>
 							</@columns>
 							<@columns class='col-md'>
-								<@formGroup labelFor='phoneNumber' labelKey='#i18n{appointment.labelPhoneNumber}'  rows=2>
+								<@formGroup labelFor='phoneNumber' labelKey='#i18n{appointment.manageAppointments.columnPhoneNumber}'  rows=2>
 									<@input type='text' id='phoneNumber' name='phoneNumber' value='${filter.phoneNumber!}' />
 								</@formGroup>
 							</@columns>
 							<@columns class='col-md'>
-								<@formGroup labelFor='status' labelKey='#i18n{appointment.labelStatus}'  rows=2>
+								<@formGroup labelFor='status' labelKey='#i18n{appointment.manageAppointments.columnState}'  rows=2>
 									<@select name='status' id='status' items=listStatus default_value='${filter.status!}' />
 								</@formGroup>
 							</@columns>
