@@ -35,6 +35,8 @@ package fr.paris.lutece.plugins.appointment.service;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -44,6 +46,7 @@ import javax.servlet.http.HttpServletRequest;
 import org.apache.commons.collections.CollectionUtils;
 
 import fr.paris.lutece.plugins.appointment.business.form.Form;
+import fr.paris.lutece.plugins.appointment.utils.ChangeEntryValueUtils;
 import fr.paris.lutece.plugins.appointment.web.AppointmentApp;
 import fr.paris.lutece.plugins.appointment.web.dto.AppointmentDTO;
 import fr.paris.lutece.plugins.appointment.web.dto.AppointmentFormDTO;
@@ -568,6 +571,49 @@ public final class EntryService extends RemovalListenerService implements Serial
         }
         template = AppTemplateService.getTemplate( entryTypeService.getTemplateHtmlForm( entry, bDisplayFront ), locale, model );
         stringBuffer.append( template.getHtml( ) );
+    }
+
+    /**
+     * Get the html part of the additional entry of the form
+     * 
+     * @param nIdEntry
+     *            the entry id
+     * @param stringBuffer
+     *            the string buffer
+     * @param locale
+     * @param bDisplayFront
+     * @param request
+     * @param codesPredemandeList
+     */
+    public static void getSpecificHtmlEntry( Map<String, Object> model, Entry entry, StringBuilder stringBuffer, Locale locale, boolean bDisplayFront,
+            AppointmentDTO appointmentDTO, List<String> codesPredemandeList )
+    {
+        HtmlTemplate template;
+        Entry entryCodes = EntryHome.findByPrimaryKey( entry.getIdEntry() );
+
+        if(CollectionUtils.isEmpty(appointmentDTO.getListResponse()))
+        {
+        	Map<Integer, List<Response>> mapResponse = new HashMap<>(); 
+        	mapResponse.put(entryCodes.getIdEntry(),  Arrays.asList(ChangeEntryValueUtils.setSpecificEntryValue(entryCodes, codesPredemandeList)) );
+        	appointmentDTO.setMapResponsesByIdEntry(mapResponse);
+        }
+        model.put( MARK_ENTRY, entryCodes );
+        model.put( MARK_LOCALE, locale );
+        if ( ( appointmentDTO != null ) && ( appointmentDTO.getMapResponsesByIdEntry( ) != null ) )
+        {
+           List<Response> listResponses = appointmentDTO.getMapResponsesByIdEntry( ).get( entryCodes.getIdEntry( ) );
+           model.put( MARK_LIST_RESPONSES, listResponses );
+
+        }
+        IEntryTypeService entryTypeService = EntryTypeServiceManager.getEntryTypeService( entryCodes );
+        // If the entry type is a file, we add the
+        if ( entryTypeService instanceof AbstractEntryTypeUpload )
+        {
+            model.put( MARK_UPLOAD_HANDLER, ( (AbstractEntryTypeUpload) entryTypeService ).getAsynchronousUploadHandler( ) );
+        }
+        template = AppTemplateService.getTemplate( entryTypeService.getTemplateHtmlForm( entryCodes, bDisplayFront ), locale, model );
+        
+        stringBuffer.append( template.getHtml() );
     }
 
     /**

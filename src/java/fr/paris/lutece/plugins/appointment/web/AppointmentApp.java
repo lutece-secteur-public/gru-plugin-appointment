@@ -52,6 +52,7 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 
 import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.collections.CollectionUtils;
@@ -97,7 +98,6 @@ import fr.paris.lutece.portal.business.file.FileHome;
 import fr.paris.lutece.portal.business.physicalfile.PhysicalFileHome;
 import fr.paris.lutece.portal.service.admin.AccessDeniedException;
 import fr.paris.lutece.portal.service.captcha.CaptchaSecurityService;
-import fr.paris.lutece.portal.service.datastore.DatastoreService;
 import fr.paris.lutece.portal.service.i18n.I18nService;
 import fr.paris.lutece.portal.service.image.ImageResource;
 import fr.paris.lutece.portal.service.message.SiteMessageException;
@@ -213,7 +213,9 @@ public class AppointmentApp extends MVCApplication
     private static final String PARAMETER_NB_PLACE_TO_TAKE = "nbPlacesToTake";
     private static final String PARAMETER_ID_ACTION = "id_action";
     private static final String PARAMETER_MODIF_DATE = "modif_date";
-
+    private static final String PROPERTY_SESSION_ATTRIBUTE_NAME = AppPropertiesService.getProperty("appointment.session.attribute.name");
+    private static final String PROPERTY_SESSION_ENTRY_TYPE = AppPropertiesService.getProperty("appointment.session.entry.type");
+    
     // Mark
     private static final String MARK_MODIFICATION_DATE_APPOINTMENT = "modifDateAppointment";
     private static final String MARK_NBPLACESTOTAKE = "nbPlacesToTake";
@@ -591,7 +593,11 @@ public class AppointmentApp extends MVCApplication
         String strIdForm = request.getParameter( PARAMETER_ID_FORM );
         String strNbPlacesToTake = request.getParameter( PARAMETER_NB_PLACE_TO_TAKE );
         String strModifDateAppointment = request.getParameter( PARAMETER_MODIF_DATE );
+        
+        HttpSession session = request.getSession( true );
 
+        List<String> codesPredemandesList = (List<String> ) session.getAttribute(PROPERTY_SESSION_ATTRIBUTE_NAME);
+        
         if ( strModifDateAppointment != null && Boolean.parseBoolean( strModifDateAppointment ) && _validatedAppointment != null
                 && _validatedAppointment.getIdAppointment( ) != 0 )
         {
@@ -761,7 +767,14 @@ public class AppointmentApp extends MVCApplication
         List<Entry> listEntryFirstLevel = EntryService.getFilter( _appointmentForm.getIdForm( ), true );
         for ( Entry entry : listEntryFirstLevel )
         {
-            EntryService.getHtmlEntry( model, entry.getIdEntry( ), strBuffer, locale, true, _notValidatedAppointment );
+        	if(CollectionUtils.isNotEmpty(codesPredemandesList) && StringUtils.equals(entry.getEntryType().getTitle(), PROPERTY_SESSION_ENTRY_TYPE))
+	    	{
+	    		EntryService.getSpecificHtmlEntry( model, entry, strBuffer, locale, true, _notValidatedAppointment, codesPredemandesList);
+	    	}
+	    	else
+	    	{
+	    		EntryService.getHtmlEntry( model, entry.getIdEntry( ), strBuffer, locale, true, _notValidatedAppointment);
+	    	}
         }
         FormMessage formMessages = FormMessageService.findFormMessageByIdForm( nIdForm );
 
