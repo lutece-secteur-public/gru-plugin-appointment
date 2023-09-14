@@ -1,51 +1,50 @@
-<@appointmentTabs tab="specificWeek" form=appointmentform context='slot'/>
+<@appointmentTabs tab='specificWeek' form=appointmentform context='slot'/>
 
 <@getCommentModal 'commentModal' '#i18n{appointment.create_comment.pageTitle}' "comment" "startingValidityDate" "endingValidityDate" "idStartingTime" "idEndingTime" "doAddComment" id_form mailing_list />
 
 <@getCommentModal 'modify-comment' '#i18n{appointment.modify_comment.pageTitle}' "comment" "modifyStartingValidityDate" "modifyEndingValidityDate" "idModifyStartingTime" "idModifyEndingTime" "doModifyComment" id_form mailing_list />
 
-<@modal id='updatePlanningSlot'>
+<@modal id='updatePlanningSlot' params='data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"'>
     <@modalBody>
         <@tform action='jsp/admin/plugins/appointment/ManageSpecificWeek.jsp'>						
-            <@input type='hidden' name='action' value='doModifyListSlot' />
-            <@input type='hidden' name='id_form' value='${appointmentform.idForm}' />
-            <@input type='hidden' id='slotData' name='slotsData' value='' />
-            <@input type='hidden' id='idWorkingDay' name='workingDay' value='' />
-            <@input type='hidden' id='capacity' name='capacity' value='new_cap' />
-            <@input type='hidden' id='date_of_display_slot' name='date_of_display' value='${date_of_display}' />	
-            <@formGroup labelKey='#i18n{appointment.modifySlot.labelDate}' rows=2>
-                <@staticText id="dtSlot"></@staticText>
-            </@formGroup>
-            <@formGroup labelFor='is_open' labelKey='#i18n{appointment.modifySlot.labelOpen}' helpKey='#i18n{appointment.modifySlot.labelOpenHelp}' rows=2>
-                <@checkBox name='is_open' id='is_open' value='true' checked=true />
-            </@formGroup>
-            <@formGroup labelFor='maxCapacity' labelKey='#i18n{appointment.modifySlot.labelMaxCapacityForThisSlot}' mandatory=true rows=2>
-                <@input type='number' id='maxCapacity' name='max_capacity' value='' min=0 max=99 maxlength=3 />	
-            </@formGroup>
-            <@formGroup labelKey='#i18n{appointment.model.entity.appointmentform.attribute.timeStart}' rows=2>
-                <@staticText id='timeStart'></@staticText>
-            </@formGroup>
-            <@formGroup labelFor='timeEnd' labelKey='#i18n{appointment.model.entity.appointmentform.attribute.timeEnd}' helpKey='#i18n{appointment.modifySlot.helpModifyEndSlot}' mandatory=true rows=2>
-                <@inputGroup>
-                    <@input type='text' name='ending_time' id='timeEnd' value='' />
-                    <@inputGroupItem type='text'>
-                        <@icon style='clock-o' />
-                    </@inputGroupItem>
-                </@inputGroup>
-            </@formGroup>
-            <@formGroup labelFor='shift_slot' rows=2>
-                <@radioButton labelFor='shift_slot_false' labelKey='#i18n{appointment.modifySlot.notShiftSlot}' name='shift_slot' id='shift_slot_false' checked=true value='false' />
-                <@radioButton labelFor='shift_slot_true' labelKey='#i18n{appointment.modifySlot.shiftSlot}' name='shift_slot' id='shift_slot_true' value='true' />
-            </@formGroup>
-            <@formGroup rows=2>
-                <@button type='submit' buttonIcon='check' name='modify' id='modify' title='#i18n{portal.util.labelModify}' />
-                <@button color='secondary' title='#i18n{portal.util.labelBack}' params=' data-dismiss="modal" aria-label="Close"' />
-            </@formGroup>
+        <@input type='hidden' name='action' value='doModifyListSlot' />
+        <@input type='hidden' name='id_form' value='${appointmentform.idForm}' />
+        <@input type='hidden' id='slotData' name='slotsData' value='' />
+        <@input type='hidden' id='idWorkingDay' name='workingDay' value='' />
+        <@input type='hidden' id='capacity' name='capacity' value='new_cap' />
+        <@input type='hidden' id='date_of_display_slot' name='date_of_display' value='${date_of_display}' />	
+        <@formGroup labelKey='#i18n{appointment.modifySlot.labelDate}' rows=2>
+            <@staticText id="dtSlot"></@staticText>
+        </@formGroup>
+        <@formGroup labelFor='is_open' labelKey='#i18n{appointment.modifySlot.labelOpen}' helpKey='#i18n{appointment.modifySlot.labelOpenHelp}' rows=2>
+            <@checkBox name='is_open' id='is_open' value='true' checked=true />
+        </@formGroup>
+        <@formGroup labelFor='maxCapacity' labelKey='#i18n{appointment.modifySlot.labelMaxCapacityForThisSlot}' mandatory=true rows=2>
+            <@input type='number' id='maxCapacity' name='max_capacity' value='' min=0 max=99 maxlength=3 />	
+        </@formGroup>
+        <@formGroup labelKey='#i18n{appointment.model.entity.appointmentform.attribute.timeStart}' rows=2>
+            <@staticText id='timeStart'></@staticText>
+        </@formGroup>
+        <@formGroup labelFor='timeEnd' labelKey='#i18n{appointment.model.entity.appointmentform.attribute.timeEnd}' helpKey='#i18n{appointment.modifySlot.helpModifyEndSlot}' mandatory=true rows=2>
+            <@inputGroup>
+                <@input type='text' name='ending_time' id='timeEnd' value='' />
+                <@inputGroupItem type='text'>
+                    <@icon style='clock' />
+                </@inputGroupItem>
+            </@inputGroup>
+        </@formGroup>
+        <@formGroup labelFor='shift_slot' rows=2>
+            <@radioButton labelFor='shift_slot_false' labelKey='#i18n{appointment.modifySlot.notShiftSlot}' name='shift_slot' id='shift_slot_false' checked=true value='false' />
+            <@radioButton labelFor='shift_slot_true' labelKey='#i18n{appointment.modifySlot.shiftSlot}' name='shift_slot' id='shift_slot_true' value='true' />
+        </@formGroup>
+        <@formGroup rows=2>
+            <@button type='submit' buttonIcon='check' name='modify' id='modify' title='#i18n{portal.util.labelModify}' />
+            <@button color='secondary' title='#i18n{portal.util.labelCancel}' params=' data-bs-dismiss="modal" aria-label="#i18n{portal.util.labelCancel}"' />
+        </@formGroup>
         </@tform>
     </@modalBody>
 </@modal>
-
-<@modal id='updatePlanningMultiSlot'>
+<@modal id='updatePlanningMultiSlot' params='data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"'>
     <@modalBody>
         <@tform action="jsp/admin/plugins/appointment/ManageSpecificWeek.jsp">
             <@input type='hidden' name='action' value='doModifyListSlot' />
@@ -58,22 +57,19 @@
                 <@radioButton orientation='inline' labelFor='shift_slot_null' id='shift_slot_null' labelKey='#i18n{appointment.modifySlot.labelNoValue}' name='is_open' value='' checked=true  />
             </@formGroup>
             <@formGroup labelFor='shift_slot' rows=2>
-                <@radioButton labelFor='var_cap' labelKey='Variation de capacité' name='capacity' id='var_cap' checked=true value='var_cap' />
+                <@radioButton labelFor='var_cap' labelKey='#i18n{appointment.modifySlot.labelCapacityChange}' name='capacity' id='var_cap' checked=true value='var_cap' />
                 <@radioButton labelFor='new_cap' labelKey='Nouvelle capacité' name='capacity' id='new_cap' value='new_cap' />
                 <@input type='number' id='newCapacity' name='max_capacity' value='0' min=-99 max=99 />
             </@formGroup>
             <@formGroup rows=2>
-                <@button type='submit' color='primary' title='Enregistrer' />
-                <@button color='secondary' title='Annuler' params=' data-dismiss="modal" aria-label="Close"' />
+                <@button type='submit' color='primary' title='#i18n{portal.util.labelValidate}' />
+                <@button color='secondary' title='#i18n{portal.util.labelCancel}' params=' data-bs-dismiss="modal" aria-label="#i18n{portal.util.labelCancel}"' />
             </@formGroup>
         </@tform>
     </@modalBody>
-</@modal> 
-
-
+</@modal>
 <script src="js/admin/plugins/appointment/selectable.min.js"></script>
 <script src="js/admin/plugins/appointment/selectable.table.min.js"></script>
-
 <script>
 var slotDuration = '${min_duration}';
 var minTime = '${min_time}';
@@ -95,13 +91,13 @@ var events = [
         <#assign eventTitle='${maxCap} / ${realCap}'>
         <#assign strCustomColor><#if event.isOpen & ( maxCap > realCap )>rgba(255,165,0,1)<#elseif event.isOpen &  ( maxCap <= realCap )>rgba(204,235,255,1)<#else>rgba(255,0,0,1)</#if></#assign>
          {
-            "title"   : "${event.maxCapacity} / ${appointmentform.capacityPerSlot}<#if event.isSpecific> (*)</#if>",
-            "start"   : "${event.startingDateTime}",
-            "end"     : "${event.endingDateTime}",
-            "id"      : "${event.idSlot}",
-            "color"   : <#if event.isOpen>"transparent"<#else>"#bebebe"</#if>,
+            "title" : "${event.maxCapacity} / ${appointmentform.capacityPerSlot}<#if event.isSpecific> (*)</#if>",
+            "start" : "${event.startingDateTime}",
+            "end" : "${event.endingDateTime}",
+            "id" : "${event.idSlot}",
+            "color" : <#if event.isOpen>"transparent"<#else>"#bebebe"</#if>,
             "textColor" : "#2c2c2d",
-            "url"     : "jsp/admin/plugins/appointment/ManageSpecificWeek.jsp?view=viewModifySlot&id_form=${appointmentform.idForm}&id_slot=${event.idSlot}&starting_date_time=${event.startingDateTime}&ending_date_time=${event.endingDateTime}&is_open=<#if event.isOpen>true<#else>false</#if>&is_specific=<#if event.isSpecific>true<#else>false</#if>&max_capacity=${event.maxCapacity}",
+            "url" : "jsp/admin/plugins/appointment/ManageSpecificWeek.jsp?view=viewModifySlot&id_form=${appointmentform.idForm}&id_slot=${event.idSlot}&starting_date_time=${event.startingDateTime}&ending_date_time=${event.endingDateTime}&is_open=<#if event.isOpen>true<#else>false</#if>&is_specific=<#if event.isSpecific>true<#else>false</#if>&max_capacity=${event.maxCapacity}",
             "customStyle" : <#if event.isOpen>"linear-gradient( 90deg, ${strCustomColor} 0%, ${strCustomColor} ${nbFull?floor}%, rgba(255,255,255,1) ${nbFull?floor}% )",<#else>"",</#if>
             "customClass" : "fc-custom",
             "backgroundColor" : <#if event.isOpen>"#fff"<#else>"#bebebe"</#if>,
@@ -115,7 +111,8 @@ var events = [
     </#list>
 </#if>
 ];
-$('#new_cap').click(function(){
+
+$( '#new_cap' ).click( function(){
     $('#newCapacity').attr('min','0');
     if( $('#newCapacity').val() < 0 ){
         $('#newCapacity').val(0);
@@ -126,10 +123,10 @@ $('#var_cap').click(function(){
     $('#newCapacity').attr('min','-99');
 });
 <@fullCalendarScript isSpecific=true >
-    $('#timeEnd').datetimepicker({
-        format: 'HH:mm',
-        stepping: 5
-    });
+$('#timeEnd').datetimepicker({
+    format: 'HH:mm',
+    stepping: 5
+});
 </@fullCalendarScript>
 </script>
 <#include "/admin/util/editor/editor.html" />

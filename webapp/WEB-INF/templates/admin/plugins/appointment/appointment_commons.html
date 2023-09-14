@@ -11,7 +11,6 @@
 <script src="js/admin/plugins/appointment/moment.min.js" ></script>
 <script src="js/admin/plugins/appointment/fullcalendar.min.js"></script>
 <script src="js/admin/plugins/appointment/locale-all.js"></script>
-<!-- <script src="js/admin/bootstrap-datepicker.js" ></script> -->
 <script src="js/admin/plugins/appointment/bootstrap-datepicker.js" ></script>
 <script src="js/admin/plugins/appointment/locales/bootstrap-datepicker.fr.js" ></script>
 <script src="js/admin/plugins/appointment/bootstrap-datetimepicker.min.js"></script>
@@ -520,7 +519,7 @@ $( function(){
 					const evt = JSON.parse(evtData); 
 					<#if isTypical>$('#timeSlotData')<#else>$('#slotsData')</#if>.val(evtData);
 					$('#date_of_display_multi').val( moment(evt[0].startingDateTime).format('YYYY-MM-DD') );
-					const updatePlanningSlotModal = new bootstrap.Modal('#updatePlanningMultiSlot')
+					const updatePlanningMultiSlotModal = new bootstrap.Modal('#updatePlanningMultiSlot')
 					updatePlanningMultiSlotModal.toggle()
 				} else {
 					evtData=selData.slice(0, -1) ;
@@ -534,7 +533,7 @@ $( function(){
 					$('#timeStart').text( evt.startingTime );
 					$('#timeEnd').val( evt.endingTime );
 					const updatePlanningModal = new bootstrap.Modal('#updatePlanningSlot')
-					updatePlanningMultiSlotModal.toggle()
+					updatePlanningModal.toggle()
 				}
 			},
 		</#if>
@@ -634,15 +633,15 @@ $( function(){
 				var classSel = $(this).attr('class'),
 				commentSel = classSel.split(' '),
 				c = '#' + commentSel[0].replace('-','-C');
-				// $( c ).popover("toggle");
-				const popover = new bootstrap.Popover( c )
+				const popover = bootstrap.Popover.getOrCreateInstance( c )
+				popover.toggle();
 				return false;
 			});
 			</#if>
 			<#if isSpecific || isTypical >
 			/* Event selection if specific */ 
 			var eventIdx=0, eventData='',evtData='';        
-            $( ".fc-content-skeleton" )<#if isSpecific>.not(":has(.comments)")</#if>.not(":has(.btn-comments)").selectable({
+           	$( ".fc-content-skeleton" )<#if isSpecific>.not(":has(.comments)")</#if>.not(":has(.btn-comments)").selectable({
                 filter: ".fc-time-grid-event.fc-v-event",
 				selecting: function( event, ui ) {
 					eventIdx++;
@@ -661,7 +660,7 @@ $( function(){
 								const evt = JSON.parse(evtData); 
 								$('#slotsData').val( evtData);
 								$('#date_of_display_multi').val( moment(evt[0].startingDateTime).format('YYYY-MM-DD') );
-								const updatePlanningMultiSlotModal = new bootstrap.Modal('#updatePlanningMultiSlot')
+								const updatePlanningMultiSlotModal = bootstrap.Modal.getOrCreateInstance('#updatePlanningMultiSlot')
 								updatePlanningMultiSlotModal.toggle()
 							} else {
 								eventData ='{' + $(this).data('event') + '}';  
@@ -676,8 +675,8 @@ $( function(){
 								$('#date_of_display_slot').val( moment(evt.startingDateTime).format('YYYY-MM-DD') );
 								$('#timeStart').text( evt.startingTime );
 								$('#timeEnd').val( evt.endingTime );
-								const eventModal = new bootstrap.Modal('#updatePlanningSlot')
-								eventModal.toggle()
+								const updatePlanningSlotModal = bootstrap.Modal.getOrCreateInstance('#updatePlanningSlot')
+								updatePlanningSlotModal.toggle()
 							}
 						</#if>  
 						<#if isTypical>
@@ -686,7 +685,7 @@ $( function(){
 								const events =  JSON.stringify( eventData );
 								evtData='['+eventData.slice(0, -1)+']'
 								$('#timeSlotData').val( evtData );
-								const updatePlanningMultiSlotModal = new bootstrap.Modal('#updatePlanningMultiSlot')
+								const updatePlanningMultiSlotModal = bootstrap.Modal.getOrCreateInstance('#updatePlanningMultiSlot')
 								updatePlanningMultiSlotModal.toggle()
 							} else {
 								eventData ='{' + $(this).data('event') + '}';                       
@@ -699,13 +698,14 @@ $( function(){
 								$('#date_of_display_slotmaxCapacity').val( evt.maxCapacity );
 								$('#timeStart').text( evt.startingTime );
 								$('#timeEnd').val( evt.endingTime );
-								const updatePlanningSlotModal = new bootstrap.Modal('#updatePlanningSlot')
+								const updatePlanningSlotModal = bootstrap.Modal.getOrCreateInstance('#updatePlanningSlot')
 								updatePlanningSlotModal.toggle()
 							}
 						</#if> 
 					});
 					eventData='';
 				}
+			
 			});
 			</#if>
 			
