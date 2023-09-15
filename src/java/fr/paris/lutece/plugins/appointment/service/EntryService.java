@@ -574,16 +574,18 @@ public final class EntryService extends RemovalListenerService implements Serial
     }
 
     /**
-     * Get the html part of the additional entry of the form
+     * Get the html part of the entry session type that include codes predemande
      * 
-     * @param nIdEntry
-     *            the entry id
+     * @param model
+     * @param Entry
+     *            the corresponding entry
      * @param stringBuffer
      *            the string buffer
      * @param locale
      * @param bDisplayFront
-     * @param request
+     * @param appointmentDTO
      * @param codesPredemandeList
+     * 			 the list that contains all codes predemande
      */
     public static void getSpecificHtmlEntry( Map<String, Object> model, Entry entry, StringBuilder stringBuffer, Locale locale, boolean bDisplayFront,
             AppointmentDTO appointmentDTO, List<String> codesPredemandeList )
@@ -591,7 +593,7 @@ public final class EntryService extends RemovalListenerService implements Serial
         HtmlTemplate template;
         Entry entryCodes = EntryHome.findByPrimaryKey( entry.getIdEntry() );
 
-        if(CollectionUtils.isEmpty(appointmentDTO.getListResponse()))
+        if( appointmentDTO != null && CollectionUtils.isEmpty(appointmentDTO.getListResponse()))
         {
         	Map<Integer, List<Response>> mapResponse = new HashMap<>(); 
         	mapResponse.put(entryCodes.getIdEntry(),  Arrays.asList(ChangeEntryValueUtils.setSpecificEntryValue(entryCodes, codesPredemandeList)) );
@@ -606,11 +608,6 @@ public final class EntryService extends RemovalListenerService implements Serial
 
         }
         IEntryTypeService entryTypeService = EntryTypeServiceManager.getEntryTypeService( entryCodes );
-        // If the entry type is a file, we add the
-        if ( entryTypeService instanceof AbstractEntryTypeUpload )
-        {
-            model.put( MARK_UPLOAD_HANDLER, ( (AbstractEntryTypeUpload) entryTypeService ).getAsynchronousUploadHandler( ) );
-        }
         template = AppTemplateService.getTemplate( entryTypeService.getTemplateHtmlForm( entryCodes, bDisplayFront ), locale, model );
         
         stringBuffer.append( template.getHtml() );
