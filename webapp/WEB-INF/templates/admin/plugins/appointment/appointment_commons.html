@@ -6,7 +6,7 @@
 <link rel="stylesheet" href="css/admin/plugins/appointment/fullcalendar.custom.css" >
 <link rel="stylesheet" href="css/admin/plugins/appointment/appointment.css" >
 <!--  JS admin -->
-<script src="themes/admin/shared/js/lib/bootstrap/bootstrap.bundle.min.js"></script>
+<#-- <script src="themes/admin/shared/js/lib/bootstrap/bootstrap.bundle.min.js"></script> -->
 <script src="js/admin/plugins/appointment/jquery.min.js"></script>
 <script src="js/admin/plugins/appointment/moment.min.js" ></script>
 <script src="js/admin/plugins/appointment/fullcalendar.min.js"></script>
@@ -19,7 +19,7 @@
 <script>
 document.querySelector('body').classList.add('loaded')
 </script>
-</#macro>
+</##macro>
 <#macro headerTitle form=form >
 /* Add Form title */
 document.querySelector('#feature-title').innerHTML = '<a href="jsp/admin/plugins/appointment/ManageAppointmentForms.jsp" title="#i18n{appointment.adminFeature.ManageAppointmentForm.name}">#i18n{appointment.adminFeature.ManageAppointmentForm.name}</a> <small>${form.title!}</small>';
