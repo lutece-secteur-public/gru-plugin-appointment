@@ -1,6 +1,4 @@
-<link rel="stylesheet" href="css/admin/plugins/appointment/bootstrap-datetimepicker.css" >
-<script src="js/admin/plugins/appointment/moment.min.js" ></script>
-<script src="js/admin/plugins/appointment/bootstrap-datetimepicker.min.js"></script>
+<@commonsAppJS />
 <@row>
 	<@columns>
 		<@tform id='formid' class='horizontal' method='post' action='jsp/admin/plugins/appointment/ManageAppointmentForms.jsp' params='enctype=\'multipart/form-data\''>
@@ -320,8 +318,6 @@
 		</@tform>
 	</@columns>
 </@row>
-<script src="js/bootstrap-datepicker.js"></script>
-<script src="js/locales/bootstrap-datepicker.<@getLanguageInLocale language=language />.js"></script>
 <script>
 	$('#formid').on('keyup keypress', function(e) {
 	    var keyCode = e.keyCode || e.which;
@@ -397,9 +393,7 @@
 	// Add event listener to validate the input value
 	var nbConsecutiveSlotsInput = document.getElementById('nb_consecutive_slots');
 	nbConsecutiveSlotsInput.addEventListener('change', validateNbConsecutiveSlots);
-</script>
 
-<script type="text/javascript">
 	changeVisilityAnonymizePattern();
 	function changeVisilityAnonymizePattern()
 	{
