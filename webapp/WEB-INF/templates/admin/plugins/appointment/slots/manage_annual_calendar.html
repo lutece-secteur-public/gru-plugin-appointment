@@ -11,9 +11,9 @@
             </@p>
             <@ul class="list-unstyled">
                 <#list listReservationRule as rule>
-                    <@li>
-                        <@aButton color='link' href='jsp/admin/plugins/appointment/ManageAppointmentSlots.jsp?view=manageTypicalWeek&id_form=${id_form}&id_reservation_rule=${rule.idReservationRule}'>
-                            <@icon prefix='fas fa-' style='circle' params=' style="color:${rule.color!};"' /> ${rule.name} 
+                    <@li class='py-2'>
+                        <@aButton color='link btn-outline-default justify-content-start w-75' href='jsp/admin/plugins/appointment/ManageAppointmentSlots.jsp?view=manageTypicalWeek&id_form=${id_form}&id_reservation_rule=${rule.idReservationRule}'>
+                            <@icon prefix='fas fa-' style='circle me-2' params=' style="color:${rule.color!};"' /> ${rule.name} 
                         </@aButton>
                     </@li>
                 </#list>
