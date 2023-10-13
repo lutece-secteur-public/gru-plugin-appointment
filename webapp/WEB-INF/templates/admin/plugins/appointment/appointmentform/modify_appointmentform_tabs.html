@@ -139,7 +139,13 @@
 	<@formGroup labelFor='workgroup' labelKey='#i18n{appointment.createAppointmentForm.labelWorkgroup}'>
 		<@select name='workgroup' id='workgroup' items=user_workgroup_list default_value='${appointmentform.workgroup!}' />
 	</@formGroup>
-
+	
+	<#if accesscontrol_list?has_content && accesscontrol_list?size gt 1>
+		<@formGroup labelFor='id_accesscontrol' labelKey='#i18n{appointment.createAppointmentForm.accesscontrol.label}' helpKey='#i18n{appointment.createAppointmentForm.accesscontrol.label.help}'>
+			<@select name='id_accesscontrol' id='id_accesscontrol' items=accesscontrol_list default_value='${accesscontrol_id!}' />
+		</@formGroup>
+	</#if>
+	
 	<#if appointmentform.getIcon()??>
 		<#assign xicon= appointmentform.getIcon()>
 		<#if xicon.mimeType?? >
