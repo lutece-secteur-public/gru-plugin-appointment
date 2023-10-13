@@ -95,6 +95,7 @@ import fr.paris.lutece.plugins.workflowcore.service.task.ITaskService;
 import fr.paris.lutece.plugins.workflowcore.service.task.TaskService;
 import fr.paris.lutece.portal.business.file.FileHome;
 import fr.paris.lutece.portal.business.physicalfile.PhysicalFileHome;
+import fr.paris.lutece.portal.service.accesscontrol.AccessControlService;
 import fr.paris.lutece.portal.service.admin.AccessDeniedException;
 import fr.paris.lutece.portal.service.captcha.CaptchaSecurityService;
 import fr.paris.lutece.portal.service.datastore.DatastoreService;
@@ -434,6 +435,18 @@ public class AppointmentApp extends MVCApplication
             if ( _nNbPlacesToTake > Integer.parseInt( _strNbPlacesToTakeLength ) )
             {
             	addError( ERROR_MESSAGE_NB_PLACE_TO_TAKE_TO_BIG, locale );
+            }
+
+            // Check the Access Controls of the form, when displaying the calendar
+            XPage accessControlPage = AccessControlService.getInstance( ).doExecuteAccessControl(
+            		request,
+            		nIdForm,
+            		Form.RESOURCE_TYPE,
+            		null
+            		);
+            if ( accessControlPage != null )
+            {
+            	return accessControlPage;
             }
 
             // Get the min time from now before a user can take an appointment (in hours)
@@ -789,6 +802,19 @@ public class AppointmentApp extends MVCApplication
         {
         	model.put( MARK_USER,  null );
         }
+
+        // Check the Access Controls of the form
+        XPage accessControlPage = AccessControlService.getInstance( ).doExecuteAccessControl(
+        		request,
+        		nIdForm,
+        		Form.RESOURCE_TYPE,
+        		null
+        		);
+        if ( accessControlPage != null )
+        {
+        	return accessControlPage;
+        }
+
         HtmlTemplate templateForm = AppTemplateService.getTemplate( TEMPLATE_HTML_CODE_FORM, locale, model );
         model.put( MARK_FORM_HTML, templateForm.getHtml( ) );
         HtmlTemplate template = AppTemplateService.getTemplate( TEMPLATE_APPOINTMENT_FORM, getLocale( request ), model );
@@ -1050,6 +1076,10 @@ public class AppointmentApp extends MVCApplication
         _nNbPlacesToTake = 0;
         int nIdForm = _validatedAppointment.getIdForm( );
        // _validatedAppointment = null;
+
+        // Remove the session data of this form
+        AccessControlService.getInstance( ).cleanSessionData( request, nIdForm, Form.RESOURCE_TYPE );
+
         String anchor = request.getParameter( PARAMETER_ANCHOR );
         if ( StringUtils.isNotEmpty( anchor ) )
         {

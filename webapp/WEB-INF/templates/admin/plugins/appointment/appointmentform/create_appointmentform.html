@@ -153,6 +153,11 @@
 						<@formGroup labelFor='calendarTemplateId' labelKey='#i18n{appointment.createAppointmentForm.labelCalendarTemplate}' mandatory=true>
 							<@select name='calendarTemplateId' id='calendarTemplateId' items=refListCalendarTemplates default_value='${appointmentform.calendarTemplateId!}' />
 						</@formGroup>
+						<#if accesscontrol_list?has_content && accesscontrol_list?size gt 1>
+							<@formGroup labelFor='id_accesscontrol' labelKey='#i18n{appointment.createAppointmentForm.accesscontrol.label}' helpKey='#i18n{appointment.createAppointmentForm.accesscontrol.label.help}'>
+								<@select name='id_accesscontrol' id='id_accesscontrol' items=accesscontrol_list default_value='${accesscontrol_id!}' />
+							</@formGroup>
+						</#if>
 						<#if isCaptchaEnabled>
 							<@formGroup>
 								<@checkBox name='enableCaptcha' id='enableCaptcha' value='true' checked=appointmentform.enableCaptcha!false labelFor='enableCaptcha' labelKey='#i18n{appointment.createAppointmentForm.labelEnableCaptcha}' />
