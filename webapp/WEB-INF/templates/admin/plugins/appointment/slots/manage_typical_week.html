@@ -1,6 +1,6 @@
 <@appointmentTabs tab='typicalWeek' form=appointmentform context='slot'>
 <@row>
-	<@columns md=2>
+	<@columns md=3>
 		<@tform class='mb-3' action='jsp/admin/plugins/appointment/ManageAppointmentSlots.jsp' params='enctype="multipart/form-data"' >
 		<@input type='hidden' name='id_form' value='${appointmentform.idForm}' />
 		<@input type='hidden' name='view_manageTypicalWeek' value='' />
@@ -34,7 +34,7 @@
 			</@listGroup>
 		</#if> 
 	</@columns>
-	<@columns md=10>
+	<@columns md=9>
 		<!-- Modify Global Parameters-->
 		<@div id="appointment_search">
 			<#if id_reservation_rule != 0 >
