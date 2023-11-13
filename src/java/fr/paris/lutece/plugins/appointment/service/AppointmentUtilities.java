@@ -85,6 +85,7 @@ import fr.paris.lutece.plugins.genericattributes.service.entrytype.EntryTypeServ
 import fr.paris.lutece.plugins.genericattributes.service.entrytype.IEntryTypeService;
 import fr.paris.lutece.plugins.genericattributes.util.GenericAttributesUtils;
 import fr.paris.lutece.portal.business.user.AdminUser;
+import fr.paris.lutece.portal.business.user.AdminUserHome;
 import fr.paris.lutece.portal.service.i18n.I18nService;
 import fr.paris.lutece.portal.service.rbac.RBACService;
 import fr.paris.lutece.portal.service.util.AppLogService;
@@ -107,13 +108,11 @@ public final class AppointmentUtilities
     public static final String ERROR_MESSAGE_EMPTY_NB_BOOKED_SEAT = "appointment.validation.appointment.NbBookedSeat.notEmpty";
     public static final String ERROR_MESSAGE_FORMAT_NB_BOOKED_SEAT = "appointment.validation.appointment.NbBookedSeat.notNumberFormat";
     public static final String ERROR_MESSAGE_ERROR_NB_BOOKED_SEAT = "appointment.validation.appointment.NbBookedSeat.error";
-    private static final String ERROR_MESSAGE_LAST_NAME_EMPTY = "appointment.validation.appointment.LastName.notEmpty";
-    private static final String ERROR_MESSAGE_FIRST_NAME_EMPTY = "appointment.validation.appointment.FirstName.notEmpty";
 
     public static final String MARK_PERMISSION_ADD_COMMENT = "permission_add_comment";
     public static final String MARK_PERMISSION_MODERATE_COMMENT = "permission_moderate_comment";
     public static final String MARK_PERMISSION_ACCESS_CODE = "permission_access_code";
-
+    public static final String OLD_APPOINTMENT_DTO = "oldAppointment";
     public static final String SESSION_TASK_TIMER_SLOT = "appointment.session.task.timer.slot";
 
     public static final String PROPERTY_DEFAULT_EXPIRED_TIME_EDIT_APPOINTMENT = "appointment.edit.expired.time";
@@ -1229,5 +1228,51 @@ public final class AppointmentUtilities
             Thread.currentThread().interrupt();
         }
 
+    }
+    
+    /**
+     * Build an appointment dto from an appointment business object
+     * 
+     * @param appointment
+     *            the appointment business object
+     * @return the appointment DTO
+     */
+    public static AppointmentDTO buildAppointmentDTO( Appointment appointment )
+    {
+        AppointmentDTO appointmentDTO = new AppointmentDTO( );
+        User user = appointment.getUser();
+        
+        appointmentDTO.setIdForm( appointment.getSlot( ).get( 0 ).getIdForm( ) );
+        appointmentDTO.setIdUser( appointment.getIdUser( ) );
+        appointmentDTO.setListAppointmentSlot( appointment.getListAppointmentSlot( ) );
+        appointmentDTO.setIdAppointment( appointment.getIdAppointment( ) );
+       
+        if(user != null) {
+	        appointmentDTO.setFirstName( user.getFirstName( ) );
+	        appointmentDTO.setLastName( user.getLastName( ) );
+	        appointmentDTO.setEmail( user.getEmail( ) );
+	        appointmentDTO.setPhoneNumber( user.getPhoneNumber( ) );
+	        appointmentDTO.setGuid( user.getGuid( ) );
+	        appointmentDTO.setReference( appointment.getReference( ) );
+        }
+        
+        LocalDateTime startingDateTime = AppointmentUtilities.getStartingDateTime( appointment );
+        LocalDateTime endingDateTime = AppointmentUtilities.getEndingDateTime( appointment );
+        
+        appointmentDTO.setStartingDateTime( startingDateTime );
+        appointmentDTO.setEndingDateTime( endingDateTime );
+        appointmentDTO.setDateOfTheAppointment( startingDateTime.toLocalDate( ).format( Utilities.getFormatter( ) ) );
+        appointmentDTO.setStartingTime( startingDateTime.toLocalTime( ) );
+        appointmentDTO.setEndingTime( endingDateTime.toLocalTime( ) );
+        appointmentDTO.setIsCancelled( appointment.getIsCancelled( ) );
+        appointmentDTO.setNbBookedSeats( appointment.getNbPlaces( ) );
+        appointment.getSlot().forEach(SlotService::addDateAndTimeToSlot);
+        appointmentDTO.setSlot( appointment.getSlot( ) );
+        appointmentDTO.setUser( appointment.getUser( ) );
+ 
+        appointmentDTO.setAdminUserCreate( appointment.getAdminUserCreate( ) );
+        appointmentDTO.setDateAppointmentTaken( appointment.getDateAppointmentTaken( ) );
+       
+        return appointmentDTO;
     }
 }

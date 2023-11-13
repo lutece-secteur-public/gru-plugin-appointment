@@ -358,7 +358,7 @@ public final class SlotSafeService
         TransactionManager.beginTransaction( AppointmentPlugin.getPlugin( ) );
         try
         {
-            Set<Integer> listSlotUpdated = saveSlots( appointmentDTO, listLock );
+            Set<Integer> listSlotUpdated = saveSlots( appointmentDTO, listLock, request );
             if ( !isReport )
             {
                 user = UserService.saveUser( appointmentDTO );
@@ -1002,7 +1002,7 @@ public final class SlotSafeService
      * @return list id slot updated
      * @throws InterruptedException
      */
-    private static Set<Integer> saveSlots( AppointmentDTO appointmentDTO, List<Lock> listLock ) throws InterruptedException
+    private static Set<Integer> saveSlots( AppointmentDTO appointmentDTO, List<Lock> listLock, HttpServletRequest request ) throws InterruptedException, CloneNotSupportedException
     {
         Appointment oldAppointment = null;
         List<Slot> listOldSlot = new ArrayList<>( );
@@ -1029,11 +1029,15 @@ public final class SlotSafeService
                     throw new SlotFullException( "ERROR SLOT LOCKED" );
                 }
                 Slot slt = SlotService.findSlotById( appointmentSlot.getIdSlot( ) );
+                oldAppointment.addSlot( slt.clone( ) );
                 slt = updateRemaningPlacesWithAppointmentMoved( appointmentSlot.getNbPlaces( ), slt );
                 listOldSlot.add( slt );
             }
+            //We set the appointmentDTO object in the request before proceeding with its update, 
+            //especially in the context of report an appointment. 
+            //This ensures that the object will be available in the request parameter that we pass during the execution of workflow tasks.
+            request.setAttribute(AppointmentUtilities.OLD_APPOINTMENT_DTO, AppointmentUtilities.buildAppointmentDTO(oldAppointment));
         }
-
         for ( AppointmentSlot appSlot : appointmentDTO.getListAppointmentSlot( ) )
         {
             Slot slt = null;

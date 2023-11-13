@@ -48,7 +48,7 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
  *
  */
 @JsonIgnoreProperties( ignoreUnknown = true )
-public final class Slot implements Serializable
+public final class Slot implements Serializable, Cloneable
 {
 
     /**
@@ -506,5 +506,9 @@ public final class Slot implements Serializable
     public void setIsFull( int bIsFull )
     {
         _bIsFull = bIsFull;
+    }
+    @Override
+    public Slot clone() throws CloneNotSupportedException {
+      return (Slot) super.clone();
     }
 }
