@@ -870,6 +870,8 @@ public class AppointmentApp extends MVCApplication
         AppointmentUtilities.fillAppointmentDTO( _notValidatedAppointment, nbBookedSeats, strEmail, strEmailConfirm, strFirstName, strLastName );
         AppointmentUtilities.validateFormAndEntries( _notValidatedAppointment, request, listFormErrors, false );
         AppointmentUtilities.fillInListResponseWithMapResponse( _notValidatedAppointment );
+        AppointmentUtilities.setAppointmentPhoneNumberValuesFromResponse( _notValidatedAppointment );
+
         boolean bErrors = false;
         if ( _appointmentForm.getEnableMandatoryEmail( )
                 && !AppointmentUtilities.checkNbDaysBetweenTwoAppointmentsTaken( _notValidatedAppointment, strEmail, _appointmentForm ) )
@@ -1045,6 +1047,7 @@ public class AppointmentApp extends MVCApplication
             addError( ERROR_MESSAGE_CAPTCHA, getLocale( request ) );
             return redirect( request, VIEW_DISPLAY_RECAP_APPOINTMENT, PARAMETER_ID_FORM, _validatedAppointment.getIdForm( ) );
         }
+
         int nIdAppointment;
         try
         {

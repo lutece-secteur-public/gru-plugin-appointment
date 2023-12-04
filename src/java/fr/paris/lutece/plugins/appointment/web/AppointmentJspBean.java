@@ -1125,6 +1125,8 @@ public class AppointmentJspBean extends MVCAdminJspBean
                 request.getParameter( PARAMETER_LAST_NAME ) );
         AppointmentUtilities.validateFormAndEntries( _notValidatedAppointment, request, listFormErrors, true );
         AppointmentUtilities.fillInListResponseWithMapResponse( _notValidatedAppointment );
+        AppointmentUtilities.setAppointmentPhoneNumberValuesFromResponse( _notValidatedAppointment );
+
         if ( CollectionUtils.isNotEmpty( listFormErrors ) )
         {
             LinkedHashMap<String, String> additionalParameters = new LinkedHashMap<>( );

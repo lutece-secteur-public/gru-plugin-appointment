@@ -123,6 +123,12 @@ public final class AppointmentUtilities
     private static final ScheduledExecutorService _secheduledExecutor = Executors
             .newSingleThreadScheduledExecutor( r -> new Thread( r, "Lutece-AppointmentSecheduledExecutor-thread" ) );
 
+    // CONSTANTS
+    // Name of the phone number's generic attribute bean
+    public static final String CONSTANT_GENERIC_ATTRIBUTE_TYPE_PHONE_NAME = "appointment.entryTypePhone";
+    // Characters used to separate phone numbers, in the case where a form allows multiple entries
+    public static final String CONSTANT_PHONE_NUMBERS_SEPARATOR = ", ";
+
     /**
      * Private constructor - this class does not need to be instantiated
      */
@@ -1274,5 +1280,43 @@ public final class AppointmentUtilities
         appointmentDTO.setDateAppointmentTaken( appointment.getDateAppointmentTaken( ) );
        
         return appointmentDTO;
+    }
+
+    /**
+     * Set the appointment's phone number values, if a user entered them in a Generic Attributes
+     * of type 'Phone Number'. These values are retrieved from the appointment's responses.
+     * 
+     * @param appointment
+     *            the appointment to process
+     */
+    public static void setAppointmentPhoneNumberValuesFromResponse( AppointmentDTO appointment )
+    {
+    	// Retrieve the appointment's responses
+    	List<Response> listAppointmentResponses = appointment.getListResponse( );
+
+    	if( CollectionUtils.isNotEmpty( listAppointmentResponses ) )
+    	{
+    		try
+    		{
+    			// Retrieve the user's phone number value(s) from the appointment's responses
+    			List<String> listPhoneNumbers = listAppointmentResponses.stream( )
+    					.filter( elem -> elem.getEntry( ) != null && elem.getEntry( ).getEntryType( ).getBeanName( ).contentEquals( AppointmentUtilities.CONSTANT_GENERIC_ATTRIBUTE_TYPE_PHONE_NAME ) )
+    					.map( Response::getResponseValue )
+    					.filter( value -> value != null && !value.trim( ).isEmpty( ) )
+    					.map( String::trim )
+    					.collect( Collectors.toList( ) );
+
+    			if( !listPhoneNumbers.isEmpty( ) )
+    			{
+    				// Set the current appointment's phone number value(s). Use a separator if there are multiple values
+    				String strPhoneNumbers = StringUtils.join( listPhoneNumbers, CONSTANT_PHONE_NUMBERS_SEPARATOR );
+    				appointment.setPhoneNumber( strPhoneNumbers );
+    			}
+    		}
+    		catch ( NullPointerException e)
+    		{
+                AppLogService.error( "Error when retrieving appointment's phone number value", e );
+    		}
+    	}
     }
 }
