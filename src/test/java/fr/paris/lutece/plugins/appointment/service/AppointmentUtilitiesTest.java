@@ -40,6 +40,7 @@ import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.temporal.TemporalAdjusters;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
@@ -59,7 +60,10 @@ import fr.paris.lutece.plugins.appointment.business.user.User;
 import fr.paris.lutece.plugins.appointment.business.user.UserHome;
 import fr.paris.lutece.plugins.appointment.web.dto.AppointmentDTO;
 import fr.paris.lutece.plugins.appointment.web.dto.AppointmentFormDTO;
+import fr.paris.lutece.plugins.genericattributes.business.Entry;
+import fr.paris.lutece.plugins.genericattributes.business.EntryType;
 import fr.paris.lutece.plugins.genericattributes.business.GenericAttributeError;
+import fr.paris.lutece.plugins.genericattributes.business.Response;
 import fr.paris.lutece.test.LuteceTestCase;
 
 public class AppointmentUtilitiesTest extends LuteceTestCase
@@ -717,6 +721,67 @@ public class AppointmentUtilitiesTest extends LuteceTestCase
 
         assertEquals( 1, AppointmentUtilities.findSlotsImpactedByThisTimeSlot( timeSlot, nIdForm, weekDefinition.getIdWeekDefinition( ), false ).size( ) );
         cleanUp( nIdForm, appointmentForm );
+    }
+
+    public void testSetAppointmentPhoneNumberValuesFromResponse( )
+    {
+        AppointmentDTO appointment = AppointmentTest.buildAppointmentDTO(
+        		1, null, "jean.dupont@mdp.fr", "Jean", "Dupont", _timeStart, _timeEnd, 1 );
+
+        // Create Entrytype
+        EntryType entryTypePhone = new EntryType( );
+        entryTypePhone.setBeanName( "appointment.entryTypePhone" );
+
+        EntryType entryTypeText = new EntryType( );
+        entryTypeText.setBeanName( "appointment.entryTypeText" );
+
+        // Create Entry 1
+        Entry entry01 = new Entry( );
+        entry01.setIdEntry( 1 );
+        entry01.setEntryType( entryTypePhone );
+
+        // Create Response 1
+        Response response01 = new Response();
+        response01.setEntry( entry01 );
+        response01.setResponseValue( "  value1 " );
+
+        // Create Entry 2
+        Entry entry02 = new Entry( );
+        entry02.setIdEntry( 2 );
+        entry02.setEntryType( entryTypeText );
+
+        // Create Response 2
+        Response response02 = new Response();
+        response02.setEntry( entry02 );
+        response02.setResponseValue( "value2" );
+
+        // Create Entry 3
+        Entry entry03 = new Entry( );
+        entry03.setIdEntry( 3 );
+        entry03.setEntryType( entryTypePhone );
+
+        // Create Response 3
+        Response response03 = new Response();
+        response03.setEntry( entry03 );
+        response03.setResponseValue( null );
+
+        // Create Entry 4
+        Entry entry04 = new Entry( );
+        entry04.setIdEntry( 4 );
+        entry04.setEntryType( entryTypePhone );
+
+        // Create Response 4
+        Response response04 = new Response();
+        response04.setEntry( entry04 );
+        response04.setResponseValue( "value04 " );
+
+        // Add responses to the appointment
+        appointment.setListResponse( new ArrayList<Response>( Arrays.asList( response01, response02, response03, response04 ) ) );
+
+        // Set the appointment's phone number
+        AppointmentUtilities.setAppointmentPhoneNumberValuesFromResponse( appointment );
+        // Test the expected values of the appointment's phone numbers
+        assertEquals( "value1, value04", appointment.getPhoneNumber() );
     }
 
     private void cleanUp( int nIdForm, AppointmentFormDTO formDto, AppointmentDTO... appDtoArray )
