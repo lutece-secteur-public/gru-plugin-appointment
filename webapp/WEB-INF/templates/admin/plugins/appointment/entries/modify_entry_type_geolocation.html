@@ -5,65 +5,84 @@
 		<@box color='primary'>
 			<@boxHeader title='#i18n{appointment.modifyEntry.titleQuestion} : "${form.title}"' />
 			<@boxBody>
-				<@tform action='jsp/admin/plugins/appointment/ManageAppointmentFormEntries.jsp' />
-				<@input type='hidden' name='action' value='doModifyEntry' />
-				<@input type='hidden' name='id_entry' value='${entry.idEntry}' />
+				<@tform action='jsp/admin/plugins/appointment/ManageAppointmentFormEntries.jsp'>
+					<@input type='hidden' name='action' value='doModifyEntry' />
+					<@input type='hidden' name='id_entry' value='${entry.idEntry}' />
 
-				<fieldset>
-					<legend class="hidden">#i18n{appointment.modifyEntry.titleQuestion} : '${form.title}'</legend>
-					<@formGroup labelKey='#i18n{appointment.createEntry.labelType}'>
-						<@staticText><@tag color='info'>${entry.entryType.title}</@tag></@staticText>
-					</@formGroup>
-					<@formGroup labelFor='title' labelKey='#i18n{appointment.labelTitle}' helpKey='#i18n{appointment.createEntry.labelTitleComment}' mandatory=true>
-						<@input type='text' name='title' id='title' value='${entry.title}' maxlength=255 />
-					</@formGroup>
-					<@formGroup labelFor='help_message' labelKey='#i18n{appointment.createEntry.labelHelpMessage}' helpKey='#i18n{appointment.createEntry.labelHelpMessageComment}'>
-						<@input type='textarea' name='help_message' id='help_message' rows=10>${entry.helpMessage}</@input>
-					</@formGroup>
-					<@formGroup labelFor='comment' labelKey='#i18n{appointment.comment.name}'>
-						<@input type='textarea' name='comment' rows=2>${entry.comment}</@input>
-					</@formGroup>
-					<@formGroup labelKey='#i18n{appointment.createEntry.labelType} : ${entry.entryType.title}'>
-						<label for="map_provider">#i18n{appointment.createEntry.mapProvider}</label>
-						<#if entry.mapProvider?has_content && entry.mapProvider.key?has_content>
-							<@select name='map_provider' items=entryTypeService.mapProvidersRefList default_value='${entry.mapProvider.key}' />
-						<#else>
-							<@select name='map_provider' items=entryTypeService.mapProvidersRefList default_value='-1'/>
-						</#if>
-					</@formGroup>
-					<@formGroup labelKey='#i18n{appointment.createEntry.labelMandatory}'>
-						<@checkBox labelFor='mandatory' labelKey='#i18n{appointment.createEntry.labelMandatory}' name='mandatory' id='mandatory' value='1' checked=entry.mandatory />
-					</@formGroup>
-					<@formGroup labelKey='#i18n{appointment.createEntry.labelOnlyDisplayInBack}'>
-						<@checkBox labelFor='only_display_in_back' labelKey='#i18n{appointment.createEntry.labelOnlyDisplayInBack}' name='only_display_in_back' id='only_display_in_back' value='1' checked=entry.onlyDisplayInBack />
-					</@formGroup>
-					<@formGroup>
-						<#assign anonymizable=getFieldByCode( entry, "anonymizable")>
-						<#if anonymizable.value?boolean>
-							<#assign checkedValue = true />
-							<#assign anonPattern = anonymizable.title />
-						<#else>
-							<#assign checkedValue = false />
-							<#assign anonPattern ="" />
-						</#if>
-						<@checkBox orientation='switch' labelFor='anonymizable' labelKey='#i18n{appointment.createAppointmentForm.labelAnonymizable.genattField}' name='anonymizable' id='anonymizable' value='1' params='onchange="javascript:changeVisilityAnonymizePattern();"' checked=checkedValue />
-					</@formGroup>
-					<@formGroup labelFor='anonymize_pattern' id="anonymize_pattern_group" labelKey='#i18n{forms.createEntry.labelAnonymizePattern}' helpKey='${anonymization_help_message}' >
-						<@input type='text' name='anonymize_pattern' id='anonymize_pattern' value='${anonPattern!}' maxlength=255 />
-					</@formGroup>
-					<@formGroup labelFor='css_class' labelKey='#i18n{appointment.createEntry.labelCSSClass}' helpKey='#i18n{appointment.createEntry.labelCSSClassComment}'>
-						<@input type='text' name='css_class' id='css_class' value='${entry.CSSClass!}' maxlength=255 />
-					</@formGroup>
-					<@formGroup>
-						<@button type='submit' name='save' id='save' buttonIcon='check' title='#i18n{appointment.labelSave}' />
-						<@button name='cancel' id='cancel' cancel=true buttonIcon='times' params='onclick="javascript:window.history.back();"' title='#i18n{appointment.labelCancel}' />
-					</@formGroup>
-				</fieldset>
+					<fieldset>
+						<legend class="hidden">#i18n{appointment.modifyEntry.titleQuestion} : '${form.title}'</legend>
+						<@formGroup labelKey='#i18n{appointment.createEntry.labelType}'>
+							<@staticText>
+								<@tag color='info'>${entry.entryType.title}</@tag>
+							</@staticText>
+						</@formGroup>
+						<@formGroup labelFor='title' labelKey='#i18n{appointment.labelTitle}'
+							helpKey='#i18n{appointment.createEntry.labelTitleComment}' mandatory=true>
+							<@input type='text' name='title' id='title' value='${entry.title}' maxlength=255 />
+						</@formGroup>
+						<@formGroup labelFor='help_message' labelKey='#i18n{appointment.createEntry.labelHelpMessage}'
+							helpKey='#i18n{appointment.createEntry.labelHelpMessageComment}'>
+							<@input type='textarea' name='help_message' id='help_message' rows=10>${entry.helpMessage}
+							</@input>
+						</@formGroup>
+						<@formGroup labelFor='comment' labelKey='#i18n{appointment.comment.name}'>
+							<@input type='textarea' name='comment' rows=2>${entry.comment}</@input>
+						</@formGroup>
+						<@formGroup labelKey='#i18n{appointment.createEntry.labelType} : ${entry.entryType.title}'>
+							<label for="map_provider">#i18n{appointment.createEntry.mapProvider}</label>
+							<#if entry.mapProvider?has_content && entry.mapProvider.key?has_content>
+								<@select name='map_provider' items=entryTypeService.mapProvidersRefList
+									default_value='${entry.mapProvider.key}' />
+								<#else>
+									<@select name='map_provider' items=entryTypeService.mapProvidersRefList
+										default_value='-1' />
+							</#if>
+						</@formGroup>
+						<@formGroup labelKey='#i18n{appointment.createEntry.labelMandatory}'>
+							<@checkBox labelFor='mandatory' labelKey='#i18n{appointment.createEntry.labelMandatory}'
+								name='mandatory' id='mandatory' value='1' checked=entry.mandatory />
+						</@formGroup>
+						<@formGroup labelKey='#i18n{appointment.createEntry.labelOnlyDisplayInBack}'>
+							<@checkBox labelFor='only_display_in_back'
+								labelKey='#i18n{appointment.createEntry.labelOnlyDisplayInBack}' name='only_display_in_back'
+								id='only_display_in_back' value='1' checked=entry.onlyDisplayInBack />
+						</@formGroup>
+						<@formGroup>
+							<#assign anonymizable=getFieldByCode( entry, "anonymizable" )>
+								<#if anonymizable.value?boolean>
+									<#assign checkedValue=true />
+									<#assign anonPattern=anonymizable.title />
+									<#else>
+										<#assign checkedValue=false />
+										<#assign anonPattern="" />
+								</#if>
+								<@checkBox orientation='switch' labelFor='anonymizable'
+									labelKey='#i18n{appointment.createAppointmentForm.labelAnonymizable.genattField}'
+									name='anonymizable' id='anonymizable' value='1'
+									params='onchange="javascript:changeVisilityAnonymizePattern();"' checked=checkedValue />
+						</@formGroup>
+						<@formGroup labelFor='anonymize_pattern' id="anonymize_pattern_group"
+							labelKey='#i18n{forms.createEntry.labelAnonymizePattern}'
+							helpKey='${anonymization_help_message}'>
+							<@input type='text' name='anonymize_pattern' id='anonymize_pattern' value='${anonPattern!}'
+								maxlength=255 />
+						</@formGroup>
+						<@formGroup labelFor='css_class' labelKey='#i18n{appointment.createEntry.labelCSSClass}'
+							helpKey='#i18n{appointment.createEntry.labelCSSClassComment}'>
+							<@input type='text' name='css_class' id='css_class' value='${entry.CSSClass!}' maxlength=255 />
+						</@formGroup>
+						<@formGroup>
+							<@button type='submit' name='save' id='save' buttonIcon='check'
+								title='#i18n{appointment.labelSave}' />
+							<@button name='cancel' id='cancel' cancel=true buttonIcon='times'
+								params='onclick="javascript:window.history.back();"'
+								title='#i18n{appointment.labelCancel}' />
+						</@formGroup>
+					</fieldset>
 				</@tform>
 			</@boxBody>
 		</@box>
-		</#if>
 	</@columns>
 </@row>
 
- <@initEditor />
+<@initEditor />
