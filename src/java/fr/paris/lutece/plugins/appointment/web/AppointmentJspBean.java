@@ -557,8 +557,14 @@ public class AppointmentJspBean extends MVCAdminJspBean
                     _filter.setEndingTimeOfSearch( endingDateTime.toLocalTime( ).toString( ) );
                 }
             }
-        List<AppointmentDTO> listAppointmentsDTO = AppointmentService.findListAppointmentsDTOByFilter( _filter );
-
+        _strCurrentPageIndex = AbstractPaginator.getPageIndex( request, AbstractPaginator.PARAMETER_PAGE_INDEX, _strCurrentPageIndex );
+        if ( _strCurrentPageIndex == null )
+        {
+            _strCurrentPageIndex = DEFAULT_CURRENT_PAGE;
+        }
+        _nItemsPerPage = AbstractPaginator.getItemsPerPage( request, AbstractPaginator.PARAMETER_ITEMS_PER_PAGE, _nItemsPerPage, _nDefaultItemsPerPage );
+        List<Integer> listAppointmentsIds = AppointmentService.findListAppointmentsIdsByFilter( _filter );
+        List<AppointmentDTO> listAppointmentsDTO = AppointmentService.findListAppointmentsDTOByFilterByPage( _filter, listAppointmentsIds, _nItemsPerPage, _strCurrentPageIndex);
         // If it is an order by
         String strOrderBy = request.getParameter( PARAMETER_ORDER_BY );
         String strOrderAsc = request.getParameter( PARAMETER_ORDER_ASC );
@@ -572,17 +578,12 @@ public class AppointmentJspBean extends MVCAdminJspBean
                 return getConfirmRemoveMassAppointment( request, nIdForm );
             }
         }
-        _strCurrentPageIndex = AbstractPaginator.getPageIndex( request, AbstractPaginator.PARAMETER_PAGE_INDEX, _strCurrentPageIndex );
-        if ( _strCurrentPageIndex == null )
-        {
-            _strCurrentPageIndex = DEFAULT_CURRENT_PAGE;
-        }
-        _nItemsPerPage = AbstractPaginator.getItemsPerPage( request, AbstractPaginator.PARAMETER_ITEMS_PER_PAGE, _nItemsPerPage, _nDefaultItemsPerPage );
+
         UrlItem url = new UrlItem( JSP_MANAGE_APPOINTMENTS );
         url.addParameter( MVCUtils.PARAMETER_VIEW, VIEW_MANAGE_APPOINTMENTS );
         url.addParameter( PARAMETER_ID_FORM, strIdForm );
         String strUrl = url.getUrl( );
-        LocalizedPaginator<AppointmentDTO> paginator = new LocalizedPaginator<>( listAppointmentsDTO, _nItemsPerPage, strUrl, PARAMETER_PAGE_INDEX,
+        LocalizedPaginator<Integer> paginator = new LocalizedPaginator<>( listAppointmentsIds, _nItemsPerPage, strUrl, PARAMETER_PAGE_INDEX,
                 _strCurrentPageIndex, getLocale( ) );
         AppointmentFormDTO form = FormService.buildAppointmentFormLight( nIdForm );
         Map<String, Object> model = getModel( );
@@ -598,7 +599,7 @@ public class AppointmentJspBean extends MVCAdminJspBean
             int nIdWorkflow = form.getIdWorkflow( );
             StateFilter stateFilter = new StateFilter( );
             stateFilter.setIdWorkflow( nIdWorkflow );
-            for ( AppointmentDTO appointment : paginator.getPageItems( ) )
+            for ( AppointmentDTO appointment : listAppointmentsDTO )
             {
                 State stateAppointment = stateService.findByResource( appointment.getIdAppointment( ), Appointment.APPOINTMENT_RESOURCE_TYPE, nIdWorkflow );
                 if ( stateAppointment != null )
@@ -610,7 +611,7 @@ public class AppointmentJspBean extends MVCAdminJspBean
             }
         }
         User user = getUser( );
-        model.put( MARK_APPOINTMENT_LIST, paginator.getPageItems( ) );
+        model.put( MARK_APPOINTMENT_LIST, listAppointmentsDTO );
         model.put( MARK_FILTER, _filter );
         model.put( MARK_LIST_STATUS, getListStatus( ) );
         model.put( MARK_RIGHT_CREATE,

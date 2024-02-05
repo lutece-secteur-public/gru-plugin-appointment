@@ -176,6 +176,17 @@ public interface IAppointmentDAO
     List<Appointment> findByFilter( AppointmentFilterDTO appointmentFilter, Plugin plugin );
 
     /**
+     * Returns a list of appointments ids matching the filter
+     *
+     * @param appointmentFilter
+     *            the filter
+     * @param plugin
+     *            the plugin
+     * @return a list of appointments
+     */
+    List<Integer> findIdsByFilter( AppointmentFilterDTO appointmentFilter, Plugin plugin );
+
+    /**
      * Find a list of appointments by id category and mail
      * 
      * @param nIdCategory

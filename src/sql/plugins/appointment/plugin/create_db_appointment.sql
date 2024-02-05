@@ -148,6 +148,8 @@ CREATE TABLE IF NOT EXISTS appointment_appointment_slot (
 
 );
 
+CREATE INDEX idx_appointment_slot ON appointment_appointment_slot (id_appointment, id_slot);
+
 -- -----------------------------------------------------
 -- Table appointment_appointment_response
 -- -----------------------------------------------------

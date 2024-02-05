@@ -83,6 +83,11 @@ public final class AppointmentDAO implements IAppointmentDAO
             + " FROM appointment_appointment app " + "INNER JOIN appointment_user user ON app.id_user = user.id_user "
             + " INNER JOIN appointment_appointment_slot app_slot ON app.id_appointment = app_slot.id_appointment"
             + " INNER JOIN appointment_slot slot ON app_slot.id_slot = slot.id_slot WHERE id_form != 0";
+    private static final String SQL_QUERY_SELECT_IDS_BY_FILTER = "SELECT "
+            + " app.id_appointment"
+            + " FROM appointment_appointment app " + "INNER JOIN appointment_user user ON app.id_user = user.id_user "
+            + " INNER JOIN appointment_appointment_slot app_slot ON app.id_appointment = app_slot.id_appointment"
+            + " INNER JOIN appointment_slot slot ON app_slot.id_slot = slot.id_slot WHERE id_form != 0";
 
     private static final String SQL_QUERY_INSERT_APPT_SLT = "INSERT INTO appointment_appointment_slot (id_appointment, id_slot, nb_places) VALUES ( ?, ?, ?)";
     private static final String SQL_QUERY_DELETE_APPT_SLT = "DELETE FROM appointment_appointment_slot WHERE id_appointment = ?";
@@ -346,7 +351,7 @@ public final class AppointmentDAO implements IAppointmentDAO
     {
         Map<Integer, Appointment> mapAppointment = new HashMap<>( );
         boolean isFirst = true;
-        try ( DAOUtil daoUtil = new DAOUtil( getSqlQueryFromFilter( appointmentFilter ), plugin ) )
+        try ( DAOUtil daoUtil = new DAOUtil( getSqlQueryFromFilter( appointmentFilter, SQL_QUERY_SELECT_BY_FILTER ), plugin ) )
         {
             addFilterParametersToDAOUtil( appointmentFilter, daoUtil );
             daoUtil.executeQuery( );
@@ -386,6 +391,26 @@ public final class AppointmentDAO implements IAppointmentDAO
 
         }
         return new ArrayList<>( mapAppointment.values( ) );
+    }
+
+    @Override
+    public List<Integer> findIdsByFilter( AppointmentFilterDTO appointmentFilter, Plugin plugin )
+    {
+        List<Integer> list = new ArrayList<>( );
+        try ( DAOUtil daoUtil = new DAOUtil( getSqlQueryFromFilter( appointmentFilter, SQL_QUERY_SELECT_IDS_BY_FILTER ), plugin ) )
+        {
+            addFilterParametersToDAOUtil( appointmentFilter, daoUtil );
+            daoUtil.executeQuery( );
+
+
+                while ( daoUtil.next( ) )
+                {
+                    list.add( daoUtil.getInt( 1 ) );
+                }
+
+
+        }
+        return list;
     }
 
     @Override
@@ -517,9 +542,9 @@ public final class AppointmentDAO implements IAppointmentDAO
      *            the filter
      * @return the query
      */
-    private String getSqlQueryFromFilter( AppointmentFilterDTO appointmentFilter )
+    private String getSqlQueryFromFilter( AppointmentFilterDTO appointmentFilter, String strQuery )
     {
-        StringBuilder sbSql = new StringBuilder( SQL_QUERY_SELECT_BY_FILTER );
+        StringBuilder sbSql = new StringBuilder( strQuery );
 
         if ( appointmentFilter.getIdForm( ) != 0 )
         {
