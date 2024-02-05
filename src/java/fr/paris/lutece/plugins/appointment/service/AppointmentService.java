@@ -292,6 +292,49 @@ public final class AppointmentService
     }
 
     /**
+     * Find a list of appointments ids matching the filter
+     *
+     * @param appointmentFilter
+     *         the filter
+     * @return a list of appointments
+     */
+    public static List<Integer> findListAppointmentsIdsByFilter( AppointmentFilterDTO appointmentFilter )
+    {
+        return AppointmentHome.findIdsByFilter( appointmentFilter );
+    }
+
+    public static List<AppointmentDTO> findListAppointmentsDTOByFilterByPage( AppointmentFilterDTO appointmentFilter, List<Integer> listIds, int nItemsPerPage,
+                                                                              String strCurrentPage )
+    {
+        List<AppointmentDTO> listAppointmentsDTO = new ArrayList<>( );
+
+        int currentPage = 1;
+        try
+        {
+            currentPage = Integer.parseInt( strCurrentPage );
+        }
+        catch( NumberFormatException var7 )
+        {
+            currentPage = 1;
+        }
+
+        int skip = ( currentPage - 1 ) * nItemsPerPage;
+
+        List<Integer> listIdAppointment = appointmentFilter.getListIdAppointment( );
+
+        appointmentFilter.setListIdAppointment( listIds.stream( ).skip( skip ).limit( nItemsPerPage ).collect( Collectors.toList( ) ) );
+
+        for ( Appointment appointment : AppointmentHome.findByFilter( appointmentFilter ) )
+        {
+            listAppointmentsDTO.add( buildAppointmentDTO( appointment ) );
+        }
+
+        appointmentFilter.setListIdAppointment( listIdAppointment );
+
+        return listAppointmentsDTO;
+    }
+
+    /**
      * Build an appointment dto from an appointment business object
      * 
      * @param appointment

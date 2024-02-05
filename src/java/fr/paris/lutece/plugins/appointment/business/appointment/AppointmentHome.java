@@ -211,6 +211,10 @@ public final class AppointmentHome
     {
         return _dao.findByFilter( appointmentFilter, _plugin );
     }
+    public static List<Integer> findIdsByFilter( AppointmentFilterDTO appointmentFilter )
+    {
+        return _dao.findIdsByFilter( appointmentFilter, _plugin );
+    }
 
     /**
      * Find a list of appointments by id category and mail
