@@ -322,6 +322,7 @@ public class AppointmentJspBean extends MVCAdminJspBean
     private AppointmentFormDTO _appointmentForm;
     private AppointmentDTO _notValidatedAppointment;
     private AppointmentDTO _validatedAppointment;
+    private List<Integer> _listAppointmentsIds;
     List<GenericAttributeError> listFormErrors = new ArrayList<>( );
     Plugin _moduleAppointmentDesk = PluginService.getPlugin( AppPropertiesService.getProperty( PROPERTY_MODULE_APPOINTMENT_DESK_NAME ) );
 
@@ -562,9 +563,12 @@ public class AppointmentJspBean extends MVCAdminJspBean
         {
             _strCurrentPageIndex = DEFAULT_CURRENT_PAGE;
         }
+        if ( DEFAULT_CURRENT_PAGE.equals( _strCurrentPageIndex ) )
+        {
+            _listAppointmentsIds = AppointmentService.findListAppointmentsIdsByFilter( _filter );
+        }
         _nItemsPerPage = AbstractPaginator.getItemsPerPage( request, AbstractPaginator.PARAMETER_ITEMS_PER_PAGE, _nItemsPerPage, _nDefaultItemsPerPage );
-        List<Integer> listAppointmentsIds = AppointmentService.findListAppointmentsIdsByFilter( _filter );
-        List<AppointmentDTO> listAppointmentsDTO = AppointmentService.findListAppointmentsDTOByFilterByPage( _filter, listAppointmentsIds, _nItemsPerPage, _strCurrentPageIndex);
+        List<AppointmentDTO> listAppointmentsDTO = findListAppointmentsDTOByFilterByPage( );
         // If it is an order by
         String strOrderBy = request.getParameter( PARAMETER_ORDER_BY );
         String strOrderAsc = request.getParameter( PARAMETER_ORDER_ASC );
@@ -583,7 +587,7 @@ public class AppointmentJspBean extends MVCAdminJspBean
         url.addParameter( MVCUtils.PARAMETER_VIEW, VIEW_MANAGE_APPOINTMENTS );
         url.addParameter( PARAMETER_ID_FORM, strIdForm );
         String strUrl = url.getUrl( );
-        LocalizedPaginator<Integer> paginator = new LocalizedPaginator<>( listAppointmentsIds, _nItemsPerPage, strUrl, PARAMETER_PAGE_INDEX,
+        LocalizedPaginator<Integer> paginator = new LocalizedPaginator<>(_listAppointmentsIds, _nItemsPerPage, strUrl, PARAMETER_PAGE_INDEX,
                 _strCurrentPageIndex, getLocale( ) );
         AppointmentFormDTO form = FormService.buildAppointmentFormLight( nIdForm );
         Map<String, Object> model = getModel( );
@@ -1748,6 +1752,31 @@ public class AppointmentJspBean extends MVCAdminJspBean
         refListStatus.addItem( 0, I18nService.getLocalizedString( RESERVED, getLocale( ) ) );
         refListStatus.addItem( 1, I18nService.getLocalizedString( UNRESERVED, getLocale( ) ) );
         return refListStatus;
+    }
+
+    private List<AppointmentDTO> findListAppointmentsDTOByFilterByPage( )
+    {
+        int currentPage;
+        try
+        {
+            currentPage = Integer.parseInt( _strCurrentPageIndex );
+        }
+        catch( NumberFormatException ex )
+        {
+            currentPage = 1;
+        }
+
+        int skip = ( currentPage - 1 ) * _nItemsPerPage;
+
+        List<Integer> listIdAppointment = _filter.getListIdAppointment( );
+
+        _filter.setListIdAppointment( _listAppointmentsIds.stream( ).skip( skip ).limit( _nItemsPerPage ).collect( Collectors.toList( ) ) );
+
+        List<AppointmentDTO> listAppointmentsDTO = AppointmentService.findListAppointmentsDTOByFilter( _filter );
+
+        _filter.setListIdAppointment( listIdAppointment );
+
+        return listAppointmentsDTO;
     }
 
 }
