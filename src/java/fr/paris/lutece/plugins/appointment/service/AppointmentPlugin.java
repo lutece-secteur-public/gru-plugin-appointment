@@ -36,6 +36,7 @@ package fr.paris.lutece.plugins.appointment.service;
 import java.text.DateFormat;
 import java.util.Locale;
 
+import fr.paris.lutece.plugins.appointment.web.file.AppointmentFormIconService;
 import org.apache.commons.beanutils.BeanUtilsBean;
 import org.dozer.converters.DateConverter;
 
@@ -45,7 +46,6 @@ import fr.paris.lutece.portal.web.l10n.LocaleService;
 
 /**
  * Appointment plugin
- * 
  */
 public final class AppointmentPlugin extends Plugin
 {
@@ -62,13 +62,14 @@ public final class AppointmentPlugin extends Plugin
     @Override
     public void init( )
     {
-        BeanUtilsBean.getInstance( ).getConvertUtils( ).register( new DateConverter( DateFormat.getDateInstance( DateFormat.SHORT, getPluginLocale( ) ) ),
-                java.sql.Date.class );
+        AppointmentFormIconService.init( );
+        BeanUtilsBean.getInstance( ).getConvertUtils( )
+                .register( new DateConverter( DateFormat.getDateInstance( DateFormat.SHORT, getPluginLocale( ) ) ), java.sql.Date.class );
     }
 
     /**
      * Get the locale used by this plugin
-     * 
+     *
      * @return The locale used by this plugin
      */
     public static Locale getPluginLocale( )
@@ -82,9 +83,9 @@ public final class AppointmentPlugin extends Plugin
 
     /**
      * Set the plugin locale (used for unit tests)
-     * 
+     *
      * @param locale
-     *            The locale
+     *         The locale
      */
     public static void setPluginLocale( Locale locale )
     {
@@ -93,7 +94,7 @@ public final class AppointmentPlugin extends Plugin
 
     /**
      * Get the appointment plugin
-     * 
+     *
      * @return The appointment plugin
      */
     public static Plugin getPlugin( )
