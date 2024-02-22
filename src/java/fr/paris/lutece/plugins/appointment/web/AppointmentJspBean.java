@@ -559,6 +559,22 @@ public class AppointmentJspBean extends MVCAdminJspBean
                 }
             }
         _strCurrentPageIndex = AbstractPaginator.getPageIndex( request, AbstractPaginator.PARAMETER_PAGE_INDEX, _strCurrentPageIndex );
+        String strOrderBy = request.getParameter( PARAMETER_ORDER_BY );
+        String strOrderAsc = request.getParameter( PARAMETER_ORDER_ASC );
+        if ( strOrderBy == null )
+        {
+            strOrderBy = DATE_APPOINTMENT;
+        }
+
+        boolean bAsc = Boolean.FALSE;
+        if ( strOrderAsc != null )
+        {
+            bAsc = Boolean.parseBoolean( strOrderAsc );
+        }
+        _filter.setOrderBy( strOrderBy );
+        _filter.setOrderAsc( bAsc );
+
+
         if ( _strCurrentPageIndex == null )
         {
             _strCurrentPageIndex = DEFAULT_CURRENT_PAGE;
@@ -570,9 +586,7 @@ public class AppointmentJspBean extends MVCAdminJspBean
         _nItemsPerPage = AbstractPaginator.getItemsPerPage( request, AbstractPaginator.PARAMETER_ITEMS_PER_PAGE, _nItemsPerPage, _nDefaultItemsPerPage );
         List<AppointmentDTO> listAppointmentsDTO = findListAppointmentsDTOByFilterByPage( );
         // If it is an order by
-        String strOrderBy = request.getParameter( PARAMETER_ORDER_BY );
-        String strOrderAsc = request.getParameter( PARAMETER_ORDER_ASC );
-        listAppointmentsDTO = orderList( listAppointmentsDTO, strOrderBy, strOrderAsc );
+        listAppointmentsDTO = orderList( listAppointmentsDTO );
         if ( StringUtils.isNotEmpty( request.getParameter( PARAMETER_DELETE_AND_BACK ) ) )
         {
             String [ ] tabIdAppointmentToDelete = request.getParameterValues( PARAMETER_ID_APPOINTMENT_DELETE );
@@ -1481,29 +1495,17 @@ public class AppointmentJspBean extends MVCAdminJspBean
      * 
      * @param listAppointmentsDTO
      *            the llist of appointments
-     * @param strOrderBy
-     *            the order by
-     * @param strOrderAsc
-     *            the order asc
      */
-    private List<AppointmentDTO> orderList( List<AppointmentDTO> listAppointmentsDTO, String strOrderBy, String strOrderAsc )
+    private List<AppointmentDTO> orderList( List<AppointmentDTO> listAppointmentsDTO )
     {
         List<AppointmentDTO> sortedList = new ArrayList<>( );
         if ( CollectionUtils.isNotEmpty( listAppointmentsDTO ) )
         {
             sortedList.addAll( listAppointmentsDTO );
         }
-        if ( strOrderBy == null )
-        {
-            strOrderBy = DATE_APPOINTMENT;
-        }
-        boolean bAsc = Boolean.FALSE;
-        if ( strOrderAsc != null )
-        {
-            bAsc = Boolean.parseBoolean( strOrderAsc );
-        }
+
         Stream<AppointmentDTO> stream = null;
-        switch( strOrderBy )
+        switch( _filter.getOrderBy( ) )
         {
             case LAST_NAME:
                 stream = sortedList.stream( ).sorted( ( a1, a2 ) -> a1.getLastName( ).compareTo( a2.getLastName( ) ) );
@@ -1534,7 +1536,7 @@ public class AppointmentJspBean extends MVCAdminJspBean
                 stream = sortedList.stream( ).sorted( ( a1, a2 ) -> a1.getStartingDateTime( ).compareTo( a2.getStartingDateTime( ) ) );
         }
         sortedList = stream.collect( Collectors.toList( ) );
-        if ( !bAsc )
+        if ( !_filter.isOrderAsc( ) )
         {
             Collections.reverse( sortedList );
         }

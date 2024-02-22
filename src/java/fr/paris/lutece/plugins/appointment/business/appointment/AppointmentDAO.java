@@ -117,8 +117,30 @@ public final class AppointmentDAO implements IAppointmentDAO
     private static final String SQL_FILTER_ID_LIST_START = "app.id_appointment IN ( ";
     private static final String SQL_FILTER_ID_LIST_END = " ) ";
 
+    private static final String SQL_SORT_USER_LAST_NAME = "user.last_name";
+    private static final String SQL_SORT_USER_FIRST_NAME = "user.first_name";
+    private static final String SQL_SORT_USER_EMAIL = "user.email";
+    private static final String SQL_SORT_USER_PHONE_NUMBER = "user.phone_number";
+    private static final String SQL_SORT_APP_NB_PLACES = "app.nb_places";
+    private static final String SQL_SORT_SLOT_STARTING_DATE_TIME = "slot.starting_date_time";
+    private static final String SQL_SORT_APP_ID_ADMIN_USER = "app.id_admin_user";
+    private static final String SQL_SORT_APP_IS_CANCELLED = "app.is_cancelled";
+    private static final String SQL_SORT_ASC = " ASC ";
+    private static final String SQL_SORT_DESC = " DESC ";
+
     private static final String CONSTANT_AND = " AND ";
     private static final String CONSTANT_PERCENT = "%";
+    private static final String CONSTANT_ORDER_BY = " ORDER BY ";
+
+    private static final String LAST_NAME = "last_name";
+    private static final String FIRST_NAME = "first_name";
+    private static final String EMAIL = "email";
+    private static final String PHONE_NUMBER = "phone_number";
+    private static final String NB_BOOKED_SEATS = "nbBookedSeats";
+    private static final String DATE_APPOINTMENT = "date_appointment";
+    private static final String ADMIN = "admin";
+    private static final String STATUS = "status";
+
 
     @Override
     public void insert( Appointment appointment, Plugin plugin )
@@ -397,7 +419,10 @@ public final class AppointmentDAO implements IAppointmentDAO
     public List<Integer> findIdsByFilter( AppointmentFilterDTO appointmentFilter, Plugin plugin )
     {
         List<Integer> list = new ArrayList<>( );
-        try ( DAOUtil daoUtil = new DAOUtil( getSqlQueryFromFilter( appointmentFilter, SQL_QUERY_SELECT_IDS_BY_FILTER ), plugin ) )
+
+        String sqlQueryFromFilter = getSqlQueryFromFilter(appointmentFilter, SQL_QUERY_SELECT_IDS_BY_FILTER);
+        String sqlQuery = getOrderQuery( appointmentFilter, sqlQueryFromFilter );
+        try (DAOUtil daoUtil = new DAOUtil(sqlQuery, plugin ) )
         {
             addFilterParametersToDAOUtil( appointmentFilter, daoUtil );
             daoUtil.executeQuery( );
@@ -600,6 +625,57 @@ public final class AppointmentDAO implements IAppointmentDAO
             sbSql.append( SQL_FILTER_ID_LIST_END );
         }
 
+        return sbSql.toString( );
+    }
+
+    private String getOrderQuery( AppointmentFilterDTO appointmentFilter, String strQuery )
+    {
+        StringBuilder sbSql = new StringBuilder( strQuery );
+
+        sbSql.append( CONSTANT_ORDER_BY );
+
+        if ( appointmentFilter.getOrderBy( ) == null )
+        {
+            appointmentFilter.setOrderBy( DATE_APPOINTMENT );
+        }
+
+        switch( appointmentFilter.getOrderBy( ) )
+        {
+            case LAST_NAME:
+                sbSql.append( SQL_SORT_USER_LAST_NAME );
+                break;
+            case FIRST_NAME:
+                sbSql.append( SQL_SORT_USER_FIRST_NAME );
+                break;
+            case EMAIL:
+                sbSql.append( SQL_SORT_USER_EMAIL );
+                break;
+            case PHONE_NUMBER:
+                sbSql.append( SQL_SORT_USER_PHONE_NUMBER );
+                break;
+            case NB_BOOKED_SEATS:
+                sbSql.append( SQL_SORT_APP_NB_PLACES );
+                break;
+            case DATE_APPOINTMENT:
+                sbSql.append( SQL_SORT_SLOT_STARTING_DATE_TIME );
+                break;
+            case ADMIN:
+                sbSql.append( SQL_SORT_APP_ID_ADMIN_USER );
+                break;
+            case STATUS:
+                sbSql.append( SQL_SORT_APP_IS_CANCELLED );
+                break;
+            default:
+                sbSql.append( SQL_SORT_SLOT_STARTING_DATE_TIME );
+        }
+        if ( appointmentFilter.isOrderAsc( ) )
+        {
+            sbSql.append( SQL_SORT_ASC );
+        }
+        else
+        {
+            sbSql.append( SQL_SORT_DESC );
+        }
         return sbSql.toString( );
     }
 
