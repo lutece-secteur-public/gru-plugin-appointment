@@ -84,6 +84,12 @@ public class AppointmentFilterDTO extends User
 
     private List<Integer> _listIdAppointment = new ArrayList<>( );
 
+
+    private String _orderBy;
+
+
+    private boolean _orderAsc = true;
+
     /**
      * Get the form id
      * 
@@ -277,4 +283,19 @@ public class AppointmentFilterDTO extends User
         _listIdAppointment = new ArrayList<>( listIdAppointment );
     }
 
+    public String getOrderBy() {
+        return _orderBy;
+    }
+
+    public void setOrderBy(String orderBy) {
+        this._orderBy = orderBy;
+    }
+
+    public boolean isOrderAsc() {
+        return _orderAsc;
+    }
+
+    public void setOrderAsc(boolean orderAsc) {
+        this._orderAsc = orderAsc;
+    }
 }
