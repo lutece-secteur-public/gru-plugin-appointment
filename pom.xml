@@ -3,18 +3,18 @@
         <artifactId>lutece-global-pom</artifactId>
         <groupId>fr.paris.lutece.tools</groupId>
         <version>6.0.0</version>
-    </parent>   
+    </parent>
 
     <modelVersion>4.0.0</modelVersion>
     <groupId>fr.paris.lutece.plugins</groupId>
     <artifactId>plugin-appointment</artifactId>
-    <packaging>lutece-plugin</packaging>    
+    <packaging>lutece-plugin</packaging>
     <version>3.0.8-SNAPSHOT</version>
     <name>Lutece appointment plugin</name>
-    
-    <properties>  
+
+    <properties>
         <componentName>appointment</componentName>
-        <core.version>[7.0.10,)</core.version>    
+        <core.version>[7.0.10,)</core.version>
         <genericattributes.version>[2.1.1,)</genericattributes.version>
         <jiraComponentId>12273</jiraComponentId>
         <jiraProjectName>RENDEZVOUS</jiraProjectName>
@@ -40,14 +40,14 @@
             <version>${genericattributes.version}</version>
             <type>lutece-plugin</type>
         </dependency>
-            
+
         <dependency>
             <groupId>fr.paris.lutece.plugins</groupId>
             <artifactId>plugin-filegenerator</artifactId>
             <version>[2.1.4-SNAPSHOT,)</version>
             <type>lutece-plugin</type>
         </dependency>
-         
+
         <dependency>
             <groupId>com.fasterxml.jackson.datatype</groupId>
             <artifactId>jackson-datatype-jsr310</artifactId>
@@ -67,11 +67,11 @@
             </exclusions>
         </dependency>
     </dependencies>
-   
+
     <scm>
         <connection>scm:git:https://github.com/lutece-secteur-public/gru-plugin-appointment.git</connection>
         <developerConnection>scm:git:https://github.com/lutece-secteur-public/gru-plugin-appointment.git</developerConnection>
-        <url>https://github.com/lutece-secteur-public/gru-plugin-appointment.git</url>    
+        <url>https://github.com/lutece-secteur-public/gru-plugin-appointment.git</url>
         <tag>HEAD</tag>
-    </scm> 
+    </scm>
 </project>
