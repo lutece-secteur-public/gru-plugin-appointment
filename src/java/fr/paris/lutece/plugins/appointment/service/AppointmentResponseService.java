@@ -49,6 +49,7 @@ import fr.paris.lutece.plugins.appointment.business.appointment.AppointmentRespo
 import fr.paris.lutece.plugins.appointment.service.upload.AppointmentAsynchronousUploadHandler;
 import fr.paris.lutece.plugins.genericattributes.business.Entry;
 import fr.paris.lutece.plugins.genericattributes.business.EntryHome;
+import fr.paris.lutece.plugins.genericattributes.business.Field;
 import fr.paris.lutece.plugins.genericattributes.business.FieldHome;
 import fr.paris.lutece.plugins.genericattributes.business.GenAttFileItem;
 import fr.paris.lutece.plugins.genericattributes.business.Response;
@@ -204,6 +205,34 @@ public final class AppointmentResponseService
             Entry entry = EntryHome.findByPrimaryKey( response.getEntry( ).getIdEntry( ) );
             if ( !entry.isOnlyDisplayInBack( ) || deleteBoOnly )
             {
+                AppointmentResponseService.removeResponseById( response.getIdResponse( ) );
+            }
+        }
+    }
+
+    /**
+     * Remove the updatable Responses of an appointment
+     * 
+     * @param nIdAppointment
+     *            The id of the appointment
+     * @param deleteBoOnly
+     *            Set if the action is Back Office only
+     */
+    public static void removeUpdatableResponsesOnly( int nIdAppointment, boolean deleteBoOnly )
+    {
+        List<Response> listResponse = AppointmentResponseService.findListResponse( nIdAppointment );
+        for ( Response response : listResponse )
+        {
+            Entry entry = EntryHome.findByPrimaryKey( response.getEntry( ).getIdEntry( ) );
+            if ( !entry.isOnlyDisplayInBack( ) || deleteBoOnly )
+            {
+                Field updatableField = entry.getFieldByCode( IEntryTypeService.FIELD_IS_UPDATABLE );
+                // In case the Response is not updatable, make sure it doesn't get removed
+                if ( updatableField != null && !Boolean.valueOf( updatableField.getValue( ) ) )
+                {
+                    // Do nothing with this Response and process the next one
+                    continue;
+                }
                 AppointmentResponseService.removeResponseById( response.getIdResponse( ) );
             }
         }
