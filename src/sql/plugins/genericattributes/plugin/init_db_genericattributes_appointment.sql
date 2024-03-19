@@ -30,3 +30,10 @@ INSERT INTO genatt_entry_type (title,is_group,is_comment,is_mylutece_user,class_
 ('Fichier',0,0,0,'appointment.entryTypeFile','file','appointment',15,0);
 INSERT INTO genatt_entry_type (title,is_group,is_comment,is_mylutece_user,class_name,icon_name,plugin,display_order,inactive) VALUES 
 ('Numéro de téléphone',0,0,0,'appointment.entryTypePhone','phone-square','appointment',16,1);
+
+INSERT INTO genatt_field ( id_entry, title, code, value, default_value )
+	SELECT e.id_entry, e.title, 'is_updatable', 'false', 0
+	FROM genatt_entry e
+	INNER JOIN genatt_entry_type t ON t.id_type = e.id_type
+	WHERE e.resource_type = 'APPOINTMENT_FORM'
+	AND t.class_name = 'appointment.entryTypeSession';
