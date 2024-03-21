@@ -55,8 +55,10 @@ import fr.paris.lutece.plugins.appointment.service.listeners.AppointmentListener
 import fr.paris.lutece.plugins.appointment.service.listeners.SlotListenerManager;
 import fr.paris.lutece.plugins.appointment.web.dto.AppointmentDTO;
 import fr.paris.lutece.plugins.appointment.web.dto.AppointmentFilterDTO;
+import fr.paris.lutece.plugins.genericattributes.business.Field;
 import fr.paris.lutece.plugins.genericattributes.business.Response;
 import fr.paris.lutece.plugins.genericattributes.business.ResponseHome;
+import fr.paris.lutece.plugins.genericattributes.service.entrytype.IEntryTypeService;
 import fr.paris.lutece.portal.business.user.AdminUser;
 import fr.paris.lutece.portal.business.user.AdminUserHome;
 import fr.paris.lutece.portal.service.util.AppException;
@@ -494,11 +496,18 @@ public final class AppointmentService
     public static void updateAppointmentDTO( int nIdappointment, User user, List<Response> listResponse, boolean deleteBoOnly )
     {
         UserHome.update( user );
-        AppointmentResponseService.removeResponsesByIdAppointmentAndBoOnly( nIdappointment, deleteBoOnly );
+        AppointmentResponseService.removeUpdatableResponsesOnly( nIdappointment, deleteBoOnly );
         if ( CollectionUtils.isNotEmpty( listResponse ) )
         {
             for ( Response response : listResponse )
             {
+                Field updatableField = response.getEntry( ).getFieldByCode( IEntryTypeService.FIELD_IS_UPDATABLE );
+                // In case the Response is not updatable, make sure that no new Response is created for it
+                if( updatableField != null && !Boolean.valueOf( updatableField.getValue( ) ) )
+                {
+                    // Do nothing with this Response and process the next one
+                    continue;
+                }
                 ResponseHome.create( response );
                 AppointmentResponseService.insertAppointmentResponse( nIdappointment, response.getIdResponse( ) );
             }
