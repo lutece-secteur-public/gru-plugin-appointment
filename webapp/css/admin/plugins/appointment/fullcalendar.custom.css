@@ -105,9 +105,9 @@
     align-items: center;
     justify-content: center;
     position: relative;
-} 
+}
 
-.fc-content .fc-title .badge{
+.fc-content .fc-title .badge {
     position: absolute;
     right: 1rem;
     top: 50%;
@@ -117,7 +117,9 @@
     display: none;
     width: 14px;
     border-radius: 50%;
-} 
+    background-color: var(--azure);
+    color: var(--white);
+}
 
 .fc-content:hover .fc-title .badge{
     display: block;
