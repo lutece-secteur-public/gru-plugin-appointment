@@ -79,7 +79,7 @@ public final class AppointmentPortlet extends PortletHtmlContent
 
         try
         {
-            strContent = AppointmentApp.getMyAppointmentsXPage( request, request.getLocale( ), null );
+            strContent = AppointmentApp.getMyAppointmentsHtml( request, request.getLocale( ), null );
 
             if ( strContent == null )
             {
