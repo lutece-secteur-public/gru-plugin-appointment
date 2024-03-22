@@ -817,17 +817,15 @@ public class AppointmentApp extends MVCApplication
 
         HtmlTemplate templateForm = AppTemplateService.getTemplate( TEMPLATE_HTML_CODE_FORM, locale, model );
         model.put( MARK_FORM_HTML, templateForm.getHtml( ) );
-        HtmlTemplate template = AppTemplateService.getTemplate( TEMPLATE_APPOINTMENT_FORM, getLocale( request ), model );
-        XPage xPage = new XPage( );
-        xPage.setContent( template.getHtml( ) );
-        xPage.setPathLabel( getDefaultPagePath( getLocale( request ) ) );
+        XPage xPage = getXPage( TEMPLATE_APPOINTMENT_FORM, locale, model );
+
         if ( _appointmentForm.getDisplayTitleFo( ) )
         {
             xPage.setTitle( _appointmentForm.getTitle( ) );
         }
         return xPage;
     }
-    
+
     /**
      * Do validate data entered by a user to fill a form
      * 
@@ -929,19 +927,18 @@ public class AppointmentApp extends MVCApplication
         }
         _validatedAppointment = _notValidatedAppointment;
         _notValidatedAppointment = null;
-        XPage xPage = null;
         String anchor = request.getParameter( PARAMETER_ANCHOR );
         if ( StringUtils.isNotEmpty( anchor ) )
         {
             Map<String, String> additionalParameters = new HashMap<>( );
             additionalParameters.put( PARAMETER_ANCHOR, MARK_ANCHOR + anchor );
-            xPage = redirect( request, VIEW_DISPLAY_RECAP_APPOINTMENT, additionalParameters );
+
+            return redirect( request, VIEW_DISPLAY_RECAP_APPOINTMENT, additionalParameters );
         }
         else
         {
-            xPage = redirectView( request, VIEW_DISPLAY_RECAP_APPOINTMENT );
+            return redirectView( request, VIEW_DISPLAY_RECAP_APPOINTMENT );
         }
-        return xPage;
     }
 
     /**
@@ -999,12 +996,7 @@ public class AppointmentApp extends MVCApplication
         model.put( MARK_NBPLACESTOTAKE, _nNbPlacesToTake );
         model.put( PARAMETER_DATE_OF_DISPLAY, _validatedAppointment.getSlot( ).get( 0 ).getDate( ) );
 
-        XPage xPage = new XPage( );
-        HtmlTemplate t = AppTemplateService.getTemplate( TEMPLATE_APPOINTMENT_FORM_RECAP, locale, model );
-        xPage.setContent( t.getHtml( ) );
-        xPage.setTitle( getDefaultPageTitle( locale ) );
-        xPage.setPathLabel( getDefaultPagePath( locale ) );
-        return xPage;
+        return getXPage( TEMPLATE_APPOINTMENT_FORM_RECAP, locale, model );
     }
 
     /**
@@ -1075,7 +1067,6 @@ public class AppointmentApp extends MVCApplication
         }
         AppLogService.info( LogUtilities.buildLog( ACTION_DO_MAKE_APPOINTMENT, Integer.toString( nIdAppointment ), null ) );
         AppointmentAsynchronousUploadHandler.getHandler( ).removeSessionFiles( request.getSession( ) );
-        XPage xPage = null;
         _nNbPlacesToTake = 0;
         int nIdForm = _validatedAppointment.getIdForm( );
        // _validatedAppointment = null;
@@ -1089,13 +1080,12 @@ public class AppointmentApp extends MVCApplication
             LinkedHashMap<String, String> additionalParameters = new LinkedHashMap<>( );
             additionalParameters.put( PARAMETER_ID_FORM, String.valueOf( nIdForm ) );
             additionalParameters.put( PARAMETER_ANCHOR, MARK_ANCHOR + anchor );
-            xPage = redirect( request, VIEW_GET_APPOINTMENT_CREATED, additionalParameters );
+            return redirect( request, VIEW_GET_APPOINTMENT_CREATED, additionalParameters );
         }
         else
         {
-            xPage = redirect( request, VIEW_GET_APPOINTMENT_CREATED, PARAMETER_ID_FORM, nIdForm );
+            return redirect( request, VIEW_GET_APPOINTMENT_CREATED, PARAMETER_ID_FORM, nIdForm );
         }
-        return xPage;
     }
 
     /**
@@ -1255,11 +1245,10 @@ public class AppointmentApp extends MVCApplication
         _appointmentForm = null;
         _validatedAppointment = null;
         String strHtmlContent = getFormListHtml( locale, getModel( ) );
-        XPage xpage = new XPage( );
-        xpage.setContent( strHtmlContent );
-        xpage.setPathLabel( getDefaultPagePath( locale ) );
-        xpage.setTitle( getDefaultPageTitle( locale ) );
-        return xpage;
+
+        XPage xPage = getXPage( );
+        xPage.setContent( strHtmlContent );
+        return xPage;
     }
 
     /**
@@ -1415,11 +1404,11 @@ public class AppointmentApp extends MVCApplication
         {
             return redirectView( request, VIEW_APPOINTMENT_FORM_LIST );
         }
-        XPage xpage = new XPage( );
         Locale locale = getLocale( request );
-        xpage.setContent( getMyAppointmentsXPage( request, locale, getModel( ) ) );
-        xpage.setTitle( I18nService.getLocalizedString( MESSAGE_MY_APPOINTMENTS_PAGE_TITLE, locale ) );
-        return xpage;
+        XPage xPage = getXPage( );
+        xPage.setContent( getMyAppointmentsHtml( request, locale, getModel( ) ) );
+        xPage.setTitle( I18nService.getLocalizedString( MESSAGE_MY_APPOINTMENTS_PAGE_TITLE, locale ) );
+        return xPage;
     }
 
     /**
@@ -1432,7 +1421,9 @@ public class AppointmentApp extends MVCApplication
      * @return The HTML content, or null if the
      * @throws UserNotSignedException
      *             If the user has not signed in
+     * @deprecated use {@link #getMyAppointmentsHtml(HttpServletRequest, Locale, Map)}
      */
+    @Deprecated
     public static String getMyAppointmentsXPage( HttpServletRequest request, Locale locale, Map<String, Object> model ) throws UserNotSignedException
     {
         if ( !SecurityService.isAuthenticationEnable( ) )
@@ -1456,6 +1447,49 @@ public class AppointmentApp extends MVCApplication
                 apptDto.setListWorkflowActions( WorkflowService.getInstance( ).getActions( apptDto.getIdAppointment( ), Appointment.APPOINTMENT_RESOURCE_TYPE,
                         form.getIdWorkflow( ), luteceUser ) );
 
+            }
+        }
+
+        model = ( model == null ) ? new HashMap<>( ) : model;
+        model.put( MARK_LIST_APPOINTMENTS, listAppointmentDTO );
+        model.put( MARK_FORM_LIST, FormService.findAllInReferenceList( ) );
+        model.put( MARK_LOCALE_DATE_TIME, LocalDateTime.now( ) );
+        HtmlTemplate template = AppTemplateService.getTemplate( TEMPLATE_MY_APPOINTMENTS, locale, model );
+        return template.getHtml( );
+    }
+
+    /**
+     * Get the HTML content of a user's "My appointments" page
+     * 
+     * @param request
+     *            The request
+     * @param locale
+     *            The locale
+     * @return The HTML content, or null if the user is not logged in
+     * @throws UserNotSignedException
+     *             If the user has not signed in
+     */
+    public static String getMyAppointmentsHtml( HttpServletRequest request, Locale locale, Map<String, Object> model ) throws UserNotSignedException
+    {
+        if ( !SecurityService.isAuthenticationEnable( ) )
+        {
+            return null;
+        }
+        LuteceUser luteceUser = SecurityService.getInstance( ).getRegisteredUser( request );
+        if ( luteceUser != null )
+        {
+            throw new UserNotSignedException( );
+        }
+        AppointmentFilterDTO appointmentFilter = new AppointmentFilterDTO( );
+        appointmentFilter.setGuid( luteceUser.getName( ) );
+        List<AppointmentDTO> listAppointmentDTO = AppointmentService.findListAppointmentsDTOByFilter( appointmentFilter );
+        for ( AppointmentDTO apptDto : listAppointmentDTO )
+        {
+            Form form = FormService.findFormLightByPrimaryKey( apptDto.getIdForm( ) );
+            if ( form.getIdWorkflow( ) > 0 && WorkflowService.getInstance( ).isAvailable( ) )
+            {
+                apptDto.setListWorkflowActions( WorkflowService.getInstance( ).getActions( apptDto.getIdAppointment( ), Appointment.APPOINTMENT_RESOURCE_TYPE,
+                        form.getIdWorkflow( ), luteceUser ) );
             }
         }
 
