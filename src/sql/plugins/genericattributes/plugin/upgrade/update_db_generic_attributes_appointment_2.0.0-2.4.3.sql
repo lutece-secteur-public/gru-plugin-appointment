@@ -3,6 +3,8 @@ Update the Appointment Plugin's Generic Attributes (proper icons, order and acti
 their IDs to avoid conflict with the Generic Attributes from the Forms Plugin.
 Also update the genatt_entry's 'id_type' values to match with the new ones
 */
+SET FOREIGN_KEY_CHECKS=0;
+
 UPDATE genatt_entry_type gentype
 LEFT JOIN genatt_entry gen
 ON gentype.id_type = gen.id_type
@@ -98,3 +100,5 @@ LEFT JOIN genatt_entry gen
 ON gentype.id_type = gen.id_type
 SET gen.id_type = 138, gentype.id_type = 138, gentype.icon_name = 'phone-square', gentype.display_order = 16, gentype.inactive = 1
 WHERE gentype.id_type = 116 AND gentype.plugin = 'appointment';
+
+SET FOREIGN_KEY_CHECKS=1;
