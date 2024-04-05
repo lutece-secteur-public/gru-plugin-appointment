@@ -443,6 +443,10 @@ public final class EntryService extends RemovalListenerService implements Serial
                 listEntry.addAll( listEntryGroup );
             }
         }
+        for ( Entry entry : listEntry )
+        {
+            entry.setFields( FieldHome.getFieldListByIdEntry( entry.getIdEntry( ) ) );
+        }
         model.put( MARK_GROUP_ENTRY_LIST, getRefListGroups( nIdForm ) );
         model.put( MARK_ENTRY_TYPE_LIST, EntryTypeService.getInstance( ).getEntryTypeReferenceList( ) );
         model.put( MARK_ENTRY_LIST, listEntry );
@@ -512,62 +516,66 @@ public final class EntryService extends RemovalListenerService implements Serial
         StringBuilder strConditionalQuestionStringBuffer = null;
         HtmlTemplate template;
         Entry entry = EntryHome.findByPrimaryKey( nIdEntry );
-        if ( Boolean.TRUE.equals( entry.getEntryType( ).getGroup( ) ) )
+        Field disabledField = entry.getFieldByCode( IEntryTypeService.FIELD_DISABLED );
+        if ( disabledField != null && !Boolean.parseBoolean( disabledField.getValue( ) ) )
         {
-            StringBuilder strGroupStringBuffer = new StringBuilder( );
-            for ( Entry entryChild : entry.getChildren( ) )
+            if ( Boolean.TRUE.equals( entry.getEntryType( ).getGroup( ) ) )
             {
-                getHtmlEntry( model, entryChild.getIdEntry( ), strGroupStringBuffer, locale, bDisplayFront, appointmentDTO );
+                StringBuilder strGroupStringBuffer = new StringBuilder( );
+                for ( Entry entryChild : entry.getChildren( ) )
+                {
+                    getHtmlEntry( model, entryChild.getIdEntry( ), strGroupStringBuffer, locale, bDisplayFront, appointmentDTO );
+                }
+                model.put( MARK_STR_LIST_CHILDREN, strGroupStringBuffer.toString( ) );
             }
-            model.put( MARK_STR_LIST_CHILDREN, strGroupStringBuffer.toString( ) );
-        }
-        else
-        {
+            else
+            {
+                if ( entry.getNumberConditionalQuestion( ) != 0 )
+                {
+                    for ( Field field : entry.getFields( ) )
+                    {
+                        field.setConditionalQuestions( FieldHome.findByPrimaryKey( field.getIdField( ) ).getConditionalQuestions( ) );
+                    }
+                }
+            }
             if ( entry.getNumberConditionalQuestion( ) != 0 )
             {
+                strConditionalQuestionStringBuffer = new StringBuilder( );
                 for ( Field field : entry.getFields( ) )
                 {
-                    field.setConditionalQuestions( FieldHome.findByPrimaryKey( field.getIdField( ) ).getConditionalQuestions( ) );
-                }
-            }
-        }
-        if ( entry.getNumberConditionalQuestion( ) != 0 )
-        {
-            strConditionalQuestionStringBuffer = new StringBuilder( );
-            for ( Field field : entry.getFields( ) )
-            {
-                if ( CollectionUtils.isNotEmpty( field.getConditionalQuestions( ) ) )
-                {
-                    StringBuilder strGroupStringBuffer = new StringBuilder( );
-                    for ( Entry entryConditional : field.getConditionalQuestions( ) )
+                    if ( CollectionUtils.isNotEmpty( field.getConditionalQuestions( ) ) )
                     {
-                        getHtmlEntry( model, entryConditional.getIdEntry( ), strGroupStringBuffer, locale, bDisplayFront, appointmentDTO );
+                        StringBuilder strGroupStringBuffer = new StringBuilder( );
+                        for ( Entry entryConditional : field.getConditionalQuestions( ) )
+                        {
+                            getHtmlEntry( model, entryConditional.getIdEntry( ), strGroupStringBuffer, locale, bDisplayFront, appointmentDTO );
+                        }
+                        model.put( MARK_STR_LIST_CHILDREN, strGroupStringBuffer.toString( ) );
+                        model.put( MARK_FIELD, field );
+                        String templateDivConditionalEntry = bDisplayFront ? TEMPLATE_DIV_CONDITIONAL_ENTRY_FO : TEMPLATE_DIV_CONDITIONAL_ENTRY_BO;
+                        template = AppTemplateService.getTemplate( templateDivConditionalEntry, locale, model );
+                        strConditionalQuestionStringBuffer.append( template.getHtml( ) );
                     }
-                    model.put( MARK_STR_LIST_CHILDREN, strGroupStringBuffer.toString( ) );
-                    model.put( MARK_FIELD, field );
-                    String templateDivConditionalEntry = bDisplayFront ? TEMPLATE_DIV_CONDITIONAL_ENTRY_FO : TEMPLATE_DIV_CONDITIONAL_ENTRY_BO;
-                    template = AppTemplateService.getTemplate( templateDivConditionalEntry, locale, model );
-                    strConditionalQuestionStringBuffer.append( template.getHtml( ) );
                 }
+                model.put( MARK_STR_LIST_CHILDREN, strConditionalQuestionStringBuffer.toString( ) );
             }
-            model.put( MARK_STR_LIST_CHILDREN, strConditionalQuestionStringBuffer.toString( ) );
-        }
-        model.put( MARK_ENTRY, entry );
-        model.put( MARK_LOCALE, locale );
-        if ( ( appointmentDTO != null ) && ( appointmentDTO.getMapResponsesByIdEntry( ) != null ) )
-        {
-            List<Response> listResponses = appointmentDTO.getMapResponsesByIdEntry( ).get( entry.getIdEntry( ) );
-            model.put( MARK_LIST_RESPONSES, listResponses );
+            model.put( MARK_ENTRY, entry );
+            model.put( MARK_LOCALE, locale );
+            if ( ( appointmentDTO != null ) && (appointmentDTO.getMapResponsesByIdEntry( ) != null ) )
+            {
+                List<Response> listResponses = appointmentDTO.getMapResponsesByIdEntry( ).get( entry.getIdEntry( ) );
+                model.put( MARK_LIST_RESPONSES, listResponses );
 
+            }
+            IEntryTypeService entryTypeService = EntryTypeServiceManager.getEntryTypeService( entry );
+            // If the entry type is a file, we add the
+            if ( entryTypeService instanceof AbstractEntryTypeUpload )
+            {
+                model.put( MARK_UPLOAD_HANDLER, ( ( AbstractEntryTypeUpload ) entryTypeService ).getAsynchronousUploadHandler( ) );
+            }
+            template = AppTemplateService.getTemplate( entryTypeService.getTemplateHtmlForm( entry, bDisplayFront ), locale, model );
+            stringBuffer.append( template.getHtml( ) );
         }
-        IEntryTypeService entryTypeService = EntryTypeServiceManager.getEntryTypeService( entry );
-        // If the entry type is a file, we add the
-        if ( entryTypeService instanceof AbstractEntryTypeUpload )
-        {
-            model.put( MARK_UPLOAD_HANDLER, ( (AbstractEntryTypeUpload) entryTypeService ).getAsynchronousUploadHandler( ) );
-        }
-        template = AppTemplateService.getTemplate( entryTypeService.getTemplateHtmlForm( entry, bDisplayFront ), locale, model );
-        stringBuffer.append( template.getHtml( ) );
     }
 
     /**
@@ -624,61 +632,64 @@ public final class EntryService extends RemovalListenerService implements Serial
 
         entry.setFields( listField );
 
-        if ( Boolean.TRUE.equals( entry.getEntryType( ).getGroup( ) ) )
+        Field disabledField = entry.getFieldByCode( IEntryTypeService.FIELD_DISABLED );
+        if ( disabledField != null && !Boolean.parseBoolean( disabledField.getValue( ) ) )
         {
-            for ( Entry entryChild : entry.getChildren( ) )
+            if ( Boolean.TRUE.equals( entry.getEntryType( ).getGroup( ) ) )
             {
-                List<Response> listResponseChild = new ArrayList<>( );
-                appointment.getMapResponsesByIdEntry( ).put( entryChild.getIdEntry( ), listResponseChild );
-
-                listFormErrors.addAll( getResponseEntry( request, entryChild.getIdEntry( ), listResponseChild, false, locale, appointment ) );
-            }
-        }
-        else
-            if ( !Boolean.TRUE.equals( entry.getEntryType( ).getComment( ) ) )
-            {
-                GenericAttributeError formError = null;
-
-                if ( !bResponseNull )
+                for ( Entry entryChild : entry.getChildren( ) )
                 {
-                    formError = EntryTypeServiceManager.getEntryTypeService( entry ).getResponseData( entry, request, listResponse, locale );
+                    List<Response> listResponseChild = new ArrayList<>( );
+                    appointment.getMapResponsesByIdEntry( ).put( entryChild.getIdEntry( ), listResponseChild );
+
+                    listFormErrors.addAll( getResponseEntry( request, entryChild.getIdEntry( ), listResponseChild, false, locale, appointment ) );
+                }
+            }
+            else
+                if ( !Boolean.TRUE.equals( entry.getEntryType( ).getComment( ) ) )
+                {
+                    GenericAttributeError formError = null;
+
+                    if ( !bResponseNull )
+                    {
+                        formError = EntryTypeServiceManager.getEntryTypeService( entry ).getResponseData( entry, request, listResponse, locale );
+
+                        if ( formError != null )
+                        {
+                            formError.setUrl( getEntryUrl( entry ) );
+                        }
+                    }
+                    else
+                    {
+                        Response response = new Response( );
+                        response.setEntry( entry );
+                        listResponse.add( response );
+                    }
 
                     if ( formError != null )
                     {
-                        formError.setUrl( getEntryUrl( entry ) );
+                        entry.setError( formError );
+                        listFormErrors.add( formError );
                     }
-                }
-                else
-                {
-                    Response response = new Response( );
-                    response.setEntry( entry );
-                    listResponse.add( response );
-                }
 
-                if ( formError != null )
-                {
-                    entry.setError( formError );
-                    listFormErrors.add( formError );
-                }
-
-                if ( entry.getNumberConditionalQuestion( ) != 0 )
-                {
-                    for ( Field field : entry.getFields( ) )
+                    if ( entry.getNumberConditionalQuestion( ) != 0 )
                     {
-                        boolean bIsFieldInResponseList = isFieldInTheResponseList( field.getIdField( ), listResponse );
-
-                        for ( Entry conditionalEntry : field.getConditionalQuestions( ) )
+                        for ( Field field : entry.getFields( ) )
                         {
-                            List<Response> listResponseChild = new ArrayList<>( );
-                            appointment.getMapResponsesByIdEntry( ).put( conditionalEntry.getIdEntry( ), listResponseChild );
+                            boolean bIsFieldInResponseList = isFieldInTheResponseList( field.getIdField( ), listResponse );
 
-                            listFormErrors.addAll( getResponseEntry( request, conditionalEntry.getIdEntry( ), listResponseChild, !bIsFieldInResponseList,
-                                    locale, appointment ) );
+                            for ( Entry conditionalEntry : field.getConditionalQuestions( ) )
+                            {
+                                List<Response> listResponseChild = new ArrayList<>( );
+                                appointment.getMapResponsesByIdEntry( ).put( conditionalEntry.getIdEntry( ), listResponseChild );
+
+                                listFormErrors.addAll( getResponseEntry( request, conditionalEntry.getIdEntry( ), listResponseChild, !bIsFieldInResponseList,
+                                        locale, appointment ) );
+                            }
                         }
                     }
                 }
-            }
-
+        }
         return listFormErrors;
     }
 
