@@ -76,6 +76,7 @@ import fr.paris.lutece.portal.util.mvc.commons.annotations.View;
 import fr.paris.lutece.portal.util.mvc.utils.MVCUtils;
 import fr.paris.lutece.util.ReferenceList;
 import fr.paris.lutece.util.url.UrlItem;
+import org.apache.commons.lang3.math.NumberUtils;
 
 /**
  * JspBean to manage appointment form entries
@@ -130,6 +131,7 @@ public class AppointmentFormEntryJspBean extends MVCAdminJspBean
     private static final String ACTION_DO_MOVE_DOWN_ENTRY_CONDITIONAL = "doMoveDownEntryConditional";
     private static final String ACTION_DO_REMOVE_REGULAR_EXPRESSION = "doRemoveRegularExpression";
     private static final String ACTION_DO_INSERT_REGULAR_EXPRESSION = "doInsertRegularExpression";
+    private static final String ACTION_CHANGE_DISABLED = "doChangeDisabled";
 
     // Marks
     private static final String MARK_WEBAPP_URL = "webapp_url";
@@ -721,6 +723,30 @@ public class AppointmentFormEntryJspBean extends MVCAdminJspBean
             return redirect( request, VIEW_GET_MODIFY_ENTRY, PARAMETER_ID_ENTRY, field.getParentEntry( ).getIdEntry( ) );
         }
         return redirect( request, AppointmentFormJspBean.getURLManageAppointmentForms( request ) );
+    }
+
+    @Action( ACTION_CHANGE_DISABLED )
+    public String doChangeActive( HttpServletRequest request )
+    {
+        int idEntry = NumberUtils.toInt( request.getParameter( PARAMETER_ID_ENTRY ), -1 );
+        int idForm = NumberUtils.toInt( request.getParameter( PARAMETER_ID_FORM ), -1 );
+
+        if ( idEntry != -1 )
+        {
+            Entry entry = EntryHome.findByPrimaryKey( idEntry );
+            if ( entry != null )
+            {
+                Field disabledField = entry.getFieldByCode( IEntryTypeService.FIELD_DISABLED );
+
+                if ( disabledField != null )
+                {
+                    disabledField.setValue( Boolean.toString( !Boolean.parseBoolean( disabledField.getValue( ) ) ) );
+                    FieldHome.update( disabledField );
+                }
+            }
+        }
+
+        return redirect( request, VIEW_MODIFY_APPOINTMENTFORM_ENTRIES, PARAMETER_ID_FORM,  idForm );
     }
 
     /**
