@@ -379,7 +379,7 @@ $(function(){
 						</div>
 						</#if>	
 					</#if>	
-					<#if tab !='typicalWeek' || tab !='year' || tab !='day'>
+					<#if tab !='typicalWeek' && tab !='year' && tab !='day' && tab !='filter'>
 						<div id="calendar">
 							<div id="loader" class="d-flex justify-content-center align-items-center vh-100 h-75">
 								<strong>#i18n{appointment.labelLoading}...</strong>
