@@ -61,9 +61,7 @@
 		<@box>
 			<@boxHeader title='#i18n{appointment.createEntry.manageRegularExpression.title}' />
 			<@boxBody>
-			<#assign field=getFieldByCode( entry, "used_in_correct_form_response")>
 				<@tform action='jsp/admin/plugins/appointment/ManageAppointmentFormEntries.jsp#list'>
-					<@input type='hidden' name='id_field' value='${field.idField!}' />
 					<@input type='hidden' name='action' value='doInsertRegularExpression' />
 					<@formGroup labelFor='id_expression' labelKey='#i18n{appointment.regularExpression.label}' helpKey='#i18n{appointment.createEntry.manageRegularExpression.labelInsertComment}'>
 						<@inputGroup>
