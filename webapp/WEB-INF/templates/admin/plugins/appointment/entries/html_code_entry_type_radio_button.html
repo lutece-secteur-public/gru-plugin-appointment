@@ -1,7 +1,9 @@
 <#assign hide='' />
+<#assign disableRequiredFields='' />
 <#list entry.fields as field>
 	<#if field.conditionalQuestions?exists&&field.conditionalQuestions?size!=0>
 		<#assign hide = hide + 'hide(${field.idField});' />
+		<#assign disableRequiredFields>changeDisabledStateOfRequiredFields(${field.idField}, true);</#assign>
 	</#if>
 </#list>
 ${entry.CSSClass!}
@@ -28,9 +30,9 @@ ${entry.CSSClass!}
 				</#if>
 			</#if>
 			
-			<#assign params = 'onclick="${hide}"' />
+			<#assign params = 'onclick="${hide} ${disableRequiredFields}"' />
 			<#if field.conditionalQuestions?exists&&field.conditionalQuestions?size!=0>
-				<#assign params = 'onclick="${hide} doDisplay(${field.idField});"' />
+				<#assign params = 'onclick="${hide} doDisplay(${field.idField}); changeDisabledStateOfRequiredFields(${field.idField}, false);"' />
 			</#if>
 			
 			<#assign radioButtonLabelKey = '' />
