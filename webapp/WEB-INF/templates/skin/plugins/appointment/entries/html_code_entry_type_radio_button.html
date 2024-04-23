@@ -1,7 +1,9 @@
 <#assign hide="">
+<#assign disableRequiredFields="">
 <#list entry.fields as field>
 <#if field.conditionalQuestions?exists&&field.conditionalQuestions?size!=0>
 	<#assign hide=hide+"hide(${field.idField});">
+	<#assign disableRequiredFields>changeDisabledStateOfRequiredFields(${field.idField}, true);</#assign>
 </#if>	
 </#list>
 ${entry.CSSClass!}
@@ -20,7 +22,13 @@ ${entry.CSSClass!}
     <#list entry.fields as field>
     	<#if field.code == 'answer_choice'>
 			<#if !entry.fieldInLine><div class="radio"></#if>
-			<label class="<#if entry.fieldInLine>radio-inline</#if>" for="attribute${entry.idEntry}_${field.idField}" <#if field.comment?? && field.comment != ''>title="${field.comment}"</#if> > 
+			<label class="<#if entry.fieldInLine>radio-inline</#if>" for="attribute${entry.idEntry}_${field.idField}" <#if field.comment?? && field.comment != ''>title="${field.comment}"</#if> >
+			
+			<#assign onclickEvent = 'onclick="${hide} ${disableRequiredFields}"' />
+			<#if field.conditionalQuestions?exists && field.conditionalQuestions?size!=0>
+				<#assign onclickEvent = 'onclick="${hide} doDisplay(${field.idField}); changeDisabledStateOfRequiredFields(${field.idField}, false);"'>
+			</#if>
+			
 			<input type="radio" id="attribute${entry.idEntry}_${field.idField}" name="attribute${entry.idEntry}" value="${field.idField}"
 			<#if list_responses??>
 				<#list list_responses as response>
@@ -31,8 +39,7 @@ ${entry.CSSClass!}
 			<#else>
 				<#if field.defaultValue>checked="checked"</#if>
 			</#if>
-				onclick="${hide} <#if field.conditionalQuestions?exists&&field.conditionalQuestions?size!=0>doDisplay(${field.idField});</#if>
-			 "/>
+			${onclickEvent} "/>
 			 <#if !field.noDisplayTitle>
 			 	${field.title}
 			 </#if>
