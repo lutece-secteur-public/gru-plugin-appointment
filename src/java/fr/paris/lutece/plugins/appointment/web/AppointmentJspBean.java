@@ -56,6 +56,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
+import fr.paris.lutece.portal.service.file.FileService;
+import fr.paris.lutece.portal.service.file.IFileStoreServiceProvider;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -108,9 +110,6 @@ import fr.paris.lutece.plugins.workflowcore.service.task.ITask;
 import fr.paris.lutece.plugins.workflowcore.service.task.ITaskService;
 import fr.paris.lutece.plugins.workflowcore.service.task.TaskService;
 import fr.paris.lutece.portal.business.file.File;
-import fr.paris.lutece.portal.business.file.FileHome;
-import fr.paris.lutece.portal.business.physicalfile.PhysicalFile;
-import fr.paris.lutece.portal.business.physicalfile.PhysicalFileHome;
 import fr.paris.lutece.portal.business.user.AdminUser;
 import fr.paris.lutece.portal.business.user.AdminUserHome;
 import fr.paris.lutece.portal.service.admin.AccessDeniedException;
@@ -801,7 +800,9 @@ public class AppointmentJspBean extends MVCAdminJspBean
         {
             if ( response.getFile( ) != null )
             {
-                response.setFile( FileHome.findByPrimaryKey( response.getFile( ).getIdFile( ) ) );
+                IFileStoreServiceProvider fileStoreService = FileService.getInstance( ).getFileStoreServiceProvider( );
+                File file = fileStoreService.getFile( response.getFile( ).getFileKey( ) );
+                response.setFile( file );
             }
             if ( response.getEntry( ) != null )
             {
@@ -1242,10 +1243,9 @@ public class AppointmentJspBean extends MVCAdminJspBean
         {
             if ( response.getFile( ) != null )
             {
-                response.setFile( FileHome.findByPrimaryKey( response.getFile( ).getIdFile( ) ) );
-
-                response.getFile( ).setPhysicalFile( PhysicalFileHome.findByPrimaryKey( response.getFile( ).getPhysicalFile( ).getIdPhysicalFile( ) ) );
-
+                IFileStoreServiceProvider fileStoreService = FileService.getInstance( ).getFileStoreServiceProvider( );
+                File file = fileStoreService.getFile( response.getFile( ).getFileKey( ) );
+                response.setFile( file );
             }
         }
 
@@ -1433,8 +1433,8 @@ public class AppointmentJspBean extends MVCAdminJspBean
 
         int nIdResponse = Integer.parseInt( strIdResponse );
         Response response = ResponseHome.findByPrimaryKey( nIdResponse );
-        File file = FileHome.findByPrimaryKey( response.getFile( ).getIdFile( ) );
-        PhysicalFile physicalFile = PhysicalFileHome.findByPrimaryKey( file.getPhysicalFile( ).getIdPhysicalFile( ) );
+        IFileStoreServiceProvider fileStoreService = FileService.getInstance( ).getFileStoreServiceProvider( );
+        File file = fileStoreService.getFile( response.getFile( ).getFileKey( ) );
 
         httpResponse.setHeader( "Content-Disposition", "attachment; filename=\"" + file.getTitle( ) + "\";" );
         httpResponse.setHeader( "Content-type", file.getMimeType( ) );
@@ -1446,7 +1446,7 @@ public class AppointmentJspBean extends MVCAdminJspBean
         try
         {
             OutputStream os = httpResponse.getOutputStream( );
-            os.write( physicalFile.getValue( ) );
+            os.write( file.getPhysicalFile( ).getValue( ) );
             // We do not close the output stream in finnaly clause because it is
             // the response stream,
             // and an error message needs to be displayed if an exception occurs

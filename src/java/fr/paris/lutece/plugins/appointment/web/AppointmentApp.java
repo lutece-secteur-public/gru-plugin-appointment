@@ -53,6 +53,9 @@ import java.util.stream.Stream;
 
 import javax.servlet.http.HttpServletRequest;
 
+import fr.paris.lutece.portal.business.file.File;
+import fr.paris.lutece.portal.service.file.FileService;
+import fr.paris.lutece.portal.service.file.IFileStoreServiceProvider;
 import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -93,12 +96,9 @@ import fr.paris.lutece.plugins.genericattributes.business.Response;
 import fr.paris.lutece.plugins.workflowcore.service.task.ITask;
 import fr.paris.lutece.plugins.workflowcore.service.task.ITaskService;
 import fr.paris.lutece.plugins.workflowcore.service.task.TaskService;
-import fr.paris.lutece.portal.business.file.FileHome;
-import fr.paris.lutece.portal.business.physicalfile.PhysicalFileHome;
 import fr.paris.lutece.portal.service.accesscontrol.AccessControlService;
 import fr.paris.lutece.portal.service.admin.AccessDeniedException;
 import fr.paris.lutece.portal.service.captcha.CaptchaSecurityService;
-import fr.paris.lutece.portal.service.datastore.DatastoreService;
 import fr.paris.lutece.portal.service.i18n.I18nService;
 import fr.paris.lutece.portal.service.image.ImageResource;
 import fr.paris.lutece.portal.service.message.SiteMessageException;
@@ -1218,10 +1218,9 @@ public class AppointmentApp extends MVCApplication
         {
             if ( response.getFile( ) != null )
             {
-                response.setFile( FileHome.findByPrimaryKey( response.getFile( ).getIdFile( ) ) );
-
-                response.getFile( ).setPhysicalFile( PhysicalFileHome.findByPrimaryKey( response.getFile( ).getPhysicalFile( ).getIdPhysicalFile( ) ) );
-
+                IFileStoreServiceProvider fileStoreService = FileService.getInstance( ).getFileStoreServiceProvider( );
+                File file = fileStoreService.getFile( response.getFile( ).getFileKey( ) );
+                response.setFile( file );
             }
         }
 
