@@ -575,6 +575,8 @@ public final class EntryService extends RemovalListenerService implements Serial
             }
             template = AppTemplateService.getTemplate( entryTypeService.getTemplateHtmlForm( entry, bDisplayFront ), locale, model );
             stringBuffer.append( template.getHtml( ) );
+            
+            model.remove( MARK_STR_LIST_CHILDREN );
         }
     }
 
