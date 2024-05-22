@@ -1,4 +1,3 @@
-<link rel="stylesheet" href="css/admin/plugins/appointment/appointment.css" >
 <@row class='calendar-row'>
 	<@columns>
 		<@box>
@@ -30,11 +29,7 @@
 							<#if hasFile>
 								<a href="jsp/admin/plugins/appointment/DoDownloadAppointmentsFile.jsp?idResponse=${response.idResponse}">
 							</#if>
-							<#if response.entry.entryType.beanName?ends_with('entryTypeTextArea')>
-								<pre class="viewTextarea">${response.recapValue}</pre>
-							<#else>
-								<@staticText>${response.recapValue} </@staticText>
-							</#if>
+							<@staticText>${response.recapValue} </@staticText>
 							<#if hasFile>
 								</a>
 							</#if>
