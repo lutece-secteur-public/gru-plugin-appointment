@@ -93,7 +93,7 @@
 											<td>
 												<@formGroup rows=2>
 													<@inputGroup>
-														<@comboOrders name="order_id_${entry.idEntry!}" default_value=entry.position idParent=entry.parent.idEntry />
+														<@entryOrderSelection name="order_id_${entry.idEntry!}" default_value=entry.position idParent=entry.parent.idEntry />
 														<@inputGroupItem>
 															<@button type='submit' name='id_entry' value='${entry.idEntry}' title='#i18n{appointment.move.name}' hideTitle=['all'] buttonIcon='check' size='sm' />
 														</@inputGroupItem>
@@ -103,7 +103,7 @@
 										<#else>
 											<td>
 													<@inputGroup>
-														<@comboOrders name="order_id_${entry.idEntry!}" default_value=entry.position idParent=0 />
+														<@entryOrderSelection name="order_id_${entry.idEntry!}" default_value=entry.position idParent=0 />
 														<@inputGroupItem>
 															<@button type='submit' name='id_entry' title='#i18n{appointment.move.name}' hideTitle=['all'] value='${entry.idEntry}' buttonIcon='check' size='sm' />
 														</@inputGroupItem>
@@ -157,7 +157,7 @@
 	</@columns>
 </@row>
 
-<#macro comboOrders name default_value idParent >
+<#macro entryOrderSelection name default_value idParent >
 	<@select id='${name}' name='${name}' size='sm'>
 		<#if idParent &gt; 0 && lastGroup??>
 			<#assign start_enum = lastGroup.position + 1 >
