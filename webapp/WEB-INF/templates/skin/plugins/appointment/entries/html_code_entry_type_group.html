@@ -1,4 +1,5 @@
-<fieldset class="${entry.CSSClass!}"> 
-       <legend>${entry.title}</legend> 
-       ${str_list_entry_children}
-</fieldset>		
+<#if str_list_entry_children?has_content>
+	<@fieldSet legend='${entry.title}' class="${entry.CSSClass!}">
+		${str_list_entry_children}
+	</@fieldSet>
+</#if>
