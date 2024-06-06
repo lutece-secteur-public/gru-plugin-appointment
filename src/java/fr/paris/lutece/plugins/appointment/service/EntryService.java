@@ -448,7 +448,7 @@ public final class EntryService extends RemovalListenerService implements Serial
             entry.setFields( FieldHome.getFieldListByIdEntry( entry.getIdEntry( ) ) );
         }
         model.put( MARK_GROUP_ENTRY_LIST, getRefListGroups( nIdForm ) );
-        model.put( MARK_ENTRY_TYPE_LIST, EntryTypeService.getInstance( ).getEntryTypeReferenceList( ) );
+        model.put( MARK_ENTRY_TYPE_LIST, EntryTypeService.getInstance( ).getListActiveEntryType( ) );
         model.put( MARK_ENTRY_LIST, listEntry );
         model.put( MARK_LIST_ORDER_FIRST_LEVEL, listOrderFirstLevel );
     }
@@ -500,15 +500,20 @@ public final class EntryService extends RemovalListenerService implements Serial
     }
 
     /**
-     * Get the html part of the additional entry of the form
+     * Get the html part of the additional Entry of the form
      * 
+     * @param model
+     *            The Map to fill with the additional entry's content
      * @param nIdEntry
-     *            the entry id
+     *            The Entry's ID
      * @param stringBuffer
-     *            the string buffer
+     *            The StringBuffer containing the Entry's filled template
      * @param locale
+     *            The locale
      * @param bDisplayFront
-     * @param request
+     *            Whether this method is used in the Front Office (true) or Back Office (false)
+     * @param appointmentDTO
+     *            The appointment being processed
      */
     public static void getHtmlEntry( Map<String, Object> model, int nIdEntry, StringBuilder stringBuffer, Locale locale, boolean bDisplayFront,
             AppointmentDTO appointmentDTO )
@@ -521,12 +526,7 @@ public final class EntryService extends RemovalListenerService implements Serial
         {
             if ( Boolean.TRUE.equals( entry.getEntryType( ).getGroup( ) ) )
             {
-                StringBuilder strGroupStringBuffer = new StringBuilder( );
-                for ( Entry entryChild : entry.getChildren( ) )
-                {
-                    getHtmlEntry( model, entryChild.getIdEntry( ), strGroupStringBuffer, locale, bDisplayFront, appointmentDTO );
-                }
-                model.put( MARK_STR_LIST_CHILDREN, strGroupStringBuffer.toString( ) );
+                buildHtmlGroupEntryType( entry, model, stringBuffer, locale, bDisplayFront, appointmentDTO );
             }
             else
             {
@@ -762,4 +762,45 @@ public final class EntryService extends RemovalListenerService implements Serial
         return EntryHome.getEntryList( filter );
     }
 
+    /**
+     * Create a new Entry element with a specific EntryType
+     * 
+     * @param nIdType
+     *            The ID of the EntryType assigned to the created Entry
+     * @return the new Entry Object
+     */
+    public static Entry createEntryByEntryType( int nIdType )
+    {
+        Entry entry = new Entry( );
+        entry.setEntryType( EntryTypeService.getInstance( ).getEntryType( nIdType ) );
+
+        return entry;
+    }
+
+    /**
+     * Build the HTML content of a Group EntryType and its children
+     * 
+     * @param entry
+     *            The EntryType of type 'Group'
+     * @param model
+     *            The Map to fill with the entry's content
+     * @param stringBuffer
+     *            The StringBuffer containing the Entry's filled template
+     * @param locale
+     *            The locale
+     * @param bDisplayFront
+     *            Whether the content is displayed in the Front Office (true) or Back Office (false)
+     * @param appointmentDTO
+     *            The appointment being processed
+     */
+    private static void buildHtmlGroupEntryType( Entry entry, Map<String, Object> model, StringBuilder stringBuffer, Locale locale, boolean bDisplayFront,
+            AppointmentDTO appointmentDTO )
+    {
+        StringBuilder strGroupStringBuffer = new StringBuilder( );
+        for ( Entry entryChild : entry.getChildren( ) )
+        {
+            getHtmlEntry( model, entryChild.getIdEntry( ), strGroupStringBuffer, locale, bDisplayFront, appointmentDTO );
+        }
+        model.put( MARK_STR_LIST_CHILDREN, strGroupStringBuffer.toString( ) );
+    }
 }

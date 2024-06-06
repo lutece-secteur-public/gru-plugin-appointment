@@ -37,7 +37,6 @@ input[type="color"]{
 }
 
 input[type="color"]:hover{
-    transition: ;
     box-shadow: -2px 1px 13px 3px rgba(87, 87, 87, 0.51);
     -webkit-box-shadow: -2px 1px 13px 3px rgba(0,0,0,0.51);
     -moz-box-shadow: -2px 1px 13px 3px rgba(0,0,0,0.51);
@@ -95,3 +94,11 @@ input[type="color"]:hover{
   text-align: left;
   vertical-align: middle;
 }
+
+/* Lists - Side Menu */
+.appointment-list-group .list-group li .fa{ margin-right: 10px }
+.appointment-list-group .list-group li{ position: relative;	list-style-type: none }
+.appointment-list-group .group td{ vertical-align: baseline }
+
+#sticky-container{ min-height: 450vh; }
+#info-right{ position: -webkit-sticky;	position: sticky; top: 60px }

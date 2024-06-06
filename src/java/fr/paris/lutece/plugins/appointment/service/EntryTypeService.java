@@ -33,8 +33,8 @@
  */
 package fr.paris.lutece.plugins.appointment.service;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.util.ArrayList;
+import java.util.List;
 
 import fr.paris.lutece.plugins.genericattributes.business.EntryType;
 import fr.paris.lutece.plugins.genericattributes.business.EntryTypeHome;
@@ -49,14 +49,12 @@ import fr.paris.lutece.util.ReferenceList;
 public final class EntryTypeService
 {
     private static EntryTypeService _instance = new EntryTypeService( );
-    private Map<Integer, EntryType> _mapEntryTypes;
 
     /**
      * Private constructor
      */
     private EntryTypeService( )
     {
-        initMapEntryTypes( );
     }
 
     /**
@@ -70,16 +68,6 @@ public final class EntryTypeService
     }
 
     /**
-     * Get the map of entry types
-     * 
-     * @return the map of entry types
-     */
-    public Map<Integer, EntryType> getMapEntryTypes( )
-    {
-        return new HashMap<>( _mapEntryTypes );
-    }
-
-    /**
      * Get the entry type given the class name
      * 
      * @param nId
@@ -88,20 +76,7 @@ public final class EntryTypeService
      */
     public EntryType getEntryType( int nId )
     {
-        return _mapEntryTypes.get( nId );
-    }
-
-    /**
-     * Init the map of entry types
-     */
-    private void initMapEntryTypes( )
-    {
-        _mapEntryTypes = new HashMap<>( );
-
-        for ( EntryType entryType : EntryTypeHome.getList( AppointmentPlugin.PLUGIN_NAME ) )
-        {
-            _mapEntryTypes.put( entryType.getIdType( ), entryType );
-        }
+        return EntryTypeHome.findByPrimaryKey( nId );
     }
 
     /**
@@ -113,11 +88,32 @@ public final class EntryTypeService
     {
         ReferenceList refListEntryType = new ReferenceList( );
 
-        for ( EntryType entryType : _mapEntryTypes.values( ) )
+        for ( EntryType entryType : EntryTypeHome.getList( AppointmentPlugin.PLUGIN_NAME ) )
         {
-            refListEntryType.addItem( entryType.getIdType( ), entryType.getTitle( ) );
+            if ( !entryType.isInactive( ) )
+            {
+                refListEntryType.addItem( entryType.getIdType( ), entryType.getTitle( ) );
+            }
         }
-
         return refListEntryType;
+    }
+
+    /**
+     * Get a list containing the active EntryType elements
+     * 
+     * @return a List of currently active EntryTypes
+     */
+    public List<EntryType> getListActiveEntryType( )
+    {
+        List<EntryType> listAvailableEntryType = new ArrayList<>( );
+
+        for ( EntryType entryType : EntryTypeHome.getList( AppointmentPlugin.PLUGIN_NAME ) )
+        {
+            if ( !entryType.isInactive( ) )
+            {
+                listAvailableEntryType.add( entryType );
+            }
+        }
+        return listAvailableEntryType;
     }
 }

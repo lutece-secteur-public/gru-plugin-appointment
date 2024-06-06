@@ -252,10 +252,7 @@ public class AppointmentFormEntryJspBean extends MVCAdminJspBean
         if ( ( request.getParameter( PARAMETER_CANCEL ) == null ) && StringUtils.isNotEmpty( strIdType ) && StringUtils.isNumeric( strIdType ) )
         {
             int nIdType = Integer.parseInt( strIdType );
-            EntryType entryType = new EntryType( );
-            entryType.setIdType( nIdType );
-            Entry entry = new Entry( );
-            entry.setEntryType( EntryTypeService.getInstance( ).getEntryType( nIdType ) );
+            Entry entry = EntryService.createEntryByEntryType( nIdType );
             String strIdField = request.getParameter( PARAMETER_ID_FIELD );
             int nIdField = -1;
             if ( StringUtils.isNotEmpty( strIdField ) && StringUtils.isNumeric( strIdField ) )
