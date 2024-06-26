@@ -157,6 +157,7 @@
 					<input name="firstname" value="${appointment.firstName}" type="hidden">
 					<input name="email" value="${appointment.email}" type="hidden">
 					<input name="anchor" value="step5" type="hidden">
+					<input type="hidden" name="token" value="${token}">
 					<#if form.maxPeoplePerAppointment &gt; 1>
 						<input name="nbSeat" value="${appointment.nbBookedSeats}" type="hidden" />
 					</#if>
