@@ -56,6 +56,7 @@ import javax.servlet.http.HttpServletRequest;
 import fr.paris.lutece.portal.business.file.File;
 import fr.paris.lutece.portal.service.file.FileService;
 import fr.paris.lutece.portal.service.file.IFileStoreServiceProvider;
+import fr.paris.lutece.portal.service.security.SecurityTokenService;
 import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -274,6 +275,8 @@ public class AppointmentApp extends MVCApplication
     private static final String ERROR_MESSAGE_NO_AVAILABLE_SLOT = "appointment.validation.appointment.noAvailableSlot";
 
     private static final String ERROR_MESSAGE_NB_PLACE_TO_TAKE_TO_BIG = "appointment.message.error.nbplacestotake.toobig";
+
+    private static final String MESSAGE_ERROR_TOKEN = "Invalid security token";
 
     // Messages
     private static final String MESSAGE_CANCEL_APPOINTMENT_PAGE_TITLE = "appointment.cancelAppointment.pageTitle";
@@ -815,6 +818,7 @@ public class AppointmentApp extends MVCApplication
         	return accessControlPage;
         }
 
+        model.put( SecurityTokenService.MARK_TOKEN, SecurityTokenService.getInstance( ).getToken( request, ACTION_DO_VALIDATE_FORM ) );
         HtmlTemplate templateForm = AppTemplateService.getTemplate( TEMPLATE_HTML_CODE_FORM, locale, model );
         model.put( MARK_FORM_HTML, templateForm.getHtml( ) );
         XPage xPage = getXPage( TEMPLATE_APPOINTMENT_FORM, locale, model );
@@ -839,6 +843,11 @@ public class AppointmentApp extends MVCApplication
     @Action( ACTION_DO_VALIDATE_FORM )
     public synchronized XPage doValidateForm( HttpServletRequest request ) throws UserNotSignedException, AccessDeniedException
     {
+        // CSRF Token control
+        if ( !SecurityTokenService.getInstance( ).validate( request, ACTION_DO_VALIDATE_FORM ) )
+        {
+            throw new AccessDeniedException( MESSAGE_ERROR_TOKEN );
+        }
         checkMyLuteceAuthentication( _appointmentForm, request );
         String strIdForm = request.getParameter( PARAMETER_ID_FORM );
         if ( _notValidatedAppointment == null || _appointmentForm == null || _notValidatedAppointment.getIdForm( ) != _appointmentForm.getIdForm( ) )
@@ -995,6 +1004,7 @@ public class AppointmentApp extends MVCApplication
         model.put( MARK_FORM, _appointmentForm );
         model.put( MARK_NBPLACESTOTAKE, _nNbPlacesToTake );
         model.put( PARAMETER_DATE_OF_DISPLAY, _validatedAppointment.getSlot( ).get( 0 ).getDate( ) );
+        model.put( SecurityTokenService.MARK_TOKEN, SecurityTokenService.getInstance( ).getToken( request, ACTION_DO_MAKE_APPOINTMENT ) );
 
         return getXPage( TEMPLATE_APPOINTMENT_FORM_RECAP, locale, model );
     }
@@ -1012,6 +1022,11 @@ public class AppointmentApp extends MVCApplication
     public synchronized XPage doMakeAppointment( HttpServletRequest request ) throws UserNotSignedException, AccessDeniedException
     {
         checkMyLuteceAuthentication( _appointmentForm, request );
+        // CSRF Token control
+        if ( !SecurityTokenService.getInstance( ).validate( request, ACTION_DO_MAKE_APPOINTMENT ) )
+        {
+            throw new AccessDeniedException( MESSAGE_ERROR_TOKEN );
+        }
         if ( _validatedAppointment == null || _appointmentForm == null || _validatedAppointment.getIdForm( ) != _appointmentForm.getIdForm( ) )
         {
             addError( ERROR_MESSAGE_FORM_NO_MORE_VALID, getLocale( request ) );
@@ -1267,6 +1282,7 @@ public class AppointmentApp extends MVCApplication
         }
         Map<String, Object> model = new HashMap<>( );
         model.put( PARAMETER_REF_APPOINTMENT, refAppointment );
+        model.put( SecurityTokenService.MARK_TOKEN, SecurityTokenService.getInstance( ).getToken( request, ACTION_DO_CANCEL_APPOINTMENT ) );
         if ( appointment != null )
         {
 
@@ -1313,8 +1329,14 @@ public class AppointmentApp extends MVCApplication
      * @return the confirmation view of the appointment cancelled
      */
     @Action( ACTION_DO_CANCEL_APPOINTMENT )
-    public synchronized XPage doCancelAppointment( HttpServletRequest request )
+    public synchronized XPage doCancelAppointment( HttpServletRequest request ) throws AccessDeniedException
     {
+        // CSRF Token control
+        if ( !SecurityTokenService.getInstance( ).validate( request, ACTION_DO_CANCEL_APPOINTMENT ) )
+        {
+            throw new AccessDeniedException( MESSAGE_ERROR_TOKEN );
+        }
+
         String strRef = request.getParameter( PARAMETER_REF_APPOINTMENT );
         if ( StringUtils.isNotEmpty( strRef ) )
         {
