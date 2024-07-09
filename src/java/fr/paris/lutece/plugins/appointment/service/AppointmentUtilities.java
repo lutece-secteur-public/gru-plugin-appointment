@@ -1311,8 +1311,13 @@ public final class AppointmentUtilities
     				// Set the current appointment's phone number value(s). Use a separator if there are multiple values
     				String strPhoneNumbers = StringUtils.join( listPhoneNumbers, CONSTANT_PHONE_NUMBERS_SEPARATOR );
     				appointment.setPhoneNumber( strPhoneNumbers );
-    			}
-    		}
+                }
+                else
+                {
+                    // Set the appointment's phone number value to 'null' if no response was entered
+                    appointment.setPhoneNumber( null );
+                }
+            }
     		catch ( NullPointerException e)
     		{
                 AppLogService.error( "Error when retrieving appointment's phone number value", e );
