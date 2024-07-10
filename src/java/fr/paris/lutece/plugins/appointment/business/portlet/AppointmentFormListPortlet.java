@@ -33,12 +33,16 @@
  */
 package fr.paris.lutece.plugins.appointment.business.portlet;
 
+import java.util.HashMap;
+import java.util.Locale;
+
 import javax.servlet.http.HttpServletRequest;
 
 import org.apache.commons.lang3.StringUtils;
 
 import fr.paris.lutece.plugins.appointment.web.AppointmentApp;
 import fr.paris.lutece.portal.business.portlet.PortletHtmlContent;
+import fr.paris.lutece.portal.web.l10n.LocaleService;
 
 /**
  * This class represents business objects AppointmentPortlet
@@ -48,6 +52,9 @@ import fr.paris.lutece.portal.business.portlet.PortletHtmlContent;
  */
 public final class AppointmentFormListPortlet extends PortletHtmlContent
 {
+    // MARKERS
+    public static final String MARK_PORTLET_NAME = "portlet_name";
+
     /**
      * Sets the identifier of the portlet type to value specified
      */
@@ -62,12 +69,21 @@ public final class AppointmentFormListPortlet extends PortletHtmlContent
     @Override
     public String getHtmlContent( HttpServletRequest request )
     {
-        if ( request != null )
+        Locale locale = LocaleService.getContextUserLocale( request );
+        HashMap<String, Object> model = new HashMap<>( );
+
+        // Get the portlet's custom title if it has to be displayed
+        if ( this.getDisplayPortletTitle( ) == 0 )
         {
-            return AppointmentApp.getFormListHtml( request.getLocale( ), null );
+            model.put( MARK_PORTLET_NAME, this.getName( ) );
+        }
+        // If the portlet's title should not be displayed, then set an empty value for it
+        else
+        {
+            model.put( MARK_PORTLET_NAME, StringUtils.EMPTY );
         }
 
-        return StringUtils.EMPTY;
+        return AppointmentApp.getFormListHtml( locale, model );
     }
 
     /**
