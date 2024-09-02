@@ -1,6 +1,6 @@
 <#include "/skin/plugins/asynchronousupload/upload_commons.html" />
 <div class="form-group">
-	<label class="control-label col-xs-12 col-sm-12 col-md-3 col-lg-3" for="attribute${entry.idEntry}" id="form${entry.idEntry}">${entry.title}<#if entry.mandatory>	*</#if></label>
+	<label class="control-label col-xs-12 col-sm-12 col-md-3 col-lg-3" for="attribute${entry.idEntry}" id="form${entry.idEntry}">${entry.title}<#if entry.mandatory> *</#if></label>
 	<div class=" col-xs-12 col-sm-12 col-md-6 col-lg-6">
 		<#assign fieldName='attribute'+entry.idEntry >
 		<#assign cssClass=entry.CSSClass!'' >
@@ -22,9 +22,9 @@
 				<div class="alert alert-error">
 					<#assign error = response_error.entry.error>
 					<#if error.mandatoryError>
-						${error.errorMessage}
-					<#else>
 						#i18n{appointment.message.mandatory.entry}
+					<#else>
+						${error.errorMessage}
 					</#if>
 				</div>
 			</#if>
@@ -46,4 +46,5 @@
 	<#assign listFiles = ''>
 </#if>
 
+<@addRequiredJsFiles />
 <@addUploadedFilesBox fieldName=fieldName handler=uploadHandler listFiles=listFiles!'' />

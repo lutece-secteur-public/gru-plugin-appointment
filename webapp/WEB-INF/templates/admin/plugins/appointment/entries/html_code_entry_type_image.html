@@ -18,7 +18,11 @@
 		<#if response_error.entry.idEntry == entry.idEntry && response_error.entry.error?? && response_error.entry.error.isDisplayableError>
 			<@alert class='danger'>
 				<#assign error = response_error.entry.error>
-				<#if error.mandatoryError>${error.errorMessage}<#else>#i18n{appointment.message.mandatory.entry}</#if>
+					<#if error.mandatoryError>
+						#i18n{appointment.message.mandatory.entry}
+					<#else>
+						${error.errorMessage}
+					</#if>
 			</@alert>
 		</#if>
 	</#if>
@@ -37,5 +41,5 @@
 <#else>
 	<#assign listFiles = ''>
 </#if>
-
+<@addRequiredJsFiles />
 <@addUploadedFilesBox fieldName=fieldName handler=uploadHandler listFiles=listFiles />
