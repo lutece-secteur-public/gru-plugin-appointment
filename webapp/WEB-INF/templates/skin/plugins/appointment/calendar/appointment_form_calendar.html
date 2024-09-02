@@ -129,43 +129,43 @@ ${mark_nb_places_to_take_form!}
     var minDateOfOpenDay = '${min_date_of_open_day}';
     var maxDateOfOpenDay = '${max_date_of_open_day}';
     var dow = [
-		<#if dow??>								   
+		<#if dow??>
 			<#list dow as day>
-				${day},								
+				${day},
 			</#list>
-		</#if>				
+		</#if>
 	];
     var hiddenDays = [
-        <#if hidden_days??>								   
+        <#if hidden_days??>
         	<#list hidden_days as hidden_day>
-            	${hidden_day},								
+            	${hidden_day},
             </#list>
          </#if>
     ];
-    var eventUrl = 'jsp/site/Portal.jsp?page=appointment&view=getViewAppointmentForm';    
+    var eventUrl = 'jsp/site/Portal.jsp?page=appointment&view=getViewAppointmentForm';
     var defaultDate = '${date_of_display}';
     var dayView = '${day_view}';
     var weekView = '${week_view}';
     var events = [
-		<#if events??>								   
+		<#if events??>
 			<#list events as event>
 				{
 					title : <#if event.isOpen & (event.nbRemainingPlaces > 0) & (event.nbRemainingPlaces = event.nbPotentialRemainingPlaces) & ('${day_view}' == 'agendaDay' || '${week_view}' == 'agendaWeek')>'${formMessages.calendarReserveLabel}'
-							<#elseif event.isOpen & (event.nbRemainingPlaces > 0) & (event.nbPotentialRemainingPlaces > 0) & (event.nbRemainingPlaces > event.nbPotentialRemainingPlaces)>'#i18n{appointment.manageCalendarSlots.labelEdit}'							
+							<#elseif event.isOpen & (event.nbRemainingPlaces > 0) & (event.nbPotentialRemainingPlaces > 0) & (event.nbRemainingPlaces > event.nbPotentialRemainingPlaces)>'#i18n{appointment.manageCalendarSlots.labelEdit}'
 							<#elseif event.isOpen & (event.nbRemainingPlaces > 0) & (event.nbPotentialRemainingPlaces = 0)>'#i18n{appointment.manageCalendarSlots.labelEditFull}'
 							<#elseif event.isOpen & (event.nbRemainingPlaces <= 0)>'${formMessages.calendarFullLabel}'
 							<#elseif !event.isOpen>'#i18n{appointment.manageCalendarSlots.labelClosed}'
-                            <#else>''</#if>,		
+                            <#else>''</#if>,
 					className : <#if event.isOpen & (event.nbRemainingPlaces > 0) >''
 								<#elseif event.isOpen>'slot-full'<#else>'slot-closed'</#if>,
 					start : '${event.startingDateTime}',
 					end : '${event.endingDateTime}',
 					id : '${event.idSlot}',
 					url : eventUrl +'&id_form=${event.idForm}&starting_date_time=${event.startingDateTime}&modif_date=${modifDateAppointment?c}&anchor=step3',
-				},								
+				},
 			</#list>
 		</#if>
-	];    
+	];
     var eventTitleResult = <#if formMessages?? && formMessages.calendarFullLabel??>
 	'${formMessages.calendarFullLabel}'
 	<#else>
@@ -196,13 +196,13 @@ ${mark_nb_places_to_take_form!}
 						var $btnCustom = $('.fc-datePicker-button'); // name of custom  button in the generated code
 						$btnCustom.after('<input type="text" id="hiddenDate" class="datepicker"/>');
 						$("#hiddenDate").datepicker({
-							showOn: "button",							
+							showOn: "button",
 							autoclose: true,
                             language:'fr',
 							startDate: "today",
 							endDate: moment(endingDateOfDisplay).format('DD-MM-YYYY')
 						});
-						var $btnDatepicker = $(".ui-datepicker-trigger"); // name of the generated datepicker UI 
+						var $btnDatepicker = $(".ui-datepicker-trigger"); // name of the generated datepicker UI
 						//Below are required for manipulating dynamically created datepicker on custom button click
 						$("#hiddenDate").focus().hide();
 						$btnDatepicker.trigger("click"); //dynamically generated button for datepicker when clicked on input textbox
@@ -229,7 +229,7 @@ ${mark_nb_places_to_take_form!}
 			slotDuration: slotDuration,
 			allDaySlot: false,
 			minTime: minTime,
-			maxTime: maxTime,         
+			maxTime: maxTime,
 			businessHours: {
 				start: minTime,
 				end: maxTime,
@@ -245,13 +245,19 @@ ${mark_nb_places_to_take_form!}
 			},
 			events: events,
             eventRender: function(event, element) {
-                $(element).popover({
-                	container: 'body',
-                    placement : 'bottom',
-                    html : true,
-                    trigger : 'hover',
-                    content : '<center>'+event.start.format('ddd DD/MM')+'</center>' + '<center><b>' + event.start.format('HH:mm') + '</b> - <b>' + event.end.format('HH:mm')+'</b></center>'
-                });
+				const content = '<div style="text-align: center;">' +
+						'<div>' + event.start.format('ddd DD/MM') + '</div>' +
+						'<div><b>' + event.start.format('HH:mm') + '</b> - <b>' + event.end.format('HH:mm') + '</b></div>' +
+						'</div>';
+
+				const popover = new bootstrap.Popover(element, {
+					container: 'body',
+					placement: 'bottom',
+					html: true,
+					trigger: 'hover',
+					content: content
+				});
+
                 $(element).contextmenu(function() {
                     return false;
                 });
@@ -261,55 +267,66 @@ ${mark_nb_places_to_take_form!}
 				var maxDate = moment.utc(maxDateOfOpenDay);
 				// Past
 				if (minDate >= view.start && minDate <= view.end || view.end <= minDate) {
-					$(".fc-prev-button").prop('disabled', true);
-					$(".fc-prev-button").addClass('fc-state-disabled');
-                    $('.fc-prev-button').popover('hide');
+					$(".fc-prev-button").prop('disabled', true).addClass('fc-state-disabled');
+					let prevPopover = bootstrap.Popover.getInstance(document.querySelector('.fc-prev-button'));
+					if (prevPopover) prevPopover.hide();
 				} else {
-					$(".fc-prev-button").removeClass('fc-state-disabled'); 
-					$(".fc-prev-button").prop('disabled', false); 
+					$(".fc-prev-button").removeClass('fc-state-disabled').prop('disabled', false);
 				}
+
 				// Future
 				if (maxDate >= view.start && maxDate <= view.end || maxDate <= view.start) {
-					$(".fc-next-button").prop('disabled', true); 
-					$(".fc-next-button").addClass('fc-state-disabled');  
-                    $('.fc-next-button').popover('hide');
+					$(".fc-next-button").prop('disabled', true)
+					$(".fc-next-button").addClass('fc-state-disabled');
+					let nextPopover = bootstrap.Popover.getInstance(document.querySelector('.fc-next-button'));
+					if (nextPopover) nextPopover.hide();
 				} else {
-					$(".fc-next-button").removeClass('fc-state-disabled'); 
-					$(".fc-next-button").prop('disabled', false); 
+					$(".fc-next-button").removeClass('fc-state-disabled');
+					$(".fc-next-button").prop('disabled', false);
 				}
 			},
-			eventAfterAllRender: function(view) {			
+			eventAfterAllRender: function(view) {
 				$('.fc-event').css('cursor', 'pointer');
 				$('.fc-next-button').attr('class', 'fc-next-button btn btn-primary btn-sm');
 				$('.fc-prev-button').attr('class', 'fc-prev-button btn btn-primary btn-sm');
 				$('.fc-datePicker-button').attr('class', 'fc-datePicker-button btn btn-primary btn-sm');
-                $('.fc-datePicker-button').popover({
-                    placement : 'bottom',
-                    trigger : 'hover',
-                    content : '#i18n{appointment.appointmentApp.calendar}'
-                });
-                $('.fc-next-button').popover({
-                    placement : 'bottom',
-                    trigger : 'hover',
-                    content : function() {
-                        var message = '#i18n{appointment.appointmentApp.nextWeek}';
-                        if ($(window).width() < 1050){
-                            message = '#i18n{appointment.appointmentApp.nextDay}'
-                        }
-                        return message;
-                    }
-                });
-                $('.fc-prev-button').popover({
-                    placement : 'bottom',
-                    trigger : 'hover',
-                    content : function() {
-                        var message = '#i18n{appointment.appointmentApp.previousWeek}';
-                        if ($(window).width() < 1050){
-                           message = '#i18n{appointment.appointmentApp.previousDay}'
-                        }
-                        return message;
-                    }
-                });
+				// Initialize popovers
+				document.querySelectorAll('.fc-datePicker-button').forEach(function (element) {
+					new bootstrap.Popover(element, {
+						placement: 'bottom',
+						trigger: 'hover',
+						content: '#i18n{appointment.appointmentApp.calendar}'
+					});
+				});
+
+				document.querySelectorAll('.fc-next-button').forEach(function (element) {
+					new bootstrap.Popover(element, {
+						placement: 'bottom',
+						trigger: 'hover',
+						content: function () {
+							var message = '#i18n{appointment.appointmentApp.nextWeek}';
+							if (window.innerWidth < 1050) {
+								message = '#i18n{appointment.appointmentApp.nextDay}';
+							}
+							return message;
+						}
+					});
+				});
+
+				document.querySelectorAll('.fc-prev-button').forEach(function (element) {
+					new bootstrap.Popover(element, {
+						placement: 'bottom',
+						trigger: 'hover',
+						content: function () {
+							var message = '#i18n{appointment.appointmentApp.previousWeek}';
+							if (window.innerWidth < 1050) {
+								message = '#i18n{appointment.appointmentApp.previousDay}';
+							}
+							return message;
+						}
+					});
+				});
+
 			},
 			windowResize: function(view) {
 			        if ($(window).width() < 1050){
@@ -319,5 +336,5 @@ ${mark_nb_places_to_take_form!}
 			        }
 			},
 		});
-	});      
+	});
 </script>
