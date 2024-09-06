@@ -17,7 +17,7 @@
 <#assign field_max_size=getFieldValueByCode( entry, "max_size")>
 <@formGroup labelFor='attribute${entry.idEntry}' labelKey='${entry.title}' helpKey='${entry.helpMessage!}' mandatory=entry.mandatory class=class>
 	<#assign field_width=getFieldValueByCode( entry, "width")>
-	<@input type='text' name='attribute${entry.idEntry}' id='attribute${entry.idEntry}' inputSize=field_width?number class='${entry.CSSClass!}' value=value />
+	<@input type='text' name='attribute${entry.idEntry}' id='attribute${entry.idEntry}' inputSize=field_width?number  class='${entry.CSSClass!}' value=value  maxlength=field_max_size?number/>
 	<#if list_responses??>
 		<#list list_responses as response>
 			<#if response.entry.idEntry == entry.idEntry && response.entry.error??  && response.entry.error.isDisplayableError>

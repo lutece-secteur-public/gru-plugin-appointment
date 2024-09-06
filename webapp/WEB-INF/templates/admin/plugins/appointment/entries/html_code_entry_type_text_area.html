@@ -1,8 +1,9 @@
 <#macro getTextAreaContent responseContent entry>
 	<#assign field_width=getFieldByCode( entry, "width")>
 	<#assign field_height=getFieldByCode( entry, "height")>
+	<#assign field_max_size=getFieldByCode( entry, "max_size")>
 	<!#-- fieldInLine means use rich text -->
-	<@input type='textarea' name='attribute${entry.idEntry}' id='attribute${entry.idEntry}' cols=field_width.value rows=field_height.value class='${entry.CSSClass!}' richtext=entry.fieldInLine>${responseContent}</@input>
+	<textarea name="attribute${entry.idEntry}" id="attribute${entry.idEntry}" cols="${field_width.value}" rows="${field_height.value}" maxlength="${field_max_size.value}" class="form-control ${entry.CSSClass!}<#if entry.fieldInLine> richtext</#if>" >${responseContent}</textarea>
 </#macro>
 
 <@formGroup labelFor='attribute${entry.idEntry}' labelKey='${entry.title}' helpKey='${entry.helpMessage!}' mandatory=entry.mandatory>
@@ -16,12 +17,12 @@
 		<#assign default=getFieldValueByCode( entry, "text_config")>
 		<@getTextAreaContent responseContent=default entry=entry />
 	</#if>
-	
+
 	<#if list_responses??>
 		<#list list_responses as response>
 			<#if response.entry.idEntry == entry.idEntry && response.entry.error??  && response.entry.error.isDisplayableError>
 				<@alert class='danger' params='style="margin-top:10px;"'>
-					<#assign error = response.entry.error> 
+					<#assign error = response.entry.error>
 					<#if error.mandatoryError>#i18n{appointment.message.mandatory.entry}<#else>${error.errorMessage}</#if>
 				</@alert>
 			</#if>
@@ -33,4 +34,3 @@
 	<#include "/util/editor/editor.html" />
 	<@initEditor />
 </#if>
-		
