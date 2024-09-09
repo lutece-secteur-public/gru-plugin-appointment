@@ -21,7 +21,7 @@
 	<#if list_responses??>
 		<#list list_responses as response>
 			<#if response.entry.idEntry == entry.idEntry && response.entry.error??  && response.entry.error.isDisplayableError>
-				<@alert class='danger' params='style="margin-top:10px;"'>
+				<@alert color='danger' params='style="margin-top:10px;"'>
 					<#assign error = response.entry.error>
 					<#if error.mandatoryError>#i18n{appointment.message.mandatory.entry}<#else>${error.errorMessage}</#if>
 				</@alert>

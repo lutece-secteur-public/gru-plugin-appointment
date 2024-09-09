@@ -35,10 +35,10 @@
 <#if list_responses??>
 <#list list_responses as response>
 	<#if response.entry.idEntry == entry.idEntry && response.entry.error??  && response.entry.error.isDisplayableError>
-		<@alert class='danger'>
+		<@alert color='danger'>
 			<#assign error = response.entry.error>
 			<#if error.mandatoryError>${error.errorMessage}<#else>#i18n{appointment.message.mandatory.entry}</#if>
-		</@alert>	
+		</@alert>
 	</#if>
 </#list>
 </#if>

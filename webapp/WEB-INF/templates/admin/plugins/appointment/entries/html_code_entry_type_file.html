@@ -20,7 +20,7 @@
 	<#if list_responses?? && list_responses?has_content>
 		<#assign response_error = list_responses[0]>
 		<#if response_error.entry.idEntry == entry.idEntry && response_error.entry.error?? && response_error.entry.error.isDisplayableError>
-			<@alert class='danger'>
+			<@alert color='danger'>
 				<#assign error = response_error.entry.error>
 				<#if error.mandatoryError>${error.errorMessage}<#else>#i18n{appointment.message.mandatory.entry}</#if>
 			</@alert>

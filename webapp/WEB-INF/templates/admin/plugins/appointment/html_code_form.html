@@ -12,7 +12,7 @@
 					<@input type='hidden' name='action' value='doValidateForm' />
 					<@input type='hidden' name='id_form' value='${form.idForm}' />
 					<@input type='hidden' name='date_of_display' value='${date_of_display}' />
-					<@input type='hidden' name='session' value='session' />			
+					<@input type='hidden' name='session' value='session' />
 					<fieldset>
 						<legend class="hidden">
 							<#if form.displayTitleFo && form.title != "" >
@@ -22,41 +22,41 @@
 							</#if>
 						</legend>
 						<#if infos?? || errors??>
-							<@messages infos=infos errors=errors />			
+							<@messages infos=infos errors=errors />
 						</#if>
-						<br>				
+						<br>
 						<#if form_errors??>
 							<#list form_errors as form_error>
 								<#if form_error.isDisplayableError>
-								<#list form_errors as form_error>	
+								<#list form_errors as form_error>
 									<#if form_error.isDisplayableError && form_error.errorMessage==listAllErrors[8] >
-										<@alert class='danger'>
+										<@alert color='danger'>
 											${form_error.errorMessage}
 										</@alert>
-									</#if>	
-								</#list>						
+									</#if>
+								</#list>
 								</#if>
 							</#list>
-						</#if>	
-						
+						</#if>
+
 						<#if formMessages.fieldLastNameHelp?? && formMessages.fieldLastNameHelp != ''>
 							<#assign formGroupHelpKey = '${formMessages.fieldLastNameHelp}' />
 						</#if>
 						<#if form_errors??>
-							<#list form_errors as form_error>	
+							<#list form_errors as form_error>
 								<#if form_error.isDisplayableError && form_error.errorMessage==listAllErrors[0]>
 									<#assign formGroupHelpKey = '${form_error.errorMessage}' />
 									<#assign formGroupClass='has-error' />
-								</#if>	
+								</#if>
 							</#list>
 						</#if>
-						
+
 						<@formGroup class='${formGroupClass!}' labelFor='lastname' labelKey='${formMessages.fieldLastNameTitle!}' helpKey='${formGroupHelpKey!}' mandatory=true>
 							<@input type='text' name='lastname' id='lastname' value='${appointment.lastName!}' maxlength=255 />
 						</@formGroup>
 						<#assign formGroupHelpKey = '' />
 						<#assign formGroupClass='' />
-						
+
 						<#if formMessages.fieldFirstNameHelp?? && formMessages.fieldFirstNameHelp != ''>
 							<#assign formGroupHelpKey = '${formMessages.fieldFirstNameHelp}' />
 						</#if>
@@ -97,7 +97,7 @@
 								<#if form_error.isDisplayableError && (form_error.errorMessage == listAllErrors[4] || form_error.errorMessage == listAllErrors[5] )>
 									<#assign formGroupHelpKey = '${form_error.errorMessage}' />
 									<#assign formGroupClass='has-error' />
-								</#if>	
+								</#if>
 							</#list>
 						</#if>
 						<@formGroup class='${formGroupClass!}' labelFor='emailConfirm' labelKey='${formMessages.fieldConfirmationEmail!}' helpKey='${formGroupHelpKey!}' mandatory=form.enableMandatoryEmail! >
@@ -111,14 +111,14 @@
 					    <#elseif nbplaces != 0 >
 					    	<#assign formGroupHelpKey = '${nbplaces!} place(s) maximum' />
 						</#if>
-						<#if form.maxPeoplePerAppointment &gt; 1 || isOverbooking >				
+						<#if form.maxPeoplePerAppointment &gt; 1 || isOverbooking >
 							<#assign formGroupError = '' />
 							<#if form_errors??>
 								<#list form_errors as form_error>
 									<#if form_error.isDisplayableError && (form_error.errorMessage==listAllErrors[6] || form_error.errorMessage == listAllErrors[7]) >
 										<#assign formGroupHelpKey = '${form_error.errorMessage}' />
 										<#assign formGroupClass='has-error' />
-									</#if>	
+									</#if>
 								</#list>
 							</#if>
 							<@formGroup class='${formGroupClass!}' labelFor='nbBookedSeats' labelKey='#i18n{appointment.createAppointmentForm.labelMaxPeoplePerAppointment}' helpKey='${formGroupHelpKey!}' mandatory=true>
@@ -126,7 +126,7 @@
 							</@formGroup>
 						</#if>
 						${str_entry}
-						${addon!} 
+						${addon!}
 						<@formGroup>
 							<@button type='submit' name='save' id='save' buttonIcon='check' title='#i18n{appointment.displayAppointmentForm.labelValidate}' />
 							<#if appointment.idAppointment &gt; 0>
@@ -144,7 +144,7 @@
 <script type="text/javascript">
 	function validateQty(event) {
 		var key = window.event ? event.keyCode : event.which;
-	
+
 	if (event.keyCode == 8 || event.keyCode == 9 || event.keyCode == 46
 	 || event.keyCode == 37 || event.keyCode == 39) {
 		return true;
