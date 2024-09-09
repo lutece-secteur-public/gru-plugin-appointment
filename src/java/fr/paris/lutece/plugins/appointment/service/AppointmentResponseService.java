@@ -42,7 +42,9 @@ import javax.servlet.http.HttpServletRequest;
 
 import fr.paris.lutece.portal.business.file.File;
 import fr.paris.lutece.portal.service.file.FileService;
+import fr.paris.lutece.portal.service.file.FileServiceException;
 import fr.paris.lutece.portal.service.file.IFileStoreServiceProvider;
+import fr.paris.lutece.portal.service.util.AppLogService;
 import org.apache.commons.fileupload.FileItem;
 
 import fr.paris.lutece.plugins.appointment.business.appointment.AppointmentResponseHome;
@@ -58,7 +60,7 @@ import fr.paris.lutece.plugins.genericattributes.service.entrytype.IEntryTypeSer
 
 /**
  * Service Class for the appointment Response
- * 
+ *
  * @author Laurent Payen
  *
  */
@@ -74,7 +76,7 @@ public final class AppointmentResponseService
 
     /**
      * Associate a response to an appointment
-     * 
+     *
      * @param nIdAppointment
      *            the appointment
      * @param nIdResponse
@@ -87,7 +89,7 @@ public final class AppointmentResponseService
 
     /**
      * Remove the responses for the given entry
-     * 
+     *
      * @param nIdEntry
      *            the entry
      */
@@ -98,7 +100,7 @@ public final class AppointmentResponseService
 
     /**
      * Return the list of the responses of the appointment
-     * 
+     *
      * @param nIdAppointment
      *            the appointment id
      * @return the list of the responses
@@ -110,7 +112,7 @@ public final class AppointmentResponseService
 
     /**
      * Return the list of the id of the response of the appointment
-     * 
+     *
      * @param nIdAppointment
      *            the appointment id
      * @return the list of the response id
@@ -122,7 +124,7 @@ public final class AppointmentResponseService
 
     /**
      * Find and build all the response of an appointment
-     * 
+     *
      * @param nIdAppointment
      *            the appointment id
      * @param request
@@ -143,11 +145,23 @@ public final class AppointmentResponseService
             if ( response.getFile( ) != null )
             {
                 IFileStoreServiceProvider fileStoreService = FileService.getInstance( ).getFileStoreServiceProvider( );
-                File file = fileStoreService.getFile( response.getFile( ).getFileKey( ) );
+                File file = null;
+                try
+                {
+                    file = fileStoreService.getFile( response.getFile( ).getFileKey( ) );
+                }
+                catch( FileServiceException e )
+                {
+                    AppLogService.error( "Error get file: " + response.getFile( ).getFileKey( ), e );
+                }
                 response.setFile( file );
                 String strIdEntry = Integer.toString( response.getEntry( ).getIdEntry( ) );
-                FileItem fileItem = new GenAttFileItem( file.getPhysicalFile( ).getValue( ), file.getTitle( ), IEntryTypeService.PREFIX_ATTRIBUTE + strIdEntry,
-                        response.getIdResponse( ) );
+                FileItem fileItem = null;
+                if ( file != null )
+                {
+                    fileItem = new GenAttFileItem( file.getPhysicalFile( ).getValue( ), file.getTitle( ), IEntryTypeService.PREFIX_ATTRIBUTE + strIdEntry,
+                            response.getIdResponse( ) );
+                }
                 AppointmentAsynchronousUploadHandler.getHandler( ).addFileItemToUploadedFilesList( fileItem, IEntryTypeService.PREFIX_ATTRIBUTE + strIdEntry,
                         request );
             }
@@ -158,7 +172,7 @@ public final class AppointmentResponseService
 
     /**
      * Build a map from the list response
-     * 
+     *
      * @param listResponse
      *            the list response
      * @return a map with the nIdEntry as key and the list response for this entry as value
@@ -177,7 +191,7 @@ public final class AppointmentResponseService
 
     /**
      * Remove all the response of an appointment
-     * 
+     *
      * @param nIdAppointment
      *            the id of the appointment
      */
@@ -192,7 +206,7 @@ public final class AppointmentResponseService
 
     /**
      * Remove the response of an appointment
-     * 
+     *
      * @param deleteBoOnly
      * @param nIdAppointment
      *            the id of the appointment
@@ -212,7 +226,7 @@ public final class AppointmentResponseService
 
     /**
      * Remove the updatable Responses of an appointment
-     * 
+     *
      * @param nIdAppointment
      *            The id of the appointment
      * @param deleteBoOnly

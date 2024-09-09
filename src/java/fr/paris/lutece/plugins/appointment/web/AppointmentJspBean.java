@@ -57,6 +57,7 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 import fr.paris.lutece.portal.service.file.FileService;
+import fr.paris.lutece.portal.service.file.FileServiceException;
 import fr.paris.lutece.portal.service.file.IFileStoreServiceProvider;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.ArrayUtils;
@@ -140,9 +141,9 @@ import fr.paris.lutece.util.url.UrlItem;
 
 /**
  * This class provides the user interface to manage Appointment features ( manage, create, modify, remove )
- * 
+ *
  * @author Laurent Payen
- * 
+ *
  */
 @Controller( controllerJsp = "ManageAppointments.jsp", controllerPath = "jsp/admin/plugins/appointment/", right = AppointmentFormJspBean.RIGHT_MANAGEAPPOINTMENTFORM )
 public class AppointmentJspBean extends MVCAdminJspBean
@@ -327,7 +328,7 @@ public class AppointmentJspBean extends MVCAdminJspBean
 
     /**
      * Get the page to manage appointments. Appointments are displayed in a calendar.
-     * 
+     *
      * @param request
      *            The request
      * @return The HTML code to display
@@ -505,7 +506,7 @@ public class AppointmentJspBean extends MVCAdminJspBean
 
     /**
      * Get the page to manage appointments
-     * 
+     *
      * @param request
      *            The request
      * @return The HTML code to display
@@ -649,7 +650,7 @@ public class AppointmentJspBean extends MVCAdminJspBean
 
     /**
      * Manages the removal form of a appointment whose identifier is in the HTTP request
-     * 
+     *
      * @param request
      *            The HTTP request
      * @return the HTML code to confirm
@@ -666,7 +667,7 @@ public class AppointmentJspBean extends MVCAdminJspBean
 
     /**
      * Handles the removal form of a appointment
-     * 
+     *
      * @param request
      *            The HTTP request
      * @return the JSP URL to display the form to manage appointments
@@ -693,7 +694,7 @@ public class AppointmentJspBean extends MVCAdminJspBean
 
     /**
      * Manages the removal form of a appointment whose identifier is in the HTTP request
-     * 
+     *
      * @param request
      *            The HTTP request
      * @return the HTML code to confirm
@@ -710,7 +711,7 @@ public class AppointmentJspBean extends MVCAdminJspBean
 
     /**
      * Handles the removal form of a appointment
-     * 
+     *
      * @param request
      *            The HTTP request
      * @return the JSP URL to display the form to manage appointments
@@ -743,15 +744,17 @@ public class AppointmentJspBean extends MVCAdminJspBean
 
     /**
      * View details of an appointment
-     * 
+     *
      * @param request
      *            The request
      * @return The HTML content to display
      * @throws AccessDeniedException
      *             If the user is not authorized to access this feature
+     * @throws FileServiceException
+     *             If there is an error with the file service
      */
     @View( VIEW_VIEW_APPOINTMENT )
-    public synchronized String getViewAppointment( HttpServletRequest request ) throws AccessDeniedException
+    public synchronized String getViewAppointment( HttpServletRequest request ) throws AccessDeniedException, FileServiceException
     {
         String strIdAppointment = request.getParameter( PARAMETER_ID_APPOINTMENT );
         String strIdForm = request.getParameter( PARAMETER_ID_FORM );
@@ -801,7 +804,16 @@ public class AppointmentJspBean extends MVCAdminJspBean
             if ( response.getFile( ) != null )
             {
                 IFileStoreServiceProvider fileStoreService = FileService.getInstance( ).getFileStoreServiceProvider( );
-                File file = fileStoreService.getFile( response.getFile( ).getFileKey( ) );
+                File file = null;
+                try
+                {
+                    file = fileStoreService.getFile( response.getFile( ).getFileKey( ) );
+                }
+                catch( FileServiceException e )
+                {
+                    AppLogService.error( "Error get file: " + response.getFile( ).getFileKey( ), e );
+                }
+
                 response.setFile( file );
             }
             if ( response.getEntry( ) != null )
@@ -829,7 +841,7 @@ public class AppointmentJspBean extends MVCAdminJspBean
 
     /**
      * Do download a file from an appointment response
-     * 
+     *
      * @param request
      *            The request
      * @param response
@@ -881,7 +893,7 @@ public class AppointmentJspBean extends MVCAdminJspBean
 
     /**
      * Returns the form to create an appointment
-     * 
+     *
      * @param request
      *            The HTTP request
      * @return the HTML code of the appointment form
@@ -1070,7 +1082,7 @@ public class AppointmentJspBean extends MVCAdminJspBean
 
     /**
      * Do validate data entered by a user to fill a form
-     * 
+     *
      * @param request
      *            The request
      * @return The next URL to redirect to
@@ -1157,11 +1169,12 @@ public class AppointmentJspBean extends MVCAdminJspBean
 
     /**
      * Return to the display recap view with the new date selected on the calendar
-     * 
+     *
      * @param request
      *            the request
      * @return to the display recap view
-     * @throws AccessDeniedException
+     * @throws FileServiceException
+     *             If there is an error with the file service
      */
     @View( VIEW_CHANGE_DATE_APPOINTMENT )
     public synchronized String getViewChangeDateAppointment( HttpServletRequest request )
@@ -1244,7 +1257,15 @@ public class AppointmentJspBean extends MVCAdminJspBean
             if ( response.getFile( ) != null )
             {
                 IFileStoreServiceProvider fileStoreService = FileService.getInstance( ).getFileStoreServiceProvider( );
-                File file = fileStoreService.getFile( response.getFile( ).getFileKey( ) );
+                File file = null;
+                try
+                {
+                    file = fileStoreService.getFile( response.getFile( ).getFileKey( ) );
+                }
+                catch( FileServiceException e )
+                {
+                    AppLogService.error( "Error get file: " + response.getFile( ).getFileKey( ), e );
+                }
                 response.setFile( file );
             }
         }
@@ -1257,7 +1278,7 @@ public class AppointmentJspBean extends MVCAdminJspBean
 
     /**
      * Display the recap before validating an appointment
-     * 
+     *
      * @param request
      *            The request
      * @return The HTML content to display or the next URL to redirect to
@@ -1285,7 +1306,7 @@ public class AppointmentJspBean extends MVCAdminJspBean
 
     /**
      * Do save an appointment into the database if it is valid
-     * 
+     *
      * @param request
      *            The request
      * @return The XPage to display
@@ -1352,7 +1373,7 @@ public class AppointmentJspBean extends MVCAdminJspBean
 
     /**
      * Do download a file from an appointment response stored in session and not yet on server fs
-     * 
+     *
      * @param request
      *            The request
      * @param httpResponse
@@ -1413,7 +1434,7 @@ public class AppointmentJspBean extends MVCAdminJspBean
 
     /**
      * Do download a file from an appointment response
-     * 
+     *
      * @param request
      *            The request
      * @param httpResponse
@@ -1421,8 +1442,10 @@ public class AppointmentJspBean extends MVCAdminJspBean
      * @return nothing.
      * @throws AccessDeniedException
      *             If the user is not authorized to access this feature
+     * @throws FileServiceException
+     *             If there is an error with the file service
      */
-    public synchronized String getDownloadFile( HttpServletRequest request, HttpServletResponse httpResponse ) throws AccessDeniedException
+    public synchronized String getDownloadFile( HttpServletRequest request, HttpServletResponse httpResponse ) throws AccessDeniedException, FileServiceException
     {
         String strIdResponse = request.getParameter( PARAMETER_ID_RESPONSE );
 
@@ -1434,8 +1457,15 @@ public class AppointmentJspBean extends MVCAdminJspBean
         int nIdResponse = Integer.parseInt( strIdResponse );
         Response response = ResponseHome.findByPrimaryKey( nIdResponse );
         IFileStoreServiceProvider fileStoreService = FileService.getInstance( ).getFileStoreServiceProvider( );
-        File file = fileStoreService.getFile( response.getFile( ).getFileKey( ) );
-
+        File file = null;
+        try
+        {
+            file = fileStoreService.getFile( response.getFile( ).getFileKey( ) );
+        }
+        catch( FileServiceException e )
+        {
+            AppLogService.error( "Error get file: " + response.getFile( ).getFileKey( ), e );
+        }
         httpResponse.setHeader( "Content-Disposition", "attachment; filename=\"" + file.getTitle( ) + "\";" );
         httpResponse.setHeader( "Content-type", file.getMimeType( ) );
         httpResponse.addHeader( "Content-Encoding", "UTF-8" );
@@ -1479,7 +1509,7 @@ public class AppointmentJspBean extends MVCAdminJspBean
 
     /**
      * Clear uploaded files if needed.
-     * 
+     *
      * @param session
      *            The session of the current user
      */
@@ -1494,7 +1524,7 @@ public class AppointmentJspBean extends MVCAdminJspBean
 
     /**
      * Order the list of the appointment in the result tab with the order by and order asc given
-     * 
+     *
      * @param listAppointmentsDTO
      *            the llist of appointments
      */
@@ -1547,7 +1577,7 @@ public class AppointmentJspBean extends MVCAdminJspBean
 
     /**
      * Get the URL to display the form of a workflow action. If the action has no form, then the user is redirected to the page to execute the workflow action
-     * 
+     *
      * @param request
      *            The request
      * @param strIdAppointment
@@ -1569,7 +1599,7 @@ public class AppointmentJspBean extends MVCAdminJspBean
     /**
      * Get the workflow action form before processing the action. If the action does not need to display any form, then redirect the user to the workflow action
      * processing page.
-     * 
+     *
      * @param request
      *            The request
      * @return The HTML content to display, or the next URL to redirect the user to
@@ -1617,7 +1647,7 @@ public class AppointmentJspBean extends MVCAdminJspBean
 
     /**
      * Do process a workflow action over an appointment
-     * 
+     *
      * @param request
      *            The request
      * @return The next URL to redirect to
@@ -1694,7 +1724,7 @@ public class AppointmentJspBean extends MVCAdminJspBean
 
     /**
      * Do change the status of an appointment
-     * 
+     *
      * @param request
      *            The request
      * @return The next URL to redirect to
@@ -1746,7 +1776,7 @@ public class AppointmentJspBean extends MVCAdminJspBean
 
     /**
      * List of all the available status of an appointment
-     * 
+     *
      * @return the list of the status
      */
     private ReferenceList getListStatus( )

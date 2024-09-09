@@ -55,6 +55,7 @@ import javax.servlet.http.HttpServletRequest;
 
 import fr.paris.lutece.portal.business.file.File;
 import fr.paris.lutece.portal.service.file.FileService;
+import fr.paris.lutece.portal.service.file.FileServiceException;
 import fr.paris.lutece.portal.service.file.IFileStoreServiceProvider;
 import fr.paris.lutece.portal.service.security.SecurityTokenService;
 import org.apache.commons.codec.binary.Base64;
@@ -125,7 +126,7 @@ import fr.paris.lutece.util.url.UrlItem;
 
 /**
  * This class provides a simple implementation of an Appointment XPage (On Front Office)
- * 
+ *
  * @author Laurent Payen
  *
  */
@@ -165,7 +166,7 @@ public class AppointmentApp extends MVCApplication
     private static final String TEMPLATE_HTML_CODE_NB_PLACES_TO_TAKE_FORM = "skin/plugins/appointment/appointment_nb_places_to_take_form.html";
     private static final String TEMPLATE_TASKS_FORM_WORKFLOW = "skin/plugins/appointment/tasks_form_workflow.html";
     private static final String TEMPLATE_ERROR_APPOINTMENT_REFERENCE = "skin/plugins/appointment/error_appointment_reference.html";
-    
+
     // Views
     public static final String VIEW_APPOINTMENT_FORM = "getViewAppointmentForm";
     public static final String VIEW_APPOINTMENT_CALENDAR = "getViewAppointmentCalendar";
@@ -282,7 +283,7 @@ public class AppointmentApp extends MVCApplication
     private static final String MESSAGE_CANCEL_APPOINTMENT_PAGE_TITLE = "appointment.cancelAppointment.pageTitle";
     private static final String MESSAGE_MY_APPOINTMENTS_PAGE_TITLE = "appointment.myAppointments.name";
     private static final String MESSAGE_WF_ACTION_SUCESS = "appointment.wf.action.success";
-    
+
     // Properties
     private static final String PROPERTY_USER_ATTRIBUTE_FIRST_NAME = "appointment.userAttribute.firstName";
     private static final String PROPERTY_USER_ATTRIBUTE_LAST_NAME = "appointment.userAttribute.lastName";
@@ -304,7 +305,7 @@ public class AppointmentApp extends MVCApplication
 
     /**
      * Get the calendar view
-     * 
+     *
      * @param request
      * @return the Xpage
      * @throws AccessDeniedException
@@ -316,7 +317,7 @@ public class AppointmentApp extends MVCApplication
         Map<String, Object> model = getModel( );
         Locale locale = getLocale( request );
         _nNbPlacesToTake = 0;
-        
+
         int nIdForm = Integer.parseInt( request.getParameter( PARAMETER_ID_FORM ) );
         String nbPlacesToTake = request.getParameter( PARAMETER_NB_PLACE_TO_TAKE );
         String refAppointment = request.getParameter( PARAMETER_REF_APPOINTMENT );
@@ -329,7 +330,7 @@ public class AppointmentApp extends MVCApplication
             addError( ERROR_MESSAGE_FORM_NOT_ACTIVE, locale );
             bError = true;
         }
-        
+
         FormMessage formMessages = FormMessageService.findFormMessageByIdForm( nIdForm );
 
         if ( StringUtils.isNotEmpty( refAppointment ) )
@@ -434,7 +435,7 @@ public class AppointmentApp extends MVCApplication
                 _nNbPlacesToTake = 0;
                 listSlots = SlotService.buildListSlot( nIdForm, mapReservationRule, startingDateOfDisplay, endingDateOfDisplay );
             }
-            
+
             if ( _nNbPlacesToTake > Integer.parseInt( _strNbPlacesToTakeLength ) )
             {
             	addError( ERROR_MESSAGE_NB_PLACE_TO_TAKE_TO_BIG, locale );
@@ -595,7 +596,7 @@ public class AppointmentApp extends MVCApplication
 
     /**
      * Get the form appointment view (front office)
-     * 
+     *
      * @param request
      *            the request
      * @return the xpage
@@ -832,7 +833,7 @@ public class AppointmentApp extends MVCApplication
 
     /**
      * Do validate data entered by a user to fill a form
-     * 
+     *
      * @param request
      *            The request
      * @return The next URL to redirect to
@@ -892,7 +893,7 @@ public class AppointmentApp extends MVCApplication
             addError( ERROR_MESSAGE_NB_MAX_APPOINTMENTS_ON_A_PERIOD, locale );
             bErrors = true;
         }
-        
+
         List<AppointmentDTO> listAppointments = new ArrayList<>( );
         if ( _appointmentForm.getEnableMandatoryEmail( )
                 && !AppointmentUtilities.checkNbMaxAppointmentsDefinedOnCategory( _notValidatedAppointment, strEmail, _appointmentForm, listAppointments ) )
@@ -952,7 +953,7 @@ public class AppointmentApp extends MVCApplication
 
     /**
      * Display the recap before validating an appointment
-     * 
+     *
      * @param request
      *            The request
      * @return The HTML content to display or the next URL to redirect to
@@ -1011,7 +1012,7 @@ public class AppointmentApp extends MVCApplication
 
     /**
      * Do save an appointment into the database if it is valid
-     * 
+     *
      * @param request
      *            The request
      * @return The XPage to display
@@ -1105,7 +1106,7 @@ public class AppointmentApp extends MVCApplication
 
     /**
      * Get the page to notify the user that the appointment has been created
-     * 
+     *
      * @param request
      *            The request
      * @return The XPage to display
@@ -1147,7 +1148,7 @@ public class AppointmentApp extends MVCApplication
 
     /**
      * Return to the display recap view with the new date selected on the calendar
-     * 
+     *
      * @param request
      *            the request
      * @return to the display recap view
@@ -1234,7 +1235,15 @@ public class AppointmentApp extends MVCApplication
             if ( response.getFile( ) != null )
             {
                 IFileStoreServiceProvider fileStoreService = FileService.getInstance( ).getFileStoreServiceProvider( );
-                File file = fileStoreService.getFile( response.getFile( ).getFileKey( ) );
+                File file = null;
+                try
+                {
+                    file = fileStoreService.getFile( response.getFile( ).getFileKey( ) );
+                }
+                catch( FileServiceException e )
+                {
+                    AppLogService.error( "Error get file: " + response.getFile( ).getFileKey( ), e );
+                }
                 response.setFile( file );
             }
         }
@@ -1247,7 +1256,7 @@ public class AppointmentApp extends MVCApplication
 
     /**
      * Get the view of all the forms on front office side
-     * 
+     *
      * @param request
      *            the request
      * @return the xpage
@@ -1267,7 +1276,7 @@ public class AppointmentApp extends MVCApplication
 
     /**
      * Get the view for the user who wants to cancel its appointment
-     * 
+     *
      * @param request
      * @return the view
      */
@@ -1324,7 +1333,7 @@ public class AppointmentApp extends MVCApplication
 
     /**
      * Cancel an appointment
-     * 
+     *
      * @param request
      * @return the confirmation view of the appointment cancelled
      */
@@ -1385,7 +1394,7 @@ public class AppointmentApp extends MVCApplication
 
     /**
      * Get the page to confirm that the appointment has been canceled
-     * 
+     *
      * @param request
      *            The request
      * @return The XPage to display
@@ -1411,7 +1420,7 @@ public class AppointmentApp extends MVCApplication
 
     /**
      * Get the page to view the appointments of a user
-     * 
+     *
      * @param request
      *            The request
      * @return The XPage to display
@@ -1434,7 +1443,7 @@ public class AppointmentApp extends MVCApplication
 
     /**
      * Get the HTML content of the my appointment page of a user
-     * 
+     *
      * @param request
      *            The request
      * @param locale
@@ -1481,7 +1490,7 @@ public class AppointmentApp extends MVCApplication
 
     /**
      * Get the HTML content of a user's "My appointments" page
-     * 
+     *
      * @param request
      *            The request
      * @param locale
@@ -1524,13 +1533,11 @@ public class AppointmentApp extends MVCApplication
 
     /**
      * Get the html content of the list of forms
-     * 
-     * @param appointmentFormService
-     *            The service to use
-     * @param strTitle
-     *            The title to display, or null to display the default title.
+     *
      * @param locale
      *            The locale
+     * @param model
+     *            The model
      * @return The HTML content to display
      */
     public static String getFormListHtml( Locale locale, Map<String, Object> model )
@@ -1572,7 +1579,7 @@ public class AppointmentApp extends MVCApplication
     /**
      * Get the workflow action form before processing the action. If the action does not need to display any form, then redirect the user to the workflow action
      * processing page.
-     * 
+     *
      * @param request
      *            The request
      * @return The HTML content to display, or the next URL to redirect the user to
@@ -1621,7 +1628,7 @@ public class AppointmentApp extends MVCApplication
 
     /**
      * Do process a workflow action over an appointment
-     * 
+     *
      * @param request
      *            The request
      * @return The next URL to redirect to
@@ -1714,10 +1721,10 @@ public class AppointmentApp extends MVCApplication
         }
         return getMyAppointments( request );
     }
-    
+
     /**
      * Get the captcha security service
-     * 
+     *
      * @return The captcha security service
      */
     private CaptchaSecurityService getCaptchaService( )
@@ -1732,7 +1739,7 @@ public class AppointmentApp extends MVCApplication
 
     /**
      * Get the URL
-     * 
+     *
      * @param request
      *            Get the URL to cancel an appointment in FO
      * @param appointment
@@ -1750,7 +1757,7 @@ public class AppointmentApp extends MVCApplication
 
     /**
      * Get the URL
-     * 
+     *
      * @param request
      *            Get the URL to cancel an appointment in FO
      * @param appointment
@@ -1768,7 +1775,7 @@ public class AppointmentApp extends MVCApplication
 
     /**
      * Get the URL
-     * 
+     *
      * @param request
      *            Get the URL to report an appointment in FO
      * @param appointment
@@ -1788,7 +1795,7 @@ public class AppointmentApp extends MVCApplication
 
     /**
      * Set the user infos to the appointment DTO
-     * 
+     *
      * @param request
      *            the request
      * @param appointment
@@ -1817,7 +1824,7 @@ public class AppointmentApp extends MVCApplication
 
     /**
      * check if authentication
-     * 
+     *
      * @param form
      *            Form
      * @param request
@@ -1868,7 +1875,7 @@ public class AppointmentApp extends MVCApplication
 
     /**
      * Check if the date are in the validity date display range of the form
-     * 
+     *
      * @param date
      *            the starting date of slot
      * @param locale
