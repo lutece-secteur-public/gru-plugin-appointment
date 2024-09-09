@@ -19,7 +19,7 @@ ${entry.CSSClass!}
 	        <#assign checked = false />
 			<#if list_responses??>
 				<#list list_responses as response>
-				
+
 					<#if response.entry.idEntry == entry.idEntry && response.field??>
 						<#if response.field.idField == field.idField><#assign checked = true /><#break></#if>
 					</#if>
@@ -29,19 +29,19 @@ ${entry.CSSClass!}
 					<#assign checked = true />
 				</#if>
 			</#if>
-			
+
 			<#assign params = 'onclick="${hide} ${disableRequiredFields}"' />
 			<#if field.conditionalQuestions?exists&&field.conditionalQuestions?size!=0>
 				<#assign params = 'onclick="${hide} doDisplay(${field.idField}); changeDisabledStateOfRequiredFields(${field.idField}, false);"' />
 			</#if>
-			
+
 			<#assign radioButtonLabelKey = '' />
 			<#if !field.noDisplayTitle>
 				<#assign radioButtonLabelKey = field.title />
 			</#if>
-				
+
 			<@radioButton labelFor='attribute${entry.idEntry}_${field.idField}' labelKey='${radioButtonLabelKey}' name='attribute${entry.idEntry}' id='attribute${entry.idEntry}_${field.idField}' value='${field.idField}' checked=checked orientation=orientation params=params />
-			
+
 			<#if field.comment?? && field.comment != '' && orientation == 'vertical'>
 				<span class="help-block">${field.comment}"</span>
 			</#if>
@@ -52,7 +52,7 @@ ${entry.CSSClass!}
 <#if list_responses??>
 	<#list list_responses as response>
 		<#if response.entry.idEntry == entry.idEntry && response.entry.error??  && response.entry.error.isDisplayableError>
-			<@alert class='danger'>
+			<@alert color='danger'>
 			<#assign error = response.entry.error>
 				<#if error.mandatoryError>${error.errorMessage}<#else>#i18n{appointment.message.mandatory.entry}</#if>
 			</@alert>
@@ -79,7 +79,7 @@ ${entry.CSSClass!}
 		<#if field.defaultValue && field.conditionalQuestions?exists && field.conditionalQuestions?size != 0>
 			<script type="text/javascript">
 				var baliseId = "div" + ${field.idField};
-				
+
 				if(document.getElementById && document.getElementById(baliseId) != null)
 				{
 					document.getElementById(baliseId).style.visibility='visible';

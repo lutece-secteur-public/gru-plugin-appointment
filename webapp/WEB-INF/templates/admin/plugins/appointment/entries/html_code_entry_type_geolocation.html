@@ -33,13 +33,13 @@
 		<@input type='hidden' name='${entry.idEntry}_y' id='${entry.idEntry}_y' value='' />
 		<@input type='hidden' name='${entry.idEntry}_idAddress' id='${entry.idEntry}_idAddress' value='' />
 	</#if>
-	
+
 	<#if list_responses??>
 	<#assign show_error = 0>
 		<#list list_responses as response>
 			<#if response.entry.idEntry == entry.idEntry && response.entry.error?? && show_error == 0  && response.entry.error.isDisplayableError>
 			<#assign show_error = 1>
-				<@alert class='danger'>
+				<@alert color='danger'>
 					<#assign error = response.entry.error>
 					<#if error.mandatoryError>${error.errorMessage}<#else>#i18n{appointment.message.mandatory.entry}</#if>
 				</@alert>

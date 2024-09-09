@@ -11,15 +11,15 @@ ${entry.CSSClass!}
 		<#else>
 			<#assign orientation = 'vertical' />
 		</#if>
-		
+
 		<#if !field.noDisplayTitle>
 			<#assign labelKey= field.title />
 		</#if>
-		
+
 		<#if field.comment?? && field.comment != ''>
 			<#assign title = field.comment />
 		</#if>
-		
+
 		<#if list_responses??>
 			<#list list_responses as response>
 				<#if response.entry.idEntry == entry.idEntry && response.field??>
@@ -33,31 +33,31 @@ ${entry.CSSClass!}
 				<#assign checked = true />
 			</#if>
 		</#if>
-		
+
 		<#if field.conditionalQuestions?exists&&field.conditionalQuestions?size!=0>
 			<#assign params='onclick="doCheckboxEffect(this.checked,${field.idField});"' />
 		</#if>
 
 		<@checkBox labelKey='${field.title!}' name='attribute${entry.idEntry}' id='attribute${entry.idEntry}_${field.idField}' value='${field.idField}' checked=checked orientation=orientation params=params />
-		
+
 		<#if field.comment?? && field.comment != '' && orientation == 'vertical'>
 			<span class="help-block">${field.comment}"</span>
 		</#if>
 	</#if>
 </#list>
-	
-			
+
+
 		<#if list_responses??>
 			<#list list_responses as response>
 				<#if response.entry.idEntry == entry.idEntry && response.entry.error?? && response.entry.error.isDisplayableError>
-					<@alert class='danger'>
+					<@alert color='danger'>
 					<#assign error = response.entry.error>
 					<#if error.mandatoryError>${error.errorMessage}<#else>#i18n{appointment.message.mandatory.entry}</#if>
 					</@alert>
 				</#if>
 			</#list>
 		</#if>
-		
+
 		<#if str_list_entry_children?exists>${str_list_entry_children}</#if>
 
 	<#if list_responses??>
