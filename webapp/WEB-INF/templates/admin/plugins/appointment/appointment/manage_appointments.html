@@ -3,7 +3,7 @@
     <@columns>
 		<@appointmentTabs tab='filter' form=form context='app' >
 			<@tform name='form' id='form' action='jsp/admin/plugins/appointment/ManageAppointments.jsp'>
-				<@input type='hidden' name='view' value='manageAppointments' />    
+				<@input type='hidden' name='view' value='manageAppointments' />
 				<@input type='hidden' name='id_form' value='${form.idForm}' />
 				<@div align='right' params=' style="margin-bottom: 15px;"'>
 					<@button style='card-control collapse' buttonTargetId='#searchAppointment' title='#i18n{appointment.manageAppointments.labelSearch}' hideTitle=['xs','sm'] buttonIcon='search' size='sm' />
@@ -90,8 +90,8 @@
 							<@alert color='danger' id='error_message'></@alert>
 						</@row>
 						<@formGroup labelKey='&nbsp;' rows=2>
-								<@button name='Search' type='submit' title='#i18n{appointment.manageAppointments.labelSearch}' buttonIcon='search' /> 
-								<@aButton href='jsp/admin/plugins/appointment/ManageAppointments.jsp?view=manageAppointments&id_form=${form.idForm}&reset=\'true\'' title='#i18n{appointment.displayAppointmentForm.labelReset}' name='Reset' buttonIcon='undo' /> 
+								<@button name='Search' type='submit' title='#i18n{appointment.manageAppointments.labelSearch}' buttonIcon='search' />
+								<@aButton href='jsp/admin/plugins/appointment/ManageAppointments.jsp?view=manageAppointments&id_form=${form.idForm}&reset=\'true\'' title='#i18n{appointment.displayAppointmentForm.labelReset}' name='Reset' buttonIcon='undo' />
 						</@formGroup>
 					</@fieldSet>
 				</@div>
@@ -102,7 +102,7 @@
 								<@checkBox name='allcheck' id='allCheck' title='#i18n{appointment.appointmentApp.infos}' />
 							</@th>
 							<@th>
-								#i18n{appointment.manageAppointments.columnLastName} 
+								#i18n{appointment.manageAppointments.columnLastName}
 								<@aButton href='jsp/admin/plugins/appointment/ManageAppointments.jsp?view=manageAppointments&id_form=${form.idForm}&orderBy=last_name&orderAsc=true' buttonIcon='chevron-up' size='sm' color='default' />
 								<@aButton href='jsp/admin/plugins/appointment/ManageAppointments.jsp?view=manageAppointments&id_form=${form.idForm}&orderBy=last_name&orderAsc=false' buttonIcon='chevron-down' size='sm' color='default' />
 							</@th>
@@ -110,33 +110,33 @@
 								#i18n{appointment.manageAppointments.columnFirstName}
 								<@aButton href='jsp/admin/plugins/appointment/ManageAppointments.jsp?view=manageAppointments&id_form=${form.idForm}&orderBy=first_name&orderAsc=true' buttonIcon='chevron-up' size='sm' color='default' />
 								<@aButton href='jsp/admin/plugins/appointment/ManageAppointments.jsp?view=manageAppointments&id_form=${form.idForm}&orderBy=first_name&orderAsc=false' buttonIcon='chevron-down' size='sm' color='default' />
-							</@th>                                
+							</@th>
 							<@th>
-								#i18n{appointment.manageAppointments.columnEmail} 
+								#i18n{appointment.manageAppointments.columnEmail}
 								<@aButton href='jsp/admin/plugins/appointment/ManageAppointments.jsp?view=manageAppointments&id_form=${form.idForm}&orderBy=email&orderAsc=true' buttonIcon='chevron-up' size='sm' color='default' />
 								<@aButton href='jsp/admin/plugins/appointment/ManageAppointments.jsp?view=manageAppointments&id_form=${form.idForm}&orderBy=email&orderAsc=false' buttonIcon='chevron-down' size='sm' color='default' />
-							</@th> 
+							</@th>
 							<@th>
-								#i18n{appointment.manageAppointments.columnPhoneNumber} 
+								#i18n{appointment.manageAppointments.columnPhoneNumber}
 								<@aButton href='jsp/admin/plugins/appointment/ManageAppointments.jsp?view=manageAppointments&id_form=${form.idForm}&orderBy=phone_number&orderAsc=true' buttonIcon='chevron-up' size='sm' color='default' />
 								<@aButton href='jsp/admin/plugins/appointment/ManageAppointments.jsp?view=manageAppointments&id_form=${form.idForm}&orderBy=phone_number&orderAsc=false' buttonIcon='chevron-down' size='sm' color='default' />
-							</@th> 
+							</@th>
 							<@th>
-								#i18n{appointment.manageAppointments.columnNbBookedSeats} 
+								#i18n{appointment.manageAppointments.columnNbBookedSeats}
 								<@aButton href='jsp/admin/plugins/appointment/ManageAppointments.jsp?view=manageAppointments&id_form=${form.idForm}&orderBy=nbBookedSeats&orderAsc=true' buttonIcon='chevron-up' size='sm' color='default' />
 								<@aButton href='jsp/admin/plugins/appointment/ManageAppointments.jsp?view=manageAppointments&id_form=${form.idForm}&orderBy=nbBookedSeats&orderAsc=false' buttonIcon='chevron-down' size='sm' color='default' />
-							</@th> 
+							</@th>
 							<@th>
-								#i18n{appointment.dateAppointment.title} 
+								#i18n{appointment.dateAppointment.title}
 								<@aButton href='jsp/admin/plugins/appointment/ManageAppointments.jsp?view=manageAppointments&id_form=${form.idForm}&orderBy=date_appointment&orderAsc=true' buttonIcon='chevron-up' size='sm' color='default' />
 								<@aButton href='jsp/admin/plugins/appointment/ManageAppointments.jsp?view=manageAppointments&id_form=${form.idForm}&orderBy=date_appointment&orderAsc=false' buttonIcon='chevron-down' size='sm' color='default' />
 							</@th>
 							<@th>
-								#i18n{appointment.manageAppointments.columnAdmin} 
+								#i18n{appointment.manageAppointments.columnAdmin}
 								<@aButton href='jsp/admin/plugins/appointment/ManageAppointments.jsp?view=manageAppointments&id_form=${form.idForm}&orderBy=admin&orderAsc=true' buttonIcon='chevron-up' size='sm' color='default' />
 								<@aButton href='jsp/admin/plugins/appointment/ManageAppointments.jsp?view=manageAppointments&id_form=${form.idForm}&orderBy=admin&orderAsc=false' buttonIcon='chevron-down' size='sm' color='default' />
 							</@th>
-							<@th>#i18n{appointment.labelStatus} 
+							<@th>#i18n{appointment.labelStatus}
 								<@aButton href='jsp/admin/plugins/appointment/ManageAppointments.jsp?view=manageAppointments&id_form=${form.idForm}&orderBy=status&orderAsc=true' buttonIcon='chevron-up' size='sm' color='default' />
 								<@aButton href='jsp/admin/plugins/appointment/ManageAppointments.jsp?view=manageAppointments&id_form=${form.idForm}&orderBy=status&orderAsc=false' buttonIcon='chevron-down' size='sm' color='default' />
 							</@th>
@@ -145,6 +145,11 @@
 								<@aButton href='jsp/admin/plugins/appointment/ManageAppointments.jsp?view=manageAppointments&id_form=${form.idForm}&orderBy=state&orderAsc=false' buttonIcon='chevron-down' size='sm' color='default' />
 							</@th>
 							<@th>#i18n{portal.util.labelActions}</@th>
+							<@th>
+								#i18n{appointment.manageAppointments.columnDateAppointmentTaken}
+								<@aButton href='jsp/admin/plugins/appointment/ManageAppointments.jsp?view=manageAppointments&id_form=${form.idForm}&orderBy=date_appointment&orderAsc=true' buttonIcon='chevron-up' size='sm' color='default' />
+								<@aButton href='jsp/admin/plugins/appointment/ManageAppointments.jsp?view=manageAppointments&id_form=${form.idForm}&orderBy=date_appointment&orderAsc=false' buttonIcon='chevron-down' size='sm' color='default' />
+							</@th>
 						</@tr>
 						<@tableHeadBodySeparator />
 						<#list appointment_list as appointment >
@@ -165,35 +170,36 @@
 									</#if>
 								</@td>
 								<@td>
-									<#if appointment.state?? && appointment.state.name??> 
+									<#if appointment.state?? && appointment.state.name??>
 										${appointment.state.name!}
 									</#if>
 								</@td>
 								<@td>
-									<#if rightView?? && rightView> 
+									<#if rightView?? && rightView>
 										<@aButton href='jsp/admin/plugins/appointment/ManageAppointments.jsp?view=viewAppointment&id_form=${form.idForm}&id_appointment=${appointment.idAppointment}' title='#i18n{appointment.manageAppointments.labelViewAppointment}' hideTitle=['all'] buttonIcon='eye' size='sm' />
-									</#if> 
-									<#if appointment.listWorkflowActions?? && appointment.listWorkflowActions?size &gt; 0> 
-										<#list appointment.listWorkflowActions as action> 
+									</#if>
+									<#if appointment.listWorkflowActions?? && appointment.listWorkflowActions?size &gt; 0>
+										<#list appointment.listWorkflowActions as action>
 											<@aButton href='jsp/admin/plugins/appointment/ManageAppointments.jsp?view=viewWorkflowActionForm&id_action=${action.id}&amp;id_appointment=${appointment.idAppointment}' size='sm'>
 												<img src="image?resource_type=workflow_icon_img&id=${action.icon.id}"<#if action.icon.width!=-1> width="${action.icon.width}" </#if><#if action.icon.height!=-1> height="${action.icon.height}"</#if>title="${action.name}" alt="${action.name}" />
-											</@aButton> 
+											</@aButton>
 										</#list>
-									</#if> 
-									<#if activateWorkflow == "true" > 
-										<#if rightChangeStatus> 
+									</#if>
+									<#if activateWorkflow == "true" >
+										<#if rightChangeStatus>
 											<#if appointment.isCancelled>
 												<@aButton href='jsp/admin/plugins/appointment/ManageAppointments.jsp?action=doChangeAppointmentStatus&id_appointment=${appointment.idAppointment}&status_cancelled=true' title='#i18n{appointment.manageAppointments.labelValidateAppointment}' hideTitle=['all'] buttonIcon='check' size='sm' />
-											</#if> 
-											<#if !appointment.isCancelled> 
+											</#if>
+											<#if !appointment.isCancelled>
 												<@aButton href='jsp/admin/plugins/appointment/ManageAppointments.jsp?action=doChangeAppointmentStatus&id_appointment=${appointment.idAppointment}&status_cancelled=true' title='#i18n{appointment.labelCancelAppointment}' hideTitle=['all'] buttonIcon='close' size='sm' />
-											</#if> 
-										</#if> 
-									</#if> 
-									<#if rightDelete?? && rightDelete> 
+											</#if>
+										</#if>
+									</#if>
+									<#if rightDelete?? && rightDelete>
 										<@aButton href='jsp/admin/plugins/appointment/ManageAppointments.jsp?action=confirmRemoveAppointment&id_form=${form.idForm}&id_appointment=${appointment.idAppointment}' title='#i18n{portal.util.labelDelete}' hideTitle=['all'] buttonIcon='trash' size='sm' color='danger' />
 									</#if>
 								</@td>
+								<@td>${appointment.formattedDateAppointmentTaken}</@td>
 							</@tr>
 						</#list>
 					</@table>
@@ -248,14 +254,14 @@ $('#endingDateOfSearch').datepicker({
 // Click on validation button events
 $( '[name="Search"]' ).click( function(e){
 	dStart=$('#startingDateOfSearch').val(),dEnd=$('#endingDateOfSearch').val();
-	tStart=$('#startingTimeOfSearch').val(),tEnd=$('#endingTimeOfSearch').val();		
+	tStart=$('#startingTimeOfSearch').val(),tEnd=$('#endingTimeOfSearch').val();
 	var startDateAndTime = moment(dStart + ' ' + tStart, 'YYYY-MM-DD HH:mm');
 	var endDateAndTime = moment(dEnd + ' ' + tEnd, 'YYYY-MM-DD HH:mm');
-	
+
 	if( moment(endDateAndTime).isBefore( startDateAndTime )) {
 		$('#error_message').html('La date de fin ne peut être antérieure à la date de début !');
 		$('#error_messages_container').css('display','block');
 		e.preventDefault();
-	}		
+	}
 });
 </script>

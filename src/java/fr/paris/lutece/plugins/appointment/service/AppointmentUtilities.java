@@ -38,6 +38,7 @@ import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
 import java.time.temporal.WeekFields;
 import java.util.ArrayList;
@@ -94,7 +95,7 @@ import fr.paris.lutece.util.beanvalidation.BeanValidationUtil;
 
 /**
  * Utility class for Appointment Mutualize methods between MVCApplication and MVCAdminJspBean
- * 
+ *
  * @author Laurent Payen
  *
  */
@@ -138,7 +139,7 @@ public final class AppointmentUtilities
 
     /**
      * Check that the email is correct and matches the confirm email
-     * 
+     *
      * @param strEmail
      *            the email
      * @param strConfirmEmail
@@ -177,7 +178,7 @@ public final class AppointmentUtilities
 
     /**
      * Check that the date of the appointment we try to take is not in the past
-     * 
+     *
      * @param appointmentDTO
      *            the appointment
      * @param locale
@@ -198,7 +199,7 @@ public final class AppointmentUtilities
 
     /**
      * Check that the delay between two appointments for the same use has been respected
-     * 
+     *
      * @param appointmentDTO
      *            the appointment
      * @param strEmail
@@ -239,7 +240,7 @@ public final class AppointmentUtilities
 
     /**
      * Check that the delay between two appointments for the same use has been respected
-     * 
+     *
      * @param appointmentDTO
      *            the appointment
      * @param strEmail
@@ -285,7 +286,7 @@ public final class AppointmentUtilities
 
     /**
      * Get the appointment of a user appointment
-     * 
+     *
      * @param strEmail
      *            the user's email
      * @param idAppointment
@@ -322,7 +323,7 @@ public final class AppointmentUtilities
 
     /**
      * Get the slot of a user appointment
-     * 
+     *
      * @param strEmail
      *            the user's email
      * @param idAppointment
@@ -357,7 +358,7 @@ public final class AppointmentUtilities
 
     /**
      * Check that the number of appointments on a defined period is not above the maximum authorized
-     * 
+     *
      * @param appointmentDTO
      *            the appointment
      * @param strEmail
@@ -431,7 +432,7 @@ public final class AppointmentUtilities
 
     /**
      * Check that the number of appointments on a defined category is not above the maximum authorized
-     * 
+     *
      * @param appointmentDTO
      *            the appointment
      * @param strEmail
@@ -472,7 +473,7 @@ public final class AppointmentUtilities
 
     /**
      * Check and validate all the rules for the number of booked seats asked
-     * 
+     *
      * @param strNbBookedSeats
      *            the number of booked seats
      * @param form
@@ -532,7 +533,7 @@ public final class AppointmentUtilities
 
     /**
      * Fill the appoinmentFront DTO with the given parameters
-     * 
+     *
      * @param appointmentDTO
      *            the appointmentFront DTO
      * @param nbBookedSeats
@@ -556,7 +557,7 @@ public final class AppointmentUtilities
 
     /**
      * Validate the form and the additional entries of the form
-     * 
+     *
      * @param appointmentDTO
      *            the appointmentFron DTo to validate
      * @param request
@@ -578,7 +579,7 @@ public final class AppointmentUtilities
                 listFormErrors.add( genAttError );
             }
         }
-        
+
         EntryFilter filter = EntryService.buildEntryFilter( appointmentDTO.getIdForm( ) );
         if ( allEntries )
         {
@@ -607,7 +608,7 @@ public final class AppointmentUtilities
 
     /**
      * Build a list of response of the appointment
-     * 
+     *
      * @param appointment
      *            the appointment
      * @param request
@@ -643,7 +644,7 @@ public final class AppointmentUtilities
 
     /**
      * Attempts to cancel execution of the task.
-     * 
+     *
      * @param request
      *            the request
      * @param idSlot
@@ -669,7 +670,7 @@ public final class AppointmentUtilities
 
     /**
      * Create a timer on a slot
-     * 
+     *
      * @param slot
      *            the slot
      * @param appointmentDTO
@@ -714,7 +715,7 @@ public final class AppointmentUtilities
 
     /**
      * Get Form Permissions
-     * 
+     *
      * @param listForms
      * @param request
      * @return
@@ -748,7 +749,7 @@ public final class AppointmentUtilities
 
     /**
      * Return the min starting time to display
-     * 
+     *
      * @param minStartingTime
      *            the min starting time
      * @return 00 if the minstarting time is under 30, 30 otherwise
@@ -769,7 +770,7 @@ public final class AppointmentUtilities
 
     /**
      * Return the max ending time to display
-     * 
+     *
      * @param maxEndingTime
      *            the max ending time
      * @return 30 if the max ending time is under 30, otherwise the next hour
@@ -790,7 +791,7 @@ public final class AppointmentUtilities
 
     /**
      * Check if there are appointments impacted by the new week definition
-     * 
+     *
      * @param listAppointment
      *            the list of appointments
      * @param nIdForm
@@ -810,7 +811,7 @@ public final class AppointmentUtilities
 
     /**
      * Check if there are appointments impacted by the new week definition
-     * 
+     *
      * @param listAppointment
      *            the list of appointments
      * @param nIdForm
@@ -884,7 +885,7 @@ public final class AppointmentUtilities
 
     /**
      * Check if there are appointments impacted by the new week definition
-     * 
+     *
      * @param listSlotsImpacted
      *            the list of slot impacted
      * @param appointmentForm
@@ -937,7 +938,7 @@ public final class AppointmentUtilities
 
     /**
      * Check if there are appointments impacted by the new week definition
-     * 
+     *
      * @param listSlotsImpacted
      *            the list of slot impacted
      * @param newReservationRule
@@ -975,7 +976,7 @@ public final class AppointmentUtilities
 
     /**
      * Check that there is no validated appointments on a slot
-     * 
+     *
      * @param slot
      *            the slot
      * @return true if there are no validated appointments on this slot, false otherwise
@@ -997,7 +998,7 @@ public final class AppointmentUtilities
 
     /**
      * Return the slots impacted by the modification of this time slot
-     * 
+     *
      * @param timeSlot
      *            the time slot
      * @param nIdForm
@@ -1081,7 +1082,7 @@ public final class AppointmentUtilities
 
     /**
      * return true if all slots are consecutive
-     * 
+     *
      * @param allSlots
      *            the list of slots
      * @return true if all slots are consecutive
@@ -1102,12 +1103,12 @@ public final class AppointmentUtilities
 
     /**
      * Fill the reservation rule object with the corresponding values of an appointmentForm DTO
-     * 
+     *
      * @param reservationRuleDTO
      *            the reservation rule object to fill in
      * @param appointmentForm
      *            the appointmentForm DTO
-     * 
+     *
      */
     public static void fillInReservationRuleAdvancedParam( ReservationRuleDTO reservationRuleDTO, AppointmentFormDTO appointmentForm )
     {
@@ -1125,7 +1126,7 @@ public final class AppointmentUtilities
 
     /**
      * check if one of the weeks in the list is open on the FO calendar
-     * 
+     *
      * @param appointmentFormDTO
      *            the appointment form
      * @param listWeek
@@ -1180,7 +1181,7 @@ public final class AppointmentUtilities
 
     /**
      * Check if list of slot is builded correctly
-     * 
+     *
      * @param nIdForm
      *            the id form
      * @param listSlots
@@ -1235,10 +1236,16 @@ public final class AppointmentUtilities
         }
 
     }
-    
+    /**
+     * Format the date of the appointment taken
+     */
+    public static String getFormattedDateAppointmentTaken( LocalDateTime dateAppointmentTaken ) {
+        return dateAppointmentTaken.format( DateTimeFormatter.ofPattern( "dd/MM/yyyy HH:mm" ) );
+    }
+
     /**
      * Build an appointment dto from an appointment business object
-     * 
+     *
      * @param appointment
      *            the appointment business object
      * @return the appointment DTO
@@ -1247,12 +1254,12 @@ public final class AppointmentUtilities
     {
         AppointmentDTO appointmentDTO = new AppointmentDTO( );
         User user = appointment.getUser();
-        
+
         appointmentDTO.setIdForm( appointment.getSlot( ).get( 0 ).getIdForm( ) );
         appointmentDTO.setIdUser( appointment.getIdUser( ) );
         appointmentDTO.setListAppointmentSlot( appointment.getListAppointmentSlot( ) );
         appointmentDTO.setIdAppointment( appointment.getIdAppointment( ) );
-       
+
         if(user != null) {
 	        appointmentDTO.setFirstName( user.getFirstName( ) );
 	        appointmentDTO.setLastName( user.getLastName( ) );
@@ -1261,10 +1268,10 @@ public final class AppointmentUtilities
 	        appointmentDTO.setGuid( user.getGuid( ) );
 	        appointmentDTO.setReference( appointment.getReference( ) );
         }
-        
+
         LocalDateTime startingDateTime = AppointmentUtilities.getStartingDateTime( appointment );
         LocalDateTime endingDateTime = AppointmentUtilities.getEndingDateTime( appointment );
-        
+
         appointmentDTO.setStartingDateTime( startingDateTime );
         appointmentDTO.setEndingDateTime( endingDateTime );
         appointmentDTO.setDateOfTheAppointment( startingDateTime.toLocalDate( ).format( Utilities.getFormatter( ) ) );
@@ -1275,17 +1282,17 @@ public final class AppointmentUtilities
         appointment.getSlot().forEach(SlotService::addDateAndTimeToSlot);
         appointmentDTO.setSlot( appointment.getSlot( ) );
         appointmentDTO.setUser( appointment.getUser( ) );
- 
+
         appointmentDTO.setAdminUserCreate( appointment.getAdminUserCreate( ) );
         appointmentDTO.setDateAppointmentTaken( appointment.getDateAppointmentTaken( ) );
-       
+
         return appointmentDTO;
     }
 
     /**
      * Set the appointment's phone number values, if a user entered them in a Generic Attributes
      * of type 'Phone Number'. These values are retrieved from the appointment's responses.
-     * 
+     *
      * @param appointment
      *            the appointment to process
      */

@@ -50,7 +50,7 @@ import fr.paris.lutece.portal.service.i18n.I18nService;
 
 /**
  * The DTO for an appointment in front office
- * 
+ *
  * @author Laurent Payen
  *
  */
@@ -155,8 +155,14 @@ public final class AppointmentDTO extends Appointment
     private String _strEmailConfirm;
 
     /**
+     * Date Appointment Taken
+     */
+    private String _strFormattedDateAppointmentTaken;
+
+
+    /**
      * Get the name of the admin user
-     * 
+     *
      * @return the admin user name
      */
     public String getAdminUser( )
@@ -166,8 +172,8 @@ public final class AppointmentDTO extends Appointment
 
     /**
      * Set the name of the admin user
-     * 
-     * @param _strAdminUser
+     *
+     * @param strAdminUser
      *            the admin user name to set
      */
     public void setAdminUser( String strAdminUser )
@@ -177,7 +183,7 @@ public final class AppointmentDTO extends Appointment
 
     /**
      * Get the state of the appointment
-     * 
+     *
      * @return the state of the appointment
      */
     public State getState( )
@@ -187,7 +193,7 @@ public final class AppointmentDTO extends Appointment
 
     /**
      * Set the state of the appointment
-     * 
+     *
      * @param state
      *            the state to set
      */
@@ -198,7 +204,7 @@ public final class AppointmentDTO extends Appointment
 
     /**
      * Get the starting date time of the appointment
-     * 
+     *
      * @return the starting date time
      */
     public LocalDateTime getStartingDateTime( )
@@ -208,7 +214,7 @@ public final class AppointmentDTO extends Appointment
 
     /**
      * Set the starting date time of the appointment
-     * 
+     *
      * @param startingDateTime
      *            the starting date time
      */
@@ -219,7 +225,7 @@ public final class AppointmentDTO extends Appointment
 
     /**
      * Get the ending date time of the appointment
-     * 
+     *
      * @return the ending date time
      */
     public LocalDateTime getEndingDateTime( )
@@ -229,7 +235,7 @@ public final class AppointmentDTO extends Appointment
 
     /**
      * Set the ending date time of the appointment
-     * 
+     *
      * @param endingDateTime
      *            the ending date time
      */
@@ -240,7 +246,7 @@ public final class AppointmentDTO extends Appointment
 
     /**
      * Get the starting time of the appointment
-     * 
+     *
      * @return the starting time
      */
     public LocalTime getStartingTime( )
@@ -250,7 +256,7 @@ public final class AppointmentDTO extends Appointment
 
     /**
      * Set the starting time of the appointment
-     * 
+     *
      * @param startingTime
      *            the starting time to set
      */
@@ -261,7 +267,7 @@ public final class AppointmentDTO extends Appointment
 
     /**
      * Get the ending time of the appointment
-     * 
+     *
      * @return the ending time
      */
     public LocalTime getEndingTime( )
@@ -271,7 +277,7 @@ public final class AppointmentDTO extends Appointment
 
     /**
      * Set the ending time of the appointment
-     * 
+     *
      * @param endingTime
      *            the ending time
      */
@@ -282,7 +288,7 @@ public final class AppointmentDTO extends Appointment
 
     /**
      * Get the date of the appointment
-     * 
+     *
      * @return the date of the appointment
      */
     public String getDateOfTheAppointment( )
@@ -292,7 +298,7 @@ public final class AppointmentDTO extends Appointment
 
     /**
      * Set the date of the appointment
-     * 
+     *
      * @param strDateOfTheAppointment
      *            the date to set
      */
@@ -303,7 +309,7 @@ public final class AppointmentDTO extends Appointment
 
     /**
      * Get the list of the responses of the additional entries of the form
-     * 
+     *
      * @return the list of the responses
      */
     public List<Response> getListResponse( )
@@ -313,7 +319,7 @@ public final class AppointmentDTO extends Appointment
 
     /**
      * Set the list of the responses of the additional entries of the form
-     * 
+     *
      * @param listResponse
      *            the list of the responses to set
      */
@@ -324,7 +330,7 @@ public final class AppointmentDTO extends Appointment
 
     /**
      * Get the form Id
-     * 
+     *
      * @return the form Id
      */
     public int getIdForm( )
@@ -334,7 +340,7 @@ public final class AppointmentDTO extends Appointment
 
     /**
      * Set the Form Id
-     * 
+     *
      * @param nIdForm
      *            the form Id to set
      */
@@ -345,7 +351,7 @@ public final class AppointmentDTO extends Appointment
 
     /**
      * Get the number of booked seats for the appointment
-     * 
+     *
      * @return the number of booked seats
      */
     public int getNbBookedSeats( )
@@ -355,7 +361,7 @@ public final class AppointmentDTO extends Appointment
 
     /**
      * Set the number of booked seats for the appointment
-     * 
+     *
      * @param nNumberOfPlacesReserved
      *            the number to set
      */
@@ -366,7 +372,7 @@ public final class AppointmentDTO extends Appointment
 
     /**
      * Get the maximum number of booked seats the user can take
-     * 
+     *
      * @return the max number of booked seats
      */
     public int getNbMaxPotentialBookedSeats( )
@@ -376,7 +382,7 @@ public final class AppointmentDTO extends Appointment
 
     /**
      * Set the maximum number of booked seats the user can take
-     * 
+     *
      * @param nNbMaxPotentialBookedSeats
      *            the maximum number to set
      */
@@ -387,7 +393,7 @@ public final class AppointmentDTO extends Appointment
 
     /**
      * Get the available actions of the workflow for this appointment
-     * 
+     *
      * @return the actions
      */
     public Collection<Action> getListWorkflowActions( )
@@ -397,7 +403,7 @@ public final class AppointmentDTO extends Appointment
 
     /**
      * Set the available actions of the workflow for this appointment
-     * 
+     *
      * @param listWorkflowActions
      */
     public void setListWorkflowActions( Collection<Action> listWorkflowActions )
@@ -407,7 +413,7 @@ public final class AppointmentDTO extends Appointment
 
     /**
      * Get the map of the responses of the additional entries of the form
-     * 
+     *
      * @return the map of the responses
      */
     public Map<Integer, List<Response>> getMapResponsesByIdEntry( )
@@ -417,7 +423,7 @@ public final class AppointmentDTO extends Appointment
 
     /**
      * Set the map of the responses of the addtional entries of the form to the appointment
-     * 
+     *
      * @param mapResponsesByIdEntry
      *            the map to set
      */
@@ -433,7 +439,7 @@ public final class AppointmentDTO extends Appointment
 
     /**
      * Returns the IsSaved
-     * 
+     *
      * @return The IsSaved
      */
     public boolean getIsSaved( )
@@ -443,7 +449,7 @@ public final class AppointmentDTO extends Appointment
 
     /**
      * Sets the IsSaved
-     * 
+     *
      * @param bIsSaved
      *            The IsSaved
      */
@@ -454,7 +460,7 @@ public final class AppointmentDTO extends Appointment
 
     /**
      * Returns the OverbookingAllowed
-     * 
+     *
      * @return The OverbookingAllowed
      */
     public boolean getOverbookingAllowed( )
@@ -464,7 +470,7 @@ public final class AppointmentDTO extends Appointment
 
     /**
      * Sets the OverbookingAllowed
-     * 
+     *
      * @param bOverbookingAllowed
      *            The OverbookingAllowed
      */
@@ -493,8 +499,25 @@ public final class AppointmentDTO extends Appointment
     }
 
     /**
+     * return the formatted date of the appointment taken
+     */
+    public String getFormattedDateAppointmentTaken() {
+        return _strFormattedDateAppointmentTaken;
+    }
+
+    /**
+     * set the formatted date of the appointment taken
+     * @param strFormattedDateAppointmentTaken
+     *            the formatted date of the appointment taken
+     */
+    public void setFormattedDateAppointmentTaken(String strFormattedDateAppointmentTaken)
+    {
+        this._strFormattedDateAppointmentTaken = strFormattedDateAppointmentTaken;
+    }
+
+    /**
      * Get all the possible errors of the form
-     * 
+     *
      * @param locale
      *            the locale
      * @return a list of all the possible errors of the form
