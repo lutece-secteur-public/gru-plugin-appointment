@@ -521,7 +521,7 @@ public final class EntryService extends RemovalListenerService implements Serial
         StringBuilder strConditionalQuestionStringBuffer = null;
         HtmlTemplate template;
         Entry entry = EntryHome.findByPrimaryKey( nIdEntry );
-        Field disabledField = entry.getFieldByCode( IEntryTypeService.QUESTION_DISABLED );
+        Field disabledField = entry.getFieldByCode( IEntryTypeService.FIELD_DISABLED );
         if ( disabledField != null && !Boolean.parseBoolean( disabledField.getValue( ) ) )
         {
             if ( Boolean.TRUE.equals( entry.getEntryType( ).getGroup( ) ) )
@@ -634,7 +634,7 @@ public final class EntryService extends RemovalListenerService implements Serial
 
         entry.setFields( listField );
 
-        Field disabledField = entry.getFieldByCode( IEntryTypeService.QUESTION_DISABLED );
+        Field disabledField = entry.getFieldByCode( IEntryTypeService.FIELD_DISABLED );
         if ( disabledField != null && !Boolean.parseBoolean( disabledField.getValue( ) ) )
         {
             if ( Boolean.TRUE.equals( entry.getEntryType( ).getGroup( ) ) )
