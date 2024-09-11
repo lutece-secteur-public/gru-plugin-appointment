@@ -72,7 +72,7 @@ import fr.paris.lutece.util.sql.TransactionManager;
 
 /**
  * Service class for an appointment
- * 
+ *
  * @author Laurent Payen
  *
  */
@@ -97,7 +97,7 @@ public final class AppointmentService
 
     /**
      * Find all the appointments of the slots given in parameter
-     * 
+     *
      * @param listSlot
      *            the list of slots
      * @return a list of the appointments on these slots
@@ -111,7 +111,7 @@ public final class AppointmentService
 
     /**
      * Find the appointments of a slot
-     * 
+     *
      * @param nIdSlot
      *            the slot Id
      * @return the appointments of the slot
@@ -123,7 +123,7 @@ public final class AppointmentService
 
     /**
      * Find the appointments of a user
-     * 
+     *
      * @param nIdUser
      *            the user Id
      * @return the appointment of the user
@@ -136,7 +136,7 @@ public final class AppointmentService
 
     /**
      * Find the appointments of a user by guid
-     * 
+     *
      * @param nIdUser
      *            the user guid
      * @return the appointment of the guid
@@ -156,10 +156,10 @@ public final class AppointmentService
 
     /**
      * Find the appointments by form
-     * 
+     *
      * @param nIdForm
      *            the form Id
-     * 
+     *
      * @return the appointments that matches the criteria
      */
     public static List<Appointment> findListAppointmentByIdForm( int nIdForm )
@@ -169,7 +169,7 @@ public final class AppointmentService
 
     /**
      * Build and create in database an appointment from the dto
-     * 
+     *
      * @param appointmentDTO
      *            the appointment dto
      * @param user
@@ -235,7 +235,7 @@ public final class AppointmentService
 
     /**
      * Find an appointment by its primary key
-     * 
+     *
      * @param nIdAppointment
      *            the appointment Id
      * @return the appointment
@@ -247,7 +247,7 @@ public final class AppointmentService
 
     /**
      * Find an appointment by its reference
-     * 
+     *
      * @param strReference
      *            the appointment Reference
      * @return the appointment
@@ -259,7 +259,7 @@ public final class AppointmentService
 
     /**
      * Find a list of appointments matching the filter
-     * 
+     *
      * @param appointmentFilter
      *            the filter
      * @return a list of appointments
@@ -276,7 +276,7 @@ public final class AppointmentService
 
     /**
      * Find a list of appointments by id category and mail
-     * 
+     *
      * @param nIdCategory
      *            the id category
      * @param mail
@@ -295,7 +295,7 @@ public final class AppointmentService
 
     /**
      * Find a list of appointments matching the filter
-     * 
+     *
      * @param appointmentFilter
      * @return a list of appointments
      */
@@ -318,7 +318,7 @@ public final class AppointmentService
 
     /**
      * Build an appointment dto from an appointment business object
-     * 
+     *
      * @param appointment
      *            the appointment business object
      * @return the appointment DTO
@@ -368,12 +368,15 @@ public final class AppointmentService
         }
         appointmentDTO.setAdminUserCreate( appointment.getAdminUserCreate( ) );
         appointmentDTO.setDateAppointmentTaken( appointment.getDateAppointmentTaken( ) );
+        String strFormattedDateAppointmentTaken = AppointmentUtilities.getFormattedDateAppointmentTaken(appointment.getDateAppointmentTaken());
+        appointmentDTO.setFormattedDateAppointmentTaken(strFormattedDateAppointmentTaken);
+
         return appointmentDTO;
     }
 
     /**
      * Fill the appointment data transfer object with complementary appointment responses
-     * 
+     *
      * @param appointmentDto
      *            The appointmentDTO object
      */
@@ -385,7 +388,7 @@ public final class AppointmentService
 
     /**
      * Delete an appointment (and update the number of remaining places of the related slot)
-     * 
+     *
      * @param nIdAppointment
      *            the id of the appointment to delete
      * @throws Exception
@@ -443,7 +446,7 @@ public final class AppointmentService
 
     /**
      * Delete an appointment
-     * 
+     *
      * @param appointment
      *            the appointment to delete
      */
@@ -454,7 +457,7 @@ public final class AppointmentService
 
     /**
      * Build an appointment DTO from the id of an appointment business object
-     * 
+     *
      * @param nIdAppointment
      *            the id of the appointment
      * @return the appointment DTO
@@ -471,7 +474,7 @@ public final class AppointmentService
 
     /**
      * Build an appointment DTO from the reference of an appointment business object
-     * 
+     *
      * @param refAppointment
      *            the reference of the appointment
      * @return the appointment DTO, or null if the appointment wasn't found
@@ -494,7 +497,7 @@ public final class AppointmentService
 
     /**
      * Update an appointment DTO in database
-     * 
+     *
      * @param nIdappointment
      *            the id appointment
      * @param user
@@ -528,7 +531,7 @@ public final class AppointmentService
 
     /**
      * Update an appointment in database
-     * 
+     *
      * @param appointment
      *            the appointment to update
      */
@@ -582,7 +585,7 @@ public final class AppointmentService
 
     /**
      * Save an appointment in database
-     * 
+     *
      * @param appointmentDTO
      *            the appointment dto
      * @return the id of the appointment saved
@@ -596,7 +599,7 @@ public final class AppointmentService
 
     /**
      * Save an appointment in database
-     * 
+     *
      * @param appointmentDTO
      *            the appointment dto
      * @return the id of the appointment saved
