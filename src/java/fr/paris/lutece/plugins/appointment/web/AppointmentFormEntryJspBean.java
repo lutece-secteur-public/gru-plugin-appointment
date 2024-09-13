@@ -733,7 +733,7 @@ public class AppointmentFormEntryJspBean extends MVCAdminJspBean
             Entry entry = EntryHome.findByPrimaryKey( idEntry );
             if ( entry != null )
             {
-                Field disabledField = entry.getFieldByCode( IEntryTypeService.FIELD_DISABLED );
+                Field disabledField = entry.getFieldByCode( IEntryTypeService.QUESTION_DISABLED );
 
                 if ( disabledField != null )
                 {
