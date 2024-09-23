@@ -33,9 +33,11 @@
  */
 package fr.paris.lutece.plugins.appointment.service;
 
+import java.security.SecureRandom;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 import java.util.StringJoiner;
 import java.util.stream.Collectors;
 
@@ -201,9 +203,10 @@ public final class AppointmentService
             appointment = AppointmentHome.create( appointment );
             String strEmailLastNameFirstName = new StringJoiner( StringUtils.SPACE ).add( user.getEmail( ) ).add( CONSTANT_SEPARATOR )
                     .add( user.getLastName( ) ).add( CONSTANT_SEPARATOR ).add( user.getFirstName( ) ).toString( );
-            String strReference = appointment.getIdAppointment( ) + CryptoService
-                    .encrypt( appointment.getIdAppointment( ) + strEmailLastNameFirstName,
-                            AppPropertiesService.getProperty( PROPERTY_REF_ENCRYPTION_ALGORITHM, CONSTANT_SHA256 ) )
+
+            String strReference = ( appointment.getIdAppointment( ) + CryptoService.encrypt(
+                    appointment.getIdAppointment( ) + strEmailLastNameFirstName + getSalt( ),
+                    AppPropertiesService.getProperty( PROPERTY_REF_ENCRYPTION_ALGORITHM, CONSTANT_SHA256 ) ) )
                     .substring( 0, AppPropertiesService.getPropertyInt( PROPERTY_REF_SIZE_RANDOM_PART, CONSTANT_REF_SIZE_RANDOM_PART ) );
 
             Form form = FormService.findFormLightByPrimaryKey( appointmentDTO.getIdForm( ) );
@@ -220,6 +223,14 @@ public final class AppointmentService
 
         }
         return appointment;
+    }
+
+    private static String getSalt( )
+    {
+        Random random = new SecureRandom( );
+        byte[] bytes = new byte[32];
+        random.nextBytes( bytes );
+        return bytes.toString( );
     }
 
     /**
