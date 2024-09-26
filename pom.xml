@@ -15,7 +15,7 @@
     <properties>  
         <componentName>appointment</componentName>
         <core.version>[7.0.10,)</core.version>    
-        <genericattributes.version>[2.4.5-SNAPSHOT,)</genericattributes.version>
+        <genericattributes.version>[2.4.6-SNAPSHOT,)</genericattributes.version>
         <jiraComponentId>12273</jiraComponentId>
         <jiraProjectName>RENDEZVOUS</jiraProjectName>
     </properties>

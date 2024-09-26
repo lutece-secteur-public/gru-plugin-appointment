@@ -56,7 +56,9 @@ import fr.paris.lutece.plugins.genericattributes.business.FieldHome;
 import fr.paris.lutece.plugins.genericattributes.business.GenAttFileItem;
 import fr.paris.lutece.plugins.genericattributes.business.Response;
 import fr.paris.lutece.plugins.genericattributes.business.ResponseHome;
+import fr.paris.lutece.plugins.genericattributes.service.entrytype.AbstractEntryTypeFile;
 import fr.paris.lutece.plugins.genericattributes.service.entrytype.IEntryTypeService;
+import fr.paris.lutece.plugins.genericattributes.service.file.GenericAttributeFileService;
 
 /**
  * Service Class for the appointment Response
@@ -144,23 +146,16 @@ public final class AppointmentResponseService
             }
             if ( response.getFile( ) != null )
             {
-                IFileStoreServiceProvider fileStoreService = FileService.getInstance( ).getFileStoreServiceProvider( );
-                File file = null;
-                try
-                {
-                    file = fileStoreService.getFile( response.getFile( ).getFileKey( ) );
-                }
-                catch( FileServiceException e )
-                {
-                    AppLogService.error( "Error get file: " + response.getFile( ).getFileKey( ), e );
-                }
+                // load from default generic attribute file service
+                 File file = GenericAttributeFileService.getInstance().load( response.getFile( ).getFileKey( ), null);
+
                 response.setFile( file );
                 String strIdEntry = Integer.toString( response.getEntry( ).getIdEntry( ) );
                 FileItem fileItem = null;
                 if ( file != null )
                 {
                     fileItem = new GenAttFileItem( file.getPhysicalFile( ).getValue( ), file.getTitle( ), IEntryTypeService.PREFIX_ATTRIBUTE + strIdEntry,
-                            response.getIdResponse( ) );
+                            response.getIdResponse( ), GenericAttributeFileService.getInstance().getFileStoreProviderName()  );
                 }
                 AppointmentAsynchronousUploadHandler.getHandler( ).addFileItemToUploadedFilesList( fileItem, IEntryTypeService.PREFIX_ATTRIBUTE + strIdEntry,
                         request );

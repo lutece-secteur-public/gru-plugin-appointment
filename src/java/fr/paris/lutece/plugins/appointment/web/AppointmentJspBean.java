@@ -56,9 +56,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
-import fr.paris.lutece.portal.service.file.FileService;
-import fr.paris.lutece.portal.service.file.FileServiceException;
-import fr.paris.lutece.portal.service.file.IFileStoreServiceProvider;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -104,6 +101,7 @@ import fr.paris.lutece.plugins.genericattributes.business.EntryHome;
 import fr.paris.lutece.plugins.genericattributes.business.GenericAttributeError;
 import fr.paris.lutece.plugins.genericattributes.business.Response;
 import fr.paris.lutece.plugins.genericattributes.business.ResponseHome;
+import fr.paris.lutece.plugins.genericattributes.service.file.GenericAttributeFileService;
 import fr.paris.lutece.plugins.workflowcore.business.state.State;
 import fr.paris.lutece.plugins.workflowcore.business.state.StateFilter;
 import fr.paris.lutece.plugins.workflowcore.service.state.StateService;
@@ -754,7 +752,7 @@ public class AppointmentJspBean extends MVCAdminJspBean
      *             If there is an error with the file service
      */
     @View( VIEW_VIEW_APPOINTMENT )
-    public synchronized String getViewAppointment( HttpServletRequest request ) throws AccessDeniedException, FileServiceException
+    public synchronized String getViewAppointment( HttpServletRequest request ) throws AccessDeniedException
     {
         String strIdAppointment = request.getParameter( PARAMETER_ID_APPOINTMENT );
         String strIdForm = request.getParameter( PARAMETER_ID_FORM );
@@ -803,16 +801,9 @@ public class AppointmentJspBean extends MVCAdminJspBean
         {
             if ( response.getFile( ) != null )
             {
-                IFileStoreServiceProvider fileStoreService = FileService.getInstance( ).getFileStoreServiceProvider( );
-                File file = null;
-                try
-                {
-                    file = fileStoreService.getFile( response.getFile( ).getFileKey( ) );
-                }
-                catch( FileServiceException e )
-                {
-                    AppLogService.error( "Error get file: " + response.getFile( ).getFileKey( ), e );
-                }
+            	// load from default generic attribute file service
+            	File file = GenericAttributeFileService.getInstance().load( response.getFile( ).getFileKey( ), null);
+
 
                 response.setFile( file );
             }
@@ -1256,16 +1247,9 @@ public class AppointmentJspBean extends MVCAdminJspBean
         {
             if ( response.getFile( ) != null )
             {
-                IFileStoreServiceProvider fileStoreService = FileService.getInstance( ).getFileStoreServiceProvider( );
-                File file = null;
-                try
-                {
-                    file = fileStoreService.getFile( response.getFile( ).getFileKey( ) );
-                }
-                catch( FileServiceException e )
-                {
-                    AppLogService.error( "Error get file: " + response.getFile( ).getFileKey( ), e );
-                }
+            	// load from default generic attribute file service
+            	File file = GenericAttributeFileService.getInstance().load( response.getFile( ).getFileKey( ), null);
+
                 response.setFile( file );
             }
         }
@@ -1445,7 +1429,7 @@ public class AppointmentJspBean extends MVCAdminJspBean
      * @throws FileServiceException
      *             If there is an error with the file service
      */
-    public synchronized String getDownloadFile( HttpServletRequest request, HttpServletResponse httpResponse ) throws AccessDeniedException, FileServiceException
+    public synchronized String getDownloadFile( HttpServletRequest request, HttpServletResponse httpResponse ) throws AccessDeniedException
     {
         String strIdResponse = request.getParameter( PARAMETER_ID_RESPONSE );
 
@@ -1456,16 +1440,10 @@ public class AppointmentJspBean extends MVCAdminJspBean
 
         int nIdResponse = Integer.parseInt( strIdResponse );
         Response response = ResponseHome.findByPrimaryKey( nIdResponse );
-        IFileStoreServiceProvider fileStoreService = FileService.getInstance( ).getFileStoreServiceProvider( );
-        File file = null;
-        try
-        {
-            file = fileStoreService.getFile( response.getFile( ).getFileKey( ) );
-        }
-        catch( FileServiceException e )
-        {
-            AppLogService.error( "Error get file: " + response.getFile( ).getFileKey( ), e );
-        }
+        
+        // load from default generic attribute file service
+    	File file = GenericAttributeFileService.getInstance().load( response.getFile( ).getFileKey( ), null);
+
         httpResponse.setHeader( "Content-Disposition", "attachment; filename=\"" + file.getTitle( ) + "\";" );
         httpResponse.setHeader( "Content-type", file.getMimeType( ) );
         httpResponse.addHeader( "Content-Encoding", "UTF-8" );

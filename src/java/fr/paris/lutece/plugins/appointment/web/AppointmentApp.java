@@ -54,9 +54,6 @@ import java.util.stream.Stream;
 import javax.servlet.http.HttpServletRequest;
 
 import fr.paris.lutece.portal.business.file.File;
-import fr.paris.lutece.portal.service.file.FileService;
-import fr.paris.lutece.portal.service.file.FileServiceException;
-import fr.paris.lutece.portal.service.file.IFileStoreServiceProvider;
 import fr.paris.lutece.portal.service.security.SecurityTokenService;
 import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.collections.CollectionUtils;
@@ -95,6 +92,7 @@ import fr.paris.lutece.plugins.appointment.web.dto.AppointmentFormDTO;
 import fr.paris.lutece.plugins.genericattributes.business.Entry;
 import fr.paris.lutece.plugins.genericattributes.business.GenericAttributeError;
 import fr.paris.lutece.plugins.genericattributes.business.Response;
+import fr.paris.lutece.plugins.genericattributes.service.file.GenericAttributeFileService;
 import fr.paris.lutece.plugins.workflowcore.service.task.ITask;
 import fr.paris.lutece.plugins.workflowcore.service.task.ITaskService;
 import fr.paris.lutece.plugins.workflowcore.service.task.TaskService;
@@ -1234,16 +1232,9 @@ public class AppointmentApp extends MVCApplication
         {
             if ( response.getFile( ) != null )
             {
-                IFileStoreServiceProvider fileStoreService = FileService.getInstance( ).getFileStoreServiceProvider( );
-                File file = null;
-                try
-                {
-                    file = fileStoreService.getFile( response.getFile( ).getFileKey( ) );
-                }
-                catch( FileServiceException e )
-                {
-                    AppLogService.error( "Error get file: " + response.getFile( ).getFileKey( ), e );
-                }
+            	// load from default generic attribute file service
+            	File file = GenericAttributeFileService.getInstance().load( response.getFile( ).getFileKey( ), null);
+
                 response.setFile( file );
             }
         }
