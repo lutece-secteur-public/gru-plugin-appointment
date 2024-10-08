@@ -113,7 +113,7 @@
 										<#if !entry.entryType.group && !entry.entryType.myLuteceUser>
 											<@aButton href='jsp/admin/plugins/appointment/ManageAppointmentFormEntries.jsp?action=doCopyEntry&id_entry=${entry.idEntry}#list' title='#i18n{appointment.createEntry.manageField.titleCopy}' hideTitle=['all'] buttonIcon='copy' size='sm' />
 										</#if>
-										<#if !entry.entryType.group && !entry.entryType.myLuteceUser>
+										<#if !entry.entryType.group>
 											<#assign field_disabled=getFieldValueByCode( entry, "disabled")>
 											<#if entry.disabled>
 												<@aButton href='jsp/admin/plugins/appointment/ManageAppointmentFormEntries.jsp?action=doChangeDisabled&id_form=${appointmentform.idForm}&id_entry=${entry.idEntry}#list' title='#i18n{appointment.createEntry.manageField.titleEnable}' hideTitle=['all']  color='success' buttonIcon='play' size='sm' />
