@@ -62,7 +62,7 @@ input[type="color"]:hover{
     background-color: #DDD !important;
     border-radius: 50% !important;
     padding: 2px !important;
-} 
+}
 
 /* Form */
 .viewTextarea{
@@ -101,4 +101,4 @@ input[type="color"]:hover{
 .appointment-list-group .group td{ vertical-align: baseline }
 
 #sticky-container{ min-height: 450vh; }
-#info-right{ position: -webkit-sticky;	position: sticky; top: 60px }
+#info-right{ position: sticky; top: 60px }

@@ -136,7 +136,10 @@
 					<@ul class='list-group' id='info-right'>
 						<#list entry_type_list as entry>
 							<@li>
-								<@aButton href='jsp/admin/plugins/appointment/ManageAppointmentFormEntries.jsp?view=getCreateEntry&id_form=${appointmentform.idForm}&id_type=${entry.idType}' buttonIcon='${entry.iconName}' title='${entry.title}' class='btn btn-add-entry' style='btn-block' color='primary' />
+								<@aButton href='jsp/admin/plugins/appointment/ManageAppointmentFormEntries.jsp?view=getCreateEntry&id_form=${appointmentform.idForm}&id_type=${entry.idType}'
+									buttonIcon='${entry.iconName}'
+									title='${entry.title}'
+									class='btn btn-primary btn-sm mb-2' />
 							</@li>
                         </#list>
                     </@ul>
