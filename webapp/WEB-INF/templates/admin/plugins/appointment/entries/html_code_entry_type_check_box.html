@@ -88,3 +88,12 @@ ${entry.CSSClass!}
 		</#list>
 	</#if>
 </@formGroup>
+<script type="text/javascript">
+	document.addEventListener('DOMContentLoaded', function () {
+		document.querySelectorAll('.form-check-input').forEach(cb => {
+			cb.addEventListener('change', function () {
+				doCheckboxEffect(cb.checked, cb.value);
+			});
+		});
+	});
+</script>
