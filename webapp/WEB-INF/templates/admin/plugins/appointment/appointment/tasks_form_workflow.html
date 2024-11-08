@@ -1,3 +1,5 @@
+<#include "/admin/plugins/asynchronousupload/upload_commons.html" />
+
 <@row>
 	<@columns>
 <!-- 		<form class="form-horizontal" action="jsp/admin/plugins/appointment/DoSaveTasksFormWorkflow.jsp?plugin_name=directory" method="post" name="" id=""  enctype="multipart/form-data" > -->
@@ -16,3 +18,9 @@
 		    </@tform>
 	</@columns>
  </@row>
+
+<@addRequiredJsFiles />
+
+<script src="themes/shared/plugins/appointment/js/appointment.js" ></script>
+<script src="js/admin/plugins/appointment/appointment.js" ></script>
+<script src="jsp/admin/plugins/asynchronousupload/GetMainUploadJs.jsp?handler=appointmentAsynchronousUploadHandler" ></script>
