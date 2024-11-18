@@ -69,7 +69,7 @@ import fr.paris.lutece.util.url.UrlItem;
 
 /**
  * Service to manage entries
- * 
+ *
  * @author Laurent Payen
  *
  */
@@ -101,7 +101,7 @@ public final class EntryService extends RemovalListenerService implements Serial
 
     /**
      * Get an instance of the service
-     * 
+     *
      * @return An instance of the service
      */
     public static EntryService getService( )
@@ -111,7 +111,7 @@ public final class EntryService extends RemovalListenerService implements Serial
 
     /**
      * Build an entry filter with static parameter
-     * 
+     *
      * @param nIdForm
      *            the Form Id
      * @return the entry filter
@@ -130,7 +130,7 @@ public final class EntryService extends RemovalListenerService implements Serial
 
     /**
      * Change the attribute's order to a greater one (move down in the list)
-     * 
+     *
      * @param nOrderToSet
      *            the new order for the attribute
      * @param entryToChangeOrder
@@ -235,7 +235,7 @@ public final class EntryService extends RemovalListenerService implements Serial
 
     /**
      * Change the attribute's order to a lower one (move up in the list)
-     * 
+     *
      * @param nOrderToSet
      *            the new order for the attribute
      * @param entryToChangeOrder
@@ -319,7 +319,7 @@ public final class EntryService extends RemovalListenerService implements Serial
 
     /**
      * Move EntryToMove into entryGroup
-     * 
+     *
      * @param entryToMove
      *            the entry which will be moved
      * @param entryGroup
@@ -356,7 +356,7 @@ public final class EntryService extends RemovalListenerService implements Serial
 
     /**
      * Remove an entry from a group
-     * 
+     *
      * @param entryToMove
      *            the entry to remove from a group
      */
@@ -373,7 +373,7 @@ public final class EntryService extends RemovalListenerService implements Serial
 
     /**
      * Init the list of the attribute's orders (first level only)
-     * 
+     *
      * @param listEntryFirstLevel
      *            the list of all the attributes of the first level
      * @param orderFirstLevel
@@ -389,7 +389,7 @@ public final class EntryService extends RemovalListenerService implements Serial
 
     /**
      * Remove every entries associated with a given appointment form
-     * 
+     *
      * @param nIdForm
      *            The id of the appointment to remove entries of
      */
@@ -411,7 +411,7 @@ public final class EntryService extends RemovalListenerService implements Serial
 
     /**
      * Add the entries to the model
-     * 
+     *
      * @param nIdForm
      *            The form Id
      * @param model
@@ -455,7 +455,7 @@ public final class EntryService extends RemovalListenerService implements Serial
 
     /**
      * Find all the entries (with its fields) of a form
-     * 
+     *
      * @param nIdForm
      *            the form Id
      * @return a list of all the entries
@@ -479,7 +479,7 @@ public final class EntryService extends RemovalListenerService implements Serial
 
     /**
      * Get the reference list of groups
-     * 
+     *
      * @param nIdForm
      *            the id of the appointment form
      * @return The reference list of groups of the given form
@@ -501,7 +501,7 @@ public final class EntryService extends RemovalListenerService implements Serial
 
     /**
      * Get the html part of the additional Entry of the form
-     * 
+     *
      * @param model
      *            The Map to fill with the additional entry's content
      * @param nIdEntry
@@ -548,13 +548,19 @@ public final class EntryService extends RemovalListenerService implements Serial
                         StringBuilder strGroupStringBuffer = new StringBuilder( );
                         for ( Entry entryConditional : field.getConditionalQuestions( ) )
                         {
-                            getHtmlEntry( model, entryConditional.getIdEntry( ), strGroupStringBuffer, locale, bDisplayFront, appointmentDTO );
+                            if (entryConditional.getFieldDepend() != null && entryConditional.getFieldDepend().getIdField() == field.getIdField())
+                            {
+                                getHtmlEntry( model, entryConditional.getIdEntry( ), strGroupStringBuffer, locale, bDisplayFront, appointmentDTO );
+                            }
                         }
                         model.put( MARK_STR_LIST_CHILDREN, strGroupStringBuffer.toString( ) );
                         model.put( MARK_FIELD, field );
                         String templateDivConditionalEntry = bDisplayFront ? TEMPLATE_DIV_CONDITIONAL_ENTRY_FO : TEMPLATE_DIV_CONDITIONAL_ENTRY_BO;
                         template = AppTemplateService.getTemplate( templateDivConditionalEntry, locale, model );
                         strConditionalQuestionStringBuffer.append( template.getHtml( ) );
+
+                        // Clear child entries to prevent reuse
+                        model.remove( MARK_STR_LIST_CHILDREN );
                     }
                 }
                 model.put( MARK_STR_LIST_CHILDREN, strConditionalQuestionStringBuffer.toString( ) );
@@ -575,14 +581,14 @@ public final class EntryService extends RemovalListenerService implements Serial
             }
             template = AppTemplateService.getTemplate( entryTypeService.getTemplateHtmlForm( entry, bDisplayFront ), locale, model );
             stringBuffer.append( template.getHtml( ) );
-            
+
             model.remove( MARK_STR_LIST_CHILDREN );
         }
     }
 
     /**
      * Add to the map of the appointment the response of the additional entry of the form
-     * 
+     *
      * @param request
      *            the Request
      * @param nIdEntry
@@ -603,7 +609,7 @@ public final class EntryService extends RemovalListenerService implements Serial
 
     /**
      * Add to the map of the appointment the response of the additional entry of the form
-     * 
+     *
      * @param request
      *            the request
      * @param nIdEntry
@@ -697,7 +703,7 @@ public final class EntryService extends RemovalListenerService implements Serial
 
     /**
      * Tell if the id of the field given is in the response list
-     * 
+     *
      * @param nIdField
      *            the id of the field
      * @param listResponse
@@ -719,7 +725,7 @@ public final class EntryService extends RemovalListenerService implements Serial
 
     /**
      * Add parameters to the url with the entry given
-     * 
+     *
      * @param entry
      *            the entry
      * @return the url
@@ -741,7 +747,7 @@ public final class EntryService extends RemovalListenerService implements Serial
 
     /**
      * Get the list of entries filtered
-     * 
+     *
      * @param iform
      *            the form id
      * @param bDisplayFront
@@ -764,7 +770,7 @@ public final class EntryService extends RemovalListenerService implements Serial
 
     /**
      * Create a new Entry element with a specific EntryType
-     * 
+     *
      * @param nIdType
      *            The ID of the EntryType assigned to the created Entry
      * @return the new Entry Object
@@ -779,7 +785,7 @@ public final class EntryService extends RemovalListenerService implements Serial
 
     /**
      * Build the HTML content of a Group EntryType and its children
-     * 
+     *
      * @param entry
      *            The EntryType of type 'Group'
      * @param model
