@@ -185,6 +185,8 @@ $(function() {
         ]
     });
 
+    if( document.getElementById('loader') != undefined ){ document.getElementById('loader').remove() };
+
     $('#event-modal #delete').click(function( em ) {
         $('#event-modal input[name="action"]').val( 'doUnssignWeek' );
     })
