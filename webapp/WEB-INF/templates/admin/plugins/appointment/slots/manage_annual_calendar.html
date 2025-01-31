@@ -64,7 +64,7 @@
 <script src="js/admin/plugins/appointment/locale-all.js"></script>
 <script src="js/admin/plugins/appointment/bootstrap-datetimepicker.min.js"></script>
 <script src="js/admin/plugins/appointment/js-year-calendar.min.js"></script>
-<script src="js/admin/plugins/appointment/locales/js-year-calendar.fr.js"></script>
+<script src="js/admin/plugins/appointment/locales/js-year-calendar.${language}.js"></script>
 <script>
 moment.locale( '${language}' );
 function isOlderThanToday( dtCompare ) {    
@@ -111,11 +111,11 @@ $(function() {
         enableRangeSelection: true,
         contextMenuItems:[
             {
-                text: 'Modifier',
+                text: '#i18n{appointment.createEntry.manageField.buttonItemsPerPage}',
                 click: editEvent
             },
             {
-                text: 'Supprimer',
+                text: '#i18n{appointment.delete.title}',
                 click: deleteEvent
             }
         ],

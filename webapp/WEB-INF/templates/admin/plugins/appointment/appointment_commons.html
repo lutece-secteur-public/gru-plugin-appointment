@@ -1,4 +1,4 @@
-<#macro commonsAppJS>
+<#macro commonsAppJS >
 <!--  CSS admin -->
 <link rel="stylesheet" href="css/admin/plugins/appointment/bootstrap-datepicker.css" >
 <link rel="stylesheet" href="css/admin/plugins/appointment/bootstrap-datetimepicker.css" >
@@ -358,7 +358,7 @@ $(function(){
 	<#if isDeskInstalled?? && isDeskInstalled><@tabLink href='jsp/admin/plugins/appointment/modules/desk/ManageAppointmentDesks.jsp?plugin_name=appointment-desk&id_form=${form.idForm}&context=app' title='#i18n{appointment.specificDay.pageTitle}' active=true params=tabparams/></#if>
 </#if>
 </#macro>
-<#macro appointmentTabs tab form context>
+<#macro appointmentTabs tab form context >
 <@commonsAppJS />
 <@row id='${tab}-tab'>
 	<@columns>
@@ -477,7 +477,7 @@ $( function(){
 					$btnCustom.after('<input type="text" id="hiddenDate" class="datepicker">');
 					$( '#hiddenDate' ).datepicker({
 						showOn: "button",
-						language:'fr',
+						language:'${locale}',
 						autoclose: true,
 						orientation: "bottom"
 					});
