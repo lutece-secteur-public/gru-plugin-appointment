@@ -105,7 +105,7 @@ var specDates = [<#list specificSlotDates as sDate>'${sDate}',</#list>];
 var popover = null;
 $(function() {
     calendar = new Calendar('#calendar', { 
-        language: 'fr',
+        language: '${language}',
         startYear: ${start_year},
         enableContextMenu: true,
         enableRangeSelection: true,

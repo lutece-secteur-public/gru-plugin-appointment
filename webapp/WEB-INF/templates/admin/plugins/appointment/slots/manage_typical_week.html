@@ -251,7 +251,7 @@ var defaultDate = moment();
 var startingDateOfDisplay = moment().subtract(1, 'year');
 var endingDateOfDisplay = moment().add(1, 'year');
 
-<@fullCalendarScript isTypical=true showComments=false locale='fr'>
+<@fullCalendarScript isTypical=true showComments=false locale='${language}'>
 $('#date_of_modification').datepicker({
     language: "${language}",
     startDate: new Date(),
