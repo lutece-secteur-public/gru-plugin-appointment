@@ -1,3 +1,28 @@
+document.addEventListener('DOMContentLoaded', function () {
+	const form = document.getElementById('form-validate');
+	const submitButton = document.getElementById('save');
+
+	if (!form || !submitButton) return;
+
+	submitButton.addEventListener('click', function () {
+
+		const requiredRadios = form.querySelectorAll('input[type="radio"][required]');
+		let count = 0;
+
+		requiredRadios.forEach(input => {
+			const style = window.getComputedStyle(input);
+			const isHidden = style.display === 'none' || style.visibility === 'hidden';
+			const isDisabled = input.closest('fieldset:disabled') !== null;
+
+			if (isHidden || isDisabled) {
+				input.removeAttribute('required');
+				count++;
+			}
+		});
+
+	});
+});
+
 function displayId(baliseId)
 {
 	if (document.getElementById && document.getElementById(baliseId) != null) {
