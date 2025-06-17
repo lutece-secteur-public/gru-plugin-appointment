@@ -6,10 +6,10 @@ document.addEventListener('DOMContentLoaded', function () {
 
 	submitButton.addEventListener('click', function () {
 
-		const requiredRadios = form.querySelectorAll('input[type="radio"][required]');
+		const requiredInputs = form.querySelectorAll('input[required]');
 		let count = 0;
 
-		requiredRadios.forEach(input => {
+		requiredInputs.forEach(input => {
 			const style = window.getComputedStyle(input);
 			const isHidden = style.display === 'none' || style.visibility === 'hidden';
 			const isDisabled = input.closest('fieldset:disabled') !== null;
