@@ -6,17 +6,17 @@ document.addEventListener('DOMContentLoaded', function () {
 
 	submitButton.addEventListener('click', function () {
 
-		const requiredInputs = form.querySelectorAll('input[required]');
-		let count = 0;
+		const requiredFields = form.querySelectorAll('input[required], select[required], textarea[required]');
 
-		requiredInputs.forEach(input => {
-			const style = window.getComputedStyle(input);
-			const isHidden = style.display === 'none' || style.visibility === 'hidden';
-			const isDisabled = input.closest('fieldset:disabled') !== null;
+		requiredFields.forEach(field => {
+			const isHidden = field.offsetParent === null ||
+				window.getComputedStyle(field).display === 'none' ||
+				window.getComputedStyle(field).visibility === 'hidden';
+
+			const isDisabled = field.disabled || field.closest('fieldset:disabled');
 
 			if (isHidden || isDisabled) {
-				input.removeAttribute('required');
-				count++;
+				field.removeAttribute('required');
 			}
 		});
 
