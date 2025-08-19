@@ -1,25 +1,33 @@
 document.addEventListener('DOMContentLoaded', function () {
-	const form = document.getElementById('form-validate');
-	const submitButton = document.getElementById('save');
+	const saveSelector = 'button[name="save"], input[type="submit"][name="save"], #save';
 
-	if (!form || !submitButton) return;
+	document.querySelectorAll('form').forEach(form => {
+		const saveBtn = form.querySelector(saveSelector);
+		if (!saveBtn) return;
 
-	submitButton.addEventListener('click', function () {
+		saveBtn.addEventListener('click', function () {
+			const requiredFields = form.querySelectorAll('input[required], select[required], textarea[required]');
+			requiredFields.forEach(field => {
+				const styles = window.getComputedStyle(field);
+				const isHidden =
+					field.offsetParent === null ||
+					styles.display === 'none' ||
+					styles.visibility === 'hidden';
+				const isDisabled = field.disabled || field.closest('fieldset:disabled');
 
-		const requiredFields = form.querySelectorAll('input[required], select[required], textarea[required]');
-
-		requiredFields.forEach(field => {
-			const isHidden = field.offsetParent === null ||
-				window.getComputedStyle(field).display === 'none' ||
-				window.getComputedStyle(field).visibility === 'hidden';
-
-			const isDisabled = field.disabled || field.closest('fieldset:disabled');
-
-			if (isHidden || isDisabled) {
-				field.removeAttribute('required');
-			}
+				if (isHidden || isDisabled) {
+					field.removeAttribute('required');
+					field.removeAttribute('aria-required');
+					if (field.type === 'radio' && field.name) {
+						form.querySelectorAll(`input[type="radio"][name="${CSS.escape(field.name)}"][required]`)
+							.forEach(r => {
+								r.removeAttribute('required');
+								r.removeAttribute('aria-required');
+							});
+					}
+				}
+			});
 		});
-
 	});
 });
 
