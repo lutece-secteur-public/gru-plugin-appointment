@@ -1,3 +1,6 @@
+-- liquibase formatted sql
+-- changeset appointment:init_db_genericattributes_appointment.sql
+-- preconditions onFail:MARK_RAN onError:WARN
 INSERT INTO genatt_entry_type (title,is_group,is_comment,is_mylutece_user,class_name,icon_name,plugin,display_order,inactive) VALUES 
 ('Bouton radio',0,0,0,'appointment.entryTypeRadioButton','dot-circle','appointment',1,0);
 INSERT INTO genatt_entry_type (title,is_group,is_comment,is_mylutece_user,class_name,icon_name,plugin,display_order,inactive) VALUES 
