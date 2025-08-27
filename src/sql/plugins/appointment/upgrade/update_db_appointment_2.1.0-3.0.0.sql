@@ -1,3 +1,6 @@
+-- liquibase formatted sql
+-- changeset appointment:update_db_appointment_2.1.0-3.0.0.sql
+-- preconditions onFail:MARK_RAN onError:WARN
 ALTER TABLE appointment_form_rule  ADD bo_overbooking BOOLEAN NOT NULL DEFAULT FALSE;
 ALTER TABLE appointment_appointment DROP COLUMN id_slot;
 ALTER TABLE appointment_appointment ADD  COLUMN id_action_reported INT;

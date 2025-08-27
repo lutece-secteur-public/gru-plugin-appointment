@@ -1,3 +1,6 @@
+-- liquibase formatted sql
+-- changeset appointment:create_db_appointment.sql
+-- preconditions onFail:MARK_RAN onError:WARN
 DROP TABLE IF EXISTS appointment_reservation_rule ;
 DROP TABLE IF EXISTS appointment_appointment_response ;
 DROP TABLE IF EXISTS appointment_form_message ;

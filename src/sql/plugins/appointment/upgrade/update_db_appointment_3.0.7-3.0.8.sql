@@ -1,3 +1,6 @@
+-- liquibase formatted sql
+-- changeset appointment:update_db_appointment_3.0.7-3.0.8.sql
+-- preconditions onFail:MARK_RAN onError:WARN
 CREATE INDEX idx_appointment_slot ON appointment_appointment_slot (id_appointment, id_slot);
 
 -- Update the value of the users' phone numbers, if they previously entered a

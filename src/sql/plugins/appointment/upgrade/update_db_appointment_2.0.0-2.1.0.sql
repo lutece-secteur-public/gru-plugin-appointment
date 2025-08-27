@@ -1,3 +1,6 @@
+-- liquibase formatted sql
+-- changeset appointment:update_db_appointment_2.0.0-2.1.0.sql
+-- preconditions onFail:MARK_RAN onError:WARN
 /*
     Note : AUTO_INCREMENT fields work with Mysql. For PostgreSQL, you have to 
     replace AUTO_INCREMENT, depending on your PostgreSQL version. You can

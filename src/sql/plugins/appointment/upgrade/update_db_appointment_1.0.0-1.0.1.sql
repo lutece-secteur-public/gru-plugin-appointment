@@ -1,3 +1,6 @@
+-- liquibase formatted sql
+-- changeset appointment:update_db_appointment_1.0.0-1.0.1.sql
+-- preconditions onFail:MARK_RAN onError:WARN
 ALTER TABLE appointment_day ADD COLUMN free_places INT NOT NULL;
 
 ALTER TABLE appointment_form_messages ADD COLUMN no_available_slot varchar(255) NOT NULL default '';

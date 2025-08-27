@@ -1,3 +1,6 @@
+-- liquibase formatted sql
+-- changeset appointment:update_db_appointment_1.0.1-1.0.2.sql
+-- preconditions onFail:MARK_RAN onError:WARN
 ALTER TABLE appointment_form ADD COLUMN max_appointment_mail INT NOT NULL;
 UPDATE appointment_form SET max_appointment_mail = 0;
 ALTER TABLE appointment_form ADD COLUMN nb_appointment_week INT NOT NULL;
