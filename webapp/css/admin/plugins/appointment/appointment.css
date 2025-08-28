@@ -102,3 +102,5 @@ input[type="color"]:hover{
 
 #sticky-container{ min-height: 450vh; }
 #info-right{ position: sticky; top: 60px }
+
+td.appt-actions, th.appt-actions { white-space: nowrap; }
