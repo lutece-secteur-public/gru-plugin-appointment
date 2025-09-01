@@ -122,10 +122,12 @@
 	<@formGroup>
 		<@checkBox orientation='switch' labelFor='anonymizable' labelKey='#i18n{appointment.createAppointmentForm.labelAnonymizable}' name='anonymizable' id='anonymizable' value='true' checked=appointmentform.anonymizable!false params='onchange="javascript:changeVisilityAnonymizePattern();"' />
 	</@formGroup>
-	<@formGroup labelFor='anonymization_pattern' id="anonymization_pattern_group"  labelKey='#i18n{appointment.createAppointmentForm.labelAnonymizePattern}' helpKey='#i18n{appointment.createAppointmentForm.labelAnonymizePattern.help}' >
-		<@input type='text' name='anonymization_pattern' id='anonymization_pattern' value=appointmentform.anonymizationPattern!'' maxlength=255 />
-	</@formGroup>
-	
+	<@div id="anonymization_pattern_group">
+		<@formGroup labelFor='anonymization_pattern' labelKey='#i18n{appointment.createAppointmentForm.labelAnonymizePattern}' helpKey='#i18n{appointment.createAppointmentForm.labelAnonymizePattern.help}' >
+			<@input type='text' name='anonymization_pattern' id='anonymization_pattern' value=appointmentform.anonymizationPattern!'' maxlength=255 />
+		</@formGroup>
+	</@div>
+
 	<@formGroup labelFor='role' labelKey='#i18n{appointment.createAppointmentForm.labelRole}'>
 		<@select name='role' id='role' items=refListRoles default_value='${appointmentform.role!}' />
 	</@formGroup>
@@ -346,7 +348,10 @@ function validateNbConsecutiveSlots() {
 
 // Add event listener to validate the input value
 var nbConsecutiveSlotsInput = document.getElementById('nb_consecutive_slots');
-nbConsecutiveSlotsInput.addEventListener('change', validateNbConsecutiveSlots);
+if ( nbConsecutiveSlotsInput )
+{
+	nbConsecutiveSlotsInput.addEventListener('change', validateNbConsecutiveSlots);
+}
 
 changeVisilityAnonymizePattern();
 function changeVisilityAnonymizePattern()
