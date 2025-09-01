@@ -22,7 +22,7 @@ document.querySelector('body').classList.add('loaded')
 </#macro>
 <#macro headerTitle form=form >
 /* Add Form title */
-document.querySelector('#feature-title').innerHTML = '<a href="jsp/admin/plugins/appointment/ManageAppointmentForms.jsp" title="#i18n{appointment.adminFeature.ManageAppointmentForm.name}">#i18n{appointment.adminFeature.ManageAppointmentForm.name}</a> <small>${form.title!?js_string}</small>';
+document.querySelector('#feature-title').innerHTML = '<a href="jsp/admin/plugins/appointment/ManageAppointmentForms.jsp" title="#i18n{appointment.adminFeature.ManageAppointmentForm.name}">#i18n{appointment.adminFeature.ManageAppointmentForm.name}</a><#if form.title?has_content> > ${form.title!?js_string}</#if>';
 </#macro> 
 <#--
 -- Check if the checkbox must be checked or not
