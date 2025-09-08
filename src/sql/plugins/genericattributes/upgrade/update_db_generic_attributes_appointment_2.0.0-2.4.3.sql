@@ -1,3 +1,6 @@
+-- liquibase formatted sql
+-- changeset appointment:update_db_generic_attributes_appointment_2.0.0-2.4.3.sql
+-- preconditions onFail:MARK_RAN onError:WARN
 /*
 Update the Appointment Plugin's Generic Attributes (proper icons, order and activation state), and mofidy
 their IDs to avoid conflict with the Generic Attributes from the Forms Plugin.

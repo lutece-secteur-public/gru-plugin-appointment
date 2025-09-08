@@ -1,3 +1,6 @@
+-- liquibase formatted sql
+-- changeset appointment:update_db_generic_attributes_appointment_1.2.1-1.3.2.sql
+-- preconditions onFail:MARK_RAN onError:WARN
 -- 
 -- Add a new column for the iteration number in genatt_response table
 -- 
