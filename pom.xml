@@ -44,7 +44,7 @@
         <dependency>
             <groupId>fr.paris.lutece.plugins</groupId>
             <artifactId>plugin-filegenerator</artifactId>
-            <version>[2.1.4-SNAPSHOT,)</version>
+            <version>[2.1.4-SNAPSHOT,2.9.9)</version>
             <type>lutece-plugin</type>
         </dependency>
          
@@ -53,14 +53,14 @@
             <artifactId>jackson-datatype-jsr310</artifactId>
             <version>2.15.3</version>
         </dependency>
-        <!-- Dozer - Java Bean to Java Bean -->
+        <!--&#160;Dozer - Java Bean to Java Bean&#160;-->
         <dependency>
             <groupId>net.sf.dozer</groupId>
             <artifactId>dozer</artifactId>
             <version>5.5.1</version>
             <exclusions>
                 <exclusion>
-                    <!-- Conflicts with the dozen of dependencies requiring commons-logging:commons-logging -->
+                    <!--&#160;Conflicts with the dozen of dependencies requiring commons-logging:commons-logging&#160;-->
                     <groupId>org.slf4j</groupId>
                     <artifactId>jcl-over-slf4j</artifactId>
                 </exclusion>
