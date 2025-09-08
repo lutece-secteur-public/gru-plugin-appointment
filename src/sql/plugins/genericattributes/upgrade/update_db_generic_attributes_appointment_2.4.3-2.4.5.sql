@@ -1,3 +1,6 @@
+-- liquibase formatted sql
+-- changeset appointment:update_db_generic_attributes_appointment_2.4.3-2.4.5.sql
+-- preconditions onFail:MARK_RAN onError:WARN
 /* Add a parameter to specify that Entries of type 'Session' should
  * not be updated when an appointment is being modified
  * */

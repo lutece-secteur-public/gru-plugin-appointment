@@ -1,3 +1,6 @@
+-- liquibase formatted sql
+-- changeset appointment:update_db_generic_attributes_appointment_1.3.2-1.3.3.sql
+-- preconditions onFail:MARK_RAN onError:WARN
 ALTER TABLE genatt_entry CHANGE COLUMN is_shown_in_completeness used_in_correct_form_response SMALLINT DEFAULT '0';
 
 UPDATE genatt_field f SET f.CODE = 'default_date_value'

@@ -1,3 +1,6 @@
+-- liquibase formatted sql
+-- changeset appointment:update_db_generic_attributes_appointment_1.3.3-2.0.0.sql
+-- preconditions onFail:MARK_RAN onError:WARN
 ALTER TABLE genatt_entry DROP COLUMN num_row;
 ALTER TABLE genatt_entry DROP COLUMN num_column;
 
