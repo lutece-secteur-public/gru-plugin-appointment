@@ -96,7 +96,7 @@
 					</@fieldSet>
 				</@div>
 				<#if appointment_list?? && appointment_list?size &gt; 0>
-						<@table headBody=true>
+						<@table headBody=true class='table-auto-expand table-nowrap'>
 						<@tr>
 							<@th>
 								<@checkBox name='allcheck' id='allCheck' title='#i18n{appointment.appointmentApp.infos}' />
@@ -144,7 +144,7 @@
 								<@aButton href='jsp/admin/plugins/appointment/ManageAppointments.jsp?view=manageAppointments&id_form=${form.idForm}&orderBy=state&orderAsc=true' buttonIcon='chevron-up' size='sm' color='default' />
 								<@aButton href='jsp/admin/plugins/appointment/ManageAppointments.jsp?view=manageAppointments&id_form=${form.idForm}&orderBy=state&orderAsc=false' buttonIcon='chevron-down' size='sm' color='default' />
 							</@th>
-							<@th class='appt-actions'>#i18n{portal.util.labelActions}</@th>
+							<@th>#i18n{portal.util.labelActions}</@th>
 							<@th>
 								#i18n{appointment.manageAppointments.columnDateAppointmentTaken}
 								<@aButton href='jsp/admin/plugins/appointment/ManageAppointments.jsp?view=manageAppointments&id_form=${form.idForm}&orderBy=date_appointment&orderAsc=true' buttonIcon='chevron-up' size='sm' color='default' />
@@ -174,7 +174,7 @@
 										${appointment.state.name!}
 									</#if>
 								</@td>
-								<@td class='appt-actions'>
+								<@td>
 									<#if rightView?? && rightView>
 										<@aButton href='jsp/admin/plugins/appointment/ManageAppointments.jsp?view=viewAppointment&id_form=${form.idForm}&id_appointment=${appointment.idAppointment}' title='#i18n{appointment.manageAppointments.labelViewAppointment}' hideTitle=['all'] buttonIcon='eye' size='sm' />
 									</#if>
