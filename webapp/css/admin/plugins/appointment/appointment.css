@@ -103,4 +103,14 @@ input[type="color"]:hover{
 #sticky-container{ min-height: 450vh; }
 #info-right{ position: sticky; top: 60px }
 
-td.appt-actions, th.appt-actions { white-space: nowrap; }
+.table-auto-expand {
+    width: auto;
+    min-width: max-content;
+    max-width: none;
+    table-layout: auto;
+}
+
+.table-nowrap td,
+.table-nowrap th {
+    white-space: nowrap;
+}
