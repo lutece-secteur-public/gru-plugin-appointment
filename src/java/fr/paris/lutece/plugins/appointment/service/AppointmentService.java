@@ -473,7 +473,7 @@ public final class AppointmentService
         List<Slot> listSlot = SlotService.findListSlotByIdAppointment( appointment.getIdAppointment( ) );
         if ( CollectionUtils.isEmpty( listSlot ) )
         {
-            return null;
+            throw new AppException( "No slot associated with the appointment id " + nIdAppointment );
         }
         appointment.setSlot( listSlot );
         appointment.setUser( user );
