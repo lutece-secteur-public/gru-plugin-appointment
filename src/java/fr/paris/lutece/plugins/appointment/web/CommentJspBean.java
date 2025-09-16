@@ -41,6 +41,8 @@ import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 
+import fr.paris.lutece.plugins.appointment.service.comment.IRedirectComment;
+import fr.paris.lutece.portal.service.spring.SpringContextService;
 import org.apache.commons.lang3.StringUtils;
 
 import fr.paris.lutece.api.user.User;
@@ -100,6 +102,8 @@ public class CommentJspBean extends AbstractAppointmentFormAndSlotJspBean
     private static final String PARAMETER_STARTING_VALIDITY_TIME = "startingValidityTime";
     private static final String PARAMETER_ENDING_VALIDITY_TIME = "endingValidityTime";
     private static final String PARAMETER_ID_FORM = "id_form";
+    private static final String PARAMETER_FROM = "from";
+    private static final String PARAMETER_ADDITIONAL_PARAMETERS = "additional_parameters";
     private static final String REFERER = "referer";
     private static final String PARAMETER_ID_MAILING_LIST = "idMailingList";
 
@@ -196,7 +200,7 @@ public class CommentJspBean extends AbstractAppointmentFormAndSlotJspBean
         User user = getUser( );
         String strIdForm = request.getParameter( PARAMETER_ID_FORM );
         int nIdForm = Integer.parseInt( strIdForm );
-        String strReferer = request.getHeader( REFERER );
+        String strReferer = makeStringBackUrl( request );
         int nIdMailingList = Integer.parseInt( request.getParameter( PARAMETER_ID_MAILING_LIST ) );
 
         if ( !RBACService.isAuthorized( AppointmentFormDTO.RESOURCE_TYPE, strIdForm, AppointmentResourceIdService.PERMISSION_ADD_COMMENT_FORM,
@@ -288,7 +292,7 @@ public class CommentJspBean extends AbstractAppointmentFormAndSlotJspBean
     {
         User user = getUser( );
         int nIdComment = Integer.parseInt( request.getParameter( PARAMETER_ID_COMMENT ) );
-        String strReferer = request.getHeader( REFERER );
+        String backUrl = makeStringBackUrl( request );
         int nIdMailingList = Integer.parseInt( request.getParameter( PARAMETER_ID_MAILING_LIST ) );
 
         if ( _comment == null || _comment.getId( ) != nIdComment )
@@ -327,9 +331,9 @@ public class CommentJspBean extends AbstractAppointmentFormAndSlotJspBean
             addInfo( INFO_COMMENT_UPDATED, getLocale( ) );
         }
 
-        if ( StringUtils.isNotBlank( strReferer ) )
+        if ( StringUtils.isNotBlank( backUrl ) )
         {
-            return redirect( request, strReferer );
+            return redirect( request, backUrl );
         }
 
         return redirect( request, VIEW_MANAGE_COMMENT );
@@ -359,6 +363,9 @@ public class CommentJspBean extends AbstractAppointmentFormAndSlotJspBean
         UrlItem url = new UrlItem( getActionUrl( ACTION_DO_REMOVE_COMMENT ) );
         url.addParameter( PARAMETER_ID_COMMENT, nId );
         url.addParameter( PARAMETER_ID_MAILING_LIST, request.getParameter( PARAMETER_ID_MAILING_LIST ) );
+        url.addParameter( PARAMETER_FROM, request.getParameter( PARAMETER_FROM ) );
+        url.addParameter( PARAMETER_ADDITIONAL_PARAMETERS, request.getParameter( PARAMETER_ADDITIONAL_PARAMETERS ) );
+        url.addParameter( PARAMETER_ID_FORM, _comment.getIdForm() );
         url.addParameter( REFERER, request.getHeader( REFERER ) );
 
         String strMessageUrl = AdminMessageService.getMessageUrl( request, MESSAGE_CONFIRM_REMOVE_COMMENT, url.getUrl( ), AdminMessage.TYPE_CONFIRMATION );
@@ -379,11 +386,8 @@ public class CommentJspBean extends AbstractAppointmentFormAndSlotJspBean
     {
         User user = getUser( );
         int nIdComment = Integer.parseInt( request.getParameter( PARAMETER_ID_COMMENT ) );
-        String strReferer = request.getParameter( REFERER );
+        String backUrl = makeStringBackUrl( request );
         int nIdMailingList = Integer.parseInt( request.getParameter( PARAMETER_ID_MAILING_LIST ) );
-
-        UrlItem url = new UrlItem( strReferer );
-        url.addParameter( PARAMETER_ID_FORM, _comment.getIdForm( ) );
 
         _comment = CommentHome.findByPrimaryKey( nIdComment );
         if ( !RBACService.isAuthorized( AppointmentFormDTO.RESOURCE_TYPE, Integer.toString( _comment.getIdForm( ) ),
@@ -395,9 +399,9 @@ public class CommentJspBean extends AbstractAppointmentFormAndSlotJspBean
 
         CommentService.removeAndNotifyMailingList( nIdComment, nIdMailingList, getLocale( ) );
         addInfo( INFO_COMMENT_REMOVED, getLocale( ) );
-        if ( StringUtils.isNotBlank( strReferer ) )
+        if ( StringUtils.isNotBlank( backUrl ) )
         {
-            return redirect( request, url.getUrl( ) );
+            return redirect( request, backUrl );
         }
 
         return redirect( request, VIEW_MANAGE_COMMENT );
@@ -430,5 +434,29 @@ public class CommentJspBean extends AbstractAppointmentFormAndSlotJspBean
                 || ( comment.getStartingValidityDate( ).isEqual( comment.getEndingValidityDate( ) ) && comment.getStartingValidityTime( ) != null
                         && comment.getStartingValidityTime( ).isAfter( comment.getEndingValidityTime( ) ) ) );
 
+    }
+
+    /**
+     * build the back url
+     *
+     * @param request the HttpServletRequest
+     * @return the back url
+     */
+    private String makeStringBackUrl( HttpServletRequest request )
+    {
+        List<IRedirectComment> redirectAppointments = SpringContextService.getBeansOfType( IRedirectComment.class );
+        String from = request.getParameter( PARAMETER_FROM );
+        String strReferer = request.getHeader( REFERER );
+
+        if( StringUtils.isNotBlank( from ) )
+        {
+            IRedirectComment redirect = redirectAppointments.stream().filter( ra -> from.equals(ra.getCodeFrom()) ).findFirst().orElse( null );
+            if ( redirect !=null )
+            {
+                return redirect.makeBackUrl( request );
+            }
+        }
+
+        return strReferer;
     }
 }

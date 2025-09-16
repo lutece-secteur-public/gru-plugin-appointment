@@ -136,4 +136,8 @@
         </property>   
     </bean>
 
+    <!-- Redirect Comment -->
+    <bean id="appointment.redirectManageAppointment" class="fr.paris.lutece.plugins.appointment.service.comment.RedirectManageAppointment" />
+    <bean id="appointment.redirectSpecificWeek" class="fr.paris.lutece.plugins.appointment.service.comment.RedirectSpecificWeek" />
+
 </beans>

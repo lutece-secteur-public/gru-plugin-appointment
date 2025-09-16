@@ -153,7 +153,7 @@ document.querySelector('#feature-title').innerHTML = '<a href="jsp/admin/plugins
         </#list>
     </#if>
 </#function>
-<#macro getCommentModal modalId modalTitle idComment idStartingDate idEndingDate idStartingTime idEndingTime action idForm mailingList locale=locale>
+<#macro getCommentModal modalId modalTitle idComment idStartingDate idEndingDate idStartingTime idEndingTime action idForm mailingList locale=locale from="" additionalParameters="">
 <#switch modalId>
 <#case 'modify-comment'>
 	<#assign startDateLabel='#i18n{appointment.modify_comment.labelStartingValidityDate}'>
@@ -175,6 +175,8 @@ document.querySelector('#feature-title').innerHTML = '<a href="jsp/admin/plugins
 		<@tform action='jsp/admin/plugins/appointment/Comments.jsp' id='commentUpdate'>
 		<@input type='hidden' name='id_form' value='${idForm!}' />
 		<@input type='hidden' name='id_comment' id='id_comment' />
+		<@input type='hidden' name='from' value='${from!}' />
+		<@input type='hidden' name='additional_parameters' value='${additionalParameters!}' />
 		<@formGroup labelFor='comment' labelKey='#i18n{appointment.comment.name}' helpKey='#i18n{appointment.comment.name}' mandatory=true rows=2>
 			<@input type='textarea' name='comment' id=idComment richtext=true />
 		</@formGroup>
