@@ -81,8 +81,9 @@
 					</@formGroup>
 					
 					<@formGroup labelKey='#i18n{appointment.createEntry.labelUseRichText}' helpKey='#i18n{appointment.createEntry.labelUseRichTextComment}'>
-						<!#-- 	fieldInLine means use rich text -->
-						<@checkBox labelFor='css_class' labelKey='#i18n{appointment.createEntry.labelUseRichText}' name='useRichText' id='useRichText' value='true' checked=entry.fieldInLine />
+                        <#assign field_richtext=getFieldValueByCode( entry, "richtext")>
+                        <#if field_richtext == 'true'><#assign checked = true /><#else><#assign checked=false /></#if>
+						<@checkBox labelFor='css_class' labelKey='#i18n{appointment.createEntry.labelUseRichText}' name='useRichText' id='useRichText' value='true' checked=checked />
 					</@formGroup>
 					
 					<@formGroup>
