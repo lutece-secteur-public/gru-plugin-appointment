@@ -2,8 +2,12 @@
 	<#assign field_width=getFieldByCode( entry, "width")>
 	<#assign field_height=getFieldByCode( entry, "height")>
 	<#assign field_max_size=getFieldByCode( entry, "max_size")>
-	<#-- 	fieldInLine means use rich text -->
-	<textarea name="attribute${entry.idEntry}" id="attribute${entry.idEntry}" cols="${field_width.value}" rows="${field_height.value}" maxlength="${field_max_size.value}" class="form-control ${entry.CSSClass!}<#if entry.fieldInLine> richtext</#if>" >${responseContent}</textarea>
+	<#assign field_richtext=getFieldValueByCode( entry, "richtext") />
+	<#assign richtext = false />
+	<#if field_richtext == 'true'>
+		<#assign richtext = true />
+	</#if>
+	<textarea name="attribute${entry.idEntry}" id="attribute${entry.idEntry}" cols="${field_width.value}" rows="${field_height.value}" maxlength="${field_max_size.value}" class="form-control ${entry.CSSClass!}<#if richtext> richtext</#if>" >${responseContent}</textarea>
 </#macro>
 
 <#if list_responses??>
@@ -43,7 +47,7 @@
 	</div>
 </div>
 
-<#if entry.fieldInLine>
+<#if richtext>
 	<#include "/util/editor/editor.html" />
 	<@initEditor />
 </#if>
