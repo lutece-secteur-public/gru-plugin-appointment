@@ -465,8 +465,16 @@ public final class AppointmentService
     public static AppointmentDTO buildAppointmentDTOFromIdAppointment( int nIdAppointment )
     {
         Appointment appointment = AppointmentService.findAppointmentById( nIdAppointment );
+        if ( appointment == null )
+        {
+           return null;
+        }
         User user = UserService.findUserById( appointment.getIdUser( ) );
         List<Slot> listSlot = SlotService.findListSlotByIdAppointment( appointment.getIdAppointment( ) );
+        if ( CollectionUtils.isEmpty( listSlot ) )
+        {
+            throw new AppException( "No slot associated with the appointment id " + nIdAppointment );
+        }
         appointment.setSlot( listSlot );
         appointment.setUser( user );
         return buildAppointmentDTO( appointment );
