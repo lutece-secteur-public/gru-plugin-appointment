@@ -4,9 +4,9 @@
     </@columns>
 </@row>
 
-<@getCommentModal 'commentModal' '#i18n{appointment.create_comment.pageTitle}' "comment" "startingValidityDate" "endingValidityDate" "idStartingTime" "idEndingTime" "doAddComment" id_form mailing_list />
+<@getCommentModal 'commentModal' '#i18n{appointment.create_comment.pageTitle}' "comment" "startingValidityDate" "endingValidityDate" "idStartingTime" "idEndingTime" "doAddComment" id_form mailing_list locale "calendarmanageappointment" />
 
-<@getCommentModal 'modify-comment' '#i18n{appointment.modify_comment.pageTitle}' "comment" "modifyStartingValidityDate" "modifyEndingValidityDate" "idModifyStartingTime" "idModifyEndingTime" "doModifyComment" id_form mailing_list />
+<@getCommentModal 'modify-comment' '#i18n{appointment.modify_comment.pageTitle}' "modifyComment" "modifyStartingValidityDate" "modifyEndingValidityDate" "idModifyStartingTime" "idModifyEndingTime" "doModifyComment" id_form mailing_list locale "calendarmanageappointment" />
 
 <@modal id='addBookModalDialog' params='aria-labelledby="qModalLabel"'>
     <@modalHeader id='qModalLabel' modalTitle='#i18n{appointment.appointmentApp.defaultTitle}' />

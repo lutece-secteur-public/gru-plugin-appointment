@@ -179,6 +179,9 @@ document.querySelector('#feature-title').innerHTML = '<a href="jsp/admin/plugins
 		<@input type='hidden' name='additional_parameters' value='${additionalParameters!}' />
 		<@formGroup labelFor='comment' labelKey='#i18n{appointment.comment.name}' helpKey='#i18n{appointment.comment.name}' mandatory=true rows=2>
 			<@input type='textarea' name='comment' id=idComment richtext=true />
+			<@span id=idComment+'_errorEmpty' class='text-red labelErrorComment' >
+				#i18n{appointment.message.comment.error.commentEmpty}
+			</@span>
 		</@formGroup>
 		<@formGroup labelFor='startingValidityDate' labelKey=startDateLabel mandatory=true rows=2>
 			<@inputGroup class='date' id='${idStartingDate}Group'>
@@ -203,6 +206,9 @@ document.querySelector('#feature-title').innerHTML = '<a href="jsp/admin/plugins
 					<@icon style='calendar' />
 				</@inputGroupItem>
 			</@inputGroup>
+			<@span id=idEndingDate+'_errorEndDateBeforeStartDate' class='text-red labelErrorComment'>
+				#i18n{appointment.message.comment.error.endDateBeforeStartDate}
+			</@span>
 		</@formGroup>
 		<@formGroup labelFor='endingValidityTime' labelKey=endTimeLabel rows=2>
 			<@inputGroup class='date' id='${idEndingTime}Group'>
@@ -211,6 +217,12 @@ document.querySelector('#feature-title').innerHTML = '<a href="jsp/admin/plugins
 					<@icon style='clock' />
 				</@inputGroupItem>
 			</@inputGroup>
+			<@span id=idEndingTime+'_errorEndTimeEqualStartTime' class='text-red labelErrorComment'>
+				#i18n{appointment.message.comment.error.endTimeEqualStartTime}
+			</@span>
+			<@span id=idEndingTime+'_errorEndTimeBeforeStartTime' class='text-red labelErrorComment'>
+				#i18n{appointment.message.comment.error.endTimeBeforeStartTime}
+			</@span>
 		</@formGroup>
 		<@formGroup labelFor='idMailingList' labelKey='#i18n{appointment.create_comment.labelMailingList}' helpKey='#i18n{appointment.create_comment.labelMailingList.help}' mandatory=false rows=2>
 			<#assign default='-1'>
@@ -235,6 +247,11 @@ document.querySelector('#feature-title').innerHTML = '<a href="jsp/admin/plugins
 </@modal>
 <script>
 $(function(){
+
+	document.querySelectorAll('.labelErrorComment').forEach(function(el) {
+	   el.style.display = 'none';
+	});
+
 	$('#${idEndingDate}_help').html('');
 	$('#${idStartingDate}').datetimepicker({locale: '${locale}', format: 'DD/MM/YYYY'});
 	$('#${idStartingDate}').val( moment().format('DD/MM/YYYY') );
@@ -274,37 +291,30 @@ $(function(){
 	}
 	// Click on validation button events
 	$( '[name="action_${action}"]' ).click( function(e){
-		$('#endingValidityTime ~ *').html('');
-		$('#${idEndingTime}').parents('.form-group').removeClass('has-error');
-		$('#${idEndingDate} ~ *').html('');
-		$('#${idEndingDate}').parents('.form-group').removeClass('has-error');
-		$('#${idComment} ~ *').html('');
-		$('#${idComment}').parents('.form-group').removeClass('has-error');
+
+		document.querySelectorAll('.labelErrorComment').forEach(function(el) {
+		   el.style.display = 'none';
+		});
+
 		dStart=$('#${idStartingDate}').val(),dEnd=$('#${idEndingDate}').val();
 		if( moment(dEnd).isBefore( dStart ) ){
-			$('#${idEndingDate}').parents('.form-group').addClass('has-error');
-			$('#${idEndingDate}Group ~ *').html('La date de fin ne peut être antérieure à la date de début !');
-			$('#${idEndingDate}Group ~ *').removeClass('text-muted').addClass('text-danger');
+			document.getElementById( '${idEndingDate}_errorEndDateBeforeStartDate' ).style.display = 'block'
 			e.preventDefault();
 		}
-		tStart=$('#${idStartingTime}').val(),tEnd=$('#${idEndingTime}').val();		
+		tStart=$('#${idStartingTime}').val(),tEnd=$('#${idEndingTime}').val();
 		var startDateAndTime = moment(dStart + ' ' + tStart, 'YYYY-MM-DD HH:mm');
 		var endDateAndTime = moment(dEnd + ' ' + tEnd, 'YYYY-MM-DD HH:mm');
 		if(( moment(endDateAndTime).isBefore( startDateAndTime ) ) || ( moment(endDateAndTime).isSame( startDateAndTime )) && ($('#${idStartingTime}').val() != '00:00') && ($('#${idEndingTime}').val() != '00:00')) {
-			$('#${idEndingTime}').parents('.form-group').addClass('has-error');
-			$('#${idEndingTime}Group ~ *').removeClass('text-muted').addClass('text-danger');
 			if( moment(endDateAndTime).isBefore( startDateAndTime )) {
-				$('#${idEndingTime}Group ~ *').html('L\'heure de fin ne peut être antérieure à la date de début !');
+				document.getElementById( '${idEndingTime}_errorEndTimeBeforeStartTime' ).style.display = 'block';
 			}
 			if ((moment(endDateAndTime).isSame( startDateAndTime )) && ($('#${idStartingTime}').val() != '00:00') && ($('#${idEndingTime}').val() != '00:00'))  {
-				$('#${idEndingTime}Group ~ *').html('L\'heure de fin ne peut être égale à la date de début !');
+				document.getElementById( '${idEndingTime}_errorEndTimeEqualStartTime' ).style.display = 'block';
 			}
 			e.preventDefault();
 		}
 		if( tinyMCE.activeEditor.getContent().trim().length === 0 ){
-			$('#${idComment}').parents('.form-group').addClass('has-error');
-			$('#${idComment} ~ *').removeClass('text-muted').addClass('text-danger');
-			$('#${idComment} ~ *').html('Vous devez saisir un texte !');
+			document.getElementById( '${idComment}_errorEmpty' ).style.display = 'block';
 			e.preventDefault();
 		}
 	});
@@ -409,6 +419,10 @@ localStorage.setItem( 'appointmentContext', '${context}' );
 	$( '#modify-comment input[name="endingValidityDate"]' ).val( moment(formValues.comment_end).format('DD/MM/YYYY')  );
 	$( '#modify-comment input[name="startingValidityTime"]' ).val( formValues.comment_start_time );
 	$( '#modify-comment input[name="endingValidityTime"]' ).val( formValues.comment_end_time );
+	document.querySelectorAll('.labelErrorComment').forEach(function(el) {
+		el.style.display = 'none';
+	});
+
 </#if>
 // const commentModal = new bootstrap.Modal( document.getElementById('modify-comment') )
 const commentModal = bootstrap.Modal.getOrCreateInstance('#modify-comment');
