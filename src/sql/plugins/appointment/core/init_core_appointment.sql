@@ -13,9 +13,9 @@ INSERT INTO core_admin_right (id_right,name,level_right,admin_url,description,is
 ('APPOINTMENT_COMMENT_MANAGEMENT','appointment.adminFeature.manageComment.name',2,'jsp/admin/plugins/appointment/Comments.jsp','appointment.adminFeature.manageComment.name',0,'appointment','APPLICATIONS',NULL,NULL,6);
 
 
-INSERT INTO core_admin_role_resource (rbac_id,role_key,resource_type,resource_id,permission) VALUES
-    (1026,'super_admin','APPOINTMENT_FORM','*','*'),
-    (1029, 'super_admin', 'APPOINTMENT_FORM_CREATE', '*', '*');
+INSERT INTO core_admin_role_resource (role_key,resource_type,resource_id,permission) VALUES
+    ('super_admin','APPOINTMENT_FORM','*','*'),
+    ('super_admin', 'APPOINTMENT_FORM_CREATE', '*', '*');
 --
 -- Data for table core_user_right
 --
