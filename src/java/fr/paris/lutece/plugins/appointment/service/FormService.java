@@ -66,12 +66,16 @@ import fr.paris.lutece.plugins.appointment.business.rule.ReservationRule;
 import fr.paris.lutece.plugins.appointment.business.rule.ReservationRuleHome;
 import fr.paris.lutece.plugins.appointment.business.slot.Slot;
 import fr.paris.lutece.plugins.appointment.business.slot.SlotHome;
-import fr.paris.lutece.plugins.appointment.service.listeners.AppointmentListenerManager;
-import fr.paris.lutece.plugins.appointment.service.listeners.FormListenerManager;
+import fr.paris.lutece.plugins.appointment.service.event.AppointmentFormRemovalEvent;
+import fr.paris.lutece.plugins.appointment.service.event.FormEvent;
 import fr.paris.lutece.plugins.appointment.web.dto.AppointmentFormDTO;
+import fr.paris.lutece.portal.service.event.EventAction;
+import fr.paris.lutece.portal.service.event.Type.TypeQualifier;
 import fr.paris.lutece.plugins.genericattributes.business.Entry;
 import fr.paris.lutece.plugins.genericattributes.business.EntryFilter;
 import fr.paris.lutece.plugins.genericattributes.business.EntryHome;
+import jakarta.enterprise.inject.spi.CDI;
+
 import fr.paris.lutece.portal.service.util.AppException;
 import fr.paris.lutece.portal.service.util.AppLogService;
 import fr.paris.lutece.util.ReferenceList;
@@ -221,7 +225,7 @@ public final class FormService
             entry.setIdResource( nIdNewForm );
             EntryHome.copy( entry );
         }
-        FormListenerManager.notifyListenersFormCreation( nIdForm );
+        CDI.current( ).getBeanManager( ).getEvent( ).select( FormEvent.class, new TypeQualifier( EventAction.CREATE ) ).fireAsync( new FormEvent( nIdForm ) );
         return nIdNewForm;
     }
 
@@ -266,7 +270,7 @@ public final class FormService
             WorkingDayService.generateWorkingDayAndListTimeSlot( reservationRule.getIdReservationRule( ), dayOfWeek, startingTime, endingTime, nDuration,
                     nMaxCapacity );
         }
-        FormListenerManager.notifyListenersFormCreation( nIdForm );
+        CDI.current( ).getBeanManager( ).getEvent( ).select( FormEvent.class, new TypeQualifier( EventAction.CREATE ) ).fireAsync( new FormEvent( nIdForm ) );
         return nIdForm;
     }
 
@@ -654,7 +658,7 @@ public final class FormService
     public static Form updateForm( Form form )
     {
         Form formUpdated = FormHome.update( form );
-        FormListenerManager.notifyListenersFormChange( formUpdated.getIdForm( ) );
+        CDI.current( ).getBeanManager( ).getEvent( ).select( FormEvent.class, new TypeQualifier( EventAction.UPDATE ) ).fireAsync( new FormEvent( formUpdated.getIdForm( ) ) );
         return formUpdated;
     }
 
@@ -735,18 +739,18 @@ public final class FormService
             FormMessageHome.deleteByIdForm( nIdForm );
             CommentHome.removeByIdFom( nIdForm );
             FormHome.delete( nIdForm );
-            EntryService.getService( ).removeEntriesByIdAppointmentForm( nIdForm );
+            CDI.current( ).select( EntryService.class ).get( ).removeEntriesByIdAppointmentForm( nIdForm );
 
             TransactionManager.commitTransaction( AppointmentPlugin.getPlugin( ) );
 
-            FormListenerManager.notifyListenersFormRemoval( nIdForm );
-            AppointmentListenerManager.notifyListenersAppointmentFormRemoval( nIdForm );
+            CDI.current( ).getBeanManager( ).getEvent( ).select( FormEvent.class, new TypeQualifier( EventAction.REMOVE ) ).fireAsync( new FormEvent( nIdForm ) );
+            CDI.current( ).getBeanManager( ).getEvent( ).select( AppointmentFormRemovalEvent.class ).fireAsync( new AppointmentFormRemovalEvent( nIdForm ) );
 
         }
         catch( Exception e )
         {
             TransactionManager.rollBack( AppointmentPlugin.getPlugin( ) );
-            AppLogService.error( "Error delete form: " + nIdForm + e.getMessage( ), e );
+            AppLogService.error( "Error delete form: {} {}", nIdForm, e.getMessage( ), e );
             throw new AppException( e.getMessage( ), e );
 
         }

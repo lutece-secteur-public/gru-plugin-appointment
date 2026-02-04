@@ -42,7 +42,7 @@ import java.util.Map;
 import java.util.concurrent.locks.Lock;
 import java.util.stream.Collectors;
 
-import javax.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletRequest;
 
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -73,14 +73,21 @@ import fr.paris.lutece.portal.service.rbac.RBACService;
 import fr.paris.lutece.portal.util.mvc.admin.annotations.Controller;
 import fr.paris.lutece.portal.util.mvc.commons.annotations.Action;
 import fr.paris.lutece.portal.util.mvc.commons.annotations.View;
+import fr.paris.lutece.portal.web.cdi.mvc.Models;
 import fr.paris.lutece.util.date.DateUtil;
+
+import jakarta.enterprise.context.RequestScoped;
+import jakarta.inject.Inject;
+import jakarta.inject.Named;
 
 /**
  * JspBean to manage calendar slots
- * 
+ *
  * @author Laurent Payen
  *
  */
+@RequestScoped
+@Named
 @Controller( controllerJsp = AppointmentAnnualCalendarJspBean.JSP_MANAGE_ANNUAL_CALENDAR, controllerPath = "jsp/admin/plugins/appointment/", right = AppointmentFormJspBean.RIGHT_MANAGEAPPOINTMENTFORM )
 public class AppointmentAnnualCalendarJspBean extends AbstractAppointmentFormAndSlotJspBean
 {
@@ -131,6 +138,9 @@ public class AppointmentAnnualCalendarJspBean extends AbstractAppointmentFormAnd
     // Templates
     private static final String TEMPLATE_MANAGE_ANNUAL_CALENDAR = "admin/plugins/appointment/slots/manage_annual_calendar.html";
 
+    @Inject
+    private Models _models;
+
     // Session variable to store working values
 
     // Porperties
@@ -162,16 +172,15 @@ public class AppointmentAnnualCalendarJspBean extends AbstractAppointmentFormAnd
 
             nStartYear = LocalDate.now( ).getYear( );
         }
-        Map<String, Object> model = getModel( );
-        model.put( MARK_LIST_WEEK_DEFINITION, listWeek );
-        model.put( MARK_LIST_RESERVATION_RULE, listRule );
-        model.put( MARK_SPECIFIC_SLOT_DATES, SlotHome.findSpecificSlotDates( nIdForm ) );
-        model.put( MARK_ID_FORM, nIdForm );
-        model.put( MARK_START_YEAR, nStartYear );
-        model.put( MARK_LOCALE_TINY, getLocale( ) );
-        addElementsToModel( form, getUser( ), getLocale( ), model );
+        _models.put( MARK_LIST_WEEK_DEFINITION, listWeek );
+        _models.put( MARK_LIST_RESERVATION_RULE, listRule );
+        _models.put( MARK_SPECIFIC_SLOT_DATES, SlotHome.findSpecificSlotDates( nIdForm ) );
+        _models.put( MARK_ID_FORM, nIdForm );
+        _models.put( MARK_START_YEAR, nStartYear );
+        _models.put( MARK_LOCALE_TINY, getLocale( ) );
+        addElementsToModel( form, getUser( ), getLocale( ), _models );
 
-        return getPage( MESSAGE_ANNUAL_CALENDAR_PAGE_TITLE, TEMPLATE_MANAGE_ANNUAL_CALENDAR, model );
+        return getPage( MESSAGE_ANNUAL_CALENDAR_PAGE_TITLE, TEMPLATE_MANAGE_ANNUAL_CALENDAR );
 
     }
 

@@ -33,17 +33,22 @@
  */
 package fr.paris.lutece.plugins.appointment.service.entrytype;
 
+import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.inject.Named;
+
 import fr.paris.lutece.plugins.genericattributes.business.Entry;
 import fr.paris.lutece.plugins.genericattributes.service.entrytype.AbstractEntryTypeGroup;
 
 /**
  *
  * class EntryTypeGroup
- * 
+ *
  * @author Laurent Payen
  *
  */
-public final class EntryTypeGroup extends AbstractEntryTypeGroup
+@ApplicationScoped
+@Named( "appointment.entryTypeGroup" )
+public class EntryTypeGroup extends AbstractEntryTypeGroup
 {
     // templates
     private static final String TEMPLATE_CREATE = "admin/plugins/appointment/entries/create_entry_type_group.html";

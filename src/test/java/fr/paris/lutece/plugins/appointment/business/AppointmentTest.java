@@ -49,9 +49,11 @@ import fr.paris.lutece.plugins.appointment.business.user.UserHome;
 import fr.paris.lutece.plugins.appointment.web.dto.AppointmentDTO;
 import fr.paris.lutece.test.LuteceTestCase;
 
+import org.junit.jupiter.api.Test;
+
 /**
  * Test Class for the Appointment
- * 
+ *
  * @author Laurent Payen
  *
  */
@@ -61,6 +63,7 @@ public final class AppointmentTest extends LuteceTestCase
     /**
      * Test method for the Appointment (CRUD)
      */
+    @Test
     public void testAppointment( )
     {
         Form form = FormTest.buildForm1( );
@@ -97,6 +100,7 @@ public final class AppointmentTest extends LuteceTestCase
     /**
      * Test findByIdUser method
      */
+    @Test
     public void testFindByIdUser( )
     {
         Form form = FormTest.buildForm1( );
@@ -133,6 +137,7 @@ public final class AppointmentTest extends LuteceTestCase
     /**
      * Test findByIdSlot method
      */
+    @Test
     public void testFindByIdSlot( )
     {
         Form form = FormTest.buildForm1( );

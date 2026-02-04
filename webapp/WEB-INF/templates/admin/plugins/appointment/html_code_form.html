@@ -154,8 +154,8 @@
 	}
 	else return true;
 	};
-   $(document).ready(function () {
-      $('#emailConfirm').bind('paste', function (e) {
+   document.addEventListener('DOMContentLoaded', function () {
+      document.getElementById('emailConfirm').addEventListener('paste', function (e) {
          e.preventDefault();
       });
    });

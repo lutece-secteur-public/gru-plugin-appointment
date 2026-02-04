@@ -33,17 +33,38 @@
  */
 package fr.paris.lutece.plugins.appointment.service.entrytype;
 
+import java.util.List;
+
+import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.inject.Inject;
+import jakarta.inject.Named;
+
 import fr.paris.lutece.plugins.genericattributes.business.Entry;
+import fr.paris.lutece.plugins.genericattributes.service.anonymization.IEntryAnonymizationType;
 import fr.paris.lutece.plugins.genericattributes.service.entrytype.AbstractEntryTypeMyLuteceUser;
 
 /**
  * class EntryTypeText
- * 
+ *
  * @author Laurent Payen
- * 
+ *
  */
-public final class EntryTypeMyLuteceUser extends AbstractEntryTypeMyLuteceUser
+@ApplicationScoped
+@Named( "appointment.entryTypeMyLuteceUser" )
+public class EntryTypeMyLuteceUser extends AbstractEntryTypeMyLuteceUser
 {
+    @Inject
+    public void addAnonymizationTypes(
+            @Named( "genericattributes.entryIdAnonymizationType" ) IEntryAnonymizationType entryId,
+            @Named( "genericattributes.entryCodeAnonymizationType" ) IEntryAnonymizationType entryCode,
+            @Named( "genericattributes.responseIdAnonymizationType" ) IEntryAnonymizationType responseId,
+            @Named( "genericattributes.randomGuidAnonymizationType" ) IEntryAnonymizationType randomGuid,
+            @Named( "genericattributes.randomNumberAnonymizationType" ) IEntryAnonymizationType randomNumber,
+            @Named( "appointment.formIdAnonymizationType" ) IEntryAnonymizationType formId )
+    {
+        setAnonymizationTypes( List.of( entryId, entryCode, responseId, randomGuid, randomNumber, formId ) );
+    }
+
     private static final String TEMPLATE_HTML_CODE = "skin/plugins/appointment/entries/html_code_entry_type_mylutece_user.html";
     private static final String TEMPLATE_HTML_CODE_ADMIN = "admin/plugins/appointment/entries/html_code_entry_type_mylutece_user.html";
 

@@ -54,7 +54,7 @@ import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 import java.util.stream.Collectors;
 
-import javax.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletRequest;
 import org.apache.commons.collections.CollectionUtils;
 import fr.paris.lutece.plugins.appointment.business.appointment.Appointment;
 import fr.paris.lutece.plugins.appointment.business.appointment.AppointmentSlot;
@@ -70,8 +70,13 @@ import fr.paris.lutece.plugins.appointment.business.user.User;
 import fr.paris.lutece.plugins.appointment.exception.AppointmentSavedException;
 import fr.paris.lutece.plugins.appointment.exception.SlotEditTaskExpiredTimeException;
 import fr.paris.lutece.plugins.appointment.exception.SlotFullException;
-import fr.paris.lutece.plugins.appointment.service.listeners.AppointmentListenerManager;
-import fr.paris.lutece.plugins.appointment.service.listeners.SlotListenerManager;
+import fr.paris.lutece.plugins.appointment.service.event.AppointmentDateChangedEvent;
+import fr.paris.lutece.plugins.appointment.service.event.AppointmentEvent;
+import fr.paris.lutece.plugins.appointment.service.event.AppointmentWorkflowActionEvent;
+import fr.paris.lutece.plugins.appointment.service.event.SlotEvent;
+import fr.paris.lutece.portal.service.event.EventAction;
+import fr.paris.lutece.portal.service.event.Type.TypeQualifier;
+import fr.paris.lutece.plugins.appointment.service.event.SlotEndingTimeChangedEvent;
 import fr.paris.lutece.plugins.appointment.service.lock.SlotEditTask;
 import fr.paris.lutece.plugins.appointment.web.dto.AppointmentDTO;
 import fr.paris.lutece.plugins.genericattributes.business.Response;
@@ -82,6 +87,7 @@ import fr.paris.lutece.portal.service.util.AppLogService;
 import fr.paris.lutece.portal.service.workflow.WorkflowService;
 import fr.paris.lutece.portal.web.l10n.LocaleService;
 import fr.paris.lutece.util.sql.TransactionManager;
+import jakarta.enterprise.inject.spi.CDI;
 
 public final class SlotSafeService
 {
@@ -171,7 +177,7 @@ public final class SlotSafeService
             {
 
                 slotSaved = SlotHome.create( slot );
-                SlotListenerManager.notifyListenersSlotCreation( slot.getIdSlot( ) );
+                CDI.current( ).getBeanManager( ).getEvent( ).select( SlotEvent.class, new TypeQualifier( EventAction.CREATE ) ).fireAsync( new SlotEvent( slot.getIdSlot( ) ) );
             }
 
             return slotSaved;
@@ -280,7 +286,7 @@ public final class SlotSafeService
                 int nNewPotentialRemainingPlaces = Math.min( slot.getNbPotentialRemainingPlaces( ) + task.getNbPlacesTaken( ), slot.getNbRemainingPlaces( ) );
                 slot.setNbPotentialRemainingPlaces( nNewPotentialRemainingPlaces );
                 SlotHome.updatePotentialRemainingPlaces( nNewPotentialRemainingPlaces, slot.getIdSlot( ) );
-                SlotListenerManager.notifyListenersSlotChange( slot.getIdSlot( ) );
+                CDI.current( ).getBeanManager( ).getEvent( ).select( SlotEvent.class, new TypeQualifier( EventAction.UPDATE ) ).fireAsync( new SlotEvent( slot.getIdSlot( ) ) );
 
             }
         }
@@ -294,7 +300,7 @@ public final class SlotSafeService
 
     /**
      * Update potential remaining places
-     * 
+     *
      * @param nbPotentialRemainingPlaces
      *            the nbPotentialRemainingPlaces
      * @param nIdSlot
@@ -313,7 +319,7 @@ public final class SlotSafeService
                 int nNewPotentialRemainingPlaces = slot.getNbPotentialRemainingPlaces( ) - nbPotentialRemainingPlaces;
                 slot.setNbPotentialRemainingPlaces( nNewPotentialRemainingPlaces );
                 SlotHome.updatePotentialRemainingPlaces( nNewPotentialRemainingPlaces, nIdSlot );
-                SlotListenerManager.notifyListenersSlotChange( slot.getIdSlot( ) );
+                CDI.current( ).getBeanManager( ).getEvent( ).select( SlotEvent.class, new TypeQualifier( EventAction.UPDATE ) ).fireAsync( new SlotEvent( slot.getIdSlot( ) ) );
 
             }
 
@@ -393,7 +399,7 @@ public final class SlotSafeService
         catch( Exception e )
         {
             TransactionManager.rollBack( AppointmentPlugin.getPlugin( ) );
-            AppLogService.error( "Error Save appointment " + e.getMessage( ), e );
+            AppLogService.error( "Error Save appointment: {}", e.getMessage( ), e );
             throw new SlotFullException( e.getMessage( ), e );
         }
         finally
@@ -422,21 +428,21 @@ public final class SlotSafeService
 
         for ( int idSlot : listSlotUpdated )
         {
-            SlotListenerManager.notifyListenersSlotChange( idSlot );
+            CDI.current( ).getBeanManager( ).getEvent( ).select( SlotEvent.class, new TypeQualifier( EventAction.UPDATE ) ).fireAsync( new SlotEvent( idSlot ) );
         }
         if ( isReport )
         {
-            AppointmentListenerManager.notifyListenersAppointmentDateChanged( appointment.getIdAppointment( ),
-                    appointment.getListAppointmentSlot( ).stream( ).map( AppointmentSlot::getIdSlot ).collect( Collectors.toList( ) ), locale );
+            List<Integer> listIdSlot = appointment.getListAppointmentSlot( ).stream( ).map( AppointmentSlot::getIdSlot ).collect( Collectors.toList( ) );
+            CDI.current( ).getBeanManager( ).getEvent( ).select( AppointmentDateChangedEvent.class ).fireAsync( new AppointmentDateChangedEvent( appointment.getIdAppointment( ), listIdSlot, locale ) );
             if ( appointment.getIdActionReported( ) != 0 )
             {
-                AppointmentListenerManager.notifyAppointmentWFActionTriggered( appointment.getIdAppointment( ), appointment.getIdActionReported( ) );
+                CDI.current( ).getBeanManager( ).getEvent( ).select( AppointmentWorkflowActionEvent.class ).fireAsync( new AppointmentWorkflowActionEvent( appointment.getIdAppointment( ), appointment.getIdActionReported( ) ) );
             }
 
         }
         else
         {
-            AppointmentListenerManager.notifyListenersAppointmentCreated( appointment.getIdAppointment( ) );
+            CDI.current( ).getBeanManager( ).getEvent( ).select( AppointmentEvent.class, new TypeQualifier( EventAction.CREATE ) ).fireAsync( new AppointmentEvent( appointment.getIdAppointment( ) ) );
         }
     }
 
@@ -460,13 +466,14 @@ public final class SlotSafeService
         Form form = FormService.findFormLightByPrimaryKey( nIdFom );
         if ( form.getIdWorkflow( ) > 0 )
         {
-            WorkflowService.getInstance( ).getState( appointment.getIdAppointment( ), Appointment.APPOINTMENT_RESOURCE_TYPE, form.getIdWorkflow( ),
+            WorkflowService workflowService = CDI.current( ).select( WorkflowService.class ).get( );
+            workflowService.getState( appointment.getIdAppointment( ), Appointment.APPOINTMENT_RESOURCE_TYPE, form.getIdWorkflow( ),
                     form.getIdForm( ) );
 
             if ( isReport && appointment.getIdActionReported( ) != 0 )
             {
                 AdminUser adminUser = ( request != null ) ? AdminUserService.getAdminUser( request ) : null;
-                WorkflowService.getInstance( ).doProcessAction( appointment.getIdAppointment( ), Appointment.APPOINTMENT_RESOURCE_TYPE,
+                workflowService.doProcessAction( appointment.getIdAppointment( ), Appointment.APPOINTMENT_RESOURCE_TYPE,
                         appointment.getIdActionReported( ), form.getIdForm( ), request, locale, adminUser == null, adminUser );
 
             }
@@ -589,7 +596,7 @@ public final class SlotSafeService
                 // slot
                 updateSlotWithShift( slot, previousEndingTime );
             }
-            SlotListenerManager.notifySlotEndingTimeHasChanged( slot.getIdSlot( ), slot.getIdForm( ), slot.getEndingDateTime( ) );
+            CDI.current( ).getBeanManager( ).getEvent( ).select( SlotEndingTimeChangedEvent.class ).fireAsync( new SlotEndingTimeChangedEvent( slot.getIdSlot( ), slot.getIdForm( ), slot.getEndingDateTime( ) ) );
         }
         else
         {
@@ -951,7 +958,7 @@ public final class SlotSafeService
     public static Slot updateSlot( Slot slot )
     {
         Slot slotToReturn = SlotHome.update( slot );
-        SlotListenerManager.notifyListenersSlotChange( slot.getIdSlot( ) );
+        CDI.current( ).getBeanManager( ).getEvent( ).select( SlotEvent.class, new TypeQualifier( EventAction.UPDATE ) ).fireAsync( new SlotEvent( slot.getIdSlot( ) ) );
         return slotToReturn;
 
     }
@@ -1064,7 +1071,7 @@ public final class SlotSafeService
                     || slt.getEndingDateTime( ).isBefore( LocalDateTime.now( ) ) ) )
 
             {
-                AppLogService.error( "ERROR SLOT FULL, ID SLOT: " + appSlot.getIdSlot( ) );
+                AppLogService.error( "ERROR SLOT FULL, ID SLOT: {}", appSlot.getIdSlot( ) );
                 throw new SlotFullException( "ERROR SLOT FULL " );
             }
             nbSumRemainingPlaces = nbSumRemainingPlaces + slt.getNbRemainingPlaces( );

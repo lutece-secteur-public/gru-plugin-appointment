@@ -39,10 +39,9 @@ import java.time.ZoneId;
 import java.util.List;
 import java.util.Map;
 
-import javax.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletRequest;
 
 import fr.paris.lutece.plugins.appointment.service.comment.IRedirectComment;
-import fr.paris.lutece.portal.service.spring.SpringContextService;
 import org.apache.commons.lang3.StringUtils;
 
 import fr.paris.lutece.api.user.User;
@@ -61,16 +60,24 @@ import fr.paris.lutece.portal.service.template.AppTemplateService;
 import fr.paris.lutece.portal.util.mvc.admin.annotations.Controller;
 import fr.paris.lutece.portal.util.mvc.commons.annotations.Action;
 import fr.paris.lutece.portal.util.mvc.commons.annotations.View;
+import fr.paris.lutece.portal.web.cdi.mvc.Models;
 import fr.paris.lutece.util.date.DateUtil;
 import fr.paris.lutece.util.html.HtmlTemplate;
 import fr.paris.lutece.util.url.UrlItem;
 
+import jakarta.enterprise.context.SessionScoped;
+import jakarta.enterprise.inject.Instance;
+import jakarta.inject.Inject;
+import jakarta.inject.Named;
+
 /**
  * This class provides the user interface to manage CommentForm features ( manage, create, modify, copy, remove )
- * 
+ *
  * @author rdeniel
- * 
+ *
  */
+@SessionScoped
+@Named( "appointmentCommentJspBean" )
 @Controller( controllerJsp = CommentJspBean.JSP_MANAGE_COMMENTS, controllerPath = "jsp/admin/plugins/appointment/", right = CommentJspBean.RIGHT_MANAGECOMMENTTFORM )
 public class CommentJspBean extends AbstractAppointmentFormAndSlotJspBean
 {
@@ -137,6 +144,11 @@ public class CommentJspBean extends AbstractAppointmentFormAndSlotJspBean
     // Session variable to store working values
     private Comment _comment;
 
+    @Inject
+    private Models _models;
+    @Inject
+    private Instance<IRedirectComment> _redirectComments;
+
     /**
      * Build the Manage View
      * 
@@ -176,13 +188,12 @@ public class CommentJspBean extends AbstractAppointmentFormAndSlotJspBean
         }
         _comment = new Comment( );
 
-        Map<String, Object> model = getModel( );
-        model.put( MARK_COMMENT, _comment );
-        model.put( MARK_LOCALE, getLocale( ) );
-        model.put( PARAMETER_ID_FORM, nIdForm );
-        model.put( MARK_MAILING_LIST, AdminMailingListService.getMailingLists( getUser( ) ) );
+        _models.put( MARK_COMMENT, _comment );
+        _models.put( MARK_LOCALE, getLocale( ) );
+        _models.put( PARAMETER_ID_FORM, nIdForm );
+        _models.put( MARK_MAILING_LIST, AdminMailingListService.getMailingLists( getUser( ) ) );
 
-        return getPage( MESSAGE_COMMENT_PAGE_TITLE, TEMPLATE_CREATE_COMMENT, model );
+        return getPage( MESSAGE_COMMENT_PAGE_TITLE, TEMPLATE_CREATE_COMMENT );
 
     }
 
@@ -269,13 +280,12 @@ public class CommentJspBean extends AbstractAppointmentFormAndSlotJspBean
             throw new AccessDeniedException( AppointmentResourceIdService.PERMISSION_MODERATE_COMMENT_FORM );
 
         }
-        Map<String, Object> model = getModel( );
-        model.put( MARK_COMMENT, _comment );
-        model.put( MARK_LOCALE, getLocale( ) );
-        model.put( PARAMETER_ID_FORM, _comment.getIdForm( ) );
-        model.put( MARK_MAILING_LIST, AdminMailingListService.getMailingLists( getUser( ) ) );
+        _models.put( MARK_COMMENT, _comment );
+        _models.put( MARK_LOCALE, getLocale( ) );
+        _models.put( PARAMETER_ID_FORM, _comment.getIdForm( ) );
+        _models.put( MARK_MAILING_LIST, AdminMailingListService.getMailingLists( getUser( ) ) );
 
-        return getPage( MESSAGE_COMMENT_PAGE_TITLE, TEMPLATE_MODIFY_COMMENT, model );
+        return getPage( MESSAGE_COMMENT_PAGE_TITLE, TEMPLATE_MODIFY_COMMENT );
 
     }
 
@@ -415,8 +425,7 @@ public class CommentJspBean extends AbstractAppointmentFormAndSlotJspBean
     public String getCommentInfos( )
     {
 
-        Map<String, Object> model = getModel( );
-        HtmlTemplate template = AppTemplateService.getTemplate( TEMPLATE_COMMENT_INFO, getLocale( ), model );
+        HtmlTemplate template = AppTemplateService.getTemplate( TEMPLATE_COMMENT_INFO, getLocale( ), _models );
 
         return template.getHtml( );
     }
@@ -444,7 +453,7 @@ public class CommentJspBean extends AbstractAppointmentFormAndSlotJspBean
      */
     private String makeStringBackUrl( HttpServletRequest request )
     {
-        List<IRedirectComment> redirectAppointments = SpringContextService.getBeansOfType( IRedirectComment.class );
+        List<IRedirectComment> redirectAppointments = _redirectComments.stream( ).collect( java.util.stream.Collectors.toList( ) );
         String from = request.getParameter( PARAMETER_FROM );
         String strReferer = request.getHeader( REFERER );
 

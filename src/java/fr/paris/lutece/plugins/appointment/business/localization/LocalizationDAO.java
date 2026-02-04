@@ -37,8 +37,10 @@ import java.sql.Statement;
 
 import fr.paris.lutece.portal.service.plugin.Plugin;
 import fr.paris.lutece.util.sql.DAOUtil;
+import jakarta.enterprise.context.ApplicationScoped;
 
-public final class LocalizationDAO implements ILocalizationDAO
+@ApplicationScoped
+public class LocalizationDAO implements ILocalizationDAO
 {
 
     private static final String SQL_QUERY_INSERT = "INSERT INTO appointment_localization (longitude, latitude, address, id_form) VALUES ( ?, ?, ?, ?)";

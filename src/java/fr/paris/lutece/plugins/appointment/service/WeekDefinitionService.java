@@ -48,7 +48,10 @@ import fr.paris.lutece.plugins.appointment.business.planning.WeekDefinition;
 import fr.paris.lutece.plugins.appointment.business.planning.WeekDefinitionHome;
 import fr.paris.lutece.plugins.appointment.business.planning.WorkingDay;
 import fr.paris.lutece.plugins.appointment.business.rule.ReservationRule;
-import fr.paris.lutece.plugins.appointment.service.listeners.WeekDefinitionManagerListener;
+import fr.paris.lutece.plugins.appointment.service.event.WeekDefinitionEvent;
+import fr.paris.lutece.portal.service.event.EventAction;
+import fr.paris.lutece.portal.service.event.Type.TypeQualifier;
+import jakarta.enterprise.inject.spi.CDI;
 import fr.paris.lutece.portal.service.util.AppException;
 import fr.paris.lutece.portal.service.util.AppLogService;
 import fr.paris.lutece.util.ReferenceList;
@@ -84,7 +87,6 @@ public final class WeekDefinitionService
         WeekDefinition weekDefinition = new WeekDefinition( );
         fillInWeekDefinition( weekDefinition, nIdReservationRule, dateOfApply, endingDateOfApply );
         WeekDefinitionHome.create( weekDefinition );
-        // WeekDefinitionManagerListener.notifyListenersWeekDefinitionAssigned( weekDefinition.getIdWeekDefinition( ) );
         return weekDefinition;
     }
 
@@ -97,7 +99,7 @@ public final class WeekDefinitionService
     public static void removeWeekDefinition( WeekDefinition weekDefinition )
     {
         WeekDefinitionHome.delete( weekDefinition.getIdWeekDefinition( ) );
-        WeekDefinitionManagerListener.notifyListenersWeekDefinitionUnassigned( weekDefinition );
+        CDI.current( ).getBeanManager( ).getEvent( ).select( WeekDefinitionEvent.class, new TypeQualifier( EventAction.REMOVE ) ).fireAsync( new WeekDefinitionEvent( weekDefinition ) );
     }
 
     /**
@@ -110,7 +112,7 @@ public final class WeekDefinitionService
     public static WeekDefinition saveWeekDefinition( WeekDefinition weekDefinition )
     {
         WeekDefinitionHome.create( weekDefinition );
-        WeekDefinitionManagerListener.notifyListenersWeekDefinitionAssigned( weekDefinition );
+        CDI.current( ).getBeanManager( ).getEvent( ).select( WeekDefinitionEvent.class, new TypeQualifier( EventAction.CREATE ) ).fireAsync( new WeekDefinitionEvent( weekDefinition ) );
         return weekDefinition;
     }
 
@@ -530,7 +532,7 @@ public final class WeekDefinitionService
         }
 
         assignWeekDefintion( listWeekToRemove, buildListWeekToEdit, nIdForm );
-        WeekDefinitionManagerListener.notifyListenersWeekDefinitionAssigned( newWeek );
+        CDI.current( ).getBeanManager( ).getEvent( ).select( WeekDefinitionEvent.class, new TypeQualifier( EventAction.CREATE ) ).fireAsync( new WeekDefinitionEvent( newWeek ) );
     }
 
     private static void assignWeekDefintion( List<WeekDefinition> listWeekTodRemove, List<WeekDefinition> listWeekToEdit, int nIdForm )
@@ -554,12 +556,11 @@ public final class WeekDefinitionService
                 WeekDefinitionHome.create( week );
             }
             TransactionManager.commitTransaction( AppointmentPlugin.getPlugin( ) );
-            // WeekDefinitionManagerListener.notifyListenersListWeekDefinitionChanged( nIdForm, listWeekToEdit );
         }
         catch( Exception e )
         {
             TransactionManager.rollBack( AppointmentPlugin.getPlugin( ) );
-            AppLogService.error( "Error assign week " + e.getMessage( ), e );
+            AppLogService.error( "Error assign week: {}", e.getMessage( ), e );
             throw new AppException( e.getMessage( ), e );
 
         }

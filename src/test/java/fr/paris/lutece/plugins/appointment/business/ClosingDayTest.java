@@ -41,9 +41,11 @@ import fr.paris.lutece.plugins.appointment.business.planning.ClosingDay;
 import fr.paris.lutece.plugins.appointment.business.planning.ClosingDayHome;
 import fr.paris.lutece.test.LuteceTestCase;
 
+import org.junit.jupiter.api.Test;
+
 /**
  * Test Class for the ClosingDay
- * 
+ *
  * @author Laurent Payen
  *
  */
@@ -56,6 +58,7 @@ public final class ClosingDayTest extends LuteceTestCase
     /**
      * Test method for the ClosingDay (CRUD)
      */
+    @Test
     public void testClosingDay( )
     {
         Form form = FormTest.buildForm1( );
@@ -93,6 +96,7 @@ public final class ClosingDayTest extends LuteceTestCase
     /**
      * Test method for findByIdFormAndDateOfCLosingDay
      */
+    @Test
     public void testFindByIdFormAndDateOfCLosingDay( )
     {
         Form form = FormTest.buildForm1( );

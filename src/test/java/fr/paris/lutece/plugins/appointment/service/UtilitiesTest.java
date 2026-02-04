@@ -41,7 +41,7 @@ import java.util.List;
 import fr.paris.lutece.test.LuteceTestCase;
 import java.time.format.DateTimeFormatter;
 import java.util.Locale;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class UtilitiesTest extends LuteceTestCase
 {

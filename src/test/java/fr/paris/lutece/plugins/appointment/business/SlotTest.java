@@ -42,9 +42,11 @@ import fr.paris.lutece.plugins.appointment.business.slot.Slot;
 import fr.paris.lutece.plugins.appointment.business.slot.SlotHome;
 import fr.paris.lutece.test.LuteceTestCase;
 
+import org.junit.jupiter.api.Test;
+
 /**
  * Test class for the Slot
- * 
+ *
  * @author Laurent Payen
  *
  */
@@ -54,6 +56,7 @@ public final class SlotTest extends LuteceTestCase
     /**
      * Test method for the Slot (CRUD)
      */
+    @Test
     public void testSlot( )
     {
         Form form = FormTest.buildForm1( );
@@ -94,6 +97,7 @@ public final class SlotTest extends LuteceTestCase
     /**
      * Test of findByIdFormAndDateRange
      */
+    @Test
     public void testFindByIdFormAndDateRange( )
     {
         Form form = FormTest.buildForm1( );
@@ -124,6 +128,7 @@ public final class SlotTest extends LuteceTestCase
     /**
      * Test of findOpenSlotsByIdFormAndDateRange
      */
+    @Test
     public void testFindOpenSlotsByIdFormAndDateRange( )
     {
         Form form = FormTest.buildForm1( );
@@ -153,6 +158,7 @@ public final class SlotTest extends LuteceTestCase
     /**
      * Test of FindOpenSlotsByIdForm
      */
+    @Test
     public void testFindOpenSlotsByIdForm( )
     {
         Form form = FormTest.buildForm1( );

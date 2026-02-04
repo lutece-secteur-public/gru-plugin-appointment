@@ -39,7 +39,10 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
-import javax.servlet.http.HttpServletRequest;
+import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.enterprise.inject.spi.CDI;
+import jakarta.inject.Named;
+import jakarta.servlet.http.HttpServletRequest;
 
 import org.apache.commons.collections.CollectionUtils;
 
@@ -58,7 +61,6 @@ import fr.paris.lutece.plugins.genericattributes.service.entrytype.AbstractEntry
 import fr.paris.lutece.plugins.genericattributes.service.entrytype.EntryTypeServiceManager;
 import fr.paris.lutece.plugins.genericattributes.service.entrytype.IEntryTypeService;
 import fr.paris.lutece.portal.service.content.XPageAppService;
-import fr.paris.lutece.portal.service.spring.SpringContextService;
 import fr.paris.lutece.portal.service.template.AppTemplateService;
 import fr.paris.lutece.portal.service.util.AppPathService;
 import fr.paris.lutece.portal.service.util.RemovalListenerService;
@@ -73,7 +75,9 @@ import fr.paris.lutece.util.url.UrlItem;
  * @author Laurent Payen
  *
  */
-public final class EntryService extends RemovalListenerService implements Serializable
+@ApplicationScoped
+@Named( "appointment.entryService" )
+public class EntryService extends RemovalListenerService implements Serializable
 {
     /**
      * Name of the bean of this service
@@ -99,15 +103,6 @@ public final class EntryService extends RemovalListenerService implements Serial
     private static final String TEMPLATE_DIV_CONDITIONAL_ENTRY_FO = "skin/plugins/appointment/html_code_div_conditional_entry.html";
     private static final String TEMPLATE_DIV_CONDITIONAL_ENTRY_BO = "admin/plugins/appointment/html_code_div_conditional_entry.html";
 
-    /**
-     * Get an instance of the service
-     *
-     * @return An instance of the service
-     */
-    public static EntryService getService( )
-    {
-        return SpringContextService.getBean( BEAN_NAME );
-    }
 
     /**
      * Build an entry filter with static parameter
@@ -448,7 +443,7 @@ public final class EntryService extends RemovalListenerService implements Serial
             entry.setFields( FieldHome.getFieldListByIdEntry( entry.getIdEntry( ) ) );
         }
         model.put( MARK_GROUP_ENTRY_LIST, getRefListGroups( nIdForm ) );
-        model.put( MARK_ENTRY_TYPE_LIST, EntryTypeService.getInstance( ).getListActiveEntryType( ) );
+        model.put( MARK_ENTRY_TYPE_LIST, CDI.current( ).select( EntryTypeService.class ).get( ).getListActiveEntryType( ) );
         model.put( MARK_ENTRY_LIST, listEntry );
         model.put( MARK_LIST_ORDER_FIRST_LEVEL, listOrderFirstLevel );
     }
@@ -778,7 +773,7 @@ public final class EntryService extends RemovalListenerService implements Serial
     public static Entry createEntryByEntryType( int nIdType )
     {
         Entry entry = new Entry( );
-        entry.setEntryType( EntryTypeService.getInstance( ).getEntryType( nIdType ) );
+        entry.setEntryType( CDI.current( ).select( EntryTypeService.class ).get( ).getEntryType( nIdType ) );
 
         return entry;
     }

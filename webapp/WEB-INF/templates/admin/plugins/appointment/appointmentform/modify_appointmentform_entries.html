@@ -174,18 +174,11 @@
 </#macro>
 
 <script>
-$(function(){
-	<@headerTitle form=appointmentform />
-	$("#selectAll").click(function(event) {  //on click
-		if ( this.checked ){ // check select status
-			$("input[name='entry_id_move']").each(function() { //loop through each checkbox
-				this.checked = true;  //select all checkboxes with class "checkbox1"
-			});
-		} else {
-			$("input[name='entry_id_move']").each(function() { //loop through each checkbox
-				this.checked = false; //deselect all checkboxes with class "checkbox1"
-			});
-		}
+<@headerTitle form=appointmentform />
+document.getElementById('selectAll').addEventListener('click', function() {
+	var checked = this.checked;
+	document.querySelectorAll("input[name='entry_id_move']").forEach(function(cb) {
+		cb.checked = checked;
 	});
 });
 </script>

@@ -50,6 +50,8 @@ import fr.paris.lutece.plugins.appointment.web.dto.AppointmentDTO;
 import fr.paris.lutece.plugins.appointment.web.dto.AppointmentFormDTO;
 import fr.paris.lutece.test.LuteceTestCase;
 
+import org.junit.jupiter.api.Test;
+
 /**
  * Test Class for the Appointment Service
  * 
@@ -64,6 +66,7 @@ public class AppointmentServiceTest extends LuteceTestCase
     private LocalDateTime _slotStart = LocalDate.now( ).plusDays( 1 ).atTime( _timeStart );
     private LocalDateTime _slotEnd = LocalDate.now( ).plusDays( 1 ).atTime( _timeEnd );
 
+    @Test
     public void testAppointmentAndNbRemainingPlaces( )
     {
 
@@ -94,6 +97,7 @@ public class AppointmentServiceTest extends LuteceTestCase
         assertNull( AppointmentService.findAppointmentById( nIdAppointment ) );
     }
 
+    @Test
     public void testAppointmentAndNbRemainingPlaces2( )
     {
 
@@ -122,6 +126,7 @@ public class AppointmentServiceTest extends LuteceTestCase
         assertNull( AppointmentService.findAppointmentById( nIdAppointment ) );
     }
 
+    @Test
     public void testAppointmentAndNbRemainingPlaces3( )
     {
 
@@ -150,6 +155,7 @@ public class AppointmentServiceTest extends LuteceTestCase
         assertNull( AppointmentService.findAppointmentById( nIdAppointment ) );
     }
 
+    @Test
     public void testAppointmentAndNbPotentialRemainingPlaces( )
     {
 
@@ -178,6 +184,7 @@ public class AppointmentServiceTest extends LuteceTestCase
         assertNull( AppointmentService.findAppointmentById( nIdAppointment ) );
     }
 
+    @Test
     public void testAppointmentAndNbPotentialRemainingPlaces2( )
     {
 
@@ -207,6 +214,7 @@ public class AppointmentServiceTest extends LuteceTestCase
         assertNull( AppointmentService.findAppointmentById( nIdAppointment ) );
     }
 
+    @Test
     public void testAppointmentAndNbPotentialRemainingPlaces3( )
     {
 
@@ -235,6 +243,7 @@ public class AppointmentServiceTest extends LuteceTestCase
         assertNull( AppointmentService.findAppointmentById( nIdAppointment ) );
     }
 
+    @Test
     public void testAppointmentAndNbPlacesTaken( )
     {
 
@@ -263,6 +272,7 @@ public class AppointmentServiceTest extends LuteceTestCase
         assertNull( AppointmentService.findAppointmentById( nIdAppointment ) );
     }
 
+    @Test
     public void testAppointmentAndNbPlacesTaken2( )
     {
 
@@ -291,6 +301,7 @@ public class AppointmentServiceTest extends LuteceTestCase
         assertNull( AppointmentService.findAppointmentById( nIdAppointment ) );
     }
 
+    @Test
     public void testAppointmentAndNbPlacesTaken3( )
     {
 
@@ -319,6 +330,7 @@ public class AppointmentServiceTest extends LuteceTestCase
         assertNull( AppointmentService.findAppointmentById( nIdAppointment ) );
     }
 
+    @Test
     public void testMultipleAppointmentsOnSameSlot( )
     {
 
@@ -358,6 +370,7 @@ public class AppointmentServiceTest extends LuteceTestCase
         cleanUp( nIdForm, app, appointmentDTO1, appointmentDTO2 );
     }
 
+    @Test
     public void testMultipleAppointmentsOnSameSlot2( )
     {
 
@@ -397,6 +410,7 @@ public class AppointmentServiceTest extends LuteceTestCase
         cleanUp( nIdForm, app, appointmentDTO1, appointmentDTO2 );
     }
 
+    @Test
     public void testMultipleAppointmentsOnSameSlot3( )
     {
 
@@ -436,6 +450,7 @@ public class AppointmentServiceTest extends LuteceTestCase
         cleanUp( nIdForm, app, appointmentDTO1, appointmentDTO2 );
     }
 
+    @Test
     public void testRemoveAppointmentAndCheckNbRemainingPlaces( )
     {
         // Build the form
@@ -470,6 +485,7 @@ public class AppointmentServiceTest extends LuteceTestCase
         cleanUp( nIdForm, app, appointmentDTO1 );
     }
 
+    @Test
     public void testRemoveAppointmentAndCheckNbRemainingPlaces2( )
     {
         // Build the form
@@ -504,6 +520,7 @@ public class AppointmentServiceTest extends LuteceTestCase
         cleanUp( nIdForm, app, appointmentDTO1 );
     }
 
+    @Test
     public void testRemoveAppointmentAndCheckNbRemainingPlaces3( )
     {
         // Build the form
@@ -549,6 +566,7 @@ public class AppointmentServiceTest extends LuteceTestCase
         cleanUp( nIdForm, app, appointmentDTO1, appointmentDTO2 );
     }
 
+    @Test
     public void testRemoveAppointmentAndCheckNbRemainingPlaces4( )
     {
         // Build the form
@@ -594,6 +612,7 @@ public class AppointmentServiceTest extends LuteceTestCase
         cleanUp( nIdForm, app, appointmentDTO1, appointmentDTO2 );
     }
 
+    @Test
     public void testCancelAppointment( )
     {
         // Build the form
@@ -631,6 +650,7 @@ public class AppointmentServiceTest extends LuteceTestCase
 
     }
 
+    @Test
     public void testCancelAppointment2( )
     {
         // Build the form
@@ -679,6 +699,7 @@ public class AppointmentServiceTest extends LuteceTestCase
 
     }
 
+    @Test
     public void testCancelAppointment3( )
     {
         // Build the form

@@ -33,7 +33,9 @@
  */
 package fr.paris.lutece.plugins.appointment.web.portlet;
 
-import javax.servlet.http.HttpServletRequest;
+import jakarta.enterprise.context.RequestScoped;
+import jakarta.inject.Named;
+import jakarta.servlet.http.HttpServletRequest;
 
 import fr.paris.lutece.plugins.appointment.business.portlet.AppointmentFormListPortlet;
 import fr.paris.lutece.plugins.appointment.business.portlet.AppointmentFormListPortletHome;
@@ -45,6 +47,8 @@ import fr.paris.lutece.portal.business.portlet.PortletHome;
  * @author Laurent Payen
  *
  */
+@RequestScoped
+@Named
 public class AppointmentFormListPortletJspBean extends AbstractPortletJspBean
 {
     /**

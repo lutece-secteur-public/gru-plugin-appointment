@@ -39,7 +39,7 @@ import fr.paris.lutece.plugins.appointment.service.AppointmentPlugin;
 import fr.paris.lutece.plugins.appointment.web.dto.AppointmentFilterDTO;
 import fr.paris.lutece.portal.service.plugin.Plugin;
 import fr.paris.lutece.portal.service.plugin.PluginService;
-import fr.paris.lutece.portal.service.spring.SpringContextService;
+import jakarta.enterprise.inject.spi.CDI;
 
 /**
  * This class provides instances management methods for Appointment objects
@@ -51,7 +51,7 @@ public final class AppointmentHome
 {
 
     // Static variable pointed at the DAO instance
-    private static IAppointmentDAO _dao = SpringContextService.getBean( "appointment.appointmentDAO" );
+    private static IAppointmentDAO _dao = CDI.current( ).select( IAppointmentDAO.class ).get( );
     private static Plugin _plugin = PluginService.getPlugin( AppointmentPlugin.PLUGIN_NAME );
 
     /**

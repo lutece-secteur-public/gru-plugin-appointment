@@ -35,6 +35,7 @@ package fr.paris.lutece.plugins.appointment.business.portlet;
 
 import fr.paris.lutece.portal.business.portlet.Portlet;
 import fr.paris.lutece.util.sql.DAOUtil;
+import jakarta.enterprise.context.ApplicationScoped;
 
 /**
  * this class provides Data Access methods for AppointmentPortlet objects
@@ -42,7 +43,8 @@ import fr.paris.lutece.util.sql.DAOUtil;
  * @author Laurent Payen
  *
  */
-public final class AppointmentFormPortletDAO implements IAppointmentFormPortletDAO
+@ApplicationScoped
+public class AppointmentFormPortletDAO implements IAppointmentFormPortletDAO
 {
     // //////////////////////////////////////////////////////////////////////////
     // Constants

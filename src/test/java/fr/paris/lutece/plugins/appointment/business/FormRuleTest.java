@@ -39,9 +39,11 @@ import fr.paris.lutece.plugins.appointment.business.rule.FormRule;
 import fr.paris.lutece.plugins.appointment.business.rule.FormRuleHome;
 import fr.paris.lutece.test.LuteceTestCase;
 
+import org.junit.jupiter.api.Test;
+
 /**
  * Test Class for the FormRule
- * 
+ *
  * @author Laurent Payen
  *
  */
@@ -56,6 +58,7 @@ public final class FormRuleTest extends LuteceTestCase
     /**
      * Test method for the FormRule (CRUD)
      */
+    @Test
     public void testFormRule( )
     {
         Form form = FormTest.buildForm1( );
@@ -94,6 +97,7 @@ public final class FormRuleTest extends LuteceTestCase
     /**
      * Test findByIdFOrm method
      */
+    @Test
     public void testFindByIdForm( )
     {
         Form form = FormTest.buildForm1( );

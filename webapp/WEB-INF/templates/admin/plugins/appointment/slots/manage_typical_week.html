@@ -295,28 +295,31 @@ $('#ending_time').datetimepicker({
     stepping: 5
 });
 
-$('#new_cap').click(function(){
-    $('#newCapacity').attr('min','0');
-    if( $('#newCapacity').val() < 0 ){
-        $('#newCapacity').val(0);
-    }
+document.getElementById('new_cap').addEventListener('click', function(){
+    var el = document.getElementById('newCapacity');
+    el.setAttribute('min','0');
+    if( parseInt(el.value) < 0 ){ el.value = 0; }
 });
 
-$('#var_cap').click(function(){
-    $('#newCapacity').attr('min','-99');
+document.getElementById('var_cap').addEventListener('click', function(){
+    document.getElementById('newCapacity').setAttribute('min','-99');
 });
 
 /* Tab management                       */
 <#if id_reservation_rule?number=0>
-    calendar.toggle();
+    document.getElementById('calendar').style.display = document.getElementById('calendar').style.display === 'none' ? '' : 'none';
 <#else>
-    $("#appointment_search").toggle();
+    document.getElementById('appointment_search').style.display = document.getElementById('appointment_search').style.display === 'none' ? '' : 'none';
 </#if>
 
-$('.btn-editappsearch').click( function(e){
-    e.preventDefault();
-    $(this).children('.fa').toggleClass('fa-eye');
-    $("#appointment_search").toggle();
+document.querySelectorAll('.btn-editappsearch').forEach(function(btn) {
+    btn.addEventListener('click', function(e){
+        e.preventDefault();
+        var icon = this.querySelector('.fa');
+        if (icon) { icon.classList.toggle('fa-eye'); }
+        var search = document.getElementById('appointment_search');
+        search.style.display = search.style.display === 'none' ? '' : 'none';
+    });
 });
 </@fullCalendarScript>
 </script>

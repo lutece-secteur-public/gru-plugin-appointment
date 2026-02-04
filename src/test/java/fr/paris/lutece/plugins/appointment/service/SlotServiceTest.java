@@ -48,6 +48,8 @@ import fr.paris.lutece.plugins.appointment.business.slot.Slot;
 import fr.paris.lutece.plugins.appointment.web.dto.AppointmentFormDTO;
 import fr.paris.lutece.test.LuteceTestCase;
 
+import org.junit.jupiter.api.Test;
+
 public class SlotServiceTest extends LuteceTestCase
 {
     private LocalDate _nextMonday = LocalDate.now( ).with( TemporalAdjusters.next( DayOfWeek.MONDAY ) );
@@ -57,6 +59,7 @@ public class SlotServiceTest extends LuteceTestCase
 
     // Check that there are 180 open slots from the 3/12/2018 to the 14/12/2018
     // With open days from Monday to Friday
+    @Test
     public void testOpenSlots( )
     {
 
@@ -84,6 +87,7 @@ public class SlotServiceTest extends LuteceTestCase
         FormServiceTest.cleanForm( nIdForm );
     }
 
+    @Test
     public void testOpenSlotsWithSpecificSlotsClosed( )
     {
         // Build the form
@@ -121,6 +125,7 @@ public class SlotServiceTest extends LuteceTestCase
         FormServiceTest.cleanForm( nIdForm );
     }
 
+    @Test
     public void testOpenSlotsWithSpecificLargeSlots( )
     {
         // Build the form

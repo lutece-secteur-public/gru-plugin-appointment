@@ -77,21 +77,23 @@ function isOlderThanToday( dtCompare ) {
 let calendar = null;
 function editEvent( event) {
     if( event.weekDef != undefined  ){
-        $('#event-modal input[name="id_week_definition"]').val( event.weekDef );
-        $('#event-modal #delete').show();
+        document.querySelector('#event-modal input[name="id_week_definition"]').value = event.weekDef;
+        document.querySelector('#event-modal #delete').style.display = '';
         if( !isOlderThanToday( event.startDate ) ){
-            $('#event-modal #delete').attr('disabled','disabled');
+            document.querySelector('#event-modal #delete').setAttribute('disabled','disabled');
         } else {
-            $('#event-modal #delete').removeAttr('disabled');
+            document.querySelector('#event-modal #delete').removeAttribute('disabled');
         }
     } else {
-        $('#event-modal #delete').hide();
+        document.querySelector('#event-modal #delete').style.display = 'none';
     }
-    
-    $('#event-modal input[name="date_of_apply"]').val( moment( event.startDate ).format('L') );
-    $('#event-modal input[name="date_of_apply"]').datetimepicker({ locale: '${language}', format: 'L' });
-    $('#event-modal input[name="ending_date_of_apply"]').val( moment( event.endDate ).format('L') );
-    $('#event-modal input[name="ending_date_of_apply"]').datetimepicker({ locale: '${language}', format: 'L'});
+
+    var dateOfApplyInput = document.querySelector('#event-modal input[name="date_of_apply"]');
+    dateOfApplyInput.value = moment( event.startDate ).format('L');
+    $(dateOfApplyInput).datetimepicker({ locale: '${language}', format: 'L' });
+    var endingDateInput = document.querySelector('#event-modal input[name="ending_date_of_apply"]');
+    endingDateInput.value = moment( event.endDate ).format('L');
+    $(endingDateInput).datetimepicker({ locale: '${language}', format: 'L'});
     //$('#event-modal').modal();
     const eventModal = bootstrap.Modal.getOrCreateInstance('#event-modal')
     eventModal.toggle()
@@ -165,7 +167,7 @@ $(function() {
             const cDay = moment( date ).format('YYYY-MM-DD');
             const result = specDates.findIndex( yday => yday === cDay );
             if( result != -1 ){
-                $(e).addClass( 'isSpecific' );
+                e.classList.add( 'isSpecific' );
             }
         },
         dataSource: [
@@ -187,8 +189,8 @@ $(function() {
 
     if( document.getElementById('loader') != undefined ){ document.getElementById('loader').remove() };
 
-    $('#event-modal #delete').click(function( em ) {
-        $('#event-modal input[name="action"]').val( 'doUnssignWeek' );
+    document.querySelector('#event-modal #delete').addEventListener('click', function( em ) {
+        document.querySelector('#event-modal input[name="action"]').value = 'doUnssignWeek';
     })
 });
 </script>

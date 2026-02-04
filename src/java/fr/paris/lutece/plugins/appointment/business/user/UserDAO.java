@@ -39,6 +39,7 @@ import java.util.List;
 
 import fr.paris.lutece.portal.service.plugin.Plugin;
 import fr.paris.lutece.util.sql.DAOUtil;
+import jakarta.enterprise.context.ApplicationScoped;
 
 /**
  * This class provides Data Access methods for User objects
@@ -46,7 +47,8 @@ import fr.paris.lutece.util.sql.DAOUtil;
  * @author Laurent Payen
  *
  */
-public final class UserDAO implements IUserDAO
+@ApplicationScoped
+public class UserDAO implements IUserDAO
 {
 
     private static final String SQL_QUERY_INSERT = "INSERT INTO appointment_user ( guid, first_name, last_name, email, phone_number) VALUES ( ?, ?, ?, ?, ?)";

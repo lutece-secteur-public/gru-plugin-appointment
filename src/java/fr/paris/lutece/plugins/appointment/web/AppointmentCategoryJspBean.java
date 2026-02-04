@@ -35,7 +35,7 @@ package fr.paris.lutece.plugins.appointment.web;
 
 import java.util.List;
 import java.util.Map;
-import javax.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletRequest;
 
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -49,14 +49,21 @@ import fr.paris.lutece.portal.service.message.AdminMessageService;
 import fr.paris.lutece.portal.util.mvc.admin.annotations.Controller;
 import fr.paris.lutece.portal.util.mvc.commons.annotations.Action;
 import fr.paris.lutece.portal.util.mvc.commons.annotations.View;
+import fr.paris.lutece.portal.web.cdi.mvc.Models;
 import fr.paris.lutece.util.url.UrlItem;
+
+import jakarta.enterprise.context.SessionScoped;
+import jakarta.inject.Inject;
+import jakarta.inject.Named;
 
 /**
  * This class provides the user interface to manage AppointmentForm features ( manage, create, modify, copy, remove )
- * 
+ *
  * @author L.Payen
- * 
+ *
  */
+@SessionScoped
+@Named
 @Controller( controllerJsp = "ManageAppointmentCategory.jsp", controllerPath = "jsp/admin/plugins/appointment/", right = AppointmentCategoryJspBean.RIGHT_MANAGECATEGORY )
 public class AppointmentCategoryJspBean extends AbstractAppointmentFormAndSlotJspBean
 {
@@ -109,6 +116,8 @@ public class AppointmentCategoryJspBean extends AbstractAppointmentFormAndSlotJs
     private static final String INFO_CATEGORY_REMOVED = "appointment.info.category.removed";
 
     // Session variables
+    @Inject
+    private Models _models;
     private Category _category;
 
     /**
@@ -188,10 +197,9 @@ public class AppointmentCategoryJspBean extends AbstractAppointmentFormAndSlotJs
     @View( VIEW_CREATE_CATEGORY )
     public String getCreateCategory( HttpServletRequest request )
     {
-        Map<String, Object> model = getModel( );
         _category = ( _category == null ) ? new Category( ) : _category;
-        model.put( MARK_CATEGORY, _category );
-        return getPage( PROPERTY_PAGE_TITLE_CREATE_CATEGORY, TEMPLATE_CREATE_CATEGORY, model );
+        _models.put( MARK_CATEGORY, _category );
+        return getPage( PROPERTY_PAGE_TITLE_CREATE_CATEGORY, TEMPLATE_CREATE_CATEGORY );
     }
 
     /**
@@ -233,9 +241,8 @@ public class AppointmentCategoryJspBean extends AbstractAppointmentFormAndSlotJs
         String strIdCategory = request.getParameter( PARAMETER_ID_CATEGORY );
         int nIdCategory = Integer.parseInt( strIdCategory );
         _category = CategoryService.findCategoryById( nIdCategory );
-        Map<String, Object> model = getModel( );
-        model.put( MARK_CATEGORY, _category );
-        return getPage( PROPERTY_PAGE_TITLE_MODIFY_CATEGORY, TEMPLATE_MODIFY_CATEGORY, model );
+        _models.put( MARK_CATEGORY, _category );
+        return getPage( PROPERTY_PAGE_TITLE_MODIFY_CATEGORY, TEMPLATE_MODIFY_CATEGORY );
     }
 
     /**

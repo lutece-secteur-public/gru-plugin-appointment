@@ -33,35 +33,26 @@
  */
 package fr.paris.lutece.plugins.appointment.service.upload;
 
+import jakarta.enterprise.context.ApplicationScoped;
+
 import fr.paris.lutece.plugins.genericattributes.service.upload.AbstractGenAttUploadHandler;
-import fr.paris.lutece.portal.service.spring.SpringContextService;
 
 /**
  * AppointmentAsynchronousUploadHandler.
- * 
+ *
  * @see #getFileItems(String, String)
  * @see #removeFileItem(String, String, int)
- * 
+ *
  * @author Laurent Payen
- * 
+ *
  */
-public final class AppointmentAsynchronousUploadHandler extends AbstractGenAttUploadHandler
+@ApplicationScoped
+public class AppointmentAsynchronousUploadHandler extends AbstractGenAttUploadHandler
 {
     private static final String UPLOAD_SUBMIT_PREFIX = "_appointment_upload_submit_";
     private static final String UPLOAD_DELETE_PREFIX = "_appointment_upload_delete_";
     private static final String UPLOAD_CHECKBOX_PREFIX = "_appointment_upload_checkbox_";
-    private static final String BEAN_APPOINTMENT_ASYNCHRONOUS_UPLOAD_HANDLER = "appointment.appointmentAsynchronousUploadHandler";
     private static final String HANDLER_NAME = "appointmentAsynchronousUploadHandler";
-
-    /**
-     * Get the handler
-     * 
-     * @return the handler
-     */
-    public static AppointmentAsynchronousUploadHandler getHandler( )
-    {
-        return SpringContextService.getBean( BEAN_APPOINTMENT_ASYNCHRONOUS_UPLOAD_HANDLER );
-    }
 
     /**
      * {@inheritDoc}

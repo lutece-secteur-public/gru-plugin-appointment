@@ -36,8 +36,10 @@ package fr.paris.lutece.plugins.appointment.service.comment;
 import fr.paris.lutece.util.url.UrlItem;
 import org.apache.commons.lang3.StringUtils;
 
-import javax.servlet.http.HttpServletRequest;
+import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.servlet.http.HttpServletRequest;
 
+@ApplicationScoped
 public class RedirectManageAppointment implements IRedirectComment {
 
     private static final String CODE_MANAGE_APPOINTEMENTS = "calendarmanageappointment";

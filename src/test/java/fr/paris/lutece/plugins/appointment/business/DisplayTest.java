@@ -42,9 +42,11 @@ import fr.paris.lutece.plugins.appointment.business.form.FormHome;
 import fr.paris.lutece.portal.service.image.ImageResource;
 import fr.paris.lutece.test.LuteceTestCase;
 
+import org.junit.jupiter.api.Test;
+
 /**
  * Test Class for the Display
- * 
+ *
  * @author Laurent Payen
  *
  */
@@ -63,6 +65,7 @@ public final class DisplayTest extends LuteceTestCase
     /**
      * Test method for the Display (CRUD)
      */
+    @Test
     public void testDisplay( )
     {
         Form form = FormTest.buildForm1( );
@@ -110,6 +113,7 @@ public final class DisplayTest extends LuteceTestCase
     /**
      * Test findByIdForm method
      */
+    @Test
     public void testFindByIdForm( )
     {
         Form form = FormTest.buildForm1( );

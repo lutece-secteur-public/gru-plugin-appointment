@@ -39,9 +39,11 @@ import fr.paris.lutece.plugins.appointment.business.message.FormMessage;
 import fr.paris.lutece.plugins.appointment.business.message.FormMessageHome;
 import fr.paris.lutece.test.LuteceTestCase;
 
+import org.junit.jupiter.api.Test;
+
 /**
  * Test Class for the FormMessage
- * 
+ *
  * @author Laurent Payen
  *
  */
@@ -86,6 +88,7 @@ public final class FormMessageTest extends LuteceTestCase
     /**
      * Test method for the FormMessage (CRUD)
      */
+    @Test
     public void testFormMessage( )
     {
         Form form = FormTest.buildForm1( );
@@ -139,6 +142,7 @@ public final class FormMessageTest extends LuteceTestCase
     /**
      * Test findByIdForm method
      */
+    @Test
     public void testFindByIdForm( )
     {
         Form form = FormTest.buildForm1( );

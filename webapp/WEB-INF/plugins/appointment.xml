@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?><plug-in>
     <name>appointment</name>
     <class>fr.paris.lutece.plugins.appointment.service.AppointmentPlugin</class>
-    <version>3.0.10-SNAPSHOT</version>
+    <version>4.0.0-SNAPSHOT</version>
     <documentation/>
     <installation/>
     <changes/>
@@ -12,6 +12,11 @@
     <icon-url>images/admin/skin/plugins/appointment/appointment.png</icon-url>
     <copyright>Copyright (c) 2013 Mairie de Paris</copyright>
     <db-pool-required>1</db-pool-required>
+
+    <core-version-dependency>
+        <min-core-version>8.0.0</min-core-version>
+        <max-core-version/>
+    </core-version-dependency>
     
     <!-- Admin features parameters -->
 	<admin-features>
@@ -59,7 +64,6 @@
     <applications>
         <application>
             <application-id>appointment</application-id>
-            <application-class>fr.paris.lutece.plugins.appointment.web.AppointmentApp</application-class>
         </application>
     </applications>
     <!-- Daemons -->

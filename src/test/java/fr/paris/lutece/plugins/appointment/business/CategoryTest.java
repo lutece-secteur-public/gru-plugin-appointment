@@ -37,9 +37,11 @@ import fr.paris.lutece.plugins.appointment.business.category.Category;
 import fr.paris.lutece.plugins.appointment.business.category.CategoryHome;
 import fr.paris.lutece.test.LuteceTestCase;
 
+import org.junit.jupiter.api.Test;
+
 /**
  * Test Class for the Display
- * 
+ *
  * @author Laurent Payen
  *
  */
@@ -52,6 +54,7 @@ public final class CategoryTest extends LuteceTestCase
     /**
      * Test method for the Category (CRUD)
      */
+    @Test
     public void testCategory( )
     {
         // Initialize a Category

@@ -38,7 +38,7 @@ import java.util.List;
 import fr.paris.lutece.plugins.appointment.service.AppointmentPlugin;
 import fr.paris.lutece.portal.service.plugin.Plugin;
 import fr.paris.lutece.portal.service.plugin.PluginService;
-import fr.paris.lutece.portal.service.spring.SpringContextService;
+import jakarta.enterprise.inject.spi.CDI;
 
 /**
  * This class provides instances management methods for Working Day objects
@@ -49,7 +49,7 @@ import fr.paris.lutece.portal.service.spring.SpringContextService;
 public final class WorkingDayHome
 {
     // Static variable pointed at the DAO instance
-    private static IWorkingDayDAO _dao = SpringContextService.getBean( "appointment.workingDayDAO" );
+    private static IWorkingDayDAO _dao = CDI.current( ).select( IWorkingDayDAO.class ).get( );
     private static Plugin _plugin = PluginService.getPlugin( AppointmentPlugin.PLUGIN_NAME );
 
     /**

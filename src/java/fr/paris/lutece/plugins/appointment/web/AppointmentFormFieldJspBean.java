@@ -37,7 +37,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import javax.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletRequest;
 
 import org.apache.commons.lang3.StringUtils;
 
@@ -59,16 +59,25 @@ import fr.paris.lutece.portal.util.mvc.utils.MVCUtils;
 import fr.paris.lutece.util.string.StringUtil;
 import fr.paris.lutece.util.url.UrlItem;
 
+import jakarta.enterprise.context.RequestScoped;
+import jakarta.inject.Inject;
+import jakarta.inject.Named;
+
 /**
  * JspBean to manage appointment form fieldsl
- * 
+ *
  * @author Laurent Payen
  *
  */
+@RequestScoped
+@Named
 @Controller( controllerJsp = "ManageAppointmentFormFields.jsp", controllerPath = "jsp/admin/plugins/appointment/", right = AppointmentFormJspBean.RIGHT_MANAGEAPPOINTMENTFORM )
 public class AppointmentFormFieldJspBean extends MVCAdminJspBean
 {
     private static final long serialVersionUID = -1505164256619633838L;
+
+    @Inject
+    private EntryTypeService _entryTypeService;
 
     // Properties
     private static final String PROPERTY_CREATE_FIELD_TITLE = "appointment.createField.title";
@@ -194,7 +203,7 @@ public class AppointmentFormFieldJspBean extends MVCAdminJspBean
 
         if ( bWithConditionalQuestion )
         {
-            model.put( MARK_ENTRY_TYPE_LIST, EntryTypeService.getInstance( ).getEntryTypeReferenceList( ) );
+            model.put( MARK_ENTRY_TYPE_LIST, _entryTypeService.getEntryTypeReferenceList( ) );
             model.put( MARK_ENTRY_LIST, field.getConditionalQuestions( ) );
             strTemplateName = TEMPLATE_MODIFY_FIELD_WITH_CONDITIONAL_QUESTION;
         }

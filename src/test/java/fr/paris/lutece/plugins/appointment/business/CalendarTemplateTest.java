@@ -37,9 +37,11 @@ import fr.paris.lutece.plugins.appointment.business.calendar.CalendarTemplate;
 import fr.paris.lutece.plugins.appointment.business.calendar.CalendarTemplateHome;
 import fr.paris.lutece.test.LuteceTestCase;
 
+import org.junit.jupiter.api.Test;
+
 /**
  * Test Class for the CalendarTemplate
- * 
+ *
  * @author Laurent Payen
  *
  */
@@ -56,6 +58,7 @@ public final class CalendarTemplateTest extends LuteceTestCase
     /**
      * Test method for the CalendarTemplate (CRUD)
      */
+    @Test
     public void testCalendarTemplate( )
     {
         // Initialize a CalendarTemplate

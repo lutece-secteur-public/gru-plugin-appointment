@@ -38,7 +38,7 @@ import java.util.List;
 import fr.paris.lutece.plugins.appointment.service.AppointmentPlugin;
 import fr.paris.lutece.portal.service.plugin.Plugin;
 import fr.paris.lutece.portal.service.plugin.PluginService;
-import fr.paris.lutece.portal.service.spring.SpringContextService;
+import jakarta.enterprise.inject.spi.CDI;
 
 /**
  * This class provides instances management methods for Form objects
@@ -49,7 +49,7 @@ import fr.paris.lutece.portal.service.spring.SpringContextService;
 public final class FormHome
 {
     // Static variable pointed at the DAO instance
-    private static IFormDAO _dao = SpringContextService.getBean( "appointment.formDAO" );
+    private static IFormDAO _dao = CDI.current( ).select( IFormDAO.class ).get( );
     private static Plugin _plugin = PluginService.getPlugin( AppointmentPlugin.PLUGIN_NAME );
 
     /**

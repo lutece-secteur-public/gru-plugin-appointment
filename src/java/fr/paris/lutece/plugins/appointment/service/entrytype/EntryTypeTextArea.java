@@ -33,18 +33,40 @@
  */
 package fr.paris.lutece.plugins.appointment.service.entrytype;
 
+import java.util.List;
+
+import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.inject.Inject;
+import jakarta.inject.Named;
+
 import fr.paris.lutece.plugins.genericattributes.business.Entry;
+import fr.paris.lutece.plugins.genericattributes.service.anonymization.IEntryAnonymizationType;
 import fr.paris.lutece.plugins.genericattributes.service.entrytype.AbstractEntryTypeTextArea;
 
 /**
  *
  * class EntryTypeTextArea
- * 
+ *
  * @author Laurent Payen
  *
  */
-public final class EntryTypeTextArea extends AbstractEntryTypeTextArea
+@ApplicationScoped
+@Named( "appointment.entryTypeTextArea" )
+public class EntryTypeTextArea extends AbstractEntryTypeTextArea
 {
+    @Inject
+    public void addAnonymizationTypes(
+            @Named( "genericattributes.entryIdAnonymizationType" ) IEntryAnonymizationType entryId,
+            @Named( "genericattributes.entryCodeAnonymizationType" ) IEntryAnonymizationType entryCode,
+            @Named( "genericattributes.responseIdAnonymizationType" ) IEntryAnonymizationType responseId,
+            @Named( "genericattributes.randomGuidAnonymizationType" ) IEntryAnonymizationType randomGuid,
+            @Named( "genericattributes.randomNumberAnonymizationType" ) IEntryAnonymizationType randomNumber,
+            @Named( "genericattributes.defaultValueAnonymizationType" ) IEntryAnonymizationType defaultValue,
+            @Named( "appointment.formIdAnonymizationType" ) IEntryAnonymizationType formId )
+    {
+        setAnonymizationTypes( List.of( entryId, entryCode, responseId, randomGuid, randomNumber, defaultValue, formId ) );
+    }
+
     private static final String TEMPLATE_MODIFY = "admin/plugins/appointment/entries/modify_entry_type_text_area.html";
     private static final String TEMPLATE_CREATE = "admin/plugins/appointment/entries/create_entry_type_text_area.html";
     private static final String TEMPLATE_HTML_CODE = "skin/plugins/appointment/entries/html_code_entry_type_text_area.html";

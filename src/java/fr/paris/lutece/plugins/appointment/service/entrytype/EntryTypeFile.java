@@ -33,19 +33,39 @@
  */
 package fr.paris.lutece.plugins.appointment.service.entrytype;
 
+import java.util.List;
+
+import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.inject.Inject;
+import jakarta.inject.Named;
+
 import fr.paris.lutece.plugins.appointment.service.upload.AppointmentAsynchronousUploadHandler;
 import fr.paris.lutece.plugins.genericattributes.business.Entry;
+import fr.paris.lutece.plugins.genericattributes.service.anonymization.IEntryAnonymizationType;
 import fr.paris.lutece.plugins.genericattributes.service.entrytype.AbstractEntryTypeFile;
 import fr.paris.lutece.plugins.genericattributes.service.upload.AbstractGenAttUploadHandler;
 
 /**
  * class EntryTypeImage
- * 
+ *
  * @author Laurent Payen
  *
  */
+@ApplicationScoped
+@Named( "appointment.entryTypeFile" )
 public class EntryTypeFile extends AbstractEntryTypeFile
 {
+    @Inject
+    private AppointmentAsynchronousUploadHandler _uploadHandler;
+
+    @Inject
+    public void addAnonymizationTypes(
+            @Named( "genericattributes.fileDeleteAnonymizationType" ) IEntryAnonymizationType fileDelete,
+            @Named( "genericattributes.fileReplaceAnonymizationType" ) IEntryAnonymizationType fileReplace )
+    {
+        setAnonymizationTypes( List.of( fileDelete, fileReplace ) );
+    }
+
     /**
      * Name of the bean of this service
      */
@@ -88,7 +108,7 @@ public class EntryTypeFile extends AbstractEntryTypeFile
     @Override
     public AbstractGenAttUploadHandler getAsynchronousUploadHandler( )
     {
-        return AppointmentAsynchronousUploadHandler.getHandler( );
+        return _uploadHandler;
     }
 
     /**

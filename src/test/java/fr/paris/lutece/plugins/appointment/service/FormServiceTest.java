@@ -62,9 +62,11 @@ import fr.paris.lutece.portal.service.image.ImageResource;
 import fr.paris.lutece.test.LuteceTestCase;
 import fr.paris.lutece.util.sql.DAOUtil;
 
+import org.junit.jupiter.api.Test;
+
 /**
  * Test Class for the Form Service
- * 
+ *
  * @author Laurent Payen
  *
  */
@@ -76,6 +78,7 @@ public class FormServiceTest extends LuteceTestCase
     /**
      * Test method for the creation of a form
      */
+    @Test
     public void testCreateAppointmentForm( )
     {
         // Remove all former forms with same title mistaking this test
@@ -115,7 +118,7 @@ public class FormServiceTest extends LuteceTestCase
 
         appointmentForm.setMinTimeBeforeAppointment( 30 );
         appointmentForm.setDateStartValidity( Date.valueOf( LocalDate.now( ) ) );
-        appointmentForm.setDateEndValidity( Date.valueOf( LocalDate.parse( "2025-12-25" ) ) );
+        appointmentForm.setDateEndValidity( Date.valueOf( LocalDate.now( ).plusYears( 1 ) ) );
 
         appointmentForm.setDisplayTitleFo( Boolean.TRUE );
         appointmentForm.setIsDisplayedOnPortlet( Boolean.TRUE );
@@ -167,6 +170,7 @@ public class FormServiceTest extends LuteceTestCase
     /**
      * Make a copy of form, with all its values
      */
+    @Test
     public void testCopyForm( )
     {
         // Build the form

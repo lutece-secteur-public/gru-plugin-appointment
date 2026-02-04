@@ -41,9 +41,12 @@ import fr.paris.lutece.plugins.appointment.business.rule.ReservationRuleHome;
 import fr.paris.lutece.plugins.appointment.web.dto.AppointmentFormDTO;
 import fr.paris.lutece.test.LuteceTestCase;
 
+import org.junit.jupiter.api.Test;
+
 public class ReservationRuleServiceTest extends LuteceTestCase
 {
 
+    @Test
     public void testFindReservationRuleByIdFormAndClosestToDateOfApply( )
     {
         // Build the form

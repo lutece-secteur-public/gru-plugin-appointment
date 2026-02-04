@@ -35,8 +35,8 @@ package fr.paris.lutece.plugins.appointment.business.calendar;
 
 import java.io.Serializable;
 
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.Size;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Size;
 
 /**
  * The business class of the Calendar Template

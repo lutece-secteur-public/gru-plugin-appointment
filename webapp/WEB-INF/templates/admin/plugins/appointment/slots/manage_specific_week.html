@@ -113,15 +113,14 @@ var events = [
 </#if>
 ];
 
-$( '#new_cap' ).click( function(){
-    $('#newCapacity').attr('min','0');
-    if( $('#newCapacity').val() < 0 ){
-        $('#newCapacity').val(0);
-    }
+document.getElementById('new_cap').addEventListener('click', function(){
+    var el = document.getElementById('newCapacity');
+    el.setAttribute('min','0');
+    if( parseInt(el.value) < 0 ){ el.value = 0; }
 });
 
-$('#var_cap').click(function(){
-    $('#newCapacity').attr('min','-99');
+document.getElementById('var_cap').addEventListener('click', function(){
+    document.getElementById('newCapacity').setAttribute('min','-99');
 });
 <@fullCalendarScript isSpecific=true >
 $('#timeEnd').datetimepicker({
