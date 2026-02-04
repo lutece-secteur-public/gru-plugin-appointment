@@ -353,10 +353,17 @@ function minmax(value, min, max)
         return ${nbplaces}; 
     else return value;
 }
-$(document).ready(function () {
-      $('#emailConfirm').bind('paste', function (e) {
-         e.preventDefault();
-      });
-	  $('#messageview').html( $('#infomessage').html() );
+document.addEventListener('DOMContentLoaded', function () {
+      var emailConfirm = document.getElementById('emailConfirm');
+      if (emailConfirm) {
+         emailConfirm.addEventListener('paste', function (e) {
+            e.preventDefault();
+         });
+      }
+      var infomessage = document.getElementById('infomessage');
+      var messageview = document.getElementById('messageview');
+      if (infomessage && messageview) {
+         messageview.innerHTML = infomessage.innerHTML;
+      }
    });
 </script>

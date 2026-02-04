@@ -38,16 +38,14 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import javax.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletRequest;
 
 import fr.paris.lutece.portal.business.file.File;
-import fr.paris.lutece.portal.service.file.FileService;
-import fr.paris.lutece.portal.service.file.FileServiceException;
-import fr.paris.lutece.portal.service.file.IFileStoreServiceProvider;
-import fr.paris.lutece.portal.service.util.AppLogService;
-import org.apache.commons.fileupload.FileItem;
+import fr.paris.lutece.portal.service.upload.MultipartItem;
 
 import fr.paris.lutece.plugins.appointment.business.appointment.AppointmentResponseHome;
+import jakarta.enterprise.inject.spi.CDI;
+
 import fr.paris.lutece.plugins.appointment.service.upload.AppointmentAsynchronousUploadHandler;
 import fr.paris.lutece.plugins.genericattributes.business.Entry;
 import fr.paris.lutece.plugins.genericattributes.business.EntryHome;
@@ -56,7 +54,6 @@ import fr.paris.lutece.plugins.genericattributes.business.FieldHome;
 import fr.paris.lutece.plugins.genericattributes.business.GenAttFileItem;
 import fr.paris.lutece.plugins.genericattributes.business.Response;
 import fr.paris.lutece.plugins.genericattributes.business.ResponseHome;
-import fr.paris.lutece.plugins.genericattributes.service.entrytype.AbstractEntryTypeFile;
 import fr.paris.lutece.plugins.genericattributes.service.entrytype.IEntryTypeService;
 import fr.paris.lutece.plugins.genericattributes.service.file.GenericAttributeFileService;
 
@@ -151,13 +148,13 @@ public final class AppointmentResponseService
 
                 response.setFile( file );
                 String strIdEntry = Integer.toString( response.getEntry( ).getIdEntry( ) );
-                FileItem fileItem = null;
+                MultipartItem fileItem = null;
                 if ( file != null )
                 {
                     fileItem = new GenAttFileItem( file.getPhysicalFile( ).getValue( ), file.getTitle( ), IEntryTypeService.PREFIX_ATTRIBUTE + strIdEntry,
                             response.getIdResponse( ), GenericAttributeFileService.getInstance().getFileStoreProviderName()  );
                 }
-                AppointmentAsynchronousUploadHandler.getHandler( ).addFileItemToUploadedFilesList( fileItem, IEntryTypeService.PREFIX_ATTRIBUTE + strIdEntry,
+                CDI.current( ).select( AppointmentAsynchronousUploadHandler.class ).get( ).addFileItemToUploadedFilesList( fileItem, IEntryTypeService.PREFIX_ATTRIBUTE + strIdEntry,
                         request );
             }
             listResponses.add( response );

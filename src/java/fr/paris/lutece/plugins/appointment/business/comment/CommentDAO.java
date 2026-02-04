@@ -36,6 +36,7 @@ package fr.paris.lutece.plugins.appointment.business.comment;
 import fr.paris.lutece.portal.service.plugin.Plugin;
 import fr.paris.lutece.util.ReferenceList;
 import fr.paris.lutece.util.sql.DAOUtil;
+import jakarta.enterprise.context.ApplicationScoped;
 
 import java.sql.Date;
 import java.sql.Statement;
@@ -46,7 +47,8 @@ import java.util.List;
 /**
  * This class provides Data Access methods for Comment objects
  */
-public final class CommentDAO implements ICommentDAO
+@ApplicationScoped
+public class CommentDAO implements ICommentDAO
 {
     // Constants
     private static final String SQL_QUERY_SELECT = "SELECT id_comment, id_form, starting_validity_date, starting_validity_time, ending_validity_date, ending_validity_time, comment, comment_creation_date, comment_user_creator FROM appointment_comment WHERE id_comment = ?";

@@ -33,7 +33,7 @@
  */
 package fr.paris.lutece.plugins.appointment.web.portlet;
 
-import javax.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletRequest;
 
 import fr.paris.lutece.plugins.appointment.business.portlet.AppointmentFormListPortlet;
 import fr.paris.lutece.portal.business.portlet.PortletHome;

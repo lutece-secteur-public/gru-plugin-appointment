@@ -252,7 +252,7 @@ $(function(){
 	   el.style.display = 'none';
 	});
 
-	$('#${idEndingDate}_help').html('');
+	document.getElementById('${idEndingDate}_help').innerHTML = '';
 	$('#${idStartingDate}').datetimepicker({locale: '${locale}', format: 'DD/MM/YYYY'});
 	$('#${idStartingDate}').val( moment().format('DD/MM/YYYY') );
 	$('#${idStartingDate}Group').click(function(event){
@@ -273,10 +273,10 @@ $(function(){
 	});
 	<#if action !='doModifyComment'>
 	/* Set current date */
-	$('#${modalId}').on('shown.bs.modal', function(){
+	document.getElementById('${modalId}').addEventListener('shown.bs.modal', function(){
 		var workingDate=sessionStorage.getItem( 'appCurrentDate');
-		$('#${idStartingDate}').val( workingDate );
-		$('#${idEndingDate}').val( workingDate );
+		document.getElementById('${idStartingDate}').value = workingDate;
+		document.getElementById('${idEndingDate}').value = workingDate;
 		localStorage.setItem( 'commentContext', workingDate );
   	});
 	</#if>
@@ -287,28 +287,31 @@ $(function(){
 		$('#${idStartingDate}').data("DateTimePicker").maxDate(e.date);
 	});
 	if( '${action!}' === 'doAddComment' ){
-		$('#commentDelete').remove()
+		var commentDeleteEl = document.getElementById('commentDelete');
+		if (commentDeleteEl) commentDeleteEl.remove();
 	}
 	// Click on validation button events
-	$( '[name="action_${action}"]' ).click( function(e){
+	document.querySelector( '[name="action_${action}"]' ).addEventListener( 'click', function(e){
 
 		document.querySelectorAll('.labelErrorComment').forEach(function(el) {
 		   el.style.display = 'none';
 		});
 
-		dStart=$('#${idStartingDate}').val(),dEnd=$('#${idEndingDate}').val();
+		var dStart = document.getElementById('${idStartingDate}').value;
+		var dEnd = document.getElementById('${idEndingDate}').value;
 		if( moment(dEnd).isBefore( dStart ) ){
 			document.getElementById( '${idEndingDate}_errorEndDateBeforeStartDate' ).style.display = 'block'
 			e.preventDefault();
 		}
-		tStart=$('#${idStartingTime}').val(),tEnd=$('#${idEndingTime}').val();
+		var tStart = document.getElementById('${idStartingTime}').value;
+		var tEnd = document.getElementById('${idEndingTime}').value;
 		var startDateAndTime = moment(dStart + ' ' + tStart, 'YYYY-MM-DD HH:mm');
 		var endDateAndTime = moment(dEnd + ' ' + tEnd, 'YYYY-MM-DD HH:mm');
-		if(( moment(endDateAndTime).isBefore( startDateAndTime ) ) || ( moment(endDateAndTime).isSame( startDateAndTime )) && ($('#${idStartingTime}').val() != '00:00') && ($('#${idEndingTime}').val() != '00:00')) {
+		if(( moment(endDateAndTime).isBefore( startDateAndTime ) ) || ( moment(endDateAndTime).isSame( startDateAndTime )) && (document.getElementById('${idStartingTime}').value != '00:00') && (document.getElementById('${idEndingTime}').value != '00:00')) {
 			if( moment(endDateAndTime).isBefore( startDateAndTime )) {
 				document.getElementById( '${idEndingTime}_errorEndTimeBeforeStartTime' ).style.display = 'block';
 			}
-			if ((moment(endDateAndTime).isSame( startDateAndTime )) && ($('#${idStartingTime}').val() != '00:00') && ($('#${idEndingTime}').val() != '00:00'))  {
+			if ((moment(endDateAndTime).isSame( startDateAndTime )) && (document.getElementById('${idStartingTime}').value != '00:00') && (document.getElementById('${idEndingTime}').value != '00:00'))  {
 				document.getElementById( '${idEndingTime}_errorEndTimeEqualStartTime' ).style.display = 'block';
 			}
 			e.preventDefault();
@@ -411,14 +414,14 @@ localStorage.setItem( 'appointmentContext', '${context}' );
 </#macro>
 <#macro commentModal update=false >
 <#if update>
-	var formValues = JSON.parse( $(this).attr( 'data-json' ) );
+	var formValues = JSON.parse( this.getAttribute( 'data-json' ) );
 	localStorage.setItem( 'commentContext', moment(formValues.comment_start).format('DD/MM/YYYY') );
 	tinyMCE.activeEditor.setContent( formValues.comment_text );
-	$( '#modify-comment input[name="id_comment"]' ).val( formValues.id_comment.slice(1) );
-	$( '#modify-comment input[name="startingValidityDate"]' ).val( moment(formValues.comment_start).format('DD/MM/YYYY') );
-	$( '#modify-comment input[name="endingValidityDate"]' ).val( moment(formValues.comment_end).format('DD/MM/YYYY')  );
-	$( '#modify-comment input[name="startingValidityTime"]' ).val( formValues.comment_start_time );
-	$( '#modify-comment input[name="endingValidityTime"]' ).val( formValues.comment_end_time );
+	document.querySelector( '#modify-comment input[name="id_comment"]' ).value = formValues.id_comment.slice(1);
+	document.querySelector( '#modify-comment input[name="startingValidityDate"]' ).value = moment(formValues.comment_start).format('DD/MM/YYYY');
+	document.querySelector( '#modify-comment input[name="endingValidityDate"]' ).value = moment(formValues.comment_end).format('DD/MM/YYYY');
+	document.querySelector( '#modify-comment input[name="startingValidityTime"]' ).value = formValues.comment_start_time;
+	document.querySelector( '#modify-comment input[name="endingValidityTime"]' ).value = formValues.comment_end_time;
 	document.querySelectorAll('.labelErrorComment').forEach(function(el) {
 		el.style.display = 'none';
 	});

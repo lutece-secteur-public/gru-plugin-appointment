@@ -39,6 +39,7 @@ import java.util.List;
 
 import fr.paris.lutece.portal.service.plugin.Plugin;
 import fr.paris.lutece.util.sql.DAOUtil;
+import jakarta.enterprise.context.ApplicationScoped;
 
 /**
  * Appointment Response DAO
@@ -46,7 +47,8 @@ import fr.paris.lutece.util.sql.DAOUtil;
  * @author Laurent Payen
  *
  */
-public final class AppointmentResponseDAO implements IAppointmentResponseDAO
+@ApplicationScoped
+public class AppointmentResponseDAO implements IAppointmentResponseDAO
 {
 
     private static final String SQL_QUERY_INSERT_APPOINTMENT_RESPONSE = "INSERT INTO appointment_appointment_response ( id_appointment, id_response) VALUES (?,?)";

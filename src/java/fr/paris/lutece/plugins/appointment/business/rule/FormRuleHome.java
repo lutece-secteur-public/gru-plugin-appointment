@@ -36,7 +36,7 @@ package fr.paris.lutece.plugins.appointment.business.rule;
 import fr.paris.lutece.plugins.appointment.service.AppointmentPlugin;
 import fr.paris.lutece.portal.service.plugin.Plugin;
 import fr.paris.lutece.portal.service.plugin.PluginService;
-import fr.paris.lutece.portal.service.spring.SpringContextService;
+import jakarta.enterprise.inject.spi.CDI;
 
 /**
  * This class provides instances management methods for Form Rule objects
@@ -48,7 +48,7 @@ public final class FormRuleHome
 {
 
     // Static variable pointed at the DAO instance
-    private static IFormRuleDAO _dao = SpringContextService.getBean( "appointment.formRuleDAO" );
+    private static IFormRuleDAO _dao = CDI.current( ).select( IFormRuleDAO.class ).get( );
     private static Plugin _plugin = PluginService.getPlugin( AppointmentPlugin.PLUGIN_NAME );
 
     /**

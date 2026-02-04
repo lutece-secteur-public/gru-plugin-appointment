@@ -33,9 +33,12 @@
  */
 package fr.paris.lutece.plugins.appointment.service;
 
+import jakarta.enterprise.context.ApplicationScoped;
+
 import fr.paris.lutece.plugins.appointment.business.slot.SlotHome;
 import fr.paris.lutece.portal.service.init.ShutdownService;
 
+@ApplicationScoped
 public class AppointmentShutdownService implements ShutdownService
 {
 
@@ -55,7 +58,6 @@ public class AppointmentShutdownService implements ShutdownService
     public void process( )
     {
         AppointmentUtilities.shutdownSecheduledExecutor( );
-        AppointmentExecutorService.INSTANCE.shutdown( );
         SlotHome.resetPotentialRemainingPlaces( );
 
     }

@@ -2,9 +2,9 @@
 <script type="text/javascript">
 function changeVisilityAnonymizePattern(){
     if( document.getElementById( "anonymizable" ).checked ){
-    	$("#anonymize_pattern_group").show();
+    	document.getElementById("anonymize_pattern_group").style.display = "block";
     } else {
-       $("#anonymize_pattern_group").hide();
+       document.getElementById("anonymize_pattern_group").style.display = "none";
     }
 } 
 changeVisilityAnonymizePattern();

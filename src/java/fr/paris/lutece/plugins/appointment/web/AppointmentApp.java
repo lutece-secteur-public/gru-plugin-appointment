@@ -51,9 +51,15 @@ import java.util.StringJoiner;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import javax.servlet.http.HttpServletRequest;
+import jakarta.enterprise.context.SessionScoped;
+import jakarta.enterprise.inject.Instance;
+import jakarta.enterprise.inject.spi.CDI;
+import jakarta.inject.Inject;
+import jakarta.inject.Named;
+import jakarta.servlet.http.HttpServletRequest;
 
 import fr.paris.lutece.portal.business.file.File;
+import fr.paris.lutece.portal.service.security.ISecurityTokenService;
 import fr.paris.lutece.portal.service.security.SecurityTokenService;
 import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.collections.CollectionUtils;
@@ -84,7 +90,7 @@ import fr.paris.lutece.plugins.appointment.service.SlotService;
 import fr.paris.lutece.plugins.appointment.service.UserService;
 import fr.paris.lutece.plugins.appointment.service.Utilities;
 import fr.paris.lutece.plugins.appointment.service.WeekDefinitionService;
-import fr.paris.lutece.plugins.appointment.service.listeners.AppointmentListenerManager;
+import fr.paris.lutece.plugins.appointment.service.event.AppointmentWorkflowActionEvent;
 import fr.paris.lutece.plugins.appointment.service.upload.AppointmentAsynchronousUploadHandler;
 import fr.paris.lutece.plugins.appointment.web.dto.AppointmentDTO;
 import fr.paris.lutece.plugins.appointment.web.dto.AppointmentFilterDTO;
@@ -95,17 +101,16 @@ import fr.paris.lutece.plugins.genericattributes.business.Response;
 import fr.paris.lutece.plugins.genericattributes.service.file.GenericAttributeFileService;
 import fr.paris.lutece.plugins.workflowcore.service.task.ITask;
 import fr.paris.lutece.plugins.workflowcore.service.task.ITaskService;
-import fr.paris.lutece.plugins.workflowcore.service.task.TaskService;
 import fr.paris.lutece.portal.service.accesscontrol.AccessControlService;
 import fr.paris.lutece.portal.service.admin.AccessDeniedException;
-import fr.paris.lutece.portal.service.captcha.CaptchaSecurityService;
+import fr.paris.lutece.portal.service.captcha.ICaptchaService;
+import fr.paris.lutece.portal.service.util.BeanUtils;
 import fr.paris.lutece.portal.service.i18n.I18nService;
 import fr.paris.lutece.portal.service.image.ImageResource;
 import fr.paris.lutece.portal.service.message.SiteMessageException;
 import fr.paris.lutece.portal.service.security.LuteceUser;
 import fr.paris.lutece.portal.service.security.SecurityService;
 import fr.paris.lutece.portal.service.security.UserNotSignedException;
-import fr.paris.lutece.portal.service.spring.SpringContextService;
 import fr.paris.lutece.portal.service.template.AppTemplateService;
 import fr.paris.lutece.portal.service.util.AppLogService;
 import fr.paris.lutece.portal.service.util.AppPathService;
@@ -117,6 +122,7 @@ import fr.paris.lutece.portal.util.mvc.utils.MVCMessage;
 import fr.paris.lutece.portal.util.mvc.utils.MVCUtils;
 import fr.paris.lutece.portal.util.mvc.xpage.MVCApplication;
 import fr.paris.lutece.portal.util.mvc.xpage.annotations.Controller;
+import fr.paris.lutece.portal.web.cdi.mvc.Models;
 import fr.paris.lutece.portal.web.xpages.XPage;
 import fr.paris.lutece.util.ErrorMessage;
 import fr.paris.lutece.util.html.HtmlTemplate;
@@ -128,6 +134,8 @@ import fr.paris.lutece.util.url.UrlItem;
  * @author Laurent Payen
  *
  */
+@SessionScoped
+@Named( "appointment.xpage.appointment" )
 @Controller( xpageName = AppointmentApp.XPAGE_NAME, pageTitleI18nKey = AppointmentApp.MESSAGE_DEFAULT_PAGE_TITLE, pagePathI18nKey = AppointmentApp.MESSAGE_DEFAULT_PATH )
 public class AppointmentApp extends MVCApplication
 {
@@ -293,8 +301,25 @@ public class AppointmentApp extends MVCApplication
     private static final String BASIC_DAY = "basicDay";
     private static final String STEP_3 = "step3";
 
+    // Injected services
+    @Inject
+    private WorkflowService _workflowService;
+    @Inject
+    private AccessControlService _accessControlService;
+    @Inject
+    private ITaskService _taskService;
+    @Inject
+    private ISecurityTokenService _securityTokenService;
+    @Inject
+    private Models _models;
+    @Inject
+    private AppointmentAsynchronousUploadHandler _uploadHandler;
+
+    @Inject
+    @Named( BeanUtils.BEAN_CAPTCHA_SERVICE )
+    private Instance<ICaptchaService> _captchaService;
+
     // Local variables
-    private transient CaptchaSecurityService _captchaSecurityService;
     private int _nNbPlacesToTake;
     private String _strNbPlacesToTakeLength;
     private AppointmentFormDTO _appointmentForm;
@@ -312,7 +337,6 @@ public class AppointmentApp extends MVCApplication
     @View( VIEW_APPOINTMENT_CALENDAR )
     public synchronized XPage getViewAppointmentCalendar( HttpServletRequest request ) throws AccessDeniedException
     {
-        Map<String, Object> model = getModel( );
         Locale locale = getLocale( request );
         _nNbPlacesToTake = 0;
 
@@ -339,7 +363,7 @@ public class AppointmentApp extends MVCApplication
             if( appointmentDTO == null )
             {
             	// When the appointment Object doesn't exist, we display an error message to the user
-            	return getXPage( TEMPLATE_ERROR_APPOINTMENT_REFERENCE, locale, model );
+            	return getXPage( TEMPLATE_ERROR_APPOINTMENT_REFERENCE, locale, _models );
             }
             if ( appointmentDTO.getIsCancelled( ) || appointmentDTO.getStartingDateTime( ).isBefore( LocalDateTime.now( ) ) )
             {
@@ -440,7 +464,7 @@ public class AppointmentApp extends MVCApplication
             }
 
             // Check the Access Controls of the form, when displaying the calendar
-            XPage accessControlPage = AccessControlService.getInstance( ).doExecuteAccessControl(
+            XPage accessControlPage = _accessControlService.doExecuteAccessControl(
             		request,
             		nIdForm,
             		Form.RESOURCE_TYPE,
@@ -468,12 +492,12 @@ public class AppointmentApp extends MVCApplication
                 int nbBookedSeats = _validatedAppointment.getNbBookedSeats( );
                 listSlots = listSlots.stream( ).filter( s -> s.getNbPotentialRemainingPlaces( ) >= nbBookedSeats && s.getIsOpen( ) )
                         .collect( Collectors.toList( ) );
-                model.put( MARK_MODIFICATION_DATE_APPOINTMENT, true );
-                model.put( PARAMETER_REF_APPOINTMENT, refAppointment );
+                _models.put( MARK_MODIFICATION_DATE_APPOINTMENT, true );
+                _models.put( PARAMETER_REF_APPOINTMENT, refAppointment );
             }
             else
             {
-                model.put( MARK_MODIFICATION_DATE_APPOINTMENT, false );
+                _models.put( MARK_MODIFICATION_DATE_APPOINTMENT, false );
             }
 
             LocalDate firstDateOfFreeOpenSlot = null;
@@ -504,15 +528,15 @@ public class AppointmentApp extends MVCApplication
         }
         if ( bError )
         {
-            model.put( MARK_FORM_CALENDAR_ERRORS, bError );
+            _models.put( MARK_FORM_CALENDAR_ERRORS, bError );
         }
         if ( formMessages != null && StringUtils.isNotEmpty( formMessages.getCalendarDescription( ) ) )
         {
-            List<ErrorMessage> listInfos = (List<ErrorMessage>) model.get( MARK_INFOS );
+            List<ErrorMessage> listInfos = (List<ErrorMessage>) _models.get( MARK_INFOS );
             if ( listInfos == null )
             {
                 listInfos = new ArrayList<>( );
-                model.put( MARK_INFOS, listInfos );
+                _models.put( MARK_INFOS, listInfos );
             }
             MVCMessage message = new MVCMessage( formMessages.getCalendarDescription( ) );
             listInfos.add( message );
@@ -565,31 +589,31 @@ public class AppointmentApp extends MVCApplication
         // Get the min and max date of the open days (for the week navigation on
         // open days calendar templates)
         Set<Integer> setOpenDays = WeekDefinitionService.getOpenDaysOfWeek( listReservationRules );
-        model.put( PARAMETER_MIN_DATE_OF_OPEN_DAY,
+        _models.put( PARAMETER_MIN_DATE_OF_OPEN_DAY,
                 LocalDate.now( ).with( DayOfWeek.of( setOpenDays.stream( ).min( Comparator.naturalOrder( ) ).orElse( 1 ) ) ) );
-        model.put( PARAMETER_MAX_DATE_OF_OPEN_DAY,
+        _models.put( PARAMETER_MAX_DATE_OF_OPEN_DAY,
                 endingDateOfDisplay.with( DayOfWeek.of( setOpenDays.stream( ).max( Comparator.naturalOrder( ) ).orElse( 1 ) ) ) );
 
-        model.put( MARK_FORM, _appointmentForm );
-        model.put( PARAMETER_ID_FORM, nIdForm );
-        model.put( MARK_FORM_MESSAGES, formMessages );
-        model.put( PARAMETER_ENDING_DATE_OF_DISPLAY, endingDateOfDisplay );
-        model.put( PARAMETER_STR_ENDING_DATE_OF_DISPLAY, endingDateOfDisplay.format( Utilities.getFormatter( ) ) );
-        model.put( PARAMETER_DATE_OF_DISPLAY, dateOfDisplay );
-        model.put( PARAMETER_DAY_OF_WEEK, listStrBase0OpenDaysOfWeek );
-        model.put( PARAMETER_MIN_TIME, AppointmentUtilities.getMinTimeToDisplay( minStartingTime ) );
-        model.put( PARAMETER_MAX_TIME, AppointmentUtilities.getMaxTimeToDisplay( maxEndingTime ) );
-        model.put( PARAMETER_MIN_DURATION, LocalTime.MIN.plusMinutes( AppointmentUtilities.THIRTY_MINUTES ) );
-        model.put( MARK_NBPLACESTOTAKE, _nNbPlacesToTake );
-        model.put( PARAMETER_EVENTS, listSlots );
-        model.put( PARAMETER_HIDDEN_DAYS, listHiddenDays );
-        model.put( PARAMETER_DAY_VIEW, dayView );
-        model.put( PARAMETER_WEEK_VIEW, weekView );
-        model.put( MARK_MAX_NBPLACESTOTAKE, Integer.valueOf( _strNbPlacesToTakeLength ) );
-        HtmlTemplate templateNbPlacesToTakeForm = AppTemplateService.getTemplate( TEMPLATE_HTML_CODE_NB_PLACES_TO_TAKE_FORM, locale, model );
-        model.put( MARK_FORM_NB_PLACES_TO_TAKE_HTML, templateNbPlacesToTakeForm.getHtml( ) );
+        _models.put( MARK_FORM, _appointmentForm );
+        _models.put( PARAMETER_ID_FORM, nIdForm );
+        _models.put( MARK_FORM_MESSAGES, formMessages );
+        _models.put( PARAMETER_ENDING_DATE_OF_DISPLAY, endingDateOfDisplay );
+        _models.put( PARAMETER_STR_ENDING_DATE_OF_DISPLAY, endingDateOfDisplay.format( Utilities.getFormatter( ) ) );
+        _models.put( PARAMETER_DATE_OF_DISPLAY, dateOfDisplay );
+        _models.put( PARAMETER_DAY_OF_WEEK, listStrBase0OpenDaysOfWeek );
+        _models.put( PARAMETER_MIN_TIME, AppointmentUtilities.getMinTimeToDisplay( minStartingTime ) );
+        _models.put( PARAMETER_MAX_TIME, AppointmentUtilities.getMaxTimeToDisplay( maxEndingTime ) );
+        _models.put( PARAMETER_MIN_DURATION, LocalTime.MIN.plusMinutes( AppointmentUtilities.THIRTY_MINUTES ) );
+        _models.put( MARK_NBPLACESTOTAKE, _nNbPlacesToTake );
+        _models.put( PARAMETER_EVENTS, listSlots );
+        _models.put( PARAMETER_HIDDEN_DAYS, listHiddenDays );
+        _models.put( PARAMETER_DAY_VIEW, dayView );
+        _models.put( PARAMETER_WEEK_VIEW, weekView );
+        _models.put( MARK_MAX_NBPLACESTOTAKE, Integer.valueOf( _strNbPlacesToTakeLength ) );
+        HtmlTemplate templateNbPlacesToTakeForm = AppTemplateService.getTemplate( TEMPLATE_HTML_CODE_NB_PLACES_TO_TAKE_FORM, locale, _models.asMap( ) );
+        _models.put( MARK_FORM_NB_PLACES_TO_TAKE_HTML, templateNbPlacesToTakeForm.getHtml( ) );
 
-        return getXPage( calendarTemplate.getTemplatePath( ), locale, model );
+        return getXPage( calendarTemplate.getTemplatePath( ), locale, _models );
     }
 
     /**
@@ -770,13 +794,13 @@ public class AppointmentApp extends MVCApplication
                 return redirect( request, VIEW_APPOINTMENT_FORM, additionalParameters );
             }
         }
-        Map<String, Object> model = getModel( );
         Locale locale = getLocale( request );
         StringBuilder strBuffer = new StringBuilder( );
         List<Entry> listEntryFirstLevel = EntryService.getFilter( _appointmentForm.getIdForm( ), true );
+        Map<String, Object> entryModel = new HashMap<>( _models.asMap( ) );
         for ( Entry entry : listEntryFirstLevel )
         {
-            EntryService.getHtmlEntry( model, entry.getIdEntry( ), strBuffer, locale, true, _notValidatedAppointment );
+            EntryService.getHtmlEntry( entryModel, entry.getIdEntry( ), strBuffer, locale, true, _notValidatedAppointment );
         }
         FormMessage formMessages = FormMessageService.findFormMessageByIdForm( nIdForm );
 
@@ -785,28 +809,28 @@ public class AppointmentApp extends MVCApplication
 
             _notValidatedAppointment.setNbBookedSeats( _nNbPlacesToTake );
         }
-        model.put( MARK_APPOINTMENT, _notValidatedAppointment );
-        model.put( MARK_NBPLACESTOTAKE, _nNbPlacesToTake );
-        model.put( PARAMETER_DATE_OF_DISPLAY, _notValidatedAppointment.getSlot( ).get( 0 ).getDate( ) );
-        model.put( MARK_FORM, _appointmentForm );
-        model.put( MARK_FORM_MESSAGES, formMessages );
-        model.put( MARK_STR_ENTRY, strBuffer.toString( ) );
-        model.put( MARK_LOCALE, locale );
-        model.put( MARK_PLACES, _notValidatedAppointment.getNbMaxPotentialBookedSeats( ) );
-        model.put( MARK_LIST_ERRORS, AppointmentDTO.getAllErrors( locale ) );
+        _models.put( MARK_APPOINTMENT, _notValidatedAppointment );
+        _models.put( MARK_NBPLACESTOTAKE, _nNbPlacesToTake );
+        _models.put( PARAMETER_DATE_OF_DISPLAY, _notValidatedAppointment.getSlot( ).get( 0 ).getDate( ) );
+        _models.put( MARK_FORM, _appointmentForm );
+        _models.put( MARK_FORM_MESSAGES, formMessages );
+        _models.put( MARK_STR_ENTRY, strBuffer.toString( ) );
+        _models.put( MARK_LOCALE, locale );
+        _models.put( MARK_PLACES, _notValidatedAppointment.getNbMaxPotentialBookedSeats( ) );
+        _models.put( MARK_LIST_ERRORS, AppointmentDTO.getAllErrors( locale ) );
         LuteceUser user = SecurityService.getInstance( ).getRegisteredUser( request );
         if( user != null )
         {
-        	model.put( MARK_USER,  user );
-        	model.put( MARK_USER_PREFERRED_NAME, user.getUserInfo( AppPropertiesService.getProperty( PROPERTY_USER_ATTRIBUTE_PREFERED_NAME, StringUtils.EMPTY ) ) );
+        	_models.put( MARK_USER,  user );
+        	_models.put( MARK_USER_PREFERRED_NAME, user.getUserInfo( AppPropertiesService.getProperty( PROPERTY_USER_ATTRIBUTE_PREFERED_NAME, StringUtils.EMPTY ) ) );
         }
         else
         {
-        	model.put( MARK_USER,  null );
+        	_models.put( MARK_USER,  null );
         }
 
         // Check the Access Controls of the form
-        XPage accessControlPage = AccessControlService.getInstance( ).doExecuteAccessControl(
+        XPage accessControlPage = _accessControlService.doExecuteAccessControl(
         		request,
         		nIdForm,
         		Form.RESOURCE_TYPE,
@@ -817,10 +841,10 @@ public class AppointmentApp extends MVCApplication
         	return accessControlPage;
         }
 
-        model.put( SecurityTokenService.MARK_TOKEN, SecurityTokenService.getInstance( ).getToken( request, ACTION_DO_VALIDATE_FORM ) );
-        HtmlTemplate templateForm = AppTemplateService.getTemplate( TEMPLATE_HTML_CODE_FORM, locale, model );
-        model.put( MARK_FORM_HTML, templateForm.getHtml( ) );
-        XPage xPage = getXPage( TEMPLATE_APPOINTMENT_FORM, locale, model );
+        _models.put( SecurityTokenService.MARK_TOKEN, _securityTokenService.getToken( request, ACTION_DO_VALIDATE_FORM ) );
+        HtmlTemplate templateForm = AppTemplateService.getTemplate( TEMPLATE_HTML_CODE_FORM, locale, _models.asMap( ) );
+        _models.put( MARK_FORM_HTML, templateForm.getHtml( ) );
+        XPage xPage = getXPage( TEMPLATE_APPOINTMENT_FORM, locale, _models );
 
         if ( _appointmentForm.getDisplayTitleFo( ) )
         {
@@ -843,7 +867,7 @@ public class AppointmentApp extends MVCApplication
     public synchronized XPage doValidateForm( HttpServletRequest request ) throws UserNotSignedException, AccessDeniedException
     {
         // CSRF Token control
-        if ( !SecurityTokenService.getInstance( ).validate( request, ACTION_DO_VALIDATE_FORM ) )
+        if ( !_securityTokenService.validate( request, ACTION_DO_VALIDATE_FORM ) )
         {
             throw new AccessDeniedException( MESSAGE_ERROR_TOKEN );
         }
@@ -917,7 +941,7 @@ public class AppointmentApp extends MVCApplication
         }
         if ( CollectionUtils.isNotEmpty( listFormErrors ) )
         {
-            getModel( ).put( MARK_FORM_ERRORS, listFormErrors );
+            _models.put( MARK_FORM_ERRORS, listFormErrors );
             for ( GenericAttributeError error : listFormErrors )
             {
             	addError( error.getErrorMessage( ) );
@@ -980,9 +1004,9 @@ public class AppointmentApp extends MVCApplication
             return redirectView( request, VIEW_APPOINTMENT_FORM_LIST );
         }
         Map<String, Object> model = new HashMap<>( );
-        if ( _appointmentForm.getEnableCaptcha( ) && getCaptchaService( ).isAvailable( ) )
+        if ( _appointmentForm.getEnableCaptcha( ) && _captchaService.isResolvable( ) )
         {
-            model.put( MARK_CAPTCHA, getCaptchaService( ).getHtmlCode( ) );
+            model.put( MARK_CAPTCHA, _captchaService.get( ).getHtmlCode( ) );
         }
         if ( strModifDateAppointment != null && Boolean.parseBoolean( strModifDateAppointment ) )
         {
@@ -1003,7 +1027,7 @@ public class AppointmentApp extends MVCApplication
         model.put( MARK_FORM, _appointmentForm );
         model.put( MARK_NBPLACESTOTAKE, _nNbPlacesToTake );
         model.put( PARAMETER_DATE_OF_DISPLAY, _validatedAppointment.getSlot( ).get( 0 ).getDate( ) );
-        model.put( SecurityTokenService.MARK_TOKEN, SecurityTokenService.getInstance( ).getToken( request, ACTION_DO_MAKE_APPOINTMENT ) );
+        model.put( SecurityTokenService.MARK_TOKEN, _securityTokenService.getToken( request, ACTION_DO_MAKE_APPOINTMENT ) );
 
         return getXPage( TEMPLATE_APPOINTMENT_FORM_RECAP, locale, model );
     }
@@ -1022,7 +1046,7 @@ public class AppointmentApp extends MVCApplication
     {
         checkMyLuteceAuthentication( _appointmentForm, request );
         // CSRF Token control
-        if ( !SecurityTokenService.getInstance( ).validate( request, ACTION_DO_MAKE_APPOINTMENT ) )
+        if ( !_securityTokenService.validate( request, ACTION_DO_MAKE_APPOINTMENT ) )
         {
             throw new AccessDeniedException( MESSAGE_ERROR_TOKEN );
         }
@@ -1048,7 +1072,7 @@ public class AppointmentApp extends MVCApplication
 
             return redirect( request, VIEW_APPOINTMENT_FORM, parameters );
         }
-        if ( _appointmentForm.getEnableCaptcha( ) && getCaptchaService( ).isAvailable( ) && !getCaptchaService( ).validate( request ) )
+        if ( _appointmentForm.getEnableCaptcha( ) && _captchaService.isResolvable( ) && !_captchaService.get( ).validate( request ) )
         {
             addError( ERROR_MESSAGE_CAPTCHA, getLocale( request ) );
             return redirect( request, VIEW_DISPLAY_RECAP_APPOINTMENT, PARAMETER_ID_FORM, _validatedAppointment.getIdForm( ) );
@@ -1077,16 +1101,16 @@ public class AppointmentApp extends MVCApplication
         catch( AppointmentSavedException e )
         {
             nIdAppointment = _validatedAppointment.getIdAppointment( );
-            AppLogService.error( "Error Save appointment: " + e.getMessage( ), e );
+            AppLogService.error( "Error Save appointment: {}", e.getMessage( ), e );
         }
         AppLogService.info( LogUtilities.buildLog( ACTION_DO_MAKE_APPOINTMENT, Integer.toString( nIdAppointment ), null ) );
-        AppointmentAsynchronousUploadHandler.getHandler( ).removeSessionFiles( request.getSession( ) );
+        _uploadHandler.removeSessionFiles( request.getSession( ) );
         _nNbPlacesToTake = 0;
         int nIdForm = _validatedAppointment.getIdForm( );
        // _validatedAppointment = null;
 
         // Remove the session data of this form
-        AccessControlService.getInstance( ).cleanSessionData( request, nIdForm, Form.RESOURCE_TYPE );
+        _accessControlService.cleanSessionData( request, nIdForm, Form.RESOURCE_TYPE );
 
         String anchor = request.getParameter( PARAMETER_ANCHOR );
         if ( StringUtils.isNotEmpty( anchor ) )
@@ -1258,7 +1282,7 @@ public class AppointmentApp extends MVCApplication
         Locale locale = getLocale( request );
         _appointmentForm = null;
         _validatedAppointment = null;
-        String strHtmlContent = getFormListHtml( locale, getModel( ) );
+        String strHtmlContent = getFormListHtml( locale, new HashMap<>( _models.asMap( ) ) );
 
         XPage xPage = getXPage( );
         xPage.setContent( strHtmlContent );
@@ -1282,7 +1306,7 @@ public class AppointmentApp extends MVCApplication
         }
         Map<String, Object> model = new HashMap<>( );
         model.put( PARAMETER_REF_APPOINTMENT, refAppointment );
-        model.put( SecurityTokenService.MARK_TOKEN, SecurityTokenService.getInstance( ).getToken( request, ACTION_DO_CANCEL_APPOINTMENT ) );
+        model.put( SecurityTokenService.MARK_TOKEN, _securityTokenService.getToken( request, ACTION_DO_CANCEL_APPOINTMENT ) );
         if ( appointment != null )
         {
 
@@ -1332,7 +1356,7 @@ public class AppointmentApp extends MVCApplication
     public synchronized XPage doCancelAppointment( HttpServletRequest request ) throws AccessDeniedException
     {
         // CSRF Token control
-        if ( !SecurityTokenService.getInstance( ).validate( request, ACTION_DO_CANCEL_APPOINTMENT ) )
+        if ( !_securityTokenService.validate( request, ACTION_DO_CANCEL_APPOINTMENT ) )
         {
             throw new AccessDeniedException( MESSAGE_ERROR_TOKEN );
         }
@@ -1351,9 +1375,9 @@ public class AppointmentApp extends MVCApplication
                 {
                     try
                     {
-                        WorkflowService.getInstance( ).doProcessAction( appointment.getIdAppointment( ), Appointment.APPOINTMENT_RESOURCE_TYPE,
+                        _workflowService.doProcessAction( appointment.getIdAppointment( ), Appointment.APPOINTMENT_RESOURCE_TYPE,
                                 appointment.getIdActionCancelled( ), appointmentDto.getIdForm( ), request, request.getLocale( ), true, null );
-                        AppointmentListenerManager.notifyAppointmentWFActionTriggered( appointment.getIdAppointment( ), appointment.getIdActionCancelled( ) );
+                        CDI.current( ).getBeanManager( ).getEvent( ).select( AppointmentWorkflowActionEvent.class ).fireAsync( new AppointmentWorkflowActionEvent( appointment.getIdAppointment( ), appointment.getIdActionCancelled( ) ) );
                     }
                     catch( Exception e )
                     {
@@ -1427,7 +1451,7 @@ public class AppointmentApp extends MVCApplication
         }
         Locale locale = getLocale( request );
         XPage xPage = getXPage( );
-        xPage.setContent( getMyAppointmentsHtml( request, locale, getModel( ) ) );
+        xPage.setContent( getMyAppointmentsHtml( request, locale, new HashMap<>( _models.asMap( ) ) ) );
         xPage.setTitle( I18nService.getLocalizedString( MESSAGE_MY_APPOINTMENTS_PAGE_TITLE, locale ) );
         return xPage;
     }
@@ -1462,10 +1486,11 @@ public class AppointmentApp extends MVCApplication
         for ( AppointmentDTO apptDto : listAppointmentDTO )
         {
             Form form = FormService.findFormLightByPrimaryKey( apptDto.getIdForm( ) );
-            if ( form.getIdWorkflow( ) > 0 && WorkflowService.getInstance( ).isAvailable( ) )
+            WorkflowService workflowService = CDI.current( ).select( WorkflowService.class ).get( );
+            if ( form.getIdWorkflow( ) > 0 && workflowService.isAvailable( ) )
             {
 
-                apptDto.setListWorkflowActions( WorkflowService.getInstance( ).getActions( apptDto.getIdAppointment( ), Appointment.APPOINTMENT_RESOURCE_TYPE,
+                apptDto.setListWorkflowActions( workflowService.getActions( apptDto.getIdAppointment( ), Appointment.APPOINTMENT_RESOURCE_TYPE,
                         form.getIdWorkflow( ), luteceUser ) );
 
             }
@@ -1507,9 +1532,10 @@ public class AppointmentApp extends MVCApplication
         for ( AppointmentDTO apptDto : listAppointmentDTO )
         {
             Form form = FormService.findFormLightByPrimaryKey( apptDto.getIdForm( ) );
-            if ( form.getIdWorkflow( ) > 0 && WorkflowService.getInstance( ).isAvailable( ) )
+            WorkflowService workflowService = CDI.current( ).select( WorkflowService.class ).get( );
+            if ( form.getIdWorkflow( ) > 0 && workflowService.isAvailable( ) )
             {
-                apptDto.setListWorkflowActions( WorkflowService.getInstance( ).getActions( apptDto.getIdAppointment( ), Appointment.APPOINTMENT_RESOURCE_TYPE,
+                apptDto.setListWorkflowActions( workflowService.getActions( apptDto.getIdAppointment( ), Appointment.APPOINTMENT_RESOURCE_TYPE,
                         form.getIdWorkflow( ), luteceUser ) );
             }
         }
@@ -1583,17 +1609,16 @@ public class AppointmentApp extends MVCApplication
         if ( StringUtils.isNotEmpty( strIdAction ) && StringUtils.isNumeric( strIdAction ) && StringUtils.isNotEmpty( refAppointment ) )
         {
             int nIdAction = Integer.parseInt( strIdAction );
-            if ( WorkflowService.getInstance( ).isDisplayTasksForm( nIdAction, getLocale( request ) ) )
+            if ( _workflowService.isDisplayTasksForm( nIdAction, getLocale( request ) ) )
             {
                 AppointmentDTO appointment = AppointmentService.buildAppointmentDTOFromRefAppointment( refAppointment );
                 // Check if an appointment Object was found and built with the given reference
                 if( appointment == null )
                 {
                 	// When the appointment Object doesn't exist, we display an error message to the user
-                	return getXPage( TEMPLATE_ERROR_APPOINTMENT_REFERENCE, getLocale( request ), null );
+                	return getXPage( TEMPLATE_ERROR_APPOINTMENT_REFERENCE, getLocale( request ), (Map<String, Object>) null );
                 }
-                ITaskService taskService = SpringContextService.getBean( TaskService.BEAN_SERVICE );
-                List<ITask> listActionTasks = taskService.getListTaskByIdAction( nIdAction, getLocale( request ) );
+                List<ITask> listActionTasks = _taskService.getListTaskByIdAction( nIdAction, getLocale( request ) );
                 if ( listActionTasks.stream( ).anyMatch( task -> task.getTaskType( ).getKey( ).equals( "taskReportAppointment" ) ) )
                 {
                     Map<String, String> additionalParameters = new HashMap<>( );
@@ -1602,14 +1627,13 @@ public class AppointmentApp extends MVCApplication
                     additionalParameters.put( PARAMETER_ID_FORM, String.valueOf( appointment.getIdForm( ) ) );
                     return redirect( request, VIEW_APPOINTMENT_CALENDAR, additionalParameters );
                 }
-                String strHtmlTasksForm = WorkflowService.getInstance( ).getDisplayTasksForm( appointment.getIdAppointment( ),
+                String strHtmlTasksForm = _workflowService.getDisplayTasksForm( appointment.getIdAppointment( ),
                         Appointment.APPOINTMENT_RESOURCE_TYPE, nIdAction, request, getLocale( request ), null );
-                Map<String, Object> model = getModel( );
-                model.put( MARK_TASKS_FORM, strHtmlTasksForm );
-                model.put( PARAMETER_ID_ACTION, nIdAction );
-                model.put( PARAMETER_REF_APPOINTMENT, refAppointment );
+                _models.put( MARK_TASKS_FORM, strHtmlTasksForm );
+                _models.put( PARAMETER_ID_ACTION, nIdAction );
+                _models.put( PARAMETER_REF_APPOINTMENT, refAppointment );
 
-                return getXPage( TEMPLATE_TASKS_FORM_WORKFLOW, getLocale( request ), model );
+                return getXPage( TEMPLATE_TASKS_FORM_WORKFLOW, getLocale( request ), _models );
             }
 
             return doProcessWorkflowAction( request );
@@ -1638,7 +1662,7 @@ public class AppointmentApp extends MVCApplication
             if( appointment == null )
             {
             	// When the appointment Object doesn't exist, we display an error message to the user
-            	return getXPage( TEMPLATE_ERROR_APPOINTMENT_REFERENCE, getLocale( request ), null );
+            	return getXPage( TEMPLATE_ERROR_APPOINTMENT_REFERENCE, getLocale( request ), (Map<String, Object>) null );
             }
             int nIdAppointment = appointment.getIdAppointment( );
 
@@ -1649,17 +1673,17 @@ public class AppointmentApp extends MVCApplication
             {
                 try
                 {
-                    if ( WorkflowService.getInstance( ).isDisplayTasksForm( nIdAction, getLocale( request ) ) )
+                    if ( _workflowService.isDisplayTasksForm( nIdAction, getLocale( request ) ) )
                     {
-                        if ( WorkflowService.getInstance( ).canProcessAction( nIdAppointment, Appointment.APPOINTMENT_RESOURCE_TYPE, nIdAction,
+                        if ( _workflowService.canProcessAction( nIdAppointment, Appointment.APPOINTMENT_RESOURCE_TYPE, nIdAction,
                                 slot.getIdForm( ), request, false, luteceUser ) )
                         {
 
-                            String strError = WorkflowService.getInstance( ).doSaveTasksForm( nIdAppointment, Appointment.APPOINTMENT_RESOURCE_TYPE, nIdAction,
+                            String strError = _workflowService.doSaveTasksForm( nIdAppointment, Appointment.APPOINTMENT_RESOURCE_TYPE, nIdAction,
                                     slot.getIdForm( ), request, getLocale( request ), luteceUser );
                             if ( strError != null )
                             {
-                                AppLogService.error( "Error Workflow:" + strError );
+                                AppLogService.error( "Error Workflow: {}", strError );
                                 addError( strError );
                                 return getWorkflowActionForm( request );
                             }
@@ -1674,8 +1698,7 @@ public class AppointmentApp extends MVCApplication
                     }
                     else
                     {
-                        ITaskService taskService = SpringContextService.getBean( TaskService.BEAN_SERVICE );
-                        List<ITask> listActionTasks = taskService.getListTaskByIdAction( nIdAction, getLocale( request ) );
+                        List<ITask> listActionTasks = _taskService.getListTaskByIdAction( nIdAction, getLocale( request ) );
                         for ( ITask task : listActionTasks )
                         {
                             if ( task.getTaskType( ).getKey( ).equals( "taskChangeAppointmentStatus" ) && ( appointment.getIsCancelled( ) ) )
@@ -1687,7 +1710,7 @@ public class AppointmentApp extends MVCApplication
 
                                     if ( apptSlt.getNbPlaces( ) > slt.getNbRemainingPlaces( ) )
                                     {
-                                        AppLogService.error( "Error Workflow:" + ERROR_MESSAGE_SLOT_FULL );
+                                        AppLogService.error( "Error Workflow: {}", ERROR_MESSAGE_SLOT_FULL );
                                         addError( ERROR_MESSAGE_SLOT_FULL, getLocale( request ) );
                                         return getMyAppointments( request );
 
@@ -1696,9 +1719,9 @@ public class AppointmentApp extends MVCApplication
                             }
                         }
 
-                        WorkflowService.getInstance( ).doProcessAction( nIdAppointment, Appointment.APPOINTMENT_RESOURCE_TYPE, nIdAction, slot.getIdForm( ),
+                        _workflowService.doProcessAction( nIdAppointment, Appointment.APPOINTMENT_RESOURCE_TYPE, nIdAction, slot.getIdForm( ),
                                 request, getLocale( request ), false, luteceUser );
-                        AppointmentListenerManager.notifyAppointmentWFActionTriggered( nIdAppointment, nIdAction );
+                        CDI.current( ).getBeanManager( ).getEvent( ).select( AppointmentWorkflowActionEvent.class ).fireAsync( new AppointmentWorkflowActionEvent( nIdAppointment, nIdAction ) );
 
                     }
                     addInfo( MESSAGE_WF_ACTION_SUCESS, getLocale( request ) );
@@ -1711,21 +1734,6 @@ public class AppointmentApp extends MVCApplication
             }
         }
         return getMyAppointments( request );
-    }
-
-    /**
-     * Get the captcha security service
-     *
-     * @return The captcha security service
-     */
-    private CaptchaSecurityService getCaptchaService( )
-    {
-        if ( _captchaSecurityService == null )
-        {
-            _captchaSecurityService = new CaptchaSecurityService( );
-        }
-
-        return _captchaSecurityService;
     }
 
     /**

@@ -72,8 +72,5 @@
 <@initEditor />
 
 <script>
-$(function(){
-/* Add Form title */
-$('#feature-title').html("<a href=\"jsp/admin/plugins/appointment/ManageAppointmentForms.jsp\" title=\"#i18n{appointment.adminFeature.ManageAppointmentForm.name}\">#i18n{appointment.adminFeature.ManageAppointmentForm.name}</a> <small>${formMessage.calendarTitle!}</small>"); 
-});
+document.getElementById('feature-title').innerHTML = '<a href="jsp/admin/plugins/appointment/ManageAppointmentForms.jsp" title="#i18n{appointment.adminFeature.ManageAppointmentForm.name}">#i18n{appointment.adminFeature.ManageAppointmentForm.name}</a> <small>${formMessage.calendarTitle!}</small>';
 </script>

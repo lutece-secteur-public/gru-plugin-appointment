@@ -33,7 +33,7 @@
  */
 package fr.paris.lutece.plugins.appointment.service.comment;
 
-import javax.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletRequest;
 
 public interface IRedirectComment {
 

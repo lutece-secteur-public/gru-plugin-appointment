@@ -39,7 +39,7 @@ import java.util.List;
 import fr.paris.lutece.plugins.appointment.service.AppointmentPlugin;
 import fr.paris.lutece.portal.service.plugin.Plugin;
 import fr.paris.lutece.portal.service.plugin.PluginService;
-import fr.paris.lutece.portal.service.spring.SpringContextService;
+import jakarta.enterprise.inject.spi.CDI;
 
 /**
  * This class provides instances management methods for Reservation Rule objects
@@ -51,7 +51,7 @@ public final class ReservationRuleHome
 {
 
     // Static variable pointed at the DAO instance
-    private static IReservationRuleDAO _dao = SpringContextService.getBean( "appointment.reservationRuleDAO" );
+    private static IReservationRuleDAO _dao = CDI.current( ).select( IReservationRuleDAO.class ).get( );
     private static Plugin _plugin = PluginService.getPlugin( AppointmentPlugin.PLUGIN_NAME );
 
     /**

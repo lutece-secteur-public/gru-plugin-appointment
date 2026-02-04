@@ -1,4 +1,4 @@
-<#include "/skin/plugins/asynchronousupload/upload_commons.html" />
+<#include "/admin/plugins/asynchronousupload/upload_commons.html" />
 
 <#assign cssClass = entry.CSSClass!'' >
 <#if list_responses??>
@@ -12,7 +12,7 @@
 
 <@formGroup labelFor='attribute${entry.idEntry}' id='form${entry.idEntry}' labelKey='${entry.title}' helpKey='${entry.helpMessage!}' class=cssClass mandatory=entry.mandatory>
 	<#assign fieldName='attribute'+entry.idEntry >
-	<@addFileInput fieldName=fieldName handler=uploadHandler cssClass=cssClass multiple=true />
+	<@addFileBOInput fieldName=fieldName handler=uploadHandler cssClass=cssClass multiple=true />
 	<#if list_responses?? && list_responses?has_content>
 		<#assign response_error = list_responses[0]>
 		<#if response_error.entry.idEntry == entry.idEntry && response_error.entry.error?? && response_error.entry.error.isDisplayableError>
@@ -42,4 +42,4 @@
 	<#assign listFiles = ''>
 </#if>
 <@addRequiredJsFiles />
-<@addUploadedFilesBox fieldName=fieldName handler=uploadHandler listFiles=listFiles />
+<@addBOUploadedFilesBox fieldName=fieldName handler=uploadHandler listFiles=listFiles />

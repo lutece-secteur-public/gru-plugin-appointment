@@ -31,54 +31,27 @@
  *
  * License 1.0
  */
-package fr.paris.lutece.plugins.appointment.service.listeners;
+package fr.paris.lutece.plugins.appointment.service.anonymization;
 
-import java.util.List;
-import java.util.Locale;
+import org.eclipse.microprofile.config.inject.ConfigProperty;
 
-/**
- * Interface for listeners that should be notified when appointments are removed or when the date changed. <b>The listener must be a Spring bean.</b>
- * 
- * @author Laurent Payen
- * 
- */
-public interface IAppointmentListener
+import fr.paris.lutece.plugins.genericattributes.service.anonymization.EntryAnonymizationType;
+import fr.paris.lutece.plugins.genericattributes.service.anonymization.IEntryAnonymizationType;
+import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.enterprise.inject.Produces;
+import jakarta.inject.Named;
+
+@ApplicationScoped
+public class AppointmentAnonymizationTypeProducer
 {
-    /**
-     * Notify the listener that an appointment has been removed
-     * 
-     * @param nIdAppointment
-     *            The id of the appointment
-     */
-    void notifyAppointmentRemoval( int nIdAppointment );
-
-    /**
-     * Notify the listener that the date of an appointment has changed.
-     * 
-     * @param nIdAppointment
-     *            the id of the appointment
-     * @param nIdSlot
-     *            The new slot of the appointment
-     * @param locale
-     *            The locale to display error messages with
-     * @return The message to display to the user, if any.
-     */
-    String appointmentDateChanged( int nIdAppointment, List<Integer> listIdSlot, Locale locale );
-
-    /**
-     * Notify the listener that an appointment has been creates
-     * 
-     * @param nIdAppointment
-     *            The id of the appointment
-     */
-    void notifyAppointmentCreated( int nIdAppointment );
-
-    /**
-     * Notify the listener that an appointment has been update
-     * 
-     * @param nIdAppointment
-     *            The id of the appointment
-     */
-    void notifyAppointmentUpdated( int nIdAppointment );
-
+    @Produces
+    @ApplicationScoped
+    @Named( "appointment.formIdAnonymizationType" )
+    public IEntryAnonymizationType produceFormIdAnonymizationType(
+            @ConfigProperty( name = "appointment.formIdAnonymizationType.wildcard" ) String wildcard,
+            @ConfigProperty( name = "appointment.formIdAnonymizationType.helpKey" ) String helpKey,
+            @ConfigProperty( name = "appointment.formIdAnonymizationType.serviceName" ) String serviceName )
+    {
+        return new EntryAnonymizationType( wildcard, helpKey, serviceName );
+    }
 }

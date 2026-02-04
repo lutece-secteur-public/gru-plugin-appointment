@@ -38,20 +38,18 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import javax.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletRequest;
 
 import org.apache.commons.lang3.StringUtils;
 
 import fr.paris.lutece.api.user.User;
 import fr.paris.lutece.plugins.appointment.service.AppointmentResourceIdService;
 import fr.paris.lutece.plugins.appointment.service.EntryService;
-import fr.paris.lutece.plugins.appointment.service.EntryTypeService;
 import fr.paris.lutece.plugins.appointment.service.FormService;
 import fr.paris.lutece.plugins.appointment.web.dto.AppointmentFormDTO;
 import fr.paris.lutece.plugins.genericattributes.business.Entry;
 import fr.paris.lutece.plugins.genericattributes.business.EntryFilter;
 import fr.paris.lutece.plugins.genericattributes.business.EntryHome;
-import fr.paris.lutece.plugins.genericattributes.business.EntryType;
 import fr.paris.lutece.plugins.genericattributes.business.EntryTypeHome;
 import fr.paris.lutece.plugins.genericattributes.business.Field;
 import fr.paris.lutece.plugins.genericattributes.business.FieldHome;
@@ -74,16 +72,23 @@ import fr.paris.lutece.portal.util.mvc.admin.annotations.Controller;
 import fr.paris.lutece.portal.util.mvc.commons.annotations.Action;
 import fr.paris.lutece.portal.util.mvc.commons.annotations.View;
 import fr.paris.lutece.portal.util.mvc.utils.MVCUtils;
+import fr.paris.lutece.portal.web.cdi.mvc.Models;
 import fr.paris.lutece.util.ReferenceList;
 import fr.paris.lutece.util.url.UrlItem;
 import org.apache.commons.lang3.math.NumberUtils;
 
+import jakarta.enterprise.context.SessionScoped;
+import jakarta.inject.Inject;
+import jakarta.inject.Named;
+
 /**
  * JspBean to manage appointment form entries
- * 
+ *
  * @author Laurent Payen
  *
  */
+@SessionScoped
+@Named
 @Controller( controllerJsp = "ManageAppointmentFormEntries.jsp", controllerPath = "jsp/admin/plugins/appointment/", right = AppointmentFormJspBean.RIGHT_MANAGEAPPOINTMENTFORM )
 public class AppointmentFormEntryJspBean extends MVCAdminJspBean
 {
@@ -150,7 +155,10 @@ public class AppointmentFormEntryJspBean extends MVCAdminJspBean
     private static final String TEMPLATE_MODIFY_APPOINTMENT_FORM = "/admin/plugins/appointment/appointmentform/modify_appointmentform_entries.html";
 
     // Local variables
-    private EntryService _entryService = EntryService.getService( );
+    @Inject
+    private Models _models;
+    @Inject
+    private EntryService _entryService;
 
     /**
      * Get the view of the entries of the form
@@ -171,12 +179,13 @@ public class AppointmentFormEntryJspBean extends MVCAdminJspBean
         }
         int nIdForm = Integer.parseInt( request.getParameter( PARAMETER_ID_FORM ) );
         AppointmentFormDTO appointmentForm = FormService.buildAppointmentFormLight( nIdForm );
-        Map<String, Object> model = getModel( );
-        EntryService.addListEntryToModel( nIdForm, model );
-        model.put( MARK_APPOINTMENT_FORM, appointmentForm );
+        Map<String, Object> entryModel = new HashMap<>( );
+        EntryService.addListEntryToModel( nIdForm, entryModel );
+        entryModel.forEach( _models::put );
+        _models.put( MARK_APPOINTMENT_FORM, appointmentForm );
         Plugin pluginAppointmentResource = PluginService.getPlugin( AppPropertiesService.getProperty( PROPERTY_MODULE_APPOINTMENT_RESOURCE_NAME ) );
-        model.put( MARK_APPOINTMENT_RESOURCE_ENABLED, ( pluginAppointmentResource != null ) && pluginAppointmentResource.isInstalled( ) );
-        return getPage( PROPERTY_PAGE_TITLE_APPOINTMENT_FORM_ENTRIES, TEMPLATE_MODIFY_APPOINTMENT_FORM, model );
+        _models.put( MARK_APPOINTMENT_RESOURCE_ENABLED, ( pluginAppointmentResource != null ) && pluginAppointmentResource.isInstalled( ) );
+        return getPage( PROPERTY_PAGE_TITLE_APPOINTMENT_FORM_ENTRIES, TEMPLATE_MODIFY_APPOINTMENT_FORM );
     }
 
     /**
@@ -216,19 +225,18 @@ public class AppointmentFormEntryJspBean extends MVCAdminJspBean
         entry.setResourceType( AppointmentFormDTO.RESOURCE_TYPE );
         AppointmentFormDTO appointmentForm = FormService.buildAppointmentForm( nIdForm, 0 );
         IEntryTypeService entryTypeService = EntryTypeServiceManager.getEntryTypeService( entry );
-        Map<String, Object> model = new HashMap<>( );
-        model.put( MARK_ENTRY, entry );
-        model.put( MARK_FORM, appointmentForm );
-        model.put( MARK_WEBAPP_URL, AppPathService.getBaseUrl( request ) );
-        model.put( MARK_LOCALE, AdminUserService.getLocale( request ).getLanguage( ) );
-        model.put( MARK_ENTRY_TYPE_SERVICE, entryTypeService );
-        model.put( MARK_ANONYMIZATION_HELP, entryTypeService.getAnonymizationHelpMessage( request.getLocale( ) ) );
+        _models.put( MARK_ENTRY, entry );
+        _models.put( MARK_FORM, appointmentForm );
+        _models.put( MARK_WEBAPP_URL, AppPathService.getBaseUrl( request ) );
+        _models.put( MARK_LOCALE, AdminUserService.getLocale( request ).getLanguage( ) );
+        _models.put( MARK_ENTRY_TYPE_SERVICE, entryTypeService );
+        _models.put( MARK_ANONYMIZATION_HELP, entryTypeService.getAnonymizationHelpMessage( request.getLocale( ) ) );
         String strTemplate = EntryTypeServiceManager.getEntryTypeService( entry ).getTemplateCreate( entry, false );
         if ( strTemplate == null )
         {
             return doCreateEntry( request );
         }
-        return getPage( PROPERTY_CREATE_ENTRY_TITLE, strTemplate, model );
+        return getPage( PROPERTY_CREATE_ENTRY_TITLE, strTemplate );
     }
 
     /**
@@ -318,22 +326,21 @@ public class AppointmentFormEntryJspBean extends MVCAdminJspBean
             }
             entry.setFields( listField );
             IEntryTypeService entryTypeService = EntryTypeServiceManager.getEntryTypeService( entry );
-            Map<String, Object> model = new HashMap<>( );
-            model.put( MARK_ENTRY, entry );
-            model.put( MARK_FORM, FormService.buildAppointmentForm( entry.getIdResource( ), 0 ) );
+            _models.put( MARK_ENTRY, entry );
+            _models.put( MARK_FORM, FormService.buildAppointmentForm( entry.getIdResource( ), 0 ) );
             UrlItem urlItem = new UrlItem( AppPathService.getBaseUrl( request ) + getViewUrl( VIEW_GET_MODIFY_ENTRY ) );
             urlItem.addParameter( PARAMETER_ID_ENTRY, strIdEntry );
-            model.put( MARK_LIST, entry.getFields( ) );
+            _models.put( MARK_LIST, entry.getFields( ) );
             ReferenceList refListRegularExpression = entryTypeService.getReferenceListRegularExpression( entry, plugin );
             if ( refListRegularExpression != null )
             {
-                model.put( MARK_REGULAR_EXPRESSION_LIST_REF_LIST, refListRegularExpression );
+                _models.put( MARK_REGULAR_EXPRESSION_LIST_REF_LIST, refListRegularExpression );
             }
-            model.put( MARK_WEBAPP_URL, AppPathService.getBaseUrl( request ) );
-            model.put( MARK_LOCALE, AdminUserService.getLocale( request ).getLanguage( ) );
-            model.put( MARK_ENTRY_TYPE_SERVICE, EntryTypeServiceManager.getEntryTypeService( entry ) );
-            model.put( MARK_ANONYMIZATION_HELP, entryTypeService.getAnonymizationHelpMessage( request.getLocale( ) ) );
-            return getPage( PROPERTY_MODIFY_QUESTION_TITLE, entryTypeService.getTemplateModify( entry, false ), model );
+            _models.put( MARK_WEBAPP_URL, AppPathService.getBaseUrl( request ) );
+            _models.put( MARK_LOCALE, AdminUserService.getLocale( request ).getLanguage( ) );
+            _models.put( MARK_ENTRY_TYPE_SERVICE, EntryTypeServiceManager.getEntryTypeService( entry ) );
+            _models.put( MARK_ANONYMIZATION_HELP, entryTypeService.getAnonymizationHelpMessage( request.getLocale( ) ) );
+            return getPage( PROPERTY_MODIFY_QUESTION_TITLE, entryTypeService.getTemplateModify( entry, false ) );
         }
 
         return redirect( request, AppointmentFormJspBean.getURLManageAppointmentForms( request ) );

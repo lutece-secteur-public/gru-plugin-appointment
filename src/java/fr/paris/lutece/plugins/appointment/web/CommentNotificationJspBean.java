@@ -33,8 +33,7 @@
  */
 package fr.paris.lutece.plugins.appointment.web;
 
-import java.util.Map;
-import javax.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletRequest;
 import fr.paris.lutece.plugins.appointment.business.comment.CommentNotificationConfig;
 import fr.paris.lutece.plugins.appointment.business.comment.CommentNotificationHome;
 import fr.paris.lutece.portal.service.admin.AccessDeniedException;
@@ -42,13 +41,20 @@ import fr.paris.lutece.portal.util.mvc.admin.MVCAdminJspBean;
 import fr.paris.lutece.portal.util.mvc.admin.annotations.Controller;
 import fr.paris.lutece.portal.util.mvc.commons.annotations.Action;
 import fr.paris.lutece.portal.util.mvc.commons.annotations.View;
+import fr.paris.lutece.portal.web.cdi.mvc.Models;
+
+import jakarta.enterprise.context.SessionScoped;
+import jakarta.inject.Inject;
+import jakarta.inject.Named;
 
 /**
  * This class provides the user interface to manage calendar templates
- * 
+ *
  * @author Laurent Payen
  *
  */
+@SessionScoped
+@Named
 @Controller( controllerJsp = CommentNotificationJspBean.CONTROLLER_JSP, controllerPath = CommentNotificationJspBean.CONTROLLER_PATH, right = CommentJspBean.RIGHT_MANAGECOMMENTTFORM )
 public class CommentNotificationJspBean extends MVCAdminJspBean
 {
@@ -87,6 +93,8 @@ public class CommentNotificationJspBean extends MVCAdminJspBean
     // Actions
     private static final String ACTION_DO_UPDATE_NOTIFICATION_CONFIG = "updateNotificationCommentConfig";
     // Session variables
+    @Inject
+    private Models _models;
     private CommentNotificationConfig _commentNotificationConfig;
 
     /**
@@ -101,9 +109,8 @@ public class CommentNotificationJspBean extends MVCAdminJspBean
     public String getNotificationCommentConfig( HttpServletRequest request )
     {
         _commentNotificationConfig = null;
-        Map<String, Object> model = getModel( );
-        model.put( MARK_LIST_CONFIG, CommentNotificationHome.loadCommentNotificationConfig( ) );
-        return getPage( PROPERTY_PAGE_TITLE_MANAGE_COMMENTS, TEMPLATE_MANAGE_NOTIFICATION_CONFIG, model );
+        _models.put( MARK_LIST_CONFIG, CommentNotificationHome.loadCommentNotificationConfig( ) );
+        return getPage( PROPERTY_PAGE_TITLE_MANAGE_COMMENTS, TEMPLATE_MANAGE_NOTIFICATION_CONFIG );
 
     }
 
@@ -120,9 +127,8 @@ public class CommentNotificationJspBean extends MVCAdminJspBean
     {
         String type = request.getParameter( PARAMETER_TYPE );
         _commentNotificationConfig = CommentNotificationHome.loadCommentNotificationConfigByType( type );
-        Map<String, Object> model = getModel( );
-        model.put( MARK_CONFIG, _commentNotificationConfig );
-        return getPage( PROPERTY_PAGE_TITLE_MANAGE_COMMENTS, TEMPLATE_NOTIFICATION_CONFIG, model );
+        _models.put( MARK_CONFIG, _commentNotificationConfig );
+        return getPage( PROPERTY_PAGE_TITLE_MANAGE_COMMENTS, TEMPLATE_NOTIFICATION_CONFIG );
 
     }
 

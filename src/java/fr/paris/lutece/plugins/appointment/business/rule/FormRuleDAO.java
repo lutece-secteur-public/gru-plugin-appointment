@@ -37,6 +37,7 @@ import java.sql.Statement;
 
 import fr.paris.lutece.portal.service.plugin.Plugin;
 import fr.paris.lutece.util.sql.DAOUtil;
+import jakarta.enterprise.context.ApplicationScoped;
 
 /**
  * This class provides Data Access methods for Form Rule objects
@@ -44,7 +45,8 @@ import fr.paris.lutece.util.sql.DAOUtil;
  * @author Laurent Payen
  *
  */
-public final class FormRuleDAO implements IFormRuleDAO
+@ApplicationScoped
+public class FormRuleDAO implements IFormRuleDAO
 {
 
     private static final String SQL_QUERY_INSERT = "INSERT INTO appointment_form_rule ( is_captcha_enabled, is_mandatory_email_enabled, is_active_authentication, nb_days_before_new_appointment, min_time_before_appointment, nb_max_appointments_per_user, nb_days_for_max_appointments_per_user, bo_overbooking, id_form) VALUES ( ?, ?, ?, ?, ?, ?, ?, ?, ?)";

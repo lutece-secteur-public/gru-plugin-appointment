@@ -43,9 +43,9 @@ import java.util.Map;
 import java.util.StringJoiner;
 import java.util.stream.Collectors;
 
-import javax.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletRequest;
 import org.apache.commons.collections.CollectionUtils;
-import org.apache.commons.fileupload.FileItem;
+import fr.paris.lutece.portal.service.upload.MultipartItem;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.math.NumberUtils;
 
@@ -83,18 +83,25 @@ import fr.paris.lutece.portal.util.mvc.admin.annotations.Controller;
 import fr.paris.lutece.portal.util.mvc.commons.annotations.Action;
 import fr.paris.lutece.portal.util.mvc.commons.annotations.View;
 import fr.paris.lutece.portal.util.mvc.utils.MVCUtils;
+import fr.paris.lutece.portal.web.cdi.mvc.Models;
 import fr.paris.lutece.portal.web.upload.MultipartHttpServletRequest;
 import fr.paris.lutece.portal.web.util.LocalizedPaginator;
 import fr.paris.lutece.util.ReferenceList;
 import fr.paris.lutece.util.html.AbstractPaginator;
 import fr.paris.lutece.util.url.UrlItem;
 
+import jakarta.enterprise.context.SessionScoped;
+import jakarta.inject.Inject;
+import jakarta.inject.Named;
+
 /**
  * This class provides the user interface to manage AppointmentForm features ( manage, create, modify, copy, remove )
- * 
+ *
  * @author L.Payen
- * 
+ *
  */
+@SessionScoped
+@Named
 @Controller( controllerJsp = "ManageAppointmentForms.jsp", controllerPath = "jsp/admin/plugins/appointment/", right = AppointmentFormJspBean.RIGHT_MANAGEAPPOINTMENTFORM )
 public class AppointmentFormJspBean extends AbstractAppointmentFormAndSlotJspBean
 {
@@ -104,6 +111,11 @@ public class AppointmentFormJspBean extends AbstractAppointmentFormAndSlotJspBea
      */
     public static final String RIGHT_MANAGEAPPOINTMENTFORM = "APPOINTMENT_FORM_MANAGEMENT";
     private static final long serialVersionUID = -615061018633136997L;
+
+    @Inject
+    private AccessControlService _accessControlService;
+    @Inject
+    private Models _models;
 
     // templates
     private static final String TEMPLATE_MANAGE_APPOINTMENTFORMS = "/admin/plugins/appointment/appointmentform/manage_appointmentforms.html";
@@ -225,16 +237,15 @@ public class AppointmentFormJspBean extends AbstractAppointmentFormAndSlotJspBea
         LocalizedPaginator<AppointmentFormDTO> paginator = new LocalizedPaginator<>( listAppointmentForm, _nItemsPerPage, strUrl, PARAMETER_PAGE_INDEX,
                 _strCurrentPageIndex, getLocale( ) );
         AdminUser user = AdminUserService.getAdminUser( request );
-        Map<String, Object> model = getModel( );
-        model.put( MARK_NB_ITEMS_PER_PAGE, Integer.toString( _nItemsPerPage ) );
-        model.put( MARK_PAGINATOR, paginator );
-        model.put( MARK_BASE_URL, AppPathService.getProdUrl( request ) );
-        model.put( MARK_APPOINTMENTFORM_LIST, RBACService.getAuthorizedCollection( paginator.getPageItems( ), AppointmentResourceIdService.PERMISSION_VIEW_FORM,
+        _models.put( MARK_NB_ITEMS_PER_PAGE, Integer.toString( _nItemsPerPage ) );
+        _models.put( MARK_PAGINATOR, paginator );
+        _models.put( MARK_BASE_URL, AppPathService.getProdUrl( request ) );
+        _models.put( MARK_APPOINTMENTFORM_LIST, RBACService.getAuthorizedCollection( paginator.getPageItems( ), AppointmentResourceIdService.PERMISSION_VIEW_FORM,
                 (User) AdminUserService.getAdminUser( request ) ) );
-        model.put( VIEW_PERMISSIONS_FORM, AppointmentUtilities.getPermissions( paginator.getPageItems( ), user ) );
-        model.put( MARK_PERMISSION_CREATE, String.valueOf(
+        _models.put( VIEW_PERMISSIONS_FORM, AppointmentUtilities.getPermissions( paginator.getPageItems( ), user ) );
+        _models.put( MARK_PERMISSION_CREATE, String.valueOf(
                 RBACService.isAuthorized( AppointmentFormDTO.RESOURCE_TYPE_CREATE, "0", AppointmentResourceIdService.PERMISSION_CREATE_FORM, (User) user ) ) );
-        return getPage( PROPERTY_PAGE_TITLE_MANAGE_APPOINTMENTFORMS, TEMPLATE_MANAGE_APPOINTMENTFORMS, model );
+        return getPage( PROPERTY_PAGE_TITLE_MANAGE_APPOINTMENTFORMS, TEMPLATE_MANAGE_APPOINTMENTFORMS, _models );
     }
 
     /**
@@ -259,18 +270,16 @@ public class AppointmentFormJspBean extends AbstractAppointmentFormAndSlotJspBea
             _appointmentFormDTO = new AppointmentFormDTO( );
         }
 
-        Map<String, Object> model = getModel( );
-
         // Load all available Access Controllers
-        if ( AccessControlService.getInstance( ).isAvailable( ) )
+        if ( _accessControlService.isAvailable( ) )
         {
         	AdminUser adminUser = getUser( );
-        	ReferenceList referenceList = AccessControlService.getInstance( ).getAccessControlsEnabled( adminUser, getLocale( ) );
-        	model.put( MARK_ACCESSCONTROL_REF_LIST, referenceList );
+        	ReferenceList referenceList = _accessControlService.getAccessControlsEnabled( adminUser, getLocale( ) );
+        	_models.put( MARK_ACCESSCONTROL_REF_LIST, referenceList );
         }
 
-        addElementsToModel( _appointmentFormDTO, getUser( ), getLocale( ), model );
-        return getPage( PROPERTY_PAGE_TITLE_CREATE_APPOINTMENTFORM, TEMPLATE_CREATE_APPOINTMENTFORM, model );
+        addElementsToModel( _appointmentFormDTO, getUser( ), getLocale( ), _models );
+        return getPage( PROPERTY_PAGE_TITLE_CREATE_APPOINTMENTFORM, TEMPLATE_CREATE_APPOINTMENTFORM, _models );
     }
 
     /**
@@ -305,10 +314,10 @@ public class AppointmentFormJspBean extends AbstractAppointmentFormAndSlotJspBea
         int nIdForm = FormService.createAppointmentForm( _appointmentFormDTO );
 
         // Set or remove (with '-1') the Access Controllers for the current form
-        if ( AccessControlService.getInstance( ).isAvailable( ) )
+        if ( _accessControlService.isAvailable( ) )
         {
         	int idAccessControl = NumberUtils.toInt( request.getParameter( PARAMETER_ID_ACCESS_CONTROL ), -1 );
-        	AccessControlService.getInstance( ).linkResourceToAccessControl( nIdForm, Form.RESOURCE_TYPE, idAccessControl );
+        	_accessControlService.linkResourceToAccessControl( nIdForm, Form.RESOURCE_TYPE, idAccessControl );
         }
 
         AppLogService.info( LogUtilities.buildLog( ACTION_CREATE_APPOINTMENTFORM, Integer.toString( nIdForm ), getUser( ) ) );
@@ -385,10 +394,10 @@ public class AppointmentFormJspBean extends AbstractAppointmentFormAndSlotJspBea
         }
 
         // Remove any Access Controller linked to this form
-        if ( AccessControlService.getInstance( ).isAvailable( ) )
+        if ( _accessControlService.isAvailable( ) )
         {
         	// The links between this form & the Access Controllers will be removed with the '-1' value
-        	AccessControlService.getInstance( ).linkResourceToAccessControl( nIdForm, Form.RESOURCE_TYPE, -1 );
+        	_accessControlService.linkResourceToAccessControl( nIdForm, Form.RESOURCE_TYPE, -1 );
         }
 
         FormService.removeForm( nIdForm );
@@ -420,19 +429,17 @@ public class AppointmentFormJspBean extends AbstractAppointmentFormAndSlotJspBea
         {
         	_appointmentFormDTO = FormService.buildAppointmentForm( nIdForm, 0 );
         }
-        Map<String, Object> model = getModel( );
-
         // Load all available Access Controllers
-        if ( AccessControlService.getInstance( ).isAvailable( ) )
+        if ( _accessControlService.isAvailable( ) )
         {
-        	ReferenceList referenceList = AccessControlService.getInstance( ).getAccessControlsEnabled( getUser( ), getLocale( ) );
-        	model.put( MARK_ACCESSCONTROL_REF_LIST, referenceList );
-        	model.put( MARK_ACCESSCONTROL_ID,
-        			AccessControlService.getInstance( ).findAccessControlForResource( nIdForm, Form.RESOURCE_TYPE ) );
+        	ReferenceList referenceList = _accessControlService.getAccessControlsEnabled( getUser( ), getLocale( ) );
+        	_models.put( MARK_ACCESSCONTROL_REF_LIST, referenceList );
+        	_models.put( MARK_ACCESSCONTROL_ID,
+        			_accessControlService.findAccessControlForResource( nIdForm, Form.RESOURCE_TYPE ) );
         }
 
-        addElementsToModel( _appointmentFormDTO, getUser( ), getLocale( ), model );
-        return getPage( PROPERTY_PAGE_TITLE_GENERAL_SETTINGS, TEMPLATE_MODIFY_APPOINTMENTFORM, model );
+        addElementsToModel( _appointmentFormDTO, getUser( ), getLocale( ), _models );
+        return getPage( PROPERTY_PAGE_TITLE_GENERAL_SETTINGS, TEMPLATE_MODIFY_APPOINTMENTFORM, _models );
     }
 
     /**
@@ -488,10 +495,10 @@ public class AppointmentFormJspBean extends AbstractAppointmentFormAndSlotJspBea
         }
 
         // Modify or remove the Access Controllers linked to this form
-        if ( AccessControlService.getInstance( ).isAvailable( ) )
+        if ( _accessControlService.isAvailable( ) )
         {
         	int idAccessControl = NumberUtils.toInt( request.getParameter( PARAMETER_ID_ACCESS_CONTROL ), -1 );
-        	AccessControlService.getInstance( ).linkResourceToAccessControl( nIdForm, Form.RESOURCE_TYPE, idAccessControl );
+        	_accessControlService.linkResourceToAccessControl( nIdForm, Form.RESOURCE_TYPE, idAccessControl );
         }
 
         _appointmentFormDTO.setIsActive( appointmentFormDb.getIsActive( ) );
@@ -680,7 +687,7 @@ public class AppointmentFormJspBean extends AbstractAppointmentFormAndSlotJspBea
         ImageResource img = new ImageResource( );
         byte [ ] bytes = new byte [ ] { };
         String strMimeType = MARK_NULL;
-        FileItem item = mRequest.getFile( PARAMETER_ICON_RESSOURCE );
+        MultipartItem item = mRequest.getFile( PARAMETER_ICON_RESSOURCE );
         if ( ( item != null ) && StringUtils.isNotEmpty( item.getName( ) ) )
         {
             bytes = item.get( );
@@ -722,7 +729,7 @@ public class AppointmentFormJspBean extends AbstractAppointmentFormAndSlotJspBea
     private void importClosingDayFile( MultipartHttpServletRequest mRequest, int nIdForm )
     {
         String strPathFile = StringUtils.EMPTY;
-        FileItem item = mRequest.getFile( MARK_FILE_CLOSING_DAYS );
+        MultipartItem item = mRequest.getFile( MARK_FILE_CLOSING_DAYS );
         if ( item != null && StringUtils.isNotEmpty( item.getName( ) ) )
         {
             strPathFile = item.getName( );

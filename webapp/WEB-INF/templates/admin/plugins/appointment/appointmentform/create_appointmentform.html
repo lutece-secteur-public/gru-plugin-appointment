@@ -1,3 +1,4 @@
+<#include "/admin/plugins/address/modules/autocomplete/include/suggestPOI.html" />
 <@commonsAppJS />
 <@row>
 	<@columns>
@@ -186,134 +187,18 @@
 							<@inputGroup>
 								<@input type='file' id='image_resource' name='image_resource' params='accept="image/*"' />
 								<@inputGroupItem>
-									<@button color='btn-danger' params='onclick="$(\'#image_resource\').val(\'\')"' buttonIcon='times' title='Delete' size='' />
+									<@button color='btn-danger' params='onclick="document.getElementById(\'image_resource\').value=\'\'"' buttonIcon='times' title='Delete' size='' />
 								</@inputGroupItem>
 							</@inputGroup>
 						</@formGroup>
-						<@formGroup labelFor='geoloc_address' labelKey='#i18n{appointment.label.formAddress}' helpKey='#i18n{appointment.label.addressDescription}'>
-							<@input type='text' name='geoloc_address' id='geoloc_address' value='${(appointmentform.address?html)!}' />
-							<@input type='text' name='geoloc_longitude' id='geoloc_longitude' value='${(appointmentform.longitude?c)!}' />
-							<@input type='text' name='geoloc_latitude' id='geoloc_latitude' value='${(appointmentform.latitude?c)!}' />
+						<@formGroup labelFor='address_address-input' labelKey='#i18n{appointment.label.formAddress}' helpKey='#i18n{appointment.label.addressDescription}'>
+							<input type="hidden" name="geoloc_address" id="geoloc_address" value="${(appointmentform.address?html)!}" />
+							<input type="hidden" name="geoloc_longitude" id="geoloc_longitude" value="${(appointmentform.longitude?c)!}" />
+							<input type="hidden" name="geoloc_latitude" id="geoloc_latitude" value="${(appointmentform.latitude?c)!}" />
+							<input type="hidden" name="hidden_address" id="hidden_address" />
+							<@suggestPOIInput id="address_address" name="address_address" currentValue="${(appointmentform.address?html)!}" />
 							<p class="help-block" id="help_address">#i18n{appointment.help.formAddress}</p>
-							<!-- used to keep state if the user presses back button -->
-							<input type="hidden" name="hidden_address" id="hidden_address" >
-							<script type='text/javascript'>
-							$('#geoloc_address').clone().attr('type','hidden').insertAfter('#geoloc_address').prev().remove();
-							$('#geoloc_longitude').clone().attr('type','hidden').insertAfter('#geoloc_longitude').prev().remove();
-							$('#geoloc_latitude').clone().attr('type','hidden').insertAfter('#geoloc_latitude').prev().remove();
-							$('<div class="input-group"><input type="text" id="address_address" name="address_address" class="form-control"><span class="input-group-btn"><button class="btn btn-danger btn-flat" type="button" title="#i18n{appointment.label.clearAddress}" id="button_delete_address"><i class="fa fa-times"></i></button> </span>').insertAfter('#geoloc_address');
-							$('<div id=map_address style="height: 300px; width: 100%"></div>').insertBefore('#hidden_address');
-							if (typeof(lutece_map_resources_loaded) == 'undefined') {
-								lutece_map_resources_loaded = true
-								var loadresource = document.createElement('link');
-								loadresource.setAttribute("rel", "stylesheet");
-								loadresource.setAttribute("type", "text/css");
-								loadresource.setAttribute("href", "js/plugins/leaflet/leaflet/leaflet.css");
-								document.getElementsByTagName("head")[0].appendChild(loadresource);
-
-								loadresource = document.createElement('script');
-								loadresource.setAttribute("type", "text/javascript");
-								loadresource.setAttribute("src",  "jsp/admin/plugins/address/modules/autocomplete/SetupSuggestPOI.js.jsp");
-								loadresource.async = false;
-								document.getElementsByTagName("head")[0].appendChild(loadresource);
-
-								loadresource = document.createElement('script');
-								loadresource.setAttribute("type", "text/javascript");
-								loadresource.setAttribute("src",  "js/plugins/address/modules/autocomplete/jQuery.suggestPOI.js");
-								loadresource.async = false;
-								document.getElementsByTagName("head")[0].appendChild(loadresource);
-
-								loadresource = document.createElement('script');
-								loadresource.setAttribute("type", "text/javascript");
-								loadresource.setAttribute("src",   "js/plugins/leaflet/leaflet/leaflet.js" );
-								document.getElementsByTagName("head")[0].appendChild(loadresource);
-							}
-							$(window).load(function() {
-								var map = L.map('map_address').setView([48.85632, 2.33272], 12);
-								var markers_layer = L.featureGroup().addTo(map);
-								// create the tile layer with correct attribution
-								var osmUrl='http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png';
-								var osmAttrib='Map data &copy; <a href="http://openstreetmap.org">OpenStreetMap</a> contributors';
-								var osm = new L.TileLayer(osmUrl, {minZoom: 8, maxZoom: 16, attribution: osmAttrib}).addTo(map);
-
-								var jAdresse = $('#address_address');
-								jAdresse.suggestPOI();
-								jAdresse.bind($.suggestPOI.EVT_SELECT, function(event) {
-
-								var poi = event.poi;
-								if (poi) {
-									var address = poi.libelleTypo;
-
-									markers_layer.clearLayers();
-									var marker = L.marker([poi.y, poi.x]).addTo(markers_layer);
-									map.fitBounds(markers_layer.getBounds());
-
-									var obj= {
-											"type": "Feature",
-											"properties": {
-												"address": address
-											},
-											"geometry": {
-												"type": "Point",
-												"coordinates": [poi.x, poi.y]
-											}
-										};
-										$('#hidden_address').val(JSON.stringify(obj));
-										$('#geoloc_address').val(address);
-										$('#geoloc_latitude').val(poi.y);
-										$('#geoloc_longitude').val(poi.x);
-									}
-								});
-								$("#button_delete_address").on('click', function() {
-									$('#address_address').val("");
-									//Don't put the empty string to disambiguate with the user
-									//clearing the field, and then pressing the browser back button
-									$('#hidden_address').val("false");
-									$('#geoloc_address').val("");
-									$('#geoloc_latitude').val("");
-									$('#geoloc_longitude').val("");
-									map.setView([48.85632, 2.33272], 12);
-									markers_layer.clearLayers();
-								});
-								//Try to restore from back/forward browser history buttons
-								var prev_data = $('#hidden_address').val();
-								var prev_value;
-								var user_cleared = false;
-								if (prev_data) {
-									prev_value=JSON.parse(prev_data);
-									if (!prev_value) {
-										user_cleared = true;
-									}
-							} else {
-								var server_address = $('#geoloc_address').val();
-								var server_longitude = $('#geoloc_longitude').val();
-								var server_latitude = $('#geoloc_latitude').val();
-								if (server_address && server_longitude && server_latitude) {
-									prev_value = {
-										"type":"Feature",
-										"properties": {
-										"address": server_address
-									},
-									"geometry": {
-										"type":"Point",
-										"coordinates":[server_longitude,server_latitude]
-									}
-									};
-								} else {
-									user_cleared = true;
-								}
-							}
-							if (!user_cleared) {
-								$('#address_address').val(prev_value.properties.address);
-								$('#geoloc_address').val(prev_value.properties.address);
-								$('#geoloc_latitude').val(prev_value.geometry.coordinates[1]);
-								$('#geoloc_longitude').val(prev_value.geometry.coordinates[0]);
-								markers_layer.clearLayers();
-								var marker = L.marker([prev_value.geometry.coordinates[1],prev_value.geometry.coordinates[0]]).addTo(markers_layer);
-								map.fitBounds(markers_layer.getBounds());
-							}
-						});
-						</script>
+							<div id="map_address" style="height: 300px; width: 100%" class="mt-3"></div>
 						</@formGroup>
 						<@formGroup>
 							<@input type='hidden' name='action_createAppointmentForm' value='' />
@@ -325,12 +210,89 @@
 		</@tform>
 	</@columns>
 </@row>
+<link rel="stylesheet" href="js/plugins/leaflet/leaflet/leaflet.css" />
+<script src="js/plugins/leaflet/leaflet/leaflet.js"></script>
+<@setupSuggestPOI />
 <script>
-	$('#formid').on('keyup keypress', function(e) {
-	    var keyCode = e.keyCode || e.which;
-	    if (keyCode === 13) {
+document.addEventListener('DOMContentLoaded', function() {
+	var map = L.map('map_address').setView([48.85632, 2.33272], 12);
+	var markersLayer = L.featureGroup().addTo(map);
+	var osmUrl = 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png';
+	var osmAttrib = 'Map data &copy; <a href="https://openstreetmap.org">OpenStreetMap</a> contributors';
+	new L.TileLayer(osmUrl, {minZoom: 8, maxZoom: 16, attribution: osmAttrib}).addTo(map);
+
+	var autocompleteContainer = document.getElementById('address_address');
+	var suggestPoi = new SuggestPOI(autocompleteContainer);
+
+	autocompleteContainer.addEventListener(SuggestPOI.EVT_SELECT, function(event) {
+		var poi = event.detail.poi;
+		if (poi) {
+			var address = poi.label;
+			markersLayer.clearLayers();
+			L.marker([poi.y, poi.x]).addTo(markersLayer);
+			map.fitBounds(markersLayer.getBounds());
+			var obj = {
+				"type": "Feature",
+				"properties": {"address": address},
+				"geometry": {"type": "Point", "coordinates": [poi.x, poi.y]}
+			};
+			document.getElementById('hidden_address').value = JSON.stringify(obj);
+			document.getElementById('geoloc_address').value = address;
+			document.getElementById('geoloc_latitude').value = poi.y;
+			document.getElementById('geoloc_longitude').value = poi.x;
+		}
+	});
+
+	var removeBtn = autocompleteContainer.querySelector('.lutece-autocomplete-remove');
+	if (removeBtn) {
+		removeBtn.addEventListener('click', function() {
+			document.getElementById('hidden_address').value = 'false';
+			document.getElementById('geoloc_address').value = '';
+			document.getElementById('geoloc_latitude').value = '';
+			document.getElementById('geoloc_longitude').value = '';
+			map.setView([48.85632, 2.33272], 12);
+			markersLayer.clearLayers();
+		});
+	}
+
+	// Restore from browser back/forward history
+	var prevData = document.getElementById('hidden_address').value;
+	var prevValue;
+	var userCleared = false;
+	if (prevData) {
+		prevValue = JSON.parse(prevData);
+		if (!prevValue) {
+			userCleared = true;
+		}
+	} else {
+		var serverAddress = document.getElementById('geoloc_address').value;
+		var serverLongitude = document.getElementById('geoloc_longitude').value;
+		var serverLatitude = document.getElementById('geoloc_latitude').value;
+		if (serverAddress && serverLongitude && serverLatitude) {
+			prevValue = {
+				"type": "Feature",
+				"properties": {"address": serverAddress},
+				"geometry": {"type": "Point", "coordinates": [serverLongitude, serverLatitude]}
+			};
+		} else {
+			userCleared = true;
+		}
+	}
+	if (!userCleared && prevValue) {
+		suggestPoi.setValue(prevValue.properties.address);
+		document.getElementById('geoloc_address').value = prevValue.properties.address;
+		document.getElementById('geoloc_latitude').value = prevValue.geometry.coordinates[1];
+		document.getElementById('geoloc_longitude').value = prevValue.geometry.coordinates[0];
+		markersLayer.clearLayers();
+		L.marker([prevValue.geometry.coordinates[1], prevValue.geometry.coordinates[0]]).addTo(markersLayer);
+		map.fitBounds(markersLayer.getBounds());
+	}
+});
+</script>
+<script>
+	document.getElementById('formid').addEventListener('keydown', function(e) {
+	    if (e.key === 'Enter') {
 	      e.preventDefault();
-	      return false;
 	    }
 	});
     function validateQty(event) {

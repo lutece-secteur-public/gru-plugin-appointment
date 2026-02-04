@@ -41,7 +41,7 @@ import java.util.Random;
 import java.util.StringJoiner;
 import java.util.stream.Collectors;
 
-import javax.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletRequest;
 
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -53,8 +53,10 @@ import fr.paris.lutece.plugins.appointment.business.form.Form;
 import fr.paris.lutece.plugins.appointment.business.slot.Slot;
 import fr.paris.lutece.plugins.appointment.business.user.User;
 import fr.paris.lutece.plugins.appointment.business.user.UserHome;
-import fr.paris.lutece.plugins.appointment.service.listeners.AppointmentListenerManager;
-import fr.paris.lutece.plugins.appointment.service.listeners.SlotListenerManager;
+import fr.paris.lutece.plugins.appointment.service.event.AppointmentEvent;
+import fr.paris.lutece.plugins.appointment.service.event.SlotEvent;
+import fr.paris.lutece.portal.service.event.EventAction;
+import fr.paris.lutece.portal.service.event.Type.TypeQualifier;
 import fr.paris.lutece.plugins.appointment.web.dto.AppointmentDTO;
 import fr.paris.lutece.plugins.appointment.web.dto.AppointmentFilterDTO;
 import fr.paris.lutece.plugins.genericattributes.business.Field;
@@ -69,6 +71,7 @@ import fr.paris.lutece.portal.service.util.AppPropertiesService;
 import fr.paris.lutece.portal.service.util.CryptoService;
 import fr.paris.lutece.portal.service.workflow.WorkflowService;
 import fr.paris.lutece.util.sql.TransactionManager;
+import jakarta.enterprise.inject.spi.CDI;
 
 /**
  * Service class for an appointment
@@ -415,27 +418,28 @@ public final class AppointmentService
             AppointmentService.deleteAppointment( appointmentToDelete );
             UserHome.delete( appointmentToDelete.getIdUser( ) );
             TransactionManager.commitTransaction( AppointmentPlugin.getPlugin( ) );
-            AppointmentListenerManager.notifyListenersAppointmentRemoval( nIdAppointment );
+            CDI.current( ).getBeanManager( ).getEvent( ).select( AppointmentEvent.class, new TypeQualifier( EventAction.REMOVE ) ).fireAsync( new AppointmentEvent( nIdAppointment ) );
             for ( AppointmentSlot appSlot : appointmentToDelete.getListAppointmentSlot( ) )
             {
-                SlotListenerManager.notifyListenersSlotChange( appSlot.getIdSlot( ) );
+                CDI.current( ).getBeanManager( ).getEvent( ).select( SlotEvent.class, new TypeQualifier( EventAction.UPDATE ) ).fireAsync( new SlotEvent( appSlot.getIdSlot( ) ) );
             }
         }
         catch( Exception e )
         {
             TransactionManager.rollBack( AppointmentPlugin.getPlugin( ) );
-            AppLogService.error( "Error delete appointment " + e.getMessage( ), e );
+            AppLogService.error( "Error delete appointment: {}", e.getMessage( ), e );
             throw new AppException( e.getMessage( ), e );
         }
     }
 
     private static void deleteWorkflowResource( int nIdAppointment )
     {
-        if ( WorkflowService.getInstance( ).isAvailable( ) )
+        WorkflowService workflowService = CDI.current( ).select( WorkflowService.class ).get( );
+        if ( workflowService.isAvailable( ) )
         {
             try
             {
-                WorkflowService.getInstance( ).doRemoveWorkFlowResource( nIdAppointment, Appointment.APPOINTMENT_RESOURCE_TYPE );
+                workflowService.doRemoveWorkFlowResource( nIdAppointment, Appointment.APPOINTMENT_RESOURCE_TYPE );
             }
             catch( Exception e )
             {
@@ -534,7 +538,7 @@ public final class AppointmentService
                 AppointmentResponseService.insertAppointmentResponse( nIdappointment, response.getIdResponse( ) );
             }
         }
-        AppointmentListenerManager.notifyListenersAppointmentUpdated( nIdappointment );
+        CDI.current( ).getBeanManager( ).getEvent( ).select( AppointmentEvent.class, new TypeQualifier( EventAction.UPDATE ) ).fireAsync( new AppointmentEvent( nIdappointment ) );
     }
 
     /**
@@ -573,19 +577,19 @@ public final class AppointmentService
                 }
             AppointmentHome.update( appointment );
             TransactionManager.commitTransaction( AppointmentPlugin.getPlugin( ) );
-            AppointmentListenerManager.notifyListenersAppointmentUpdated( appointment.getIdAppointment( ) );
+            CDI.current( ).getBeanManager( ).getEvent( ).select( AppointmentEvent.class, new TypeQualifier( EventAction.UPDATE ) ).fireAsync( new AppointmentEvent( appointment.getIdAppointment( ) ) );
             if ( statusUpdated )
             {
                 for ( AppointmentSlot appSlot : oldAppointment.getListAppointmentSlot( ) )
                 {
-                    SlotListenerManager.notifyListenersSlotChange( appSlot.getIdSlot( ) );
+                    CDI.current( ).getBeanManager( ).getEvent( ).select( SlotEvent.class, new TypeQualifier( EventAction.UPDATE ) ).fireAsync( new SlotEvent( appSlot.getIdSlot( ) ) );
                 }
             }
         }
         catch( Exception e )
         {
             TransactionManager.rollBack( AppointmentPlugin.getPlugin( ) );
-            AppLogService.error( "Error update appointment " + e.getMessage( ), e );
+            AppLogService.error( "Error update appointment: {}", e.getMessage( ), e );
             throw new AppException( e.getMessage( ), e );
         }
 
