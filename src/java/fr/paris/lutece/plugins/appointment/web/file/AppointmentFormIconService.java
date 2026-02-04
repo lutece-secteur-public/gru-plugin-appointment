@@ -33,56 +33,31 @@
  */
 package fr.paris.lutece.plugins.appointment.web.file;
 
+import jakarta.annotation.PostConstruct;
+import jakarta.enterprise.context.ApplicationScoped;
+
 import fr.paris.lutece.plugins.appointment.business.display.Display;
 import fr.paris.lutece.plugins.appointment.service.DisplayService;
 import fr.paris.lutece.portal.service.image.ImageResource;
 import fr.paris.lutece.portal.service.image.ImageResourceManager;
 import fr.paris.lutece.portal.service.image.ImageResourceProvider;
-import fr.paris.lutece.portal.service.init.LuteceInitException;
-import org.apache.commons.fileupload.FileItem;
+import fr.paris.lutece.portal.service.upload.MultipartItem;
 
 /**
  * Image Resource Service for the appointment form icon
  */
+@ApplicationScoped
 public class AppointmentFormIconService implements ImageResourceProvider
 {
-    private static AppointmentFormIconService _singleton = new AppointmentFormIconService( );
     private static final String IMAGE_RESOURCE_TYPE_ID = "appointmentForm_icon";
 
     /**
-     * Creates a new instance of AppointmentFormIconService
+     * Registers this provider with the ImageResourceManager
      */
-    private AppointmentFormIconService( )
-    {
-    }
-
-    /**
-     * Init
-     *
-     * @throws LuteceInitException
-     *         if an error occurs
-     */
-    public static synchronized void init( )
-    {
-        getInstance( ).register( );
-    }
-
-    /**
-     * Initializes the service
-     */
+    @PostConstruct
     public void register( )
     {
         ImageResourceManager.registerProvider( this );
-    }
-
-    /**
-     * Get the unique instance of the service
-     *
-     * @return The unique instance
-     */
-    public static AppointmentFormIconService getInstance( )
-    {
-        return _singleton;
     }
 
     /**
@@ -121,10 +96,9 @@ public class AppointmentFormIconService implements ImageResourceProvider
      * @return the Image File Key
      */
     @Override
-    public String addImageResource( FileItem fileItem )
+    public String addImageResource( MultipartItem fileItem )
     {
         return null;
     }
 
 }
-

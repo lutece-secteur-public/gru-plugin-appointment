@@ -33,17 +33,22 @@
  */
 package fr.paris.lutece.plugins.appointment.service.entrytype;
 
+import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.inject.Named;
+
 import fr.paris.lutece.plugins.genericattributes.business.Entry;
 import fr.paris.lutece.plugins.genericattributes.service.entrytype.AbstractEntryTypeRadioButton;
 
 /**
  *
  * class EntryTypeRadioButton
- * 
+ *
  * @author Laurent Payen
  *
  */
-public final class EntryTypeRadioButton extends AbstractEntryTypeRadioButton
+@ApplicationScoped
+@Named( "appointment.entryTypeRadioButton" )
+public class EntryTypeRadioButton extends AbstractEntryTypeRadioButton
 {
     private static final String TEMPLATE_HTML_CODE = "skin/plugins/appointment/entries/html_code_entry_type_radio_button.html";
     private static final String TEMPLATE_CREATE = "admin/plugins/appointment/entries/create_entry_type_radio_button.html";

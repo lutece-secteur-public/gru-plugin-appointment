@@ -36,7 +36,7 @@ package fr.paris.lutece.plugins.appointment.business.message;
 import fr.paris.lutece.plugins.appointment.service.AppointmentPlugin;
 import fr.paris.lutece.portal.service.plugin.Plugin;
 import fr.paris.lutece.portal.service.plugin.PluginService;
-import fr.paris.lutece.portal.service.spring.SpringContextService;
+import jakarta.enterprise.inject.spi.CDI;
 
 /**
  * This class provides instances management methods for Form Message objects
@@ -47,7 +47,7 @@ import fr.paris.lutece.portal.service.spring.SpringContextService;
 public final class FormMessageHome
 {
     // Static variable pointed at the DAO instance
-    private static IFormMessageDAO _dao = SpringContextService.getBean( "appointment.formMessageDAO" );
+    private static IFormMessageDAO _dao = CDI.current( ).select( IFormMessageDAO.class ).get( );
     private static Plugin _plugin = PluginService.getPlugin( AppointmentPlugin.PLUGIN_NAME );
 
     /**

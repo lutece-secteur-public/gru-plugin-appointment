@@ -41,6 +41,7 @@ import java.util.List;
 
 import fr.paris.lutece.portal.service.plugin.Plugin;
 import fr.paris.lutece.util.sql.DAOUtil;
+import jakarta.enterprise.context.ApplicationScoped;
 
 /**
  * This class provides Data Access methods for Reservation Rule objects
@@ -48,7 +49,8 @@ import fr.paris.lutece.util.sql.DAOUtil;
  * @author Laurent Payen
  *
  */
-public final class ReservationRuleDAO implements IReservationRuleDAO
+@ApplicationScoped
+public class ReservationRuleDAO implements IReservationRuleDAO
 {
 
     private static final String SQL_QUERY_UPDATE = "UPDATE appointment_reservation_rule SET name = ?, description = ?, color = ?, enable = ?,  max_capacity_per_slot = ?, max_people_per_appointment =?, duration_appointments = ?, id_form = ? WHERE id_reservation_rule = ?";

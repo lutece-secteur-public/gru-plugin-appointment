@@ -1,16 +1,9 @@
-<%@ page errorPage="../../ErrorPage.jsp" trimDirectiveWhitespaces="true" %>
-<jsp:useBean id="manageAppointmentCalendarTemplate" scope="session" class="fr.paris.lutece.plugins.appointment.web.CalendarTemplateJspBean" />
-<%
-	String strContent = manageAppointmentCalendarTemplate.processController ( request , response );
-	if ( strContent != null )
-	{
-%>
+<%@ page errorPage="../../ErrorPage.jsp" %>
+
+${ pageContext.setAttribute( 'strContent', calendarTemplateJspBean.processController( pageContext.request , pageContext.response ) ) }
 
 <jsp:include page="../../AdminHeader.jsp" />
 
-<%= strContent %>
+${ pageContext.getAttribute( 'strContent' ) }
 
 <%@ include file="../../AdminFooter.jsp" %>
-<%
-	}
-%>

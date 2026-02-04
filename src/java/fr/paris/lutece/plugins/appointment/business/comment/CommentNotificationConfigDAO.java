@@ -38,12 +38,14 @@ import java.util.List;
 
 import fr.paris.lutece.portal.service.plugin.Plugin;
 import fr.paris.lutece.util.sql.DAOUtil;
+import jakarta.enterprise.context.ApplicationScoped;
 
 /**
  *
  * TaskNotificationConfigDAO
  *
  */
+@ApplicationScoped
 public class CommentNotificationConfigDAO implements ICommentNotificationConfigDAO
 {
     private static final String SQL_QUERY_FIND = "SELECT notify_type, sender_name,subject,message FROM appointment_comment_notification_cf";

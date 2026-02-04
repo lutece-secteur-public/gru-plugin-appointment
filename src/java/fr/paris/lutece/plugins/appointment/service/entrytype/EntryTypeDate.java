@@ -33,17 +33,35 @@
  */
 package fr.paris.lutece.plugins.appointment.service.entrytype;
 
+import java.util.List;
+
+import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.inject.Inject;
+import jakarta.inject.Named;
+
 import fr.paris.lutece.plugins.genericattributes.business.Entry;
+import fr.paris.lutece.plugins.genericattributes.service.anonymization.IEntryAnonymizationType;
 import fr.paris.lutece.plugins.genericattributes.service.entrytype.AbstractEntryTypeDate;
 
 /**
  * class EntryTypeDate
- * 
+ *
  * @author Laurent Payen
  *
  */
-public final class EntryTypeDate extends AbstractEntryTypeDate
+@ApplicationScoped
+@Named( "appointment.entryTypeDate" )
+public class EntryTypeDate extends AbstractEntryTypeDate
 {
+    @Inject
+    public void addAnonymizationTypes(
+            @Named( "genericattributes.date0AnonymizationType" ) IEntryAnonymizationType date0,
+            @Named( "genericattributes.defaultDateAnonymizationType" ) IEntryAnonymizationType defaultDate,
+            @Named( "genericattributes.emptyDateAnonymizationType" ) IEntryAnonymizationType emptyDate )
+    {
+        setAnonymizationTypes( List.of( date0, defaultDate, emptyDate ) );
+    }
+
     private static final String TEMPLATE_HTML_CODE_ADMIN = "admin/plugins/appointment/entries/html_code_entry_type_date.html";
     private static final String TEMPLATE_CREATE = "admin/plugins/appointment/entries/create_entry_type_date.html";
     private static final String TEMPLATE_MODIFY = "admin/plugins/appointment/entries/modify_entry_type_date.html";

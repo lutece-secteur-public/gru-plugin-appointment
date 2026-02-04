@@ -38,7 +38,7 @@ import java.util.List;
 import fr.paris.lutece.plugins.appointment.service.AppointmentPlugin;
 import fr.paris.lutece.portal.service.plugin.Plugin;
 import fr.paris.lutece.portal.service.plugin.PluginService;
-import fr.paris.lutece.portal.service.spring.SpringContextService;
+import jakarta.enterprise.inject.spi.CDI;
 import fr.paris.lutece.util.ReferenceList;
 
 /**
@@ -50,7 +50,7 @@ import fr.paris.lutece.util.ReferenceList;
 public final class CalendarTemplateHome
 {
     private static Plugin _plugin = PluginService.getPlugin( AppointmentPlugin.PLUGIN_NAME );
-    private static ICalendarTemplateDAO _dao = SpringContextService.getBean( "appointment.calendarTemplateDAO" );
+    private static ICalendarTemplateDAO _dao = CDI.current( ).select( ICalendarTemplateDAO.class ).get( );
 
     /**
      * Default constructor

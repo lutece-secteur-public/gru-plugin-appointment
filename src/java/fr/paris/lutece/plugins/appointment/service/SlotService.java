@@ -50,7 +50,10 @@ import fr.paris.lutece.plugins.appointment.business.rule.ReservationRule;
 import fr.paris.lutece.plugins.appointment.business.slot.Period;
 import fr.paris.lutece.plugins.appointment.business.slot.Slot;
 import fr.paris.lutece.plugins.appointment.business.slot.SlotHome;
-import fr.paris.lutece.plugins.appointment.service.listeners.SlotListenerManager;
+import fr.paris.lutece.plugins.appointment.service.event.SlotEvent;
+import fr.paris.lutece.portal.service.event.EventAction;
+import fr.paris.lutece.portal.service.event.Type.TypeQualifier;
+import jakarta.enterprise.inject.spi.CDI;
 
 /**
  * Service class of a slot
@@ -484,7 +487,7 @@ public final class SlotService
         {
             SlotSafeService.removeSlotInMemory( slotToDelete.getIdSlot( ) );
             SlotHome.delete( slotToDelete.getIdSlot( ) );
-            SlotListenerManager.notifyListenersSlotRemoval( slotToDelete );
+            CDI.current( ).getBeanManager( ).getEvent( ).select( SlotEvent.class, new TypeQualifier( EventAction.REMOVE ) ).fireAsync( new SlotEvent( slotToDelete ) );
         }
 
     }
@@ -500,7 +503,7 @@ public final class SlotService
         int nIdSlot = slot.getIdSlot( );
         SlotSafeService.removeSlotInMemory( nIdSlot );
         SlotHome.delete( nIdSlot );
-        SlotListenerManager.notifyListenersSlotRemoval( slot );
+        CDI.current( ).getBeanManager( ).getEvent( ).select( SlotEvent.class, new TypeQualifier( EventAction.REMOVE ) ).fireAsync( new SlotEvent( slot ) );
     }
 
     /**

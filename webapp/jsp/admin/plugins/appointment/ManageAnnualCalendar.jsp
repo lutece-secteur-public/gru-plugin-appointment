@@ -1,9 +1,9 @@
-<jsp:useBean id="annualCalendare" scope="session" class="fr.paris.lutece.plugins.appointment.web.AppointmentAnnualCalendarJspBean" />
-<% String strContent = annualCalendare.processController( request , response ); %>
-
 <%@ page errorPage="../../ErrorPage.jsp" %>
+
+${ pageContext.setAttribute( 'strContent', appointmentAnnualCalendarJspBean.processController( pageContext.request , pageContext.response ) ) }
+
 <jsp:include page="../../AdminHeader.jsp" />
 
-<%= strContent %>
+${ pageContext.getAttribute( 'strContent' ) }
 
 <%@ include file="../../AdminFooter.jsp" %>

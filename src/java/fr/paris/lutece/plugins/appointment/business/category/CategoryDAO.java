@@ -39,6 +39,7 @@ import java.util.List;
 
 import fr.paris.lutece.portal.service.plugin.Plugin;
 import fr.paris.lutece.util.sql.DAOUtil;
+import jakarta.enterprise.context.ApplicationScoped;
 
 /**
  * This class provides Data Access methods for Category objects
@@ -46,7 +47,8 @@ import fr.paris.lutece.util.sql.DAOUtil;
  * @author Laurent Payen
  *
  */
-public final class CategoryDAO implements ICategoryDAO
+@ApplicationScoped
+public class CategoryDAO implements ICategoryDAO
 {
 
     private static final String SQL_QUERY_INSERT = "INSERT INTO appointment_category ( label, nb_max_appointments_per_user) VALUES (?, ?)";

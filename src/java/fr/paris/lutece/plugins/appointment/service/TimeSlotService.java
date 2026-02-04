@@ -52,7 +52,10 @@ import fr.paris.lutece.plugins.appointment.business.planning.WeekDefinitionHome;
 import fr.paris.lutece.plugins.appointment.business.planning.WorkingDay;
 import fr.paris.lutece.plugins.appointment.business.rule.ReservationRule;
 import fr.paris.lutece.plugins.appointment.business.rule.ReservationRuleHome;
-import fr.paris.lutece.plugins.appointment.service.listeners.WeekDefinitionManagerListener;
+import fr.paris.lutece.plugins.appointment.service.event.WeekDefinitionEvent;
+import fr.paris.lutece.portal.service.event.EventAction;
+import fr.paris.lutece.portal.service.event.Type.TypeQualifier;
+import jakarta.enterprise.inject.spi.CDI;
 
 /**
  * Service class for the time slot
@@ -232,7 +235,7 @@ public final class TimeSlotService
         if ( CollectionUtils.isNotEmpty( listWeek ) )
         {
 
-            WeekDefinitionManagerListener.notifyListenersListWeekDefinitionChanged( reservationRule.getIdForm( ), listWeek );
+            CDI.current( ).getBeanManager( ).getEvent( ).select( WeekDefinitionEvent.class, new TypeQualifier( EventAction.UPDATE ) ).fireAsync( new WeekDefinitionEvent( reservationRule.getIdForm( ), listWeek ) );
         }
     }
 

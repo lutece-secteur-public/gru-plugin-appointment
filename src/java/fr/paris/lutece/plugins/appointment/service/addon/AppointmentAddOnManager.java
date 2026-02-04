@@ -35,7 +35,7 @@ package fr.paris.lutece.plugins.appointment.service.addon;
 
 import java.util.Locale;
 
-import fr.paris.lutece.portal.service.spring.SpringContextService;
+import jakarta.enterprise.inject.spi.CDI;
 
 /**
  * Manager service for add-ons of appointments Add-ons are additional content of appointments provided by appointment modules. Add-ons should only be displayed
@@ -67,7 +67,7 @@ public final class AppointmentAddOnManager
     {
         StringBuilder sbAddOn = new StringBuilder( );
 
-        for ( IAppointmentAddonService addonService : SpringContextService.getBeansOfType( IAppointmentAddonService.class ) )
+        for ( IAppointmentAddonService addonService : CDI.current( ).select( IAppointmentAddonService.class ) )
         {
             sbAddOn.append( addonService.getAppointmentAddOn( nIdAppointment, locale ) );
         }

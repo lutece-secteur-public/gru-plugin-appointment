@@ -42,7 +42,7 @@ import fr.paris.lutece.plugins.genericattributes.business.Response;
 import fr.paris.lutece.plugins.genericattributes.business.ResponseHome;
 import fr.paris.lutece.portal.service.plugin.Plugin;
 import fr.paris.lutece.portal.service.plugin.PluginService;
-import fr.paris.lutece.portal.service.spring.SpringContextService;
+import jakarta.enterprise.inject.spi.CDI;
 
 /**
  * Appointment Response Home
@@ -54,7 +54,7 @@ public final class AppointmentResponseHome
 {
 
     // Static variable pointed at the DAO instance
-    private static IAppointmentResponseDAO _dao = SpringContextService.getBean( "appointment.appointmentResponseDAO" );
+    private static IAppointmentResponseDAO _dao = CDI.current( ).select( IAppointmentResponseDAO.class ).get( );
     private static Plugin _plugin = PluginService.getPlugin( AppointmentPlugin.PLUGIN_NAME );
 
     /**

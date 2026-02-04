@@ -33,10 +33,15 @@
  */
 package fr.paris.lutece.plugins.appointment.service.anonymization;
 
+import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.inject.Named;
+
 import fr.paris.lutece.plugins.genericattributes.business.Entry;
 import fr.paris.lutece.plugins.genericattributes.business.Response;
 import fr.paris.lutece.plugins.genericattributes.service.anonymization.AbstractTextAnonymizationService;
 
+@ApplicationScoped
+@Named( "appointment.formIdAnonymizationService" )
 public class FormIdAnonymizationService extends AbstractTextAnonymizationService
 {
 	@Override

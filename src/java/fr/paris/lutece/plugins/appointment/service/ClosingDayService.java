@@ -33,8 +33,8 @@
  */
 package fr.paris.lutece.plugins.appointment.service;
 
-import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.time.Instant;
 import java.time.LocalDate;
 import java.time.ZoneId;
@@ -43,7 +43,7 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 
-import org.apache.commons.fileupload.FileItem;
+import fr.paris.lutece.portal.service.upload.MultipartItem;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.CellType;
@@ -203,7 +203,7 @@ public final class ClosingDayService
      * @throws IOException
      *             if error during reading file
      */
-    public static List<LocalDate> getImportClosingDays( FileItem item ) throws IOException
+    public static List<LocalDate> getImportClosingDays( MultipartItem item ) throws IOException
     {
         HashSet<LocalDate> listDays = new HashSet<>( );
         String strExtension = FilenameUtils.getExtension( item.getName( ) );
@@ -212,7 +212,7 @@ public final class ClosingDayService
             return new ArrayList<>( );
         }
         // Using XSSF for xlsx format, for xls use HSSF
-        try ( FileInputStream fis = (FileInputStream) item.getInputStream( ) ; Workbook workbook = new XSSFWorkbook( fis ) )
+        try ( InputStream fis = item.getInputStream( ) ; Workbook workbook = new XSSFWorkbook( fis ) )
         {
             int numberOfSheets = workbook.getNumberOfSheets( );
             // looping over each workbook sheet

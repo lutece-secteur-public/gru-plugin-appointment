@@ -36,7 +36,7 @@ package fr.paris.lutece.plugins.appointment.business.portlet;
 import fr.paris.lutece.portal.business.portlet.IPortletInterfaceDAO;
 import fr.paris.lutece.portal.business.portlet.PortletHome;
 import fr.paris.lutece.portal.business.portlet.PortletTypeHome;
-import fr.paris.lutece.portal.service.spring.SpringContextService;
+import jakarta.enterprise.inject.spi.CDI;
 
 /**
  * This class provides instances management methods for AppointmentPortlet objects
@@ -47,7 +47,7 @@ import fr.paris.lutece.portal.service.spring.SpringContextService;
 public final class AppointmentFormListPortletHome extends PortletHome
 {
     // Static variable pointed at the DAO instance
-    private static IAppointmentFormListPortletDAO _dao = SpringContextService.getBean( "appointment.appointmentFormListPortletDAO" );
+    private static IAppointmentFormListPortletDAO _dao = CDI.current( ).select( IAppointmentFormListPortletDAO.class ).get( );
 
     /* This class implements the Singleton design pattern. */
     private static AppointmentFormListPortletHome _singleton = new AppointmentFormListPortletHome( );

@@ -1,9 +1,9 @@
-<jsp:useBean id="appointmentFormFields" scope="session" class="fr.paris.lutece.plugins.appointment.web.AppointmentFormFieldJspBean" />
-<% String strContent = appointmentFormFields.processController ( request , response ); %>
-
 <%@ page errorPage="../../ErrorPage.jsp" %>
+
+${ pageContext.setAttribute( 'strContent', appointmentFormFieldJspBean.processController( pageContext.request , pageContext.response ) ) }
+
 <jsp:include page="../../AdminHeader.jsp" />
 
-<%= strContent %>
+${ pageContext.getAttribute( 'strContent' ) }
 
 <%@ include file="../../AdminFooter.jsp" %>

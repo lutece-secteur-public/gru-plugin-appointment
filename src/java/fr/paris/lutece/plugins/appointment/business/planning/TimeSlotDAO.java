@@ -39,6 +39,7 @@ import java.util.List;
 
 import fr.paris.lutece.portal.service.plugin.Plugin;
 import fr.paris.lutece.util.sql.DAOUtil;
+import jakarta.enterprise.context.ApplicationScoped;
 
 /**
  * This class provides Data Access methods for Time Slot objects
@@ -46,7 +47,8 @@ import fr.paris.lutece.util.sql.DAOUtil;
  * @author Laurent Payen
  *
  */
-public final class TimeSlotDAO implements ITimeSlotDAO
+@ApplicationScoped
+public class TimeSlotDAO implements ITimeSlotDAO
 {
 
     private static final String SQL_QUERY_INSERT = "INSERT INTO appointment_time_slot ( starting_time, ending_time, is_open, max_capacity, id_working_day) VALUES ( ?, ?, ?, ?, ?)";

@@ -35,7 +35,7 @@ package fr.paris.lutece.plugins.appointment.business.display;
 
 import java.io.Serializable;
 
-import javax.validation.constraints.Min;
+import jakarta.validation.constraints.Min;
 
 import fr.paris.lutece.portal.service.image.ImageResource;
 

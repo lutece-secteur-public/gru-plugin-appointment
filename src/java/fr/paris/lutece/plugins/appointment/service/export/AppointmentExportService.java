@@ -71,9 +71,10 @@ import fr.paris.lutece.plugins.genericattributes.business.Response;
 import fr.paris.lutece.plugins.genericattributes.business.ResponseHome;
 import fr.paris.lutece.plugins.genericattributes.service.entrytype.EntryTypeServiceManager;
 import fr.paris.lutece.plugins.workflowcore.business.state.State;
+import jakarta.enterprise.inject.spi.CDI;
+
 import fr.paris.lutece.plugins.workflowcore.service.state.StateService;
 import fr.paris.lutece.portal.service.i18n.I18nService;
-import fr.paris.lutece.portal.service.spring.SpringContextService;
 import fr.paris.lutece.portal.service.util.AppLogService;
 import fr.paris.lutece.portal.service.workflow.WorkflowService;
 import fr.paris.lutece.util.ReferenceList;
@@ -134,9 +135,10 @@ public final class AppointmentExportService
         if ( listAppointmentsDTO != null )
         {
             StateService stateService = null;
-            if ( WorkflowService.getInstance( ).isAvailable( ) )
+            WorkflowService workflowService = CDI.current( ).select( WorkflowService.class ).get( );
+            if ( workflowService.isAvailable( ) )
             {
-                stateService = SpringContextService.getBean( StateService.BEAN_SERVICE );
+                stateService = CDI.current( ).select( StateService.class ).get( );
             }
             Map<Integer, Form> formMap = new HashMap<>( );
             for ( AppointmentDTO appointmentDTO : listAppointmentsDTO )

@@ -35,11 +35,10 @@ package fr.paris.lutece.plugins.appointment.web;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.Map;
 import java.util.Set;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.validation.ConstraintViolation;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.validation.ConstraintViolation;
 
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.io.FileUtils;
@@ -57,16 +56,23 @@ import fr.paris.lutece.portal.util.mvc.admin.MVCAdminJspBean;
 import fr.paris.lutece.portal.util.mvc.admin.annotations.Controller;
 import fr.paris.lutece.portal.util.mvc.commons.annotations.Action;
 import fr.paris.lutece.portal.util.mvc.commons.annotations.View;
+import fr.paris.lutece.portal.web.cdi.mvc.Models;
 import fr.paris.lutece.util.ReferenceList;
 import fr.paris.lutece.util.datatable.DataTableManager;
 import fr.paris.lutece.util.url.UrlItem;
 
+import jakarta.enterprise.context.SessionScoped;
+import jakarta.inject.Inject;
+import jakarta.inject.Named;
+
 /**
  * This class provides the user interface to manage calendar templates
- * 
+ *
  * @author Laurent Payen
  *
  */
+@SessionScoped
+@Named
 @Controller( controllerJsp = CalendarTemplateJspBean.CONTROLLER_JSP, controllerPath = CalendarTemplateJspBean.CONTROLLER_PATH, right = CalendarTemplateJspBean.RIGHT_MANAGE_CALENDAR_TEMPLATES )
 public class CalendarTemplateJspBean extends MVCAdminJspBean
 {
@@ -143,6 +149,8 @@ public class CalendarTemplateJspBean extends MVCAdminJspBean
     private static final String CONSTANT_FOLDER_UP = "..";
 
     // Session variables
+    @Inject
+    private Models _models;
     private DataTableManager<CalendarTemplate> _dataTableManager;
     private CalendarTemplate _template;
 
@@ -170,10 +178,9 @@ public class CalendarTemplateJspBean extends MVCAdminJspBean
 
         _dataTableManager.filterSortAndPaginate( request, CalendarTemplateHome.findAll( ) );
 
-        Map<String, Object> model = getModel( );
-        model.put( MARK_DATA_TABLE_MANAGER, _dataTableManager );
+        _models.put( MARK_DATA_TABLE_MANAGER, _dataTableManager );
 
-        String strContent = getPage( MESSAGE_DEFAULT_PAGE_TITLE, TEMPLATE_MANAGE_CALENDAR_TEMPLATES, model );
+        String strContent = getPage( MESSAGE_DEFAULT_PAGE_TITLE, TEMPLATE_MANAGE_CALENDAR_TEMPLATES );
 
         _dataTableManager.clearItems( );
 
@@ -208,8 +215,7 @@ public class CalendarTemplateJspBean extends MVCAdminJspBean
             }
         }
 
-        Map<String, Object> model = getModel( );
-        model.put( MARK_TEMPLATE, _template );
+        _models.put( MARK_TEMPLATE, _template );
 
         String strCalendarTemplatesFolder = AppPropertiesService.getProperty( PROPERTY_FOLDER_CALENDAR_TEMPLATES, StringUtils.EMPTY );
 
@@ -242,10 +248,10 @@ public class CalendarTemplateJspBean extends MVCAdminJspBean
             }
         }
 
-        model.put( MARK_REF_LIST_TEMPLATES, refListTemplates );
+        _models.put( MARK_REF_LIST_TEMPLATES, refListTemplates );
 
         return getPage( ( _template.getIdCalendarTemplate( ) > 0 ) ? MESSAGE_MODIFY_TEMPLATE_PAGE_TITLE : MESSAGE_CREATE_TEMPLATE_PAGE_TITLE,
-                TEMPLATE_CREATE_MODIFY_CALENDAR_TEMPLATE, model );
+                TEMPLATE_CREATE_MODIFY_CALENDAR_TEMPLATE );
     }
 
     /**

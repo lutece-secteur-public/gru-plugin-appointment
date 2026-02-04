@@ -51,7 +51,10 @@ import fr.paris.lutece.plugins.appointment.business.planning.WorkingDay;
 import fr.paris.lutece.plugins.appointment.business.planning.WorkingDayHome;
 import fr.paris.lutece.plugins.appointment.business.rule.ReservationRule;
 import fr.paris.lutece.plugins.appointment.business.rule.ReservationRuleHome;
-import fr.paris.lutece.plugins.appointment.service.listeners.WeekDefinitionManagerListener;
+import fr.paris.lutece.plugins.appointment.service.event.WeekDefinitionEvent;
+import fr.paris.lutece.portal.service.event.EventAction;
+import fr.paris.lutece.portal.service.event.Type.TypeQualifier;
+import jakarta.enterprise.inject.spi.CDI;
 import fr.paris.lutece.plugins.appointment.web.dto.AppointmentFormDTO;
 import fr.paris.lutece.portal.service.util.AppLogService;
 import fr.paris.lutece.util.ReferenceList;
@@ -154,7 +157,7 @@ public final class ReservationRuleService
             catch( RuntimeException e )
             {
                 TransactionManager.rollBack( AppointmentPlugin.getPlugin( ) );
-                AppLogService.error( "Error copy typical week" + e.getMessage( ), e );
+                AppLogService.error( "Error copy typical week: {}", e.getMessage( ), e );
                 return 0;
             }
         }
@@ -195,7 +198,7 @@ public final class ReservationRuleService
         if ( CollectionUtils.isNotEmpty( listWeek ) )
         {
 
-            WeekDefinitionManagerListener.notifyListenersListWeekDefinitionChanged( appointmentForm.getIdForm( ), listWeek );
+            CDI.current( ).getBeanManager( ).getEvent( ).select( WeekDefinitionEvent.class, new TypeQualifier( EventAction.UPDATE ) ).fireAsync( new WeekDefinitionEvent( appointmentForm.getIdForm( ), listWeek ) );
         }
     }
 

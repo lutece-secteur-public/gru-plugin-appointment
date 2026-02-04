@@ -41,6 +41,7 @@ import java.util.List;
 
 import fr.paris.lutece.portal.service.plugin.Plugin;
 import fr.paris.lutece.util.sql.DAOUtil;
+import jakarta.enterprise.context.ApplicationScoped;
 
 /**
  * This class provides Data Access methods for Week Definition objects
@@ -48,7 +49,8 @@ import fr.paris.lutece.util.sql.DAOUtil;
  * @author Laurent Payen
  *
  */
-public final class WeekDefinitionDAO implements IWeekDefinitionDAO
+@ApplicationScoped
+public class WeekDefinitionDAO implements IWeekDefinitionDAO
 {
 
     private static final String SQL_QUERY_INSERT = "INSERT INTO appointment_week_definition ( date_of_apply, ending_date_of_apply, id_reservation_rule) VALUES ( ?, ?, ?)";

@@ -221,19 +221,20 @@ $(function () {
 		stepping: 1
 	});
 });
-$('#allCheck').click(function() {
+document.getElementById('allCheck').addEventListener('click', function() {
 	var etat = this.checked;
-	$("input[name='apmt']").each(function() {
-		this.checked = etat;
+	document.querySelectorAll("input[name='apmt']").forEach(function(cb) {
+		cb.checked = etat;
 	});
-	$('#eraseAll').prop("disabled", !etat);
+	document.getElementById('eraseAll').disabled = !etat;
 });
-$("input[name='apmt']").change(function() {
-	$('#eraseAll').prop("disabled", true);
-	$("input[name='apmt']").each(function() {
-		if (this.checked) {
-			$('#eraseAll').prop("disabled", !this.checked);
-		}
+document.querySelectorAll("input[name='apmt']").forEach(function(cb) {
+	cb.addEventListener('change', function() {
+		var anyChecked = false;
+		document.querySelectorAll("input[name='apmt']").forEach(function(c) {
+			if (c.checked) { anyChecked = true; }
+		});
+		document.getElementById('eraseAll').disabled = !anyChecked;
 	});
 });
 $('#startingDateOfSearch').datepicker({
@@ -252,15 +253,17 @@ $('#endingDateOfSearch').datepicker({
 });
 
 // Click on validation button events
-$( '[name="Search"]' ).click( function(e){
-	dStart=$('#startingDateOfSearch').val(),dEnd=$('#endingDateOfSearch').val();
-	tStart=$('#startingTimeOfSearch').val(),tEnd=$('#endingTimeOfSearch').val();
+document.querySelector('[name="Search"]').addEventListener('click', function(e){
+	var dStart = document.getElementById('startingDateOfSearch').value;
+	var dEnd = document.getElementById('endingDateOfSearch').value;
+	var tStart = document.getElementById('startingTimeOfSearch').value;
+	var tEnd = document.getElementById('endingTimeOfSearch').value;
 	var startDateAndTime = moment(dStart + ' ' + tStart, 'YYYY-MM-DD HH:mm');
 	var endDateAndTime = moment(dEnd + ' ' + tEnd, 'YYYY-MM-DD HH:mm');
 
 	if( moment(endDateAndTime).isBefore( startDateAndTime )) {
-		$('#error_message').html('La date de fin ne peut être antérieure à la date de début !');
-		$('#error_messages_container').css('display','block');
+		document.getElementById('error_message').innerHTML = 'La date de fin ne peut être antérieure à la date de début !';
+		document.getElementById('error_messages_container').style.display = 'block';
 		e.preventDefault();
 	}
 });

@@ -36,35 +36,27 @@ package fr.paris.lutece.plugins.appointment.service;
 import java.util.ArrayList;
 import java.util.List;
 
+import jakarta.enterprise.context.ApplicationScoped;
+
 import fr.paris.lutece.plugins.genericattributes.business.EntryType;
 import fr.paris.lutece.plugins.genericattributes.business.EntryTypeHome;
 import fr.paris.lutece.util.ReferenceList;
 
 /**
  * EntryTypeService
- * 
+ *
  * @author Laurent Payen
  *
  */
-public final class EntryTypeService
+@ApplicationScoped
+public class EntryTypeService
 {
-    private static EntryTypeService _instance = new EntryTypeService( );
 
     /**
-     * Private constructor
+     * Default constructor
      */
-    private EntryTypeService( )
+    public EntryTypeService( )
     {
-    }
-
-    /**
-     * Get the instance of the service
-     * 
-     * @return The instance of the service
-     */
-    public static EntryTypeService getInstance( )
-    {
-        return _instance;
     }
 
     /**

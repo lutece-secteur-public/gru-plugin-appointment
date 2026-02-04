@@ -33,16 +33,21 @@
  */
 package fr.paris.lutece.plugins.appointment.service.entrytype;
 
+import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.inject.Named;
+
 import fr.paris.lutece.plugins.genericattributes.business.Entry;
 import fr.paris.lutece.plugins.genericattributes.service.entrytype.AbstractEntryTypeSession;
 
 /**
  * Entry of type session
- * 
+ *
  * @author Laurent Payen
- * 
+ *
  */
-public final class EntryTypeSession extends AbstractEntryTypeSession
+@ApplicationScoped
+@Named( "appointment.entryTypeSession" )
+public class EntryTypeSession extends AbstractEntryTypeSession
 {
     private static final String TEMPLATE_CREATE = "admin/plugins/appointment/entries/create_entry_type_session.html";
     private static final String TEMPLATE_HTML_CODE_ADMIN = "admin/plugins/appointment/entries/html_code_entry_type_session.html";
