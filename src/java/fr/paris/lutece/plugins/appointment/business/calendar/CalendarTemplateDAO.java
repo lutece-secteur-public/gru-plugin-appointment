@@ -39,6 +39,7 @@ import java.util.List;
 
 import fr.paris.lutece.portal.service.plugin.Plugin;
 import fr.paris.lutece.util.sql.DAOUtil;
+import jakarta.enterprise.context.ApplicationScoped;
 
 /**
  * This class provides Data Access methods for Calendar Template objects
@@ -46,7 +47,8 @@ import fr.paris.lutece.util.sql.DAOUtil;
  * @author Laurent Payen
  *
  */
-public final class CalendarTemplateDAO implements ICalendarTemplateDAO
+@ApplicationScoped
+public class CalendarTemplateDAO implements ICalendarTemplateDAO
 {
     private static final String SQL_QUERY_INSERT = "INSERT INTO appointment_calendar_template ( title, description, template_path) VALUES (?,?,?)";
     private static final String SQL_QUERY_UPDATE = "UPDATE appointment_calendar_template SET title = ?, description = ?, template_path = ? WHERE id_calendar_template = ?";

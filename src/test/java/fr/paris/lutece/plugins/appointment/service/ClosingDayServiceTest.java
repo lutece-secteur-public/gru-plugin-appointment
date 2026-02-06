@@ -41,12 +41,15 @@ import fr.paris.lutece.plugins.appointment.business.planning.ClosingDay;
 import fr.paris.lutece.plugins.appointment.web.dto.AppointmentFormDTO;
 import fr.paris.lutece.test.LuteceTestCase;
 
+import org.junit.jupiter.api.Test;
+
 public class ClosingDayServiceTest extends LuteceTestCase
 {
 
     /**
      * Find all the closing dates of the form on a given period
      */
+    @Test
     public void testFindListDateOfClosingDayByIdFormAndDateRange( )
     {
         // Build the form

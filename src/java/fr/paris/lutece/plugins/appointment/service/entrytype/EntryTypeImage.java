@@ -37,7 +37,9 @@ import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
 
-import javax.servlet.http.HttpServletRequest;
+import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.inject.Named;
+import jakarta.servlet.http.HttpServletRequest;
 
 import org.apache.commons.lang3.StringUtils;
 
@@ -50,11 +52,13 @@ import fr.paris.lutece.util.html.HtmlTemplate;
 /**
  *
  * class EntryTypeImage
- * 
+ *
  * @author Laurent Payen
  *
  */
-public final class EntryTypeImage extends EntryTypeFile
+@ApplicationScoped
+@Named( "appointment.entryTypeImage" )
+public class EntryTypeImage extends EntryTypeFile
 {
     /**
      * Name of the bean of this service

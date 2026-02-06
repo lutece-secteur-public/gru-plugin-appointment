@@ -45,7 +45,7 @@ import java.util.Map;
 import java.util.concurrent.locks.Lock;
 import java.util.stream.Collectors;
 
-import javax.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletRequest;
 
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -88,13 +88,20 @@ import fr.paris.lutece.portal.service.util.AppPropertiesService;
 import fr.paris.lutece.portal.util.mvc.admin.annotations.Controller;
 import fr.paris.lutece.portal.util.mvc.commons.annotations.Action;
 import fr.paris.lutece.portal.util.mvc.commons.annotations.View;
+import fr.paris.lutece.portal.web.cdi.mvc.Models;
+
+import jakarta.enterprise.context.SessionScoped;
+import jakarta.inject.Inject;
+import jakarta.inject.Named;
 
 /**
  * JspBean to manage calendar slots
- * 
+ *
  * @author Laurent Payen
  *
  */
+@SessionScoped
+@Named
 @Controller( controllerJsp = SpecificWeekJspBean.JSP_MANAGE_APPOINTMENT_SLOTS, controllerPath = "jsp/admin/plugins/appointment/", right = AppointmentFormJspBean.RIGHT_MANAGEAPPOINTMENTFORM )
 public class SpecificWeekJspBean extends AbstractAppointmentFormAndSlotJspBean
 {
@@ -165,6 +172,9 @@ public class SpecificWeekJspBean extends AbstractAppointmentFormAndSlotJspBean
     private static final String PROPERTY_NB_WEEKS_TO_DISPLAY_IN_BO = "appointment.nbWeeksToDisplayInBO";
 
     // Infos
+    @Inject
+    private Models _models;
+
     private AppointmentFormDTO _appointmentForm;
     private Slot _slot;
 
@@ -226,20 +236,19 @@ public class SpecificWeekJspBean extends AbstractAppointmentFormAndSlotJspBean
             dateOfDisplay = LocalDate.parse( strDateOfDisplay );
         }
         addInfo( MESSAGE_INFO_OVERLOAD, getLocale( ) );
-        Map<String, Object> model = getModel( );
-        model.put( PARAMETER_DATE_OF_DISPLAY, dateOfDisplay );
-        model.put( PARAMETER_ENDING_DATE_OF_DISPLAY, endingDateOfDisplay );
-        model.put( PARAMETER_DAY_OF_WEEK, listDayOfWeek );
-        model.put( PARAMETER_EVENTS, listSlot );
-        model.put( PARAMETER_MIN_TIME, minStartingTime );
-        model.put( PARAMETER_MAX_TIME, maxEndingTime );
-        model.put( PARAMETER_MIN_DURATION, LocalTime.MIN.plusMinutes( AppointmentUtilities.THIRTY_MINUTES ) );
-        model.put( PARAMETER_ID_FORM, nIdForm );
-        model.put( PARAMETER_EVENTS_COMMENTS, CommentService
+        _models.put( PARAMETER_DATE_OF_DISPLAY, dateOfDisplay );
+        _models.put( PARAMETER_ENDING_DATE_OF_DISPLAY, endingDateOfDisplay );
+        _models.put( PARAMETER_DAY_OF_WEEK, listDayOfWeek );
+        _models.put( PARAMETER_EVENTS, listSlot );
+        _models.put( PARAMETER_MIN_TIME, minStartingTime );
+        _models.put( PARAMETER_MAX_TIME, maxEndingTime );
+        _models.put( PARAMETER_MIN_DURATION, LocalTime.MIN.plusMinutes( AppointmentUtilities.THIRTY_MINUTES ) );
+        _models.put( PARAMETER_ID_FORM, nIdForm );
+        _models.put( PARAMETER_EVENTS_COMMENTS, CommentService
                 .buildCommentDTO( CommentService.finListComments( Date.valueOf( dateOfDisplay ), Date.valueOf( endingDateOfDisplay ), nIdForm ) ) );
-        addElementsToModel( _appointmentForm, getUser( ), getLocale( ), model );
-        model.put( MARK_LOCALE_TINY, getLocale( ) );
-        return getPage( MESSAGE_SPECIFIC_WEEK_PAGE_TITLE, TEMPLATE_MANAGE_SPECIFIC_WEEK, model );
+        addElementsToModel( _appointmentForm, getUser( ), getLocale( ), _models );
+        _models.put( MARK_LOCALE_TINY, getLocale( ) );
+        return getPage( MESSAGE_SPECIFIC_WEEK_PAGE_TITLE, TEMPLATE_MANAGE_SPECIFIC_WEEK, _models );
     }
 
     /**
@@ -280,11 +289,10 @@ public class SpecificWeekJspBean extends AbstractAppointmentFormAndSlotJspBean
                 _slot = SlotService.findSlotById( nIdSlot );
             }
         }
-        Map<String, Object> model = getModel( );
-        model.put( PARAMETER_DATE_OF_DISPLAY, _slot.getDate( ) );
-        model.put( MARK_SLOT, _slot );
-        model.put( PARAMETER_ID_FORM, strIdForm );
-        return getPage( MESSAGE_MODIFY_SLOT_PAGE_TITLE, TEMPLATE_MODIFY_SLOT, model );
+        _models.put( PARAMETER_DATE_OF_DISPLAY, _slot.getDate( ) );
+        _models.put( MARK_SLOT, _slot );
+        _models.put( PARAMETER_ID_FORM, strIdForm );
+        return getPage( MESSAGE_MODIFY_SLOT_PAGE_TITLE, TEMPLATE_MODIFY_SLOT, _models );
     }
 
     /**
@@ -447,7 +455,7 @@ public class SpecificWeekJspBean extends AbstractAppointmentFormAndSlotJspBean
         }
 
         String strJson = request.getParameter( PARAMETER_DATA );
-        AppLogService.debug( "slot - Received strJson : " + strJson );
+        AppLogService.debug( "slot - Received strJson : {}", strJson );
         ObjectMapper mapper = new ObjectMapper( );
         mapper.registerModule( new JavaTimeModule( ) );
         mapper.configure( DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false );
@@ -491,7 +499,7 @@ public class SpecificWeekJspBean extends AbstractAppointmentFormAndSlotJspBean
         catch( IOException e )
         {
 
-            AppLogService.error( MESSAGE_ERROR_PARSING_JSON + e.getMessage( ), e );
+            AppLogService.error( "{} {}", MESSAGE_ERROR_PARSING_JSON, e.getMessage( ), e );
             addError( MESSAGE_ERROR_PARSING_JSON, getLocale( ) );
 
         }

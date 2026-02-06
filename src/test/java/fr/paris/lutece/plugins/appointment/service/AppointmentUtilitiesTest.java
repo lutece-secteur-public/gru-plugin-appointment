@@ -66,6 +66,8 @@ import fr.paris.lutece.plugins.genericattributes.business.GenericAttributeError;
 import fr.paris.lutece.plugins.genericattributes.business.Response;
 import fr.paris.lutece.test.LuteceTestCase;
 
+import org.junit.jupiter.api.Test;
+
 public class AppointmentUtilitiesTest extends LuteceTestCase
 {
 
@@ -81,6 +83,7 @@ public class AppointmentUtilitiesTest extends LuteceTestCase
     /**
      * Try to get another appointment which does not match the rule of the number of days between two appointments for the same user
      */
+    @Test
     public void testNbDaysBetweenTwoAppointments( )
     {
         AppointmentFormDTO appointmentForm = FormServiceTest.buildAppointmentForm( );
@@ -122,6 +125,7 @@ public class AppointmentUtilitiesTest extends LuteceTestCase
     /**
      * Try to get another appointment which matches the rule of the number of days between two appointments for the same user
      */
+    @Test
     public void testNbDaysBetweenTwoAppointments2( )
     {
         AppointmentFormDTO appointmentForm = FormServiceTest.buildAppointmentForm( );
@@ -161,6 +165,7 @@ public class AppointmentUtilitiesTest extends LuteceTestCase
     /**
      * Try to get a third appointment which does not match the rule of the number of days between two appointments for the same user
      */
+    @Test
     public void testNbDaysBetweenTwoAppointments3( )
     {
         AppointmentFormDTO appointmentForm = FormServiceTest.buildAppointmentForm( );
@@ -214,6 +219,7 @@ public class AppointmentUtilitiesTest extends LuteceTestCase
     /**
      * Try to get a third appointment which matches the rule of the number of days between two appointments for the same user
      */
+    @Test
     public void testNbDaysBetweenTwoAppointments4( )
     {
         AppointmentFormDTO appointmentForm = FormServiceTest.buildAppointmentForm( );
@@ -265,6 +271,7 @@ public class AppointmentUtilitiesTest extends LuteceTestCase
     /**
      * Try to get a third appointment which doas not match the rule of the number of days between two appointments for the same user
      */
+    @Test
     public void testNbDaysBetweenTwoAppointments5( )
     {
         AppointmentFormDTO appointmentForm = FormServiceTest.buildAppointmentForm( );
@@ -317,6 +324,7 @@ public class AppointmentUtilitiesTest extends LuteceTestCase
     /**
      * Check that the user can not take more than 2 appointments on 7 days
      */
+    @Test
     public void testCheckNbMaxAppointmentsOnAGivenPeriod( )
     {
         AppointmentFormDTO appointmentForm = FormServiceTest.buildAppointmentForm( );
@@ -368,6 +376,7 @@ public class AppointmentUtilitiesTest extends LuteceTestCase
     /**
      * Check that the user can take another appointment
      */
+    @Test
     public void testCheckNbMaxAppointmentsOnAGivenPeriod2( )
     {
         AppointmentFormDTO appointmentForm = FormServiceTest.buildAppointmentForm( );
@@ -419,6 +428,7 @@ public class AppointmentUtilitiesTest extends LuteceTestCase
     /**
      * Check and validate all the rules for the number of booked seats asked
      */
+    @Test
     public void testCheckAndReturnNbBookedSeats( )
     {
         AppointmentFormDTO appointmentForm = FormServiceTest.buildAppointmentForm( );
@@ -456,6 +466,7 @@ public class AppointmentUtilitiesTest extends LuteceTestCase
     /**
      * Try to get an appointment with 2 places on a slot that have only 1 remaining place
      */
+    @Test
     public void testCheckAndReturnNbBookedSeats2( )
     {
         AppointmentFormDTO appointmentForm = FormServiceTest.buildAppointmentForm( );
@@ -493,6 +504,7 @@ public class AppointmentUtilitiesTest extends LuteceTestCase
     /**
      * Return the min starting time to display
      */
+    @Test
     public void testGetMinTimeToDisplay( )
     {
         assertEquals( LocalTime.parse( "09:00" ), AppointmentUtilities.getMinTimeToDisplay( LocalTime.parse( "09:22" ) ) );
@@ -502,6 +514,7 @@ public class AppointmentUtilitiesTest extends LuteceTestCase
     /**
      * Return the max ending time to display
      */
+    @Test
     public void testGetMaxTimeToDisplay( )
     {
         assertEquals( LocalTime.parse( "09:30" ), AppointmentUtilities.getMaxTimeToDisplay( LocalTime.parse( "09:01" ) ) );
@@ -511,6 +524,7 @@ public class AppointmentUtilitiesTest extends LuteceTestCase
     /**
      * Check if there are appointments impacted by the new week definition
      */
+    @Test
     public void testCheckNoAppointmentsImpacted( )
     {
         AppointmentFormDTO appointmentForm = FormServiceTest.buildAppointmentForm( );
@@ -569,6 +583,7 @@ public class AppointmentUtilitiesTest extends LuteceTestCase
         cleanUp( -1, appointmentForm2 );
     }
 
+    @Test
     public void testCheckNoAppointmentsImpacted2( )
     {
         AppointmentFormDTO appointmentForm = FormServiceTest.buildAppointmentForm( );
@@ -629,6 +644,7 @@ public class AppointmentUtilitiesTest extends LuteceTestCase
     /**
      * Check that there is no validated appointments on a slot
      */
+    @Test
     public void testCheckNoValidatedAppointmentsOnThisSlot( )
     {
         AppointmentFormDTO appointmentForm = FormServiceTest.buildAppointmentForm( );
@@ -659,6 +675,7 @@ public class AppointmentUtilitiesTest extends LuteceTestCase
     /**
      * Check that there is no validated appointments on a slot (there is an appointment on the slot but it has been cancelled)
      */
+    @Test
     public void testCheckNoValidatedAppointmentsOnThisSlot2( )
     {
         AppointmentFormDTO appointmentForm = FormServiceTest.buildAppointmentForm( );
@@ -693,6 +710,7 @@ public class AppointmentUtilitiesTest extends LuteceTestCase
     /**
      * Return the slots impacted by the modification of this time slot
      */
+    @Test
     public void testFindSlotsImpactedByThisTimeSlot( )
     {
         AppointmentFormDTO appointmentForm = FormServiceTest.buildAppointmentForm( );
@@ -723,6 +741,7 @@ public class AppointmentUtilitiesTest extends LuteceTestCase
         cleanUp( nIdForm, appointmentForm );
     }
 
+    @Test
     public void testSetAppointmentPhoneNumberValuesFromResponse( )
     {
         AppointmentDTO appointment = AppointmentTest.buildAppointmentDTO(

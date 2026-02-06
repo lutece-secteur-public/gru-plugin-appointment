@@ -180,7 +180,7 @@
 	</div>
 </#if>
 <script>
-$( function(){
+document.addEventListener('DOMContentLoaded', function(){
 	// Prevent Double Submits
     var form = document.querySelector('#form-validate');
     if( form != null ){
@@ -189,5 +189,5 @@ $( function(){
             btnVal.setAttribute('disabled', 'disabled');
          }, false);
      }
-})
+});
 </script>

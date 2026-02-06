@@ -33,16 +33,21 @@
  */
 package fr.paris.lutece.plugins.appointment.service.entrytype;
 
+import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.inject.Named;
+
 import fr.paris.lutece.plugins.genericattributes.business.Entry;
 import fr.paris.lutece.plugins.genericattributes.service.entrytype.AbstractEntryTypeNumbering;
 
 /**
  * EntryTypeNumbering
- * 
+ *
  * @author Laurent Payen
- * 
+ *
  */
-public final class EntryTypeNumbering extends AbstractEntryTypeNumbering
+@ApplicationScoped
+@Named( "appointment.entryTypeNumbering" )
+public class EntryTypeNumbering extends AbstractEntryTypeNumbering
 {
     private static final String TEMPLATE_HTML_CODE_ADMIN = "admin/plugins/appointment/entries/html_code_entry_type_numbering.html";
     private static final String TEMPLATE_HTML_CODE = "skin/plugins/appointment/entries/html_code_entry_type_numbering.html";

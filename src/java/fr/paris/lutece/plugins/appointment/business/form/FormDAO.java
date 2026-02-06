@@ -39,6 +39,7 @@ import java.util.List;
 
 import fr.paris.lutece.portal.service.plugin.Plugin;
 import fr.paris.lutece.util.sql.DAOUtil;
+import jakarta.enterprise.context.ApplicationScoped;
 
 /**
  * This class provides Data Access methods for Form objects
@@ -46,7 +47,8 @@ import fr.paris.lutece.util.sql.DAOUtil;
  * @author Laurent Payen
  *
  */
-public final class FormDAO implements IFormDAO
+@ApplicationScoped
+public class FormDAO implements IFormDAO
 {
 
     private static final String SQL_QUERY_INSERT = "INSERT INTO appointment_form ( title, description, reference, id_category, starting_validity_date, ending_validity_date, is_active, id_workflow, workgroup,is_multislot_appointment, nb_consecutive_slots, role_fo, capacity_per_slot, is_anonymizable, anonymization_pattern ) VALUES ( ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ? )";

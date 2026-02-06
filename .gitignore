@@ -6,3 +6,4 @@
 /nb-configuration.xml
 /bin/
 webapp/WEB-INF/conf/db.properties
+logs/

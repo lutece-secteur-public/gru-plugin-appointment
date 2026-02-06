@@ -44,9 +44,11 @@ import fr.paris.lutece.plugins.appointment.business.rule.ReservationRule;
 import fr.paris.lutece.plugins.appointment.business.rule.ReservationRuleHome;
 import fr.paris.lutece.test.LuteceTestCase;
 
+import org.junit.jupiter.api.Test;
+
 /**
  * Test class of the WeekDefinition
- * 
+ *
  * @author Laurent Payen
  *
  */
@@ -59,6 +61,7 @@ public final class WeekDefinitionTest extends LuteceTestCase
     /**
      * Test method for the weekDefinition (CRUD)
      */
+    @Test
     public void testWeekDefinition( )
     {
         // Initialize a WeekDefinition
@@ -101,6 +104,7 @@ public final class WeekDefinitionTest extends LuteceTestCase
     /**
      * Test findByIdForm
      */
+    @Test
     public void testFindByIdForm( )
     {
         // Initialize a WeekDefinition

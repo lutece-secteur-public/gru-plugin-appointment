@@ -36,7 +36,7 @@ package fr.paris.lutece.plugins.appointment.business.display;
 import fr.paris.lutece.plugins.appointment.service.AppointmentPlugin;
 import fr.paris.lutece.portal.service.plugin.Plugin;
 import fr.paris.lutece.portal.service.plugin.PluginService;
-import fr.paris.lutece.portal.service.spring.SpringContextService;
+import jakarta.enterprise.inject.spi.CDI;
 
 /**
  * This class provides instances management methods for Display objects
@@ -47,7 +47,7 @@ import fr.paris.lutece.portal.service.spring.SpringContextService;
 public final class DisplayHome
 {
     // Static variable pointed at the DAO instance
-    private static IDisplayDAO _dao = SpringContextService.getBean( "appointment.displayDAO" );
+    private static IDisplayDAO _dao = CDI.current( ).select( IDisplayDAO.class ).get( );
     private static Plugin _plugin = PluginService.getPlugin( AppointmentPlugin.PLUGIN_NAME );
 
     /**

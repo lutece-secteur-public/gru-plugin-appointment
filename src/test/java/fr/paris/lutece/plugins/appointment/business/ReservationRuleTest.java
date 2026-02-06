@@ -43,9 +43,11 @@ import fr.paris.lutece.plugins.appointment.business.rule.ReservationRuleHome;
 import fr.paris.lutece.plugins.appointment.service.ReservationRuleService;
 import fr.paris.lutece.test.LuteceTestCase;
 
+import org.junit.jupiter.api.Test;
+
 /**
  * Test Class for the ReservationRule
- * 
+ *
  * @author Laurent Payen
  *
  */
@@ -62,6 +64,7 @@ public final class ReservationRuleTest extends LuteceTestCase
     /**
      * Test method for the ReservationRule (CRUD)
      */
+    @Test
     public void testReservationRule( )
     {
         Form form = FormTest.buildForm1( );
@@ -103,6 +106,7 @@ public final class ReservationRuleTest extends LuteceTestCase
     /**
      * Test of findByIdForm method
      */
+    @Test
     public void testFindByIdForm( )
     {
         Form form = FormTest.buildForm1( );

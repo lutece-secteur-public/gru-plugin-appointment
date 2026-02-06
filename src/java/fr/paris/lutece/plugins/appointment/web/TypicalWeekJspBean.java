@@ -43,7 +43,7 @@ import java.util.Map;
 import java.util.concurrent.locks.Lock;
 import java.util.stream.Collectors;
 
-import javax.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletRequest;
 
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -71,7 +71,10 @@ import fr.paris.lutece.plugins.appointment.service.SlotService;
 import fr.paris.lutece.plugins.appointment.service.TimeSlotService;
 import fr.paris.lutece.plugins.appointment.service.WeekDefinitionService;
 import fr.paris.lutece.plugins.appointment.service.WorkingDayService;
-import fr.paris.lutece.plugins.appointment.service.listeners.WeekDefinitionManagerListener;
+import fr.paris.lutece.plugins.appointment.service.event.WeekDefinitionEvent;
+import fr.paris.lutece.portal.service.event.EventAction;
+import fr.paris.lutece.portal.service.event.Type.TypeQualifier;
+import jakarta.enterprise.inject.spi.CDI;
 import fr.paris.lutece.plugins.appointment.web.dto.AppointmentFormDTO;
 import fr.paris.lutece.portal.service.admin.AccessDeniedException;
 import fr.paris.lutece.portal.service.message.AdminMessage;
@@ -81,14 +84,21 @@ import fr.paris.lutece.portal.service.util.AppLogService;
 import fr.paris.lutece.portal.util.mvc.admin.annotations.Controller;
 import fr.paris.lutece.portal.util.mvc.commons.annotations.Action;
 import fr.paris.lutece.portal.util.mvc.commons.annotations.View;
+import fr.paris.lutece.portal.web.cdi.mvc.Models;
 import fr.paris.lutece.util.url.UrlItem;
+
+import jakarta.enterprise.context.SessionScoped;
+import jakarta.inject.Inject;
+import jakarta.inject.Named;
 
 /**
  * JspBean to manage calendar slots
- * 
+ *
  * @author Laurent Payen
  *
  */
+@SessionScoped
+@Named
 @Controller( controllerJsp = TypicalWeekJspBean.JSP_MANAGE_APPOINTMENT_SLOTS, controllerPath = "jsp/admin/plugins/appointment/", right = AppointmentFormJspBean.RIGHT_MANAGEAPPOINTMENTFORM )
 public class TypicalWeekJspBean extends AbstractAppointmentFormAndSlotJspBean
 {
@@ -166,6 +176,9 @@ public class TypicalWeekJspBean extends AbstractAppointmentFormAndSlotJspBean
 
     private static final String INFO_PARAMETER_REMOVED = "appointment.info.advancedparameters.removed";
 
+    @Inject
+    private Models _models;
+
     private AppointmentFormDTO _appointmentForm;
     private TimeSlot _timeSlot;
 
@@ -213,7 +226,6 @@ public class TypicalWeekJspBean extends AbstractAppointmentFormAndSlotJspBean
             reservationRule = new ReservationRule( );
         }
 
-        Map<String, Object> model = getModel( );
         List<String> listDayOfWeek = new ArrayList<>( );
         List<TimeSlot> listTimeSlot = new ArrayList<>( );
         LocalTime minStartingTime = LocalTime.MIN;
@@ -236,16 +248,16 @@ public class TypicalWeekJspBean extends AbstractAppointmentFormAndSlotJspBean
                 maxEndingTime = WorkingDayService.getMaxEndingTimeOfAListOfWorkingDay( listWorkingDay );
             }
 
-        model.put( CAN_UPDATE_ADVANCED_PARAM, bCanUpdateAdvancedParam );
-        model.put( PARAMETER_DAY_OF_WEEK, listDayOfWeek );
-        model.put( PARAMETER_EVENTS, listTimeSlot );
-        model.put( PARAMETER_MIN_TIME, minStartingTime );
-        model.put( PARAMETER_MAX_TIME, maxEndingTime );
-        model.put( PARAMETER_MIN_DURATION, LocalTime.MIN.plusMinutes( AppointmentUtilities.THIRTY_MINUTES ) );
-        model.put( MARK_ID_RULE, nIdReservationRule );
-        model.put( MARK_LIST_RESERVATION_RULE, ReservationRuleService.findListReservationRule( nIdForm ) );
-        addElementsToModel( _appointmentForm, getUser( ), getLocale( ), model );
-        return getPage( MESSAGE_TYPICAL_WEEK_PAGE_TITLE, TEMPLATE_MANAGE_TYPICAL_WEEK, model );
+        _models.put( CAN_UPDATE_ADVANCED_PARAM, bCanUpdateAdvancedParam );
+        _models.put( PARAMETER_DAY_OF_WEEK, listDayOfWeek );
+        _models.put( PARAMETER_EVENTS, listTimeSlot );
+        _models.put( PARAMETER_MIN_TIME, minStartingTime );
+        _models.put( PARAMETER_MAX_TIME, maxEndingTime );
+        _models.put( PARAMETER_MIN_DURATION, LocalTime.MIN.plusMinutes( AppointmentUtilities.THIRTY_MINUTES ) );
+        _models.put( MARK_ID_RULE, nIdReservationRule );
+        _models.put( MARK_LIST_RESERVATION_RULE, ReservationRuleService.findListReservationRule( nIdForm ) );
+        addElementsToModel( _appointmentForm, getUser( ), getLocale( ), _models );
+        return getPage( MESSAGE_TYPICAL_WEEK_PAGE_TITLE, TEMPLATE_MANAGE_TYPICAL_WEEK, _models );
     }
 
     /**
@@ -496,11 +508,10 @@ public class TypicalWeekJspBean extends AbstractAppointmentFormAndSlotJspBean
             _timeSlot = TimeSlotService.findTimeSlotById( nIdTimeSlot );
         }
         addInfo( MESSAGE_WARNING_CHANGES_APPLY_TO_ALL, getLocale( ) );
-        Map<String, Object> model = getModel( );
-        model.put( PARAMETER_ID_FORM, request.getParameter( PARAMETER_ID_FORM ) );
-        model.put( MARK_ID_RULE, request.getParameter( PARAMETER_ID_RULE ) );
-        model.put( MARK_TIME_SLOT, _timeSlot );
-        return getPage( MESSAGE_MODIFY_TIME_SLOT_PAGE_TITLE, TEMPLATE_MODIFY_TIME_SLOT, model );
+        _models.put( PARAMETER_ID_FORM, request.getParameter( PARAMETER_ID_FORM ) );
+        _models.put( MARK_ID_RULE, request.getParameter( PARAMETER_ID_RULE ) );
+        _models.put( MARK_TIME_SLOT, _timeSlot );
+        return getPage( MESSAGE_MODIFY_TIME_SLOT_PAGE_TITLE, TEMPLATE_MODIFY_TIME_SLOT, _models );
     }
 
     /**
@@ -658,7 +669,7 @@ public class TypicalWeekJspBean extends AbstractAppointmentFormAndSlotJspBean
             throw new AccessDeniedException( AppointmentResourceIdService.PERMISSION_MODIFY_ADVANCED_SETTING_FORM );
         }
         String strJson = request.getParameter( PARAMETER_TIME_SLOT_DATA );
-        AppLogService.debug( "slot - Received strJson : " + strJson );
+        AppLogService.debug( "slot - Received strJson : {}", strJson );
         ObjectMapper mapper = new ObjectMapper( );
         mapper.registerModule( new JavaTimeModule( ) );
         mapper.configure( DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false );
@@ -677,7 +688,7 @@ public class TypicalWeekJspBean extends AbstractAppointmentFormAndSlotJspBean
         catch( IOException e )
         {
 
-            AppLogService.error( MESSAGE_ERROR_PARSING_JSON + e.getMessage( ), e );
+            AppLogService.error( "{} {}", MESSAGE_ERROR_PARSING_JSON, e.getMessage( ), e );
             addError( MESSAGE_ERROR_PARSING_JSON, getLocale( ) );
             return redirect( request, VIEW_MANAGE_TYPICAL_WEEK, PARAMETER_ID_FORM, nIdForm, PARAMETER_ID_RULE, nIdReservationRule );
 
@@ -812,7 +823,7 @@ public class TypicalWeekJspBean extends AbstractAppointmentFormAndSlotJspBean
         if ( CollectionUtils.isNotEmpty( listTimeSlot ) && CollectionUtils.isNotEmpty( listWeekDefinition ) )
         {
 
-            WeekDefinitionManagerListener.notifyListenersListWeekDefinitionChanged( nIdForm, listWeekDefinition );
+            CDI.current( ).getBeanManager( ).getEvent( ).select( WeekDefinitionEvent.class, new TypeQualifier( EventAction.UPDATE ) ).fireAsync( new WeekDefinitionEvent( nIdForm, listWeekDefinition ) );
         }
 
         addInfo( MESSAGE_INFO_SLOT_UPDATED, getLocale( ) );

@@ -49,9 +49,11 @@ import fr.paris.lutece.plugins.appointment.business.rule.ReservationRule;
 import fr.paris.lutece.plugins.appointment.business.rule.ReservationRuleHome;
 import fr.paris.lutece.test.LuteceTestCase;
 
+import org.junit.jupiter.api.Test;
+
 /**
  * Test class for the TimeSlot
- * 
+ *
  * @author Laurent Payen
  *
  */
@@ -72,6 +74,7 @@ public final class TimeSlotTest extends LuteceTestCase
     /**
      * Test method for the TimeSlot (CRUD)
      */
+    @Test
     public void testTimeSlot( )
     {
         Form form = FormTest.buildForm1( );
@@ -129,6 +132,7 @@ public final class TimeSlotTest extends LuteceTestCase
     /**
      * Test of findByIdWorkingDay
      */
+    @Test
     public void testFindByIdWorkingDay( )
     {
         Form form = FormTest.buildForm1( );

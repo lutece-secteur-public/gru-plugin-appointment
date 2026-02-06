@@ -34,6 +34,7 @@
 package fr.paris.lutece.plugins.appointment.business.portlet;
 
 import fr.paris.lutece.portal.business.portlet.Portlet;
+import jakarta.enterprise.context.ApplicationScoped;
 
 /**
  * this class provides Data Access methods for AppointmentFormListPortlet objects
@@ -41,7 +42,8 @@ import fr.paris.lutece.portal.business.portlet.Portlet;
  * @author Laurent Payen
  *
  */
-public final class AppointmentFormListPortletDAO implements IAppointmentFormListPortletDAO
+@ApplicationScoped
+public class AppointmentFormListPortletDAO implements IAppointmentFormListPortletDAO
 {
     /**
      * {@inheritDoc}

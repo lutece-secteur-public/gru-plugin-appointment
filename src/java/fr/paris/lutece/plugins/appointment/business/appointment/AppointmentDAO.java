@@ -39,6 +39,7 @@ import fr.paris.lutece.plugins.appointment.business.user.User;
 import fr.paris.lutece.plugins.appointment.web.dto.AppointmentFilterDTO;
 import fr.paris.lutece.portal.service.plugin.Plugin;
 import fr.paris.lutece.util.sql.DAOUtil;
+import jakarta.enterprise.context.ApplicationScoped;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 
@@ -58,7 +59,8 @@ import java.util.stream.Collectors;
  * @author Laurent Payen
  *
  */
-public final class AppointmentDAO implements IAppointmentDAO
+@ApplicationScoped
+public class AppointmentDAO implements IAppointmentDAO
 {
 
     private static final String SQL_QUERY_INSERT = "INSERT INTO appointment_appointment (reference, nb_places, is_cancelled, id_action_cancelled, id_action_reported, notification, id_admin_user, admin_access_code_create, id_user, date_appointment_create, is_surbooked) VALUES ( ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";

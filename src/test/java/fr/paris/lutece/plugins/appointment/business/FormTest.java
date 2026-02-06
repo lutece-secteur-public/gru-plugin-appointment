@@ -48,9 +48,11 @@ import fr.paris.lutece.plugins.appointment.business.rule.ReservationRule;
 import fr.paris.lutece.plugins.appointment.business.rule.ReservationRuleHome;
 import fr.paris.lutece.test.LuteceTestCase;
 
+import org.junit.jupiter.api.Test;
+
 /**
  * Test Class for the Form
- * 
+ *
  * @author Laurent Payen
  *
  */
@@ -73,6 +75,7 @@ public final class FormTest extends LuteceTestCase
     /**
      * Test method for the Form (CRUD)
      */
+    @Test
     public void testForm( )
     {
         // Initialize a Form
@@ -106,8 +109,9 @@ public final class FormTest extends LuteceTestCase
     }
 
     /**
-     * 
+     *
      */
+    @Test
     public void testWeekDefinition( )
     {
         Form form = buildForm1( );

@@ -42,12 +42,15 @@ import fr.paris.lutece.plugins.appointment.business.planning.WorkingDay;
 import fr.paris.lutece.plugins.appointment.web.dto.AppointmentFormDTO;
 import fr.paris.lutece.test.LuteceTestCase;
 
+import org.junit.jupiter.api.Test;
+
 public class TimeSlotServiceTest extends LuteceTestCase
 {
 
     /**
      * Find the next time slots of a given time slot
      */
+    @Test
     public void testFindListTimeSlotAfterThisTimeSlot( )
     {
         // Build the form
@@ -75,6 +78,7 @@ public class TimeSlotServiceTest extends LuteceTestCase
     /**
      * Return an ordered and filtered list of time slots after a given time
      */
+    @Test
     public void testGetNextTimeSlotsInAListOfTimeSlotAfterALocalTime( )
     {
         // Build the form
@@ -100,6 +104,7 @@ public class TimeSlotServiceTest extends LuteceTestCase
     /**
      * Returns the time slot in a list of time slot with the given starting time
      */
+    @Test
     public void testGetTimeSlotInListOfTimeSlotWithStartingTime( )
     {
         // Build the form

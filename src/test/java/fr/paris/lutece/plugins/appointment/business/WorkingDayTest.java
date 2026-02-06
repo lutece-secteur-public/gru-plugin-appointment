@@ -45,9 +45,11 @@ import fr.paris.lutece.plugins.appointment.business.rule.ReservationRule;
 import fr.paris.lutece.plugins.appointment.business.rule.ReservationRuleHome;
 import fr.paris.lutece.test.LuteceTestCase;
 
+import org.junit.jupiter.api.Test;
+
 /**
  * Test class of the WorkingDay
- * 
+ *
  * @author Laurent Payen
  *
  */
@@ -60,6 +62,7 @@ public final class WorkingDayTest extends LuteceTestCase
     /**
      * Test method for a working day (CRUD)
      */
+    @Test
     public void testWorkingDay( )
     {
         // Initialize a WorkingDay
@@ -105,6 +108,7 @@ public final class WorkingDayTest extends LuteceTestCase
     /**
      * Test of findByIdWeekDefinition
      */
+    @Test
     public void testFindByIdWeekDefinition( )
     {
         // Initialize a WorkingDay

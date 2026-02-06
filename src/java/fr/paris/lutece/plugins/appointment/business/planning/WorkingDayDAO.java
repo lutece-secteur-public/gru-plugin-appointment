@@ -39,6 +39,7 @@ import java.util.List;
 
 import fr.paris.lutece.portal.service.plugin.Plugin;
 import fr.paris.lutece.util.sql.DAOUtil;
+import jakarta.enterprise.context.ApplicationScoped;
 
 /**
  * This class provides Data Access methods for Working Day objects
@@ -46,7 +47,8 @@ import fr.paris.lutece.util.sql.DAOUtil;
  * @author Laurent Payen
  *
  */
-public final class WorkingDayDAO implements IWorkingDayDAO
+@ApplicationScoped
+public class WorkingDayDAO implements IWorkingDayDAO
 {
 
     private static final String SQL_QUERY_INSERT = "INSERT INTO appointment_working_day ( day_of_week, id_reservation_rule) VALUES ( ?, ?)";

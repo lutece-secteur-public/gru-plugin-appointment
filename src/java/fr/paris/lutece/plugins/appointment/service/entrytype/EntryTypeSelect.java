@@ -33,17 +33,22 @@
  */
 package fr.paris.lutece.plugins.appointment.service.entrytype;
 
+import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.inject.Named;
+
 import fr.paris.lutece.plugins.genericattributes.business.Entry;
 import fr.paris.lutece.plugins.genericattributes.service.entrytype.AbstractEntryTypeSelect;
 
 /**
  *
  * class EntryTypeSelect
- * 
+ *
  * @author Laurent Payen
  *
  */
-public final class EntryTypeSelect extends AbstractEntryTypeSelect
+@ApplicationScoped
+@Named( "appointment.entryTypeSelect" )
+public class EntryTypeSelect extends AbstractEntryTypeSelect
 {
     private static final String TEMPLATE_CREATE = "admin/plugins/appointment/entries/create_entry_type_select.html";
     private static final String TEMPLATE_HTML_CODE_ADMIN = "admin/plugins/appointment/entries/html_code_entry_type_select.html";

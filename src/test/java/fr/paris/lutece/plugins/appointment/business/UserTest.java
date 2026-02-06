@@ -37,9 +37,11 @@ import fr.paris.lutece.plugins.appointment.business.user.User;
 import fr.paris.lutece.plugins.appointment.business.user.UserHome;
 import fr.paris.lutece.test.LuteceTestCase;
 
+import org.junit.jupiter.api.Test;
+
 /**
  * Test class for the User
- * 
+ *
  * @author Laurent Payen
  *
  */
@@ -49,6 +51,7 @@ public final class UserTest extends LuteceTestCase
     /**
      * Test method for the User (CRUD)
      */
+    @Test
     public void testUser( )
     {
         // Initialize a User

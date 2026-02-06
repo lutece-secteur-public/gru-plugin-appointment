@@ -1,9 +1,9 @@
-<jsp:useBean id="appointmentCommentNotification" scope="session" class="fr.paris.lutece.plugins.appointment.web.CommentNotificationJspBean" />
-<% String strContent = appointmentCommentNotification.processController ( request , response ); %>
-
 <%@ page errorPage="../../ErrorPage.jsp" %>
+
+${ pageContext.setAttribute( 'strContent', commentNotificationJspBean.processController( pageContext.request , pageContext.response ) ) }
+
 <jsp:include page="../../AdminHeader.jsp" />
 
-<%= strContent %>
+${ pageContext.getAttribute( 'strContent' ) }
 
 <%@ include file="../../AdminFooter.jsp" %>

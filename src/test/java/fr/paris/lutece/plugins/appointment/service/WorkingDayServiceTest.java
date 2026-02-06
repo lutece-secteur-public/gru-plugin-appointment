@@ -47,6 +47,8 @@ import fr.paris.lutece.plugins.appointment.business.rule.ReservationRuleHome;
 import fr.paris.lutece.plugins.appointment.web.dto.AppointmentFormDTO;
 import fr.paris.lutece.test.LuteceTestCase;
 
+import org.junit.jupiter.api.Test;
+
 public class WorkingDayServiceTest extends LuteceTestCase
 {
 
@@ -54,6 +56,7 @@ public class WorkingDayServiceTest extends LuteceTestCase
      * Get the max ending time of a list of working days
      */
     @SuppressWarnings( "null" )
+    @Test
     public void testGetMaxEndingTimeOfAListOfWorkingDay( )
     {
         List<WorkingDay> listWorkingDay = new ArrayList<>( );
@@ -86,6 +89,7 @@ public class WorkingDayServiceTest extends LuteceTestCase
     /**
      * Get the max ending time of a working day
      */
+    @Test
     public void testGetMaxEndingTimeOfAWorkingDay( )
     {
         // Build the form
@@ -110,6 +114,7 @@ public class WorkingDayServiceTest extends LuteceTestCase
     /**
      * Get the min duration slot of a list of working days
      */
+    @Test
     public void testGetMinDurationTimeSlotOfAListOfWorkingDay( )
     {
         // Build the form
@@ -145,6 +150,7 @@ public class WorkingDayServiceTest extends LuteceTestCase
     /**
      * Get the min duration slot of a working day
      */
+    @Test
     public void testGetMinDurationTimeSlotOfAWorkingDay( )
     {
         // Build the form
@@ -168,6 +174,7 @@ public class WorkingDayServiceTest extends LuteceTestCase
     /**
      * Get the min starting time of a list of working days
      */
+    @Test
     public void testGetMinStartingTimeOfAListOfWorkingDay( )
     {
         // Build the form
@@ -197,6 +204,7 @@ public class WorkingDayServiceTest extends LuteceTestCase
     /**
      * Get the min starting time of a working day
      */
+    @Test
     public void testGetMinStartingTimeOfAWorkingDay( )
     {
         // Build the form
@@ -220,6 +228,7 @@ public class WorkingDayServiceTest extends LuteceTestCase
     /**
      * Get the open days of an appointmentForm DTO
      */
+    @Test
     public void testGetOpenDays( )
     {
         // Build the form

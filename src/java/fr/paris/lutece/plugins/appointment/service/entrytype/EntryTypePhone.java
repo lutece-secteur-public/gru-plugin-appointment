@@ -33,12 +33,28 @@
  */
 package fr.paris.lutece.plugins.appointment.service.entrytype;
 
+import java.util.List;
+
+import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.inject.Inject;
+import jakarta.inject.Named;
+
+import fr.paris.lutece.plugins.genericattributes.service.anonymization.IEntryAnonymizationType;
+
 /**
  * class EntryTypePhone
- * 
+ *
  * @author Laurent Payen
- * 
+ *
  */
-public final class EntryTypePhone extends EntryTypeText
+@ApplicationScoped
+@Named( "appointment.entryTypePhone" )
+public class EntryTypePhone extends EntryTypeText
 {
+    @Inject
+    public void addAnonymizationTypes(
+            @Named( "genericattributes.defaultTelephoneAnonymizationType" ) IEntryAnonymizationType defaultTelephone )
+    {
+        setAnonymizationTypes( List.of( defaultTelephone ) );
+    }
 }

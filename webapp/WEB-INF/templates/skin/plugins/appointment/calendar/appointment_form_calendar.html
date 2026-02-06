@@ -67,7 +67,7 @@ ${mark_nb_places_to_take_form!}
 			</#if>
 		</#if>
 		<#if formCalendarErrors??>
-		<#if errors?size &gt; 0 >
+		<#if (errors!)?size &gt; 0 >
 		<div class="alert alert-danger" id='messages_infos_div'>
 			<button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
 			<#list errors as error >
@@ -76,7 +76,7 @@ ${mark_nb_places_to_take_form!}
 		</div>
 	</#if>
 	<#else>
-	<#if errors?size &gt; 0 >
+	<#if (errors!)?size &gt; 0 >
 	<div class="alert alert-danger" id='messages_infos_div'>
 		<button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
 		<#list errors as error >

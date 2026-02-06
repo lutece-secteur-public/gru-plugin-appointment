@@ -44,12 +44,15 @@ import fr.paris.lutece.plugins.appointment.business.rule.ReservationRule;
 import fr.paris.lutece.plugins.appointment.web.dto.AppointmentFormDTO;
 import fr.paris.lutece.test.LuteceTestCase;
 
+import org.junit.jupiter.api.Test;
+
 public class WeekDefinitionServiceTest extends LuteceTestCase
 {
 
     /**
      * Find a week definition of a form and a date of apply
      */
+    @Test
     public void testFindWeekDefinitionByIdFormAndClosestToDateOfApply( )
     {
         // Build the form
@@ -98,6 +101,7 @@ public class WeekDefinitionServiceTest extends LuteceTestCase
     /**
      * Return the min starting time of a list of week definitions
      */
+    @Test
     public void testGetMinStartingTimeOfAListOfWeekDefinition( )
     {
         // Build the form
@@ -139,6 +143,7 @@ public class WeekDefinitionServiceTest extends LuteceTestCase
     /**
      * Return the min starting time of a week definition
      */
+    @Test
     public void testGetMinStartingTimeOfAWeekDefinition( )
     {
         // Build the form
@@ -156,6 +161,7 @@ public class WeekDefinitionServiceTest extends LuteceTestCase
     /**
      * Return the max ending time of a list of week definitions
      */
+    @Test
     public void testGetMaxEndingTimeOfAListOfWeekDefinition( )
     {
 
@@ -196,6 +202,7 @@ public class WeekDefinitionServiceTest extends LuteceTestCase
     /**
      * Get the max ending time of a week definition
      */
+    @Test
     public void testGetMaxEndingTimeOfAWeekDefinition( )
     {
         // Build the form
@@ -212,6 +219,7 @@ public class WeekDefinitionServiceTest extends LuteceTestCase
     /**
      * Get the min duration of a time slot of a week definition
      */
+    @Test
     public void testGetMinDurationTimeSlotOfAListOfWeekDefinition( )
     {
         // Build the form
@@ -256,6 +264,7 @@ public class WeekDefinitionServiceTest extends LuteceTestCase
     /**
      * Get the set of the open days of all the week definitons
      */
+    @Test
     public void testGetOpenDaysOfWeek( )
     {
         // Build the form
