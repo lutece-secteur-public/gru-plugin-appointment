@@ -413,6 +413,15 @@ public class AppointmentApp extends MVCApplication
         LocalTime minStartingTime = WeekDefinitionService.getMinStartingTimeOfAListOfWeekDefinition( listReservationRules );
         // Get the max time of all the week definitions
         LocalTime maxEndingTime = WeekDefinitionService.getMaxEndingTimeOfAListOfWeekDefinition( listReservationRules );
+        if ( listReservationRules.isEmpty( ) )
+        {
+            addError( ERROR_MESSAGE_NO_AVAILABLE_SLOT, locale );
+            // Reset range to prevent calendar crash on empty rules
+            minStartingTime = LocalTime.MIN;
+            maxEndingTime = LocalTime.NOON;
+            bError = true;
+        }
+
         // Get all the working days of all the week definitions
 
         List<String> listStrBase0OpenDaysOfWeek = new ArrayList<>(
