@@ -318,6 +318,7 @@ public class AppointmentJspBean extends MVCAdminJspBean
     private static final String ERROR_MESSAGE_FORM_NO_MORE_VALID = "appointment.validation.appointment.formNoMoreValid";
     private static final String MESSAGE_UNVAILABLE_SLOT = "appointment.slot.unvailable";
     private static final String ERROR_MESSAGE_REPORT_APPOINTMENT = "appointment.message.error.report.appointment";
+    private static final String ERROR_MESSAGE_EMPTY_RESERVATIONS_RULES = "appointment.message.error.empty.reservationsRules";
 
     // Constants
     public static final String ACTIVATEWORKFLOW = AppPropertiesService.getProperty( "appointment.activate.workflow" );
@@ -417,6 +418,16 @@ public class AppointmentJspBean extends MVCAdminJspBean
 
         LocalTime maxEndingTime = WeekDefinitionService.getMaxEndingTimeOfAListOfWeekDefinition( listReservationRules );
         LocalTime minStartingTime = WeekDefinitionService.getMinStartingTimeOfAListOfWeekDefinition( listReservationRules );
+
+        if ( listReservationRules.isEmpty( ) )
+        {
+            addError( ERROR_MESSAGE_EMPTY_RESERVATIONS_RULES, getLocale( ) );
+            // Reset range to prevent calendar crash on empty rules
+            minStartingTime = LocalTime.MIN;
+            maxEndingTime = LocalTime.NOON;
+            bError = true;
+        }
+
         List<String> listDayOfWeek = new ArrayList<>( WeekDefinitionService.getSetDaysOfWeekOfAListOfWeekDefinitionForFullCalendar( listReservationRules ) );
         if ( !bError )
         {

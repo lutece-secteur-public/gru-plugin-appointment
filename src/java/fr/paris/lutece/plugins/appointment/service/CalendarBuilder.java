@@ -74,6 +74,12 @@ public class CalendarBuilder
     public static List<Slot> buildListSlot( int nIdForm, Map<WeekDefinition, ReservationRule> mapReservationRule, LocalDate startingDate, LocalDate endingDate )
     {
         List<Slot> listSlot = new ArrayList<>( );
+
+        if ( mapReservationRule == null || mapReservationRule.isEmpty( ) )
+        {
+            return listSlot;
+        }
+
         final List<WeekDefinition> listDateReservationRule = new ArrayList<>( mapReservationRule.keySet( ) );
         WeekDefinition closestweeDef;
         ReservationRule reservationRuleToApply = null;
@@ -91,6 +97,11 @@ public class CalendarBuilder
         // Need to check if this date is not before the form date creation
         WeekDefinition firsWeek = listDateReservationRule.stream( ).sorted( ( week1, week2 ) -> week1.getDateOfApply( ).compareTo( week2.getDateOfApply( ) ) )
                 .findFirst( ).orElse( null );
+        if ( firsWeek == null )
+        {
+            return listSlot;
+        }
+
         final LocalDate firstDateOfReservationRule = firsWeek.getDateOfApply( );
         LocalDate startingDateToUse = startingDate;
         if ( firstDateOfReservationRule != null && startingDate.isBefore( firstDateOfReservationRule ) )
@@ -239,6 +250,11 @@ public class CalendarBuilder
     {
         List<Slot> listSlotToShow = new ArrayList<>( );
 
+        if ( mapReservationRule == null || mapReservationRule.isEmpty( ) )
+        {
+            return listSlotToShow;
+        }
+
         final List<WeekDefinition> listDateReservationRule = new ArrayList<>( mapReservationRule.keySet( ) );
         WeekDefinition closestweeDef;
         ReservationRule reservationRuleToApply = null;
@@ -266,6 +282,10 @@ public class CalendarBuilder
         // Need to check if this date is not before the form date creation
         WeekDefinition firsWeek = listDateReservationRule.stream( ).sorted( ( week1, week2 ) -> week1.getDateOfApply( ).compareTo( week2.getDateOfApply( ) ) )
                 .findFirst( ).orElse( null );
+        if ( firsWeek == null )
+        {
+            return listSlotToShow;
+        }
         final LocalDate firstDateOfReservationRule = firsWeek.getDateOfApply( );
         LocalDate startingDateToUse = startingDate;
         if ( firstDateOfReservationRule != null && startingDate.isBefore( firstDateOfReservationRule ) )
