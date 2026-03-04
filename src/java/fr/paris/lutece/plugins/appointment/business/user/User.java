@@ -39,7 +39,6 @@ import java.util.List;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
-import javax.validation.constraints.Pattern;
 
 import fr.paris.lutece.plugins.appointment.business.appointment.Appointment;
 
@@ -71,7 +70,6 @@ public class User implements Serializable
      * First name of the User
      */
     @NotBlank( message = "appointment.validation.appointment.FirstName.notEmpty" )
-    @Pattern( regexp = "^[A-Za-zÀ-ÖØ-öø-ÿ]*$", message = "appointment.validation.appointment.FirstName.NoSpecialCharacter" )
     @Size( max = 255, message = "appointment.validation.appointment.FirstName.size" )
     private String _strFirstName;
 
@@ -79,7 +77,6 @@ public class User implements Serializable
      * Last name of the User
      */
     @NotBlank( message = "appointment.validation.appointment.LastName.notEmpty" )
-    @Pattern( regexp = "^[A-Za-zÀ-ÖØ-öø-ÿ]*$", message = "appointment.validation.appointment.LastName.NoSpecialCharacter" )
     @Size( max = 255, message = "appointment.validation.appointment.LastName.size" )
     private String _strLastName;
 
