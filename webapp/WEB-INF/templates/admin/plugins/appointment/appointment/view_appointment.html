@@ -3,8 +3,16 @@
 		<@box>
 			<@boxHeader title='${form.title}' />
 			<@boxBody>
-				<@messages errors=errors />
-				<div class="form-horizontal">
+			
+			<@messages errors=errors />
+
+			<div class="form-horizontal"> 				
+			
+			<@row>
+		   	   <@columns sm=8 >	
+		   	      <@box >
+				<@boxBody>
+
 					<@formGroup labelFor='lastname' labelKey='${formMessages.fieldLastNameTitle!}'>
 						<@staticText>${appointment.lastName}</@staticText>
 					</@formGroup>
@@ -17,6 +25,11 @@
 					<@formGroup labelFor='nbBookedSeats' labelKey='#i18n{appointment.createAppointmentForm.labelNumberOfBookedseatsPerAppointment}'>
 						<@staticText>${appointment.nbBookedSeats}</@staticText>
 					</@formGroup>
+					
+				     </@boxBody>
+   			      </@box>
+   			      <@box >
+				<@boxBody>
 					<#list listResponseRecapDTO as response>
 						<#if response.recapValue?has_content>
 						<#if !entrySave?exists||entrySave.idEntry!=response.entry.idEntry><#assign responseLabelKey = response.entry.title /><#assign entrySave=response.entry /></#if>
@@ -29,27 +42,43 @@
 							<#if hasFile>
 								<a href="jsp/admin/plugins/appointment/DoDownloadAppointmentsFile.jsp?idResponse=${response.idResponse}">
 							</#if>
-							<@staticText>${response.recapValue} </@staticText>
+							<@staticText params='data-id-entry="${response.entry.idEntry}"'>${response.recapValue}</@staticText>
 							<#if hasFile>
 								</a>
 							</#if>
 						</@formGroup>
 						</#if>
 					</#list>
-					<@formGroup labelKey='#i18n{appointment.dateAppointment.title}'>
-						<@staticText>
-							${appointment.dateOfTheAppointment} #i18n{appointment.labelFrom} ${appointment.startingTime} #i18n{appointment.labelTo} ${appointment.endingTime}
-						</@staticText>
-					</@formGroup>					
-					<@formGroup labelKey='#i18n{appointment.viewAppointmentFormMessages.labelAppointmentTakenBy}'>
-						<@staticText>
-							<#if appointment.adminUserCreate??>
-								#i18n{appointment.viewAppointmentFormMessages.labelAppointmentUserBO} <#if userCreator ??>${userCreator.lastName!''} ${userCreator.firstName!''}</#if>
-							<#else>
-								#i18n{appointment.viewAppointmentFormMessages.labelAppointmentUser}
-							</#if>
-						</@staticText>
-					</@formGroup>						
+				
+					
+				  </@boxBody>
+			    </@box>
+			</@columns>
+				
+			<!-- Workflow infos  -->
+			<@columns sm=4 >
+				
+				<@box >
+					<@boxBody>				
+						<@formGroup labelKey='#i18n{appointment.dateAppointment.title}'>
+							<@staticText>
+								${appointment.dateOfTheAppointment} #i18n{appointment.labelFrom} ${appointment.startingTime} #i18n{appointment.labelTo} ${appointment.endingTime}
+							</@staticText>
+						</@formGroup>					
+						<@formGroup labelKey='#i18n{appointment.viewAppointmentFormMessages.labelAppointmentTakenBy}'>
+							<@staticText>
+								<#if appointment.adminUserCreate??>
+									#i18n{appointment.viewAppointmentFormMessages.labelAppointmentUserBO} <#if userCreator ??>${userCreator.lastName!''} ${userCreator.firstName!''}</#if>
+								<#else>
+									#i18n{appointment.viewAppointmentFormMessages.labelAppointmentUser}
+								</#if>
+							</@staticText>
+						</@formGroup>	
+					</@boxBody>
+				</@box>				
+				<@box >
+					<@boxBody>
+									
 					<@formGroup labelKey='#i18n{portal.util.labelActions}'  hideLabel=['all']>							
 						<#if appointment.listWorkflowActions?? && appointment.listWorkflowActions?size &gt; 0>
 							<#list appointment.listWorkflowActions as action>
@@ -81,6 +110,11 @@
 					<#if resource_history?? && resource_history != ''>
 						${resource_history}
 					</#if>
+					
+					</@boxBody>
+				</@box>
+					</@columns>
+				</@row>
 				</div>
 			</@boxBody>
 		</@box>
