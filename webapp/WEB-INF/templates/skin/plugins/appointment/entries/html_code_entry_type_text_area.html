@@ -47,7 +47,7 @@
 	</div>
 </div>
 
-<#if richtext>
+<#if richtext?? && richtext == true >
 	<#include "/util/editor/editor.html" />
 	<@initEditor />
 </#if>
