@@ -779,6 +779,13 @@ public class AppointmentApp extends MVCApplication
                 return redirect( request, VIEW_APPOINTMENT_FORM, additionalParameters );
             }
         }
+
+        if ( _notValidatedAppointment.getSlot() == null )
+        {
+            addError( ERROR_MESSAGE_SLOT_FULL, getLocale( request ) );
+            return redirect( request, VIEW_APPOINTMENT_CALENDAR, PARAMETER_ID_FORM, nIdForm, PARAMETER_NB_PLACE_TO_TAKE, _nNbPlacesToTake );
+        }
+
         Map<String, Object> model = getModel( );
         Locale locale = getLocale( request );
         StringBuilder strBuffer = new StringBuilder( );
@@ -1843,7 +1850,7 @@ public class AppointmentApp extends MVCApplication
         SecurityService securityService = SecurityService.getInstance( );
         if ( securityService.isExternalAuthentication( ) )
         {
-            if ( form.getActiveAuthentication( ) )
+            if ( form != null && form.getActiveAuthentication( ) )
             {
                 // The authentication is external
                 // Should register the user if it's not already done
