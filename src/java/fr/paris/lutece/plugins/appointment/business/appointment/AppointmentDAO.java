@@ -86,7 +86,7 @@ public class AppointmentDAO implements IAppointmentDAO
             + " INNER JOIN appointment_appointment_slot app_slot ON app.id_appointment = app_slot.id_appointment"
             + " INNER JOIN appointment_slot slot ON app_slot.id_slot = slot.id_slot WHERE id_form != 0";
     private static final String SQL_QUERY_SELECT_IDS_BY_FILTER = "SELECT "
-            + " app.id_appointment"
+            + " DISTINCT app.id_appointment"
             + " FROM appointment_appointment app " + "INNER JOIN appointment_user user ON app.id_user = user.id_user "
             + " INNER JOIN appointment_appointment_slot app_slot ON app.id_appointment = app_slot.id_appointment"
             + " INNER JOIN appointment_slot slot ON app_slot.id_slot = slot.id_slot WHERE id_form != 0";
