@@ -1,25 +1,27 @@
-<@tabs>
-    <@tabsComment tab='notif' />
-    <@tabContent>
-        <h3>#i18n{appointment.task_notify_appointment_comment_config.title}</h3>		
-        <@table>
-            <tr>
-                <th>#i18n{appointment.type.name}</th>
-                <th>#i18n{portal.util.labelActions}</th>
-            </tr>
-            <@tableHeadBodySeparator />
-            <#list list_config as config >
-            <tr>
-                <td>${config.type}</td>
-                <td>					
-                    <@aButton href='jsp/admin/plugins/appointment/NotificationCommentConfig.jsp?view=modifyNotificationCommentConfig&type=${config.type}' title='#i18n{portal.util.labelModify}' buttonIcon='edit' size='sm' hideTitle=['all']  />
-                </td>
-            </tr>
-            </#list>
-        </@table>
-    </@tabContent>
-</@tabs>
-<script>
-/* Add Form title */
-document.getElementById('feature-title').innerHTML = '<a href="jsp/admin/plugins/appointment/Comments.jsp?plugin_name=appointment" title="#i18n{appointment.manage_comments.pageTitle}">#i18n{appointment.manage_comments.pageTitle}</a>';
-</script>
+<@pageContainer>
+	<@pageColumn>
+		<@pageHeader title='#i18n{appointment.task_notify_appointment_comment_config.title}' />
+		<@tabs>
+			<@tabsComment tab='notif' />
+			<@tabContent>
+				<@h level=3></@h>
+				<#if list_config?has_content>
+					<@manageFeature>
+						<#list list_config as config>
+						<@manageFeatureItem>
+							<@manageFeatureItemColumn auto=true flex=false>
+								<strong>${config.type}</strong>
+							</@manageFeatureItemColumn>
+							<@manageFeatureItemColumn align='end'>
+								<@offcanvas targetUrl='jsp/admin/plugins/appointment/NotificationCommentConfig.jsp?view=modifyNotificationCommentConfig&type=${config.type}' useIframe=true id='edit-notif-${config.type}' btnIcon='edit' btnColor='primary' hideTitle=['xs','sm','md'] position='end' title='#i18n{portal.util.labelModify}' btnTitle='#i18n{portal.util.labelModify}' reloadOnClose=true size='half' />
+							</@manageFeatureItemColumn>
+						</@manageFeatureItem>
+						</#list>
+					</@manageFeature>
+				<#else>
+					<@empty title='#i18n{appointment.task_notify_appointment_comment_config.empty}' iconName='bell-off' />
+				</#if>
+			</@tabContent>
+		</@tabs>
+	</@pageColumn>
+</@pageContainer>

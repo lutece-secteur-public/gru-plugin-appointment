@@ -497,8 +497,8 @@ public class AppointmentAnnualCalendarJspBean extends AbstractAppointmentFormAnd
         String dateEndOfApplay = request.getParameter( PARAMETER_DATE_END_OF_APPLY );
         String idReservationRule = request.getParameter( PARAMETER_ID_RESERVATION_RULE );
 
-        week.setDateOfApply( DateUtil.formatDate( dateOfApplay, getLocale( ) ).toInstant( ).atZone( ZoneId.systemDefault( ) ).toLocalDate( ) );
-        week.setEndingDateOfApply( DateUtil.formatDate( dateEndOfApplay, getLocale( ) ).toInstant( ).atZone( ZoneId.systemDefault( ) ).toLocalDate( ) );
+        week.setDateOfApply( LocalDate.parse( dateOfApplay ) );
+        week.setEndingDateOfApply( LocalDate.parse( dateEndOfApplay ) );
         week.setIdReservationRule( Integer.parseInt( idReservationRule ) );
     }
 

@@ -4,7 +4,6 @@ ${ pageContext.setAttribute( 'strContent', appointmentJspBean.processController(
 
 <jsp:include page="../../AdminHeader.jsp" />
 
-${ appointmentCommentJspBean.getCommentInfos( ) }
 ${ pageContext.getAttribute( 'strContent' ) }
 
 <%@ include file="../../AdminFooter.jsp" %>

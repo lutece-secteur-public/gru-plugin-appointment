@@ -1,82 +1,47 @@
-<#assign cpt=0>
-${entry.CSSClass!}
-
-<#if list_responses??>
-	<#list list_responses as response>
-		<#if response.entry.idEntry == entry.idEntry && response.entry.error?? && response.entry.error.isDisplayableError>
-			<#assign hasError = true>
+<#assign errorMsg = ''>
+<#assign helpMsg = ''>
+<#if entry.helpMessage?? && entry.helpMessage != ''><#assign helpMsg>${entry.helpMessage}</#assign></#if>
+<#if list_responses??><#list list_responses as response><#if response.entry.idEntry == entry.idEntry && response.entry.error?? && response.entry.error.isDisplayableError><#assign error = response.entry.error><#assign errorMsg><#if error.mandatoryError>${error.errorMessage}<#else>#i18n{appointment.message.mandatory.entry}</#if></#assign></#if></#list></#if>
+<#assign answerChoiceCount = 0>
+<#list entry.fields as field><#if field.code == 'answer_choice'><#assign answerChoiceCount = answerChoiceCount + 1></#if></#list>
+<@cField label='${entry.title}' required=entry.mandatory>
+	<#assign answerChoiceIdx = 0>
+	<#list entry.fields as field>
+		<#if field.code == 'answer_choice'>
+			<#assign answerChoiceIdx = answerChoiceIdx + 1>
+			<#assign isChecked = false>
+			<#if list_responses??><#list list_responses as response><#if response.entry.idEntry == entry.idEntry && response.field??><#if response.field.idField == field.idField><#assign isChecked = true></#if></#if></#list><#else><#if field.defaultValue><#assign isChecked = true></#if></#if>
+			<#assign cbParams = ''>
+			<#if field.conditionalQuestions?? && field.conditionalQuestions?size != 0><#assign cbParams = cbParams + 'onclick="doCheckboxEffect(this.checked,${field.idField});"'></#if>
+			<#if field.comment?? && field.comment != ''><#assign cbParams = cbParams + ' title="${field.comment}"'></#if>
+			<#assign cbLabel><#if !field.noDisplayTitle>${field.title}<#else> </#if></#assign>
+			<@cCheckbox name='attribute${entry.idEntry}' id='attribute${entry.idEntry}_${field.idField}' value='${field.idField}' checked=isChecked label=cbLabel params=cbParams inline=entry.fieldInLine errorMsg=errorMsg helpMsg=helpMsg />
 		</#if>
 	</#list>
+	<#if str_list_entry_children??>${str_list_entry_children}</#if>
+</@cField>
+<#if list_responses??>
+<script>
+<#list list_responses as response>
+<#if response.entry.idEntry == entry.idEntry && response.field??>
+var baliseId = "div" + ${response.field.idField};
+if(document.getElementById && document.getElementById(baliseId) != null) {
+	document.getElementById(baliseId).style.visibility='visible';
+	document.getElementById(baliseId).style.display='block';
+}
 </#if>
-		
-<div class="form-group<#if hasError??> has-error</#if>">
-	<label class="col-xs-12 control-label" for="form${entry.idEntry}" id="form${entry.idEntry}">${entry.title}<#if entry.mandatory>	*</#if></label>
-	<div class="col-xs-12">
-		<#list entry.fields as field>
-			<#if field.code == 'answer_choice'>
-				<#if !entry.fieldInLine><div class="checkbox"></#if>
-					<label <#if entry.fieldInLine>class="checkbox-inline"</#if> for="attribute${entry.idEntry}_${field.idField}" <#if field.comment?? && field.comment != ''>title="${field.comment}"</#if> >
-						<input type="checkbox" name="attribute${entry.idEntry}" id="attribute${entry.idEntry}_${field.idField}" value="${field.idField}"
-						<#if list_responses??>
-							<#list list_responses as response>
-								<#if response.entry.idEntry == entry.idEntry && response.field??>
-									<#if response.field.idField == field.idField>checked="checked"</#if>
-								</#if>
-							</#list>
-						<#else>
-							<#if field.defaultValue>checked="checked" </#if>
-						</#if>
-						<#if field.conditionalQuestions?exists&&field.conditionalQuestions?size!=0>
-							onclick="doCheckboxEffect(this.checked,${field.idField});"
-						</#if>
-						/>
-					<#if !field.noDisplayTitle>
-						${field.title}
-					</#if>
-					</label>
-				<#if !entry.fieldInLine></div></#if>
-			</#if>
-		</#list>
-		<#if list_responses??>
-			<#list list_responses as response>
-				<#if response.entry.idEntry == entry.idEntry && response.entry.error?? && response.entry.error.isDisplayableError>
-					<div class="alert alert-error alert-danger">
-						<#assign error = response.entry.error>
-						<#if error.mandatoryError>${error.errorMessage}<#else>#i18n{appointment.message.mandatory.entry}</#if>
-					</div>
-				</#if>
-			</#list>
-		</#if>
-		<#if str_list_entry_children?exists>${str_list_entry_children}</#if>
-		<#if entry.helpMessage?exists&&entry.helpMessage!=''>
-			<p class="help-block">${entry.helpMessage}</p>
-		</#if>	
-	</div>
-</div>	
-	<#if list_responses??>
-		<script type="text/javascript">
-		<#list list_responses as response>
-			<#if response.entry.idEntry == entry.idEntry && response.field??>
-				var baliseId = "div" + ${response.field.idField};
-				if(document.getElementById && document.getElementById(baliseId) != null)
-				{
-					document.getElementById(baliseId).style.visibility='visible';
-					document.getElementById(baliseId).style.display='block';
-				}
-			</#if>
-		</#list>
-		</script>
-	<#else>
-		<#list entry.fields as field>
-			<#if field.defaultValue && field.conditionalQuestions?exists && field.conditionalQuestions?size != 0>
-				<script type="text/javascript">
-					var baliseId = "div" + ${field.idField};
-					if(document.getElementById && document.getElementById(baliseId) != null)
-					{
-					document.getElementById(baliseId).style.visibility='visible';
-					document.getElementById(baliseId).style.display='block';
-					}
-			</script>
-			</#if>
-		</#list>
-	</#if>
+</#list>
+</script>
+<#else>
+<#list entry.fields as field>
+<#if field.defaultValue && field.conditionalQuestions?? && field.conditionalQuestions?size != 0>
+<script>
+var baliseId = "div" + ${field.idField};
+if(document.getElementById && document.getElementById(baliseId) != null) {
+	document.getElementById(baliseId).style.visibility='visible';
+	document.getElementById(baliseId).style.display='block';
+}
+</script>
+</#if>
+</#list>
+</#if>

@@ -1,44 +1,38 @@
 <#if list_responses??>
-	<#list list_responses as response>
-		<#if response.entry.idEntry == entry.idEntry && response.entry.error??>
-			<#assign class = 'has-error' />
-			<#break>
-		</#if>
-	</#list>
+<#list list_responses as response>
+<#if response.entry.idEntry == entry.idEntry && response.entry.error??>
+<#assign class = 'has-error' />
+<#break>
 </#if>
-
+</#list>
+</#if>
 <@formGroup labelFor='attribute${entry.idEntry}' labelKey='${entry.title}' helpKey='${entry.helpMessage!}' mandatory=entry.mandatory class='${class!}'+'${entry.CSSClass!}'>
-	<@select name='attribute${entry.idEntry}' id='attribute${entry.idEntry}'>
-		<option value="">#i18n{appointment.xpage.form.noValue}</option>
-		<#list entry.fields as field>
-			<option  value="${field.idField}"
-			<#if list_responses??>
-				<#list list_responses as response>
-					<#if response.entry.idEntry == entry.idEntry && response.field??>
-						<#if response.field.idField == field.idField>
-							selected ="selected"
-							<#break>
-						</#if>
+<@select name='attribute${entry.idEntry}' id='attribute${entry.idEntry}'>
+	<@option value='' label='#i18n{appointment.xpage.form.noValue}' />
+	<#list entry.fields as field>
+		<#assign isSelected = false />
+		<#if list_responses??>
+			<#list list_responses as response>
+				<#if response.entry.idEntry == entry.idEntry && response.field??>
+					<#if response.field.idField == field.idField>
+						<#assign isSelected = true />
+						<#break>
 					</#if>
-				</#list>
-			<#else>
-				<#if field.defaultValue>
-					selected ="selected"
 				</#if>
-			</#if>
-			>
-			${field.title}
-		</option>
-		</#list>
-	</@select>
+			</#list>
+		<#else>
+			<#if field.defaultValue><#assign isSelected = true /></#if>
+		</#if>
+		<@option value='${field.idField}' selected=isSelected label='${field.title}' />
+	</#list>
+</@select>
 </@formGroup>
 <#if list_responses??>
 <#list list_responses as response>
-	<#if response.entry.idEntry == entry.idEntry && response.entry.error??  && response.entry.error.isDisplayableError>
-		<@alert color='danger'>
-			<#assign error = response.entry.error>
-			<#if error.mandatoryError>${error.errorMessage}<#else>#i18n{appointment.message.mandatory.entry}</#if>
-		</@alert>
-	</#if>
+<#if response.entry.idEntry == entry.idEntry && response.entry.error?? && response.entry.error.isDisplayableError>
+<#assign error = response.entry.error>
+<#if error.mandatoryError><#assign errorMsg = error.errorMessage><#else><#assign errorMsg = '#i18n{appointment.message.mandatory.entry}'></#if>
+<@alert color='danger' title=errorMsg />
+</#if>
 </#list>
 </#if>

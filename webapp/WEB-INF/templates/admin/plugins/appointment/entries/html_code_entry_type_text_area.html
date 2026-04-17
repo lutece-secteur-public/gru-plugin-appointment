@@ -1,40 +1,34 @@
 <#macro getTextAreaContent responseContent entry>
-	<#assign field_width=getFieldByCode( entry, "width")>
-	<#assign field_height=getFieldByCode( entry, "height")>
-	<#assign field_max_size=getFieldByCode( entry, "max_size")>
-	<#assign field_richtext=getFieldValueByCode( entry, "richtext") />
-	<#assign richtext = false />
-	<#if field_richtext == 'true'>
-		<#assign richtext = true />
-	</#if>
-	<textarea name="attribute${entry.idEntry}" id="attribute${entry.idEntry}" cols="${field_width.value}" rows="${field_height.value}" maxlength="${field_max_size.value}" class="form-control ${entry.CSSClass!}<#if richtext> richtext</#if>" >${responseContent}</textarea>
+<#assign field_width=getFieldByCode( entry, "width")>
+<#assign field_height=getFieldByCode( entry, "height")>
+<#assign field_max_size=getFieldByCode( entry, "max_size")>
+<#assign field_richtext=getFieldValueByCode( entry, "richtext") />
+<#assign richtext = false />
+<#if field_richtext == 'true'><#assign richtext = true /></#if>
+<@input type='textarea' name='attribute${entry.idEntry}' id='attribute${entry.idEntry}' size='${field_width.value}' rows='${field_height.value!}' maxlength='${field_max_size.value}' class='${entry.CSSClass!}<#if richtext> richtext</#if>'>${responseContent}</@input>
 </#macro>
-
 <@formGroup labelFor='attribute${entry.idEntry}' labelKey='${entry.title}' helpKey='${entry.helpMessage!}' mandatory=entry.mandatory>
-	<#if list_responses??>
-		<#list list_responses as response>
-			<#if response.entry.idEntry == entry.idEntry && response.toStringValueResponse??>
-				<@getTextAreaContent responseContent=response.toStringValueResponse entry=entry/>
-			</#if>
-		</#list>
-	<#else>
-		<#assign default=getFieldValueByCode( entry, "text_config")>
-		<@getTextAreaContent responseContent=default entry=entry />
-	</#if>
-
-	<#if list_responses??>
-		<#list list_responses as response>
-			<#if response.entry.idEntry == entry.idEntry && response.entry.error??  && response.entry.error.isDisplayableError>
-				<@alert color='danger' params='style="margin-top:10px;"'>
-					<#assign error = response.entry.error>
-					<#if error.mandatoryError>#i18n{appointment.message.mandatory.entry}<#else>${error.errorMessage}</#if>
-				</@alert>
-			</#if>
-		</#list>
-	</#if>
+<#if list_responses??>
+	<#list list_responses as response>
+		<#if response.entry.idEntry == entry.idEntry && response.toStringValueResponse??>
+			<@getTextAreaContent responseContent=response.toStringValueResponse entry=entry />
+		</#if>
+	</#list>
+<#else>
+	<#assign default=getFieldValueByCode( entry, "text_config")>
+	<@getTextAreaContent responseContent=default entry=entry />
+</#if>
+<#if list_responses??>
+	<#list list_responses as response>
+		<#if response.entry.idEntry == entry.idEntry && response.entry.error?? && response.entry.error.isDisplayableError>
+			<#assign error = response.entry.error>
+			<#if error.mandatoryError><#assign errorMsg = '#i18n{appointment.message.mandatory.entry}'><#else><#assign errorMsg = error.errorMessage></#if>
+			<@alert color='danger' title=errorMsg class='mt-2' />
+		</#if>
+	</#list>
+</#if>
 </@formGroup>
-
-<#if richtext?? && richtext == true >
-	<#include "/util/editor/editor.html" />
-	<@initEditor />
+<#if richtext?? && richtext == true>
+<#include "/util/editor/editor.html" />
+<@initEditor />
 </#if>

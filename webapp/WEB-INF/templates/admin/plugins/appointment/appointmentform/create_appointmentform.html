@@ -1,153 +1,168 @@
 <#assign hasSuggestPOI = false />
 <#attempt>
-	<#include "/admin/plugins/address/modules/autocomplete/include/suggestPOI.html" />
-	<#assign hasSuggestPOI = true />
+<#include "/admin/plugins/address/modules/autocomplete/include/suggestPOI.html" />
+<#assign hasSuggestPOI = true />
 <#recover>
 </#attempt>
 <@commonsAppJS />
-<@row>
-	<@columns>
-		<@tform id='formid' class='horizontal' method='post' action='jsp/admin/plugins/appointment/ManageAppointmentForms.jsp' params='enctype=\'multipart/form-data\''>
-		<@box>
-			<@boxHeader title='#i18n{appointment.createAppointmentForm.title}' />
-			<@boxBody>
-				<@messages errors=errors />
-				 <@input type='hidden' id='id_form' name='id_form' />
-					<@formGroup labelFor='title' labelKey='#i18n{appointment.createAppointmentForm.labelTitle}' mandatory=true>
-						<@input type='text' name='title' id='title' value='${appointmentform.title!\'\'}' maxlength=255 />
-					</@formGroup>
-					<@formGroup labelFor='idCategory' labelKey='#i18n{appointment.createAppointmentForm.labelCategory}'>
-						<@select name='idCategory' id='idCategory' items=listCategories default_value='${appointmentform.idCategory!}' />
-					</@formGroup>
-					<@formGroup labelFor='description' labelKey='#i18n{appointment.labelDescription}' mandatory=true>
-						<@input type='textarea' name='description' id='description' maxlength=255 >${appointmentform.description!}</@input>
-					</@formGroup>
-                        <@formGroup labelFor='date_start_validity' labelKey='#i18n{appointment.createAppointmentForm.labelDateStartValidity}' helpKey='#i18n{appointment.createAppointmentForm.labelDateStartValidity.help}'>
-						<@inputGroup>
-							<@input type='text' name='date_start_validity' id='date_start_validity' value=appointmentform.dateStartValidity!'' />
-							<@inputGroupItem type='text'>
-								<@icon style='calendar' />
-							</@inputGroupItem>
-						</@inputGroup>
-						<@getDatePickerBootstrap idField="date_start_validity" language=language />
-					</@formGroup>
-					
-					<@formGroup labelFor='date_end_validity' labelKey='#i18n{appointment.createAppointmentForm.labelDateEndValidity}' helpKey='#i18n{appointment.createAppointmentForm.labelDateEndValidity.help}'>
-						<@inputGroup>
-							<@input type='text' name='date_end_validity' id='date_end_validity' value=appointmentform.dateEndValidity!'' />
-							<@inputGroupItem type='text'>
-								<@icon style='calendar' />
-							</@inputGroupItem>
-						</@inputGroup>
-						<@getDatePickerBootstrap idField="date_end_validity" language=language />
-					</@formGroup>
-					<@formGroup labelFor='bo_overbooking' labelKey='#i18n{appointment.label.BoOverbooking}' helpKey='#i18n{appointment.label.BoOverbooking.help}'>
-                      <@checkBox labelFor='bo_overbooking' name='bo_overbooking' id='bo_overbooking' value='true' checked=appointmentform.boOverbooking!false />
-     				</@formGroup>
-					<@formGroup labelFor='is_multislot_appointment' labelKey='#i18n{appointment.label.isMultislotAppointment}' helpKey='#i18n{appointment.label.isMultislotAppointment.help}'>
-						<@checkBox name='is_multislot_appointment' id='is_multislot_appointment' value='true' checked=appointmentform.isMultislotAppointment!false params='onchange="javascript:toggleConsecutiveSlots();"'/>
-					</@formGroup>
-					<@formGroup labelFor='nb_consecutive_slots' labelKey='#i18n{appointment.label.nbConsecutiveSlots}' helpKey='#i18n{appointment.label.nbConsecutiveSlots.help}' mandatory=true>
-						<@input type='text' name='nb_consecutive_slots' id='nb_consecutive_slots' value=appointmentform.nb_consecutive_slots!'1' params='onkeypress="return validateQty(event);"' maxlength=2 />
-					</@formGroup>
-					<@formGroup labelFor='display_title_fo' labelKey='#i18n{appointment.label.displayTitleFo}' helpKey='#i18n{appointment.label.displayTitleFo.help}'>
-						<@checkBox name='display_title_fo' id='display_title_fo' value='true' checked=appointmentform.displayTitleFo!false />
-					</@formGroup>
-						
-					<@formGroup labelFor='is_displayed_on_portlet' labelKey='#i18n{appointment.label.displayOnPortlet}' helpKey='#i18n{appointment.label.displayOnPortlet.help}'>
-						<@checkBox name='is_displayed_on_portlet' id='is_displayed_on_portlet' value='true' checked=appointmentform.isDisplayedOnPortlet!false />
-					</@formGroup>
-					
-					<@formGroup labelFor='nb_weeks_to_display' labelKey='#i18n{appointment.label.nbWeeksToDisplay}' helpKey='#i18n{appointment.label.nbWeeksToDisplay.help}' mandatory=true>
-						<@input type='text' name='nb_weeks_to_display' id='nb_weeks_to_display' value=appointmentform.nbWeeksToDisplay!'' params='onkeypress="return validateQty(event);"' maxlength=2 />
-					</@formGroup>
-					
-					<@formGroup labelFor='nb_days_before_new_appointment' labelKey='#i18n{appointment.createAppointmentForm.labelNbDaysBeforeNewAppointment}' helpKey='#i18n{appointment.createAppointmentForm.labelNbDaysBeforeNewAppointment.help}' mandatory=true>
-						<@input type='text' name='nb_days_before_new_appointment' id='nb_days_before_new_appointment' value=appointmentform.nbDaysBeforeNewAppointment!'' params='onkeypress="return validateQty(event);"' maxlength=2 />
-					</@formGroup>
-					
-					<@formGroup labelFor='nb_max_appointments_per_user' labelKey='#i18n{appointment.createAppointmentForm.labelNbMaxAppointments}' helpKey='#i18n{appointment.createAppointmentForm.labelNbMaxAppointments.help}' mandatory=true>
-						<@input type='text' name='nb_max_appointments_per_user' id='nb_max_appointments_per_user' value=appointmentform.nbMaxAppointmentsPerUser!'' params='onkeypress="return validateQty(event);"' maxlength=2 />
-					</@formGroup>
-					
-					<@formGroup labelFor='nb_days_for_max_appointments_per_user' labelKey='#i18n{appointment.createAppointmentForm.labelNbDaysForMaxAppointments}' helpKey='#i18n{appointment.createAppointmentForm.labelNbDaysForMaxAppointments.help}' mandatory=true>
-						<@input type='text' name='nb_days_for_max_appointments_per_user' id='nb_days_for_max_appointments_per_user' value=appointmentform.nbDaysForMaxAppointmentsPerUser!'' params='onkeypress="return validateQty(event);"' maxlength=2 />
-					</@formGroup>
-					<@formGroup labelFor='min_time_before_appointment' labelKey='#i18n{appointment.createAppointmentForm.labelMinTimeBeforeAppointment}' helpKey='#i18n{appointment.createAppointmentForm.labelMinTimeBeforeAppointment.help}' mandatory=true>
-						<@input type='text' name='min_time_before_appointment' id='min_time_before_appointment' value=appointmentform.minTimeBeforeAppointment!'' params='onkeypress="return validateQty(event);"' maxlength=3 />
-					</@formGroup>
-
-					<@formGroup labelFor='reference' labelKey='#i18n{appointment.createAppointmentForm.labelReference}' helpKey='#i18n{appointment.createAppointmentForm.labelReference.help}'>
-						<@input type='text' name='reference' id='reference' value=appointmentform.reference!'' maxlength=10 />
-					</@formGroup>
-					<@formGroup labelFor='capacity_per_slot' labelKey='#i18n{appointment.createAppointmentForm.labelCapacityPerSlot}' helpKey='#i18n{appointment.createAppointmentForm.labelCapacityPerSlot.help}'>
-						<@input type='text' name='capacity_per_slot' id='capacity_per_slot' value=appointmentform.capacityPerSlot!'1' maxlength=4 />
-					</@formGroup>
-			</@boxBody>
-		</@box>
-		<@box>
-			<@boxHeader title='#i18n{appointment.createAppointmentForm.LabelWeekType}' />
-				<@boxBody>
-			 		<@formGroup labelFor='name' labelKey='#i18n{appointment.createAppointmentForm.labelName}' mandatory=true>
-						<@input type='text' name='name' id='name' value='${appointmentform.name!\'\'}' maxlength=50 />
-					</@formGroup>
-					<@formGroup labelFor='descriptionRule' labelKey='#i18n{appointment.createAppointmentForm.labelDescriptionRule}' mandatory=true>
-						<@input type='textarea' name='description_rule' id='description_rule' maxlength=255 >${appointmentform.descriptionRule!}</@input>
-					</@formGroup>
-					<@input type='hidden' name='color' id='color' value='${appointmentform.color!"#1AF355"}' maxlength=255 />
-
-					<@formGroup labelFor='max_people_per_appointment' labelKey='#i18n{appointment.createAppointmentForm.labelMaxPeoplePerAppointment}' helpKey='#i18n{appointment.createAppointmentForm.labelMaxPeoplePerAppointment.help}' mandatory=true>
-						<@input type='text' name='max_people_per_appointment' id='max_people_per_appointment' value=appointmentform.maxPeoplePerAppointment!'' params='onkeypress="return validateQty(event);"' maxlength=3 />
-					</@formGroup>
-					<@formGroup labelFor='time_start' labelKey='#i18n{appointment.createAppointmentForm.labelTimeStart}' helpKey='#i18n{appointment.createAppointmentForm.labelTimeStart.help}' mandatory=true>
-						<@inputGroup>
-							<@input type='text' name='time_start' id='time_start' value=appointmentform.timeStart!'' />
-							<@inputGroupItem type='text'>
-								<@icon style='clock-o' />
-							</@inputGroupItem>
-						</@inputGroup>
-					</@formGroup>
-					<@formGroup labelFor='time_end' labelKey='#i18n{appointment.createAppointmentForm.labelTimeEnd}' helpKey='#i18n{appointment.createAppointmentForm.labelTimeEnd.help}' mandatory=true>
-						<@inputGroup>
-							<@input type='text' name='time_end' id='time_end' value=appointmentform.timeEnd!'' />
-							<@inputGroupItem type='text'>
-								<@icon style='clock-o' />
-							</@inputGroupItem>
-						</@inputGroup>
-					</@formGroup>
-					<@formGroup labelFor='duration_appointments' labelKey='#i18n{appointment.createAppointmentForm.labelDurationAppointments}' helpKey='#i18n{appointment.createAppointmentForm.labelDurationAppointments.help}' mandatory=true>
-						<@input type='text' name='duration_appointments' id='duration_appointments' value=appointmentform.durationAppointments!'' params='onkeypress="return validateQty(event);"' maxlength=3 />
-					</@formGroup>
-					 <@formGroup labelFor='max_capacity_per_slot' labelKey='#i18n{appointment.createAppointmentForm.labelMaxCapacityPerSlot}' helpKey='#i18n{appointment.createAppointmentForm.labelMaxCapacityPerSlot.help}' mandatory=true>
-						<@input type='text' name='max_capacity_per_slot' id='max_capacity_per_slot' value=appointmentform.maxCapacityPerSlot!'' params='onkeypress="return validateQty(event);"' maxlength=3 />
-					</@formGroup>
-				</@boxBody>
-			</@box>
-			<@box>
-				<@boxHeader title='#i18n{appointment.modifyAppointmentForm.titleAlterablesParameters}' />
-				<@boxBody>
-					<h4>#i18n{appointment.createAppointmentForm.labelTitleDaysOpen}</h4>
-						<@formGroup>
-							<@checkBox name='is_open_monday' id='is_open_monday' value='true' checked=appointmentform.isOpenMonday!false labelFor='is_open_monday' labelKey='#i18n{appointment.label.OpenMonday}' />
+<@pageContainer>
+	<@pageColumn>
+		<@tform id='formid' method='post' action='jsp/admin/plugins/appointment/ManageAppointmentForms.jsp' enctype='multipart/form-data'>
+		<@pageHeader title='#i18n{appointment.createAppointmentForm.title}' >
+			<@button type='submit' buttonIcon='check' title='#i18n{portal.util.labelCreate}' />
+			<@aButton href='jsp/admin/plugins/appointment/ManageAppointmentForms.jsp' buttonIcon='times' title='#i18n{portal.util.labelCancel}' color='default' />
+		</@pageHeader>
+		<@input type='hidden' id='id_form' name='id_form' />
+		<@messages errors=errors />
+		<@row>
+			<@columns xs=12 md=4>
+				<@box>
+					<@boxHeader title='#i18n{appointment.manageAppointments.columnFormTitle}' />
+					<@boxBody>
+						<@formGroup labelFor='title' labelKey='#i18n{appointment.createAppointmentForm.labelTitle}' mandatory=true>
+							<@input type='text' name='title' id='title' value='${appointmentform.title!\'\'}' maxlength=255 />
 						</@formGroup>
-						<@formGroup>
-							<@checkBox name='is_open_tuesday' id='is_open_tuesday' value='true' checked=appointmentform.isOpenTuesday!false labelFor='is_open_tuesday' labelKey='#i18n{appointment.label.OpenTuesday}' />
+						<@formGroup labelFor='idCategory' labelKey='#i18n{appointment.createAppointmentForm.labelCategory}'>
+							<@select name='idCategory' id='idCategory' items=listCategories default_value='${appointmentform.idCategory!}' />
 						</@formGroup>
-						<@formGroup>
-							<@checkBox name='is_open_wednesday' id='is_open_wednesday' value='true' checked=appointmentform.isOpenWednesday!false labelFor='is_open_wednesday' labelKey='#i18n{appointment.label.OpenWednesday}' />
+						<@formGroup labelFor='description' labelKey='#i18n{appointment.labelDescription}' mandatory=true>
+							<@input type='textarea' name='description' id='description' maxlength=255 >${appointmentform.description!}</@input>
 						</@formGroup>
-						<@formGroup>
-							<@checkBox name='is_open_thursday' id='is_open_thursday' value='true' checked=appointmentform.isOpenThursday!false labelFor='is_open_thursday' labelKey='#i18n{appointment.label.OpenThursday}' />
+						<@row>
+							<@columns xs=12 md=6>
+								<@formGroup labelFor='display_title_fo' labelKey='#i18n{appointment.label.displayTitleFo}' helpKey='#i18n{appointment.label.displayTitleFo.help}' hideLabel=['all']>
+									<@checkBox orientation='switch'  labelKey='#i18n{appointment.label.displayTitleFo}' name='display_title_fo' id='display_title_fo' value='true' checked=appointmentform.displayTitleFo!false />
+								</@formGroup>
+							</@columns>
+							<@columns xs=12 md=6>
+								<@formGroup labelFor='is_displayed_on_portlet' labelKey='#i18n{appointment.label.displayOnPortlet}' helpKey='#i18n{appointment.label.displayOnPortlet.help}' hideLabel=['all']>
+									<@checkBox orientation='switch'  labelKey='#i18n{appointment.label.displayOnPortlet}' name='is_displayed_on_portlet'  id='is_displayed_on_portlet' value='true' checked=appointmentform.isDisplayedOnPortlet!false />
+								</@formGroup>
+							</@columns>
+						</@row>
+						<@row>
+							<@columns xs=12 md=6>
+								<@formGroup labelFor='date_start_validity' labelKey='#i18n{appointment.createAppointmentForm.labelDateStartValidity}' helpKey='#i18n{appointment.createAppointmentForm.labelDateStartValidity.help}'>
+									<@input type='date' name='date_start_validity' id='date_start_validity' value='${appointmentform.dateStartValidity!\'\'}' />
+								</@formGroup>
+								<@formGroup labelFor='bo_overbooking' labelKey='#i18n{appointment.label.BoOverbooking}' helpKey='#i18n{appointment.label.BoOverbooking.help}' hideLabel=['all']>
+									<@checkBox orientation='switch' labelFor='bo_overbooking' labelKey='#i18n{appointment.label.BoOverbooking}' name='bo_overbooking' id='bo_overbooking' value='true' checked=appointmentform.boOverbooking!false />
+								</@formGroup>
+								<@formGroup labelFor='nb_consecutive_slots' labelKey='#i18n{appointment.label.nbConsecutiveSlots}' helpKey='#i18n{appointment.label.nbConsecutiveSlots.help}' mandatory=true hideLabel=['all']	>
+									<@input type='number' name='nb_consecutive_slots' labelKey='#i18n{appointment.label.nbConsecutiveSlots}'  id='nb_consecutive_slots' value=appointmentform.nb_consecutive_slots!'1' params='onkeypress="return validateQty(event);"' maxlength=2 />
+								</@formGroup>
+								<@formGroup labelFor='nb_weeks_to_display' labelKey='#i18n{appointment.label.nbWeeksToDisplay}' helpKey='#i18n{appointment.label.nbWeeksToDisplay.help}' mandatory=true>
+									<@input type='number' name='nb_weeks_to_display' id='nb_weeks_to_display' value=appointmentform.nbWeeksToDisplay!'' params='onkeypress="return validateQty(event);"' maxlength=2 />
+								</@formGroup>
+								<@formGroup labelFor='nb_days_before_new_appointment' labelKey='#i18n{appointment.createAppointmentForm.labelNbDaysBeforeNewAppointment}' helpKey='#i18n{appointment.createAppointmentForm.labelNbDaysBeforeNewAppointment.help}' mandatory=true>
+									<@input type='number' name='nb_days_before_new_appointment' id='nb_days_before_new_appointment' value=appointmentform.nbDaysBeforeNewAppointment!'' params='onkeypress="return validateQty(event);"' maxlength=2 />
+								</@formGroup>
+								<@formGroup labelFor='nb_max_appointments_per_user' labelKey='#i18n{appointment.createAppointmentForm.labelNbMaxAppointments}' helpKey='#i18n{appointment.createAppointmentForm.labelNbMaxAppointments.help}' mandatory=true>
+									<@input type='number' name='nb_max_appointments_per_user' id='nb_max_appointments_per_user' value=appointmentform.nbMaxAppointmentsPerUser!'' params='onkeypress="return validateQty(event);"' maxlength=2 />
+								</@formGroup>
+							</@columns>
+							<@columns xs=12 md=6>
+								<@formGroup labelFor='date_end_validity' labelKey='#i18n{appointment.createAppointmentForm.labelDateEndValidity}' helpKey='#i18n{appointment.createAppointmentForm.labelDateEndValidity.help}'>
+									<@input type='date' name='date_end_validity' id='date_end_validity' value='${appointmentform.dateEndValidity!\'\'}' />
+								</@formGroup>
+								<@formGroup labelFor='is_multislot_appointment' labelKey='#i18n{appointment.label.isMultislotAppointment}' helpKey='#i18n{appointment.label.isMultislotAppointment.help}' hideLabel=['all']>
+									<@checkBox orientation='switch' name='is_multislot_appointment' id='is_multislot_appointment' labelKey='#i18n{appointment.label.isMultislotAppointment}' value='true' checked=appointmentform.isMultislotAppointment!false params='onchange="javascript:toggleConsecutiveSlots();"' />
+								</@formGroup>
+								<@formGroup labelFor='nb_days_for_max_appointments_per_user' labelKey='#i18n{appointment.createAppointmentForm.labelNbDaysForMaxAppointments}' helpKey='#i18n{appointment.createAppointmentForm.labelNbDaysForMaxAppointments.help}' mandatory=true>
+									<@input type='number' name='nb_days_for_max_appointments_per_user' id='nb_days_for_max_appointments_per_user' value=appointmentform.nbDaysForMaxAppointmentsPerUser!'' params='onkeypress="return validateQty(event);"' maxlength=2 />
+								</@formGroup>
+								<@formGroup labelFor='min_time_before_appointment' labelKey='#i18n{appointment.createAppointmentForm.labelMinTimeBeforeAppointment}' helpKey='#i18n{appointment.createAppointmentForm.labelMinTimeBeforeAppointment.help}' mandatory=true>
+									<@input type='number' name='min_time_before_appointment' id='min_time_before_appointment' value=appointmentform.minTimeBeforeAppointment!'' params='onkeypress="return validateQty(event);"' maxlength=3 />
+								</@formGroup>
+								<@formGroup labelFor='reference' labelKey='#i18n{appointment.createAppointmentForm.labelReference}' helpKey='#i18n{appointment.createAppointmentForm.labelReference.help}'>
+									<@input type='text' name='reference' id='reference' value=appointmentform.reference!'' maxlength=10 />
+								</@formGroup>
+								<@formGroup labelFor='capacity_per_slot' labelKey='#i18n{appointment.createAppointmentForm.labelCapacityPerSlot}' helpKey='#i18n{appointment.createAppointmentForm.labelCapacityPerSlot.help}'>
+									<@input type='number' name='capacity_per_slot' id='capacity_per_slot' value=appointmentform.capacityPerSlot!'1' maxlength=4 />
+								</@formGroup>
+							</@columns>
+						</@row>
+					</@boxBody>
+				</@box>
+			</@columns>
+			<@columns xs=12 md=4>
+				<@box>
+					<@boxHeader title='#i18n{appointment.createAppointmentForm.labelWeekType}' />
+					<@boxBody>
+						<@formGroup labelFor='name' labelKey='#i18n{appointment.createAppointmentForm.labelName}' mandatory=true>
+							<@input type='text' name='name' id='name' value='${appointmentform.name!\'\'}' maxlength=50 />
 						</@formGroup>
-						<@formGroup>
-							<@checkBox name='is_open_friday' id='is_open_friday' value='true' checked=appointmentform.isOpenFriday!false labelFor='is_open_friday' labelKey='#i18n{appointment.label.OpenFriday}' />
+						<@formGroup labelFor='descriptionRule' labelKey='#i18n{appointment.createAppointmentForm.labelDescriptionRule}' mandatory=true>
+							<@input type='textarea' name='description_rule' id='description_rule' maxlength=255 >${appointmentform.descriptionRule!}</@input>
 						</@formGroup>
-						<@formGroup>
-							<@checkBox name='is_open_saturday' id='is_open_saturday' value='true' checked=appointmentform.isOpenSaturday!false labelFor='is_open_saturday' labelKey='#i18n{appointment.label.OpenSaturday}' />
-						</@formGroup>
-						<@formGroup>
-							<@checkBox name='is_open_sunday' id='is_open_sunday' value='true' checked=appointmentform.isOpenSunday!false labelFor='is_open_sunday' labelKey='#i18n{appointment.label.OpenSunday}' />
-						</@formGroup>
+						<@row>
+							<@columns xs=12 md=4>
+								<@formGroup labelFor='color' labelKey='#i18n{appointment.createAppointmentForm.labelColor}'>
+									<@input type='color' name='color' class='p-2' id='color' value='${appointmentform.color!"#1AF355"}' params='style="width:50px; height:50px;	"' />
+								</@formGroup>
+							</@columns>
+							<@columns xs=12 md=4>
+								<@formGroup labelFor='max_people_per_appointment' labelKey='#i18n{appointment.createAppointmentForm.labelMaxPeoplePerAppointment}' helpKey='#i18n{appointment.createAppointmentForm.labelMaxPeoplePerAppointment.help}' mandatory=true>
+									<@input type='number' name='max_people_per_appointment' id='max_people_per_appointment' value=appointmentform.maxPeoplePerAppointment!'' params='onkeypress="return validateQty(event);"' maxlength=3 />
+								</@formGroup>
+							</@columns>
+							<@columns xs=12 md=4>
+								<@formGroup labelFor='duration_appointments' labelKey='#i18n{appointment.createAppointmentForm.labelDurationAppointments}' helpKey='#i18n{appointment.createAppointmentForm.labelDurationAppointments.help}' mandatory=true>
+									<@input type='number' name='duration_appointments' id='duration_appointments' value=appointmentform.durationAppointments!'' params='onkeypress="return validateQty(event);"' maxlength=3 min=0 max=60 step=5 />
+								</@formGroup>
+							</@columns>
+							<@columns xs=12 md=4>
+								<@formGroup labelFor='max_capacity_per_slot' labelKey='#i18n{appointment.createAppointmentForm.labelMaxCapacityPerSlot}' helpKey='#i18n{appointment.createAppointmentForm.labelMaxCapacityPerSlot.help}' mandatory=true>
+									<@input type='number' name='max_capacity_per_slot' id='max_capacity_per_slot' value=appointmentform.maxCapacityPerSlot!'' params='onkeypress="return validateQty(event);"' maxlength=3 />
+								</@formGroup>
+							</@columns>
+							<@columns xs=12 md=4>
+								<@formGroup labelFor='time_start' labelKey='#i18n{appointment.createAppointmentForm.labelTimeStart}' helpKey='#i18n{appointment.createAppointmentForm.labelTimeStart.help}' mandatory=true>
+									<@inputGroup>
+										<@input type='time' name='time_start' id='time_start' value=appointmentform.timeStart!'' />
+										<@inputGroupItem type='text'><@icon style='clock' /></@inputGroupItem>
+									</@inputGroup>
+								</@formGroup>
+							</@columns>
+							<@columns xs=12 md=4>
+								<@formGroup labelFor='time_end' labelKey='#i18n{appointment.createAppointmentForm.labelTimeEnd}' helpKey='#i18n{appointment.createAppointmentForm.labelTimeEnd.help}' mandatory=true>
+									<@inputGroup>
+										<@input type='time' name='time_end' id='time_end' value=appointmentform.timeEnd!'' />
+										<@inputGroupItem type='text'><@icon style='clock' /></@inputGroupItem>
+									</@inputGroup>
+								</@formGroup>
+							</@columns>
+						</@row>
+					</@boxBody>
+				</@box>
+			</@columns>
+			<@columns xs=12 md=4>
+				<@box>
+					<@boxHeader title='#i18n{appointment.modifyAppointmentForm.titleAlterablesParameters}' />
+					<@boxBody>
+						<@fieldSet legend='#i18n{appointment.createAppointmentForm.labelTitleDaysOpen}'>
+							<@formGroup>
+								<@checkBox orientation='switch' name='is_open_monday' id='is_open_monday' value='true' checked=appointmentform.isOpenMonday!false labelKey='#i18n{appointment.label.OpenMonday}' />
+							</@formGroup>
+							<@formGroup>
+								<@checkBox orientation='switch' name='is_open_tuesday' id='is_open_tuesday' value='true' checked=appointmentform.isOpenTuesday!false labelKey='#i18n{appointment.label.OpenTuesday}' />
+							</@formGroup>
+							<@formGroup>
+								<@checkBox orientation='switch' name='is_open_wednesday' id='is_open_wednesday' value='true' checked=appointmentform.isOpenWednesday!false labelKey='#i18n{appointment.label.OpenWednesday}' />
+							</@formGroup>
+							<@formGroup>
+								<@checkBox orientation='switch' name='is_open_thursday' id='is_open_thursday' value='true' checked=appointmentform.isOpenThursday!false labelKey='#i18n{appointment.label.OpenThursday}' />
+							</@formGroup>
+							<@formGroup>
+								<@checkBox orientation='switch' name='is_open_friday' id='is_open_friday' value='true' checked=appointmentform.isOpenFriday!false labelKey='#i18n{appointment.label.OpenFriday}' />
+							</@formGroup>
+							<@formGroup>
+								<@checkBox orientation='switch' name='is_open_saturday' id='is_open_saturday' value='true' checked=appointmentform.isOpenSaturday!false labelKey='#i18n{appointment.label.OpenSaturday}' />
+							</@formGroup>
+							<@formGroup>
+								<@checkBox orientation='switch' name='is_open_sunday' id='is_open_sunday' value='true' checked=appointmentform.isOpenSunday!false labelKey='#i18n{appointment.label.OpenSunday}' />
+							</@formGroup>
+						</@fieldSet>
 						<#if listWorkflows??>
 							<@formGroup labelFor='idWorkflow' labelKey='#i18n{appointment.createAppointmentForm.labelWorkflow}'>
 								<@select name='idWorkflow' id='idWorkflow' items=listWorkflows default_value='${appointmentform.idWorkflow!}' />
@@ -166,16 +181,15 @@
 						</#if>
 						<#if isCaptchaEnabled>
 							<@formGroup>
-								<@checkBox name='enableCaptcha' id='enableCaptcha' value='true' checked=appointmentform.enableCaptcha!false labelFor='enableCaptcha' labelKey='#i18n{appointment.createAppointmentForm.labelEnableCaptcha}' />
+								<@checkBox orientation='switch' name='enableCaptcha' id='enableCaptcha' value='true' checked=appointmentform.enableCaptcha!false labelKey='#i18n{appointment.createAppointmentForm.labelEnableCaptcha}' />
 							</@formGroup>
 						</#if>
 						<@formGroup>
-							<@checkBox name='enableMandatoryEmail' id='enableMandatoryEmail' value='true' checked=appointmentform.enableMandatoryEmail!false labelFor='enableMandatoryEmail' labelKey='#i18n{appointment.createAppointmentForm.labelEnableMandatoryEmail}' />
+							<@checkBox orientation='switch' name='enableMandatoryEmail' id='enableMandatoryEmail' value='true' checked=appointmentform.enableMandatoryEmail!false labelKey='#i18n{appointment.createAppointmentForm.labelEnableMandatoryEmail}' />
 						</@formGroup>
 						<@formGroup>
-							<@checkBox name='activeAuthentication' id='activeAuthentication' value='true' checked=appointmentform.activeAuthentication!false labelFor='activeAuthentication' labelKey='#i18n{appointment.createAppointmentForm.labelActiveAuthentication}' />
+							<@checkBox orientation='switch' name='activeAuthentication' id='activeAuthentication' value='true' checked=appointmentform.activeAuthentication!false labelKey='#i18n{appointment.createAppointmentForm.labelActiveAuthentication}' />
 						</@formGroup>
-
 						<@formGroup>
 							<@checkBox orientation='switch' labelFor='anonymizable' labelKey='#i18n{appointment.createAppointmentForm.labelAnonymizable}' name='anonymizable' id='anonymizable' value='true' checked=appointmentform.anonymizable!false params='onchange="javascript:changeVisilityAnonymizePattern();"'/>
 						</@formGroup>
@@ -184,45 +198,101 @@
 								<@input type='text' name='anonymization_pattern' id='anonymization_pattern' value=appointmentform.anonymizationPattern!'' maxlength=255 />
 							</@formGroup>
 						</@div>
-
 						<@formGroup labelFor='role' labelKey='#i18n{appointment.createAppointmentForm.labelRole}'>
 							<@select name='role' id='role' items=refListRoles default_value='${appointmentform.role!}' />
 						</@formGroup>
 						<@formGroup labelFor='icon' labelKey='#i18n{appointment.createAppointmentForm.labelIconForm}' helpKey='#i18n{appointment.modifyAppointmentForm.helpFormatIcon}'>
 							<@inputGroup>
 								<@input type='file' id='image_resource' name='image_resource' params='accept="image/*"' />
-								<@inputGroupItem>
-									<@button color='btn-danger' params='onclick="document.getElementById(\'image_resource\').value=\'\'"' buttonIcon='times' title='Delete' size='' />
-								</@inputGroupItem>
+								<@button color='danger' params='onclick="document.getElementById(\'image_resource\').value=\'\'"' buttonIcon='times' title='#i18n{portal.util.labelDelete}' size='' hideTitle=['xs','sm','md'] />
 							</@inputGroup>
 						</@formGroup>
 						<@formGroup labelFor='address_address-input' labelKey='#i18n{appointment.label.formAddress}' helpKey='#i18n{appointment.label.addressDescription}'>
-							<input type="hidden" name="geoloc_address" id="geoloc_address" value="${(appointmentform.address?html)!}" />
-							<input type="hidden" name="geoloc_longitude" id="geoloc_longitude" value="${(appointmentform.longitude?c)!}" />
-							<input type="hidden" name="geoloc_latitude" id="geoloc_latitude" value="${(appointmentform.latitude?c)!}" />
-							<input type="hidden" name="hidden_address" id="hidden_address" />
+							<@input type='hidden' name='geoloc_address' id='geoloc_address' value='${(appointmentform.address?html)!}' />
+							<@input type='hidden' name='geoloc_longitude' id='geoloc_longitude' value='${(appointmentform.longitude?c)!}' />
+							<@input type='hidden' name='geoloc_latitude' id='geoloc_latitude' value='${(appointmentform.latitude?c)!}' />
+							<@input type='hidden' name='hidden_address' id='hidden_address' />
 							<#if hasSuggestPOI>
 								<@suggestPOIInput id="address_address" name="address_address" currentValue="${(appointmentform.address?html)!}" />
 							<#else>
-								<input type="text" name="address_address" id="address_address" class="form-control" value="${(appointmentform.address?html)!}" />
+								<@input type='text' name='address_address' id='address_address' value='${(appointmentform.address?html)!}' />
 							</#if>
-							<p class="help-block" id="help_address">#i18n{appointment.help.formAddress}</p>
-							<div id="map_address" style="height: 300px; width: 100%" class="mt-3"></div>
+							<@p class='form-text' id='help_address'>#i18n{appointment.help.formAddress}</@p>
+							<@div id='map_address' class='mt-3 position-relative w-100' params='style="min-height: 300px;"' />
 						</@formGroup>
-						<@formGroup>
-							<@input type='hidden' name='action_createAppointmentForm' value='' />
-							<@button type='submit' buttonIcon='check' title='#i18n{portal.util.labelCreate}' />
-							<@aButton href='jsp/admin/plugins/appointment/ManageAppointmentForms.jsp' buttonIcon='times' title='#i18n{portal.util.labelCancel}' color='default' />
-						</@formGroup>
-				</@boxBody>
-			</@box>
+					</@boxBody>
+				</@box>
+			</@columns>
+		</@row>
+		<@row>
+			<@columns class='d-flex justify-content-end'>
+				<@input type='hidden' name='action_createAppointmentForm' value='' />
+				<@button type='submit' buttonIcon='check' title='#i18n{portal.util.labelCreate}' />
+				<@aButton href='jsp/admin/plugins/appointment/ManageAppointmentForms.jsp' buttonIcon='times' title='#i18n{portal.util.labelCancel}' color='default' />
+			</@columns>
+		</@row>
 		</@tform>
-	</@columns>
-</@row>
+	</@pageColumn>
+</@pageContainer>
 <link rel="stylesheet" href="js/plugins/leaflet/leaflet/leaflet.css" />
 <script src="js/plugins/leaflet/leaflet/leaflet.js"></script>
 <#if hasSuggestPOI><@setupSuggestPOI /></#if>
 <script>
+function validateQty(event) {
+	var key = window.event ? event.keyCode : event.which;
+	if (event.keyCode == 8 || event.keyCode == 9 || event.keyCode == 46	|| event.keyCode == 37 || event.keyCode == 39) {
+		return true;
+	} else if ( key < 48 || key > 57 ) {	
+			return false;
+	} else return true;
+};
+
+function toggleConsecutiveSlots() {
+	var nbConsecutiveSlots = document.getElementById('nb_consecutive_slots');
+	var isMultislotAppointment = document.getElementById('is_multislot_appointment');
+
+	if (isMultislotAppointment.checked) {
+		// Checkbox is checked, enable inputs field and set value to 5
+		nbConsecutiveSlots.disabled = false;
+		nbConsecutiveSlots.value = '5';
+	} else {
+		// Checkbox is unchecked, disable inputs field and set value to 1
+		nbConsecutiveSlots.disabled = true;
+		nbConsecutiveSlots.value = '1';
+	}
+}
+
+// Initial call to set the initial state of the input field
+toggleConsecutiveSlots();
+
+function validateNbConsecutiveSlots() {
+	var nbConsecutiveSlotsInput = document.getElementById('nb_consecutive_slots');
+	var enteredValue = parseInt(nbConsecutiveSlotsInput.value);
+
+	if (enteredValue < 1 || isNaN(enteredValue)) {
+		nbConsecutiveSlotsInput.value = '';
+	}
+}
+
+// Add event listener to validate the input value
+var nbConsecutiveSlotsInput = document.getElementById('nb_consecutive_slots');
+nbConsecutiveSlotsInput.addEventListener('change', validateNbConsecutiveSlots);
+
+changeVisilityAnonymizePattern();
+function changeVisilityAnonymizePattern()
+{
+	if(document.getElementById("anonymizable").checked)
+	{
+		document.getElementById("anonymization_pattern_group").style.display = 'block';
+		document.getElementById("anonymization_pattern").required = true;
+	}
+	else
+	{
+		document.getElementById("anonymization_pattern_group").style.display = 'none';
+		document.getElementById("anonymization_pattern").required = false;
+	}
+}
+
 document.addEventListener('DOMContentLoaded', function() {
 	var map = L.map('map_address').setView([48.85632, 2.33272], 12);
 	var markersLayer = L.featureGroup().addTo(map);
@@ -287,6 +357,7 @@ document.addEventListener('DOMContentLoaded', function() {
 			userCleared = true;
 		}
 	}
+
 	if (!userCleared && prevValue) {
 		suggestPoi.setValue(prevValue.properties.address);
 		document.getElementById('geoloc_address').value = prevValue.properties.address;
@@ -296,93 +367,12 @@ document.addEventListener('DOMContentLoaded', function() {
 		L.marker([prevValue.geometry.coordinates[1], prevValue.geometry.coordinates[0]]).addTo(markersLayer);
 		map.fitBounds(markersLayer.getBounds());
 	}
-});
-</script>
-<script>
+
 	document.getElementById('formid').addEventListener('keydown', function(e) {
-	    if (e.key === 'Enter') {
-	      e.preventDefault();
-	    }
+		if (e.key === 'Enter') {
+			e.preventDefault();
+		}
 	});
-    function validateQty(event) {
-		var key = window.event ? event.keyCode : event.which;
-	
-	if (event.keyCode == 8 || event.keyCode == 9 || event.keyCode == 46
-	 || event.keyCode == 37 || event.keyCode == 39) {
-		return true;
-	}
-	else if ( key < 48 || key > 57 ) {
-		return false;
-	}
-	else return true;
-	};
-    $('#date_start_validity').datepicker({
-		    language:		"${language}",
-		    startDate: 		new Date(),
-		    weekStart: 1,
-		    todayBtn: true,
-		    todayHighLight: true,
-		    autoclose: true
-		});
-	$('#date_end_validity').datepicker({
-		    language:		"${language}",
-		    startDate: 		new Date(),
-		    weekStart: 1,
-		    todayBtn: true,
-		    todayHighLight: true,
-		    autoclose: true
-		});
-	$(function () {
-		$('#time_start').datetimepicker({
-		  format: 'HH:mm',
-		  stepping: 5
-	    });
-		$('#time_end').datetimepicker({
-		  format: 'HH:mm',
-		  stepping: 5
-	    });
-	});
-	function toggleConsecutiveSlots() {
-		var nbConsecutiveSlots = document.getElementById('nb_consecutive_slots');
-		var isMultislotAppointment = document.getElementById('is_multislot_appointment');
 
-		if (isMultislotAppointment.checked) {
-			// Checkbox is checked, enable inputs field and set value to 5
-			nbConsecutiveSlots.disabled = false;
-			nbConsecutiveSlots.value = '5';
-		} else {
-			// Checkbox is unchecked, disable inputs field and set value to 1
-			nbConsecutiveSlots.disabled = true;
-			nbConsecutiveSlots.value = '1';
-		}
-  	}
-	// Initial call to set the initial state of the input field
-	toggleConsecutiveSlots();
-
-	function validateNbConsecutiveSlots() {
-		var nbConsecutiveSlotsInput = document.getElementById('nb_consecutive_slots');
-		var enteredValue = parseInt(nbConsecutiveSlotsInput.value);
-
-		if (enteredValue < 1 || isNaN(enteredValue)) {
-			nbConsecutiveSlotsInput.value = '';
-		}
-	}
-
-	// Add event listener to validate the input value
-	var nbConsecutiveSlotsInput = document.getElementById('nb_consecutive_slots');
-	nbConsecutiveSlotsInput.addEventListener('change', validateNbConsecutiveSlots);
-
-	changeVisilityAnonymizePattern();
-	function changeVisilityAnonymizePattern()
-	{
-		if(document.getElementById("anonymizable").checked)
-		{
-			document.getElementById("anonymization_pattern_group").style.display = 'block';
-			document.getElementById("anonymization_pattern").required = true;
-		}
-		else
-		{
-			document.getElementById("anonymization_pattern_group").style.display = 'none';
-		}
-	}
+});
 </script>

@@ -1,42 +1,30 @@
-<@row>
-	<@columns>
-		<@box>
-			<@boxHeader title='#i18n{appointment.adminFeature.manageCategories.name}'>
-				<@tform name='manage_blogs' action='jsp/admin/plugins/appointment/ManageAppointmentCategory.jsp'>
-					<@button type='submit' name='view_createCategory' buttonIcon='plus' title='#i18n{appointment.manageCategory.buttonAdd}' />
-				</@tform>
-			</@boxHeader>
-			<@boxBody>
-				 <@messages infos=infos errors=errors />
-					<@table>
-					<thead>
-						<tr>
-							<th>#i18n{appointment.manageCategory.columnLabel}</th>
-							<th>#i18n{appointment.manageCategory.columnLabelNbMaxAppointments}</th>
-							<th>#i18n{portal.util.labelActions}</th>
-						</tr>
-					</thead>
-					<tbody>
-						<#list category_list as category >
-						<tr>
-							<td>
-								${category.label}
-							</td>
-							<td>
-								${category.nbMaxAppointmentsPerUser}
-							</td>
-							<td>
-
-								<@aButton href='jsp/admin/plugins/appointment/ManageAppointmentCategory.jsp?view=modifyCategory&id_category=${category.idCategory}' title='#i18n{portal.util.labelModify}' buttonIcon='pencil' size='sm' hideTitle=['all']/>
-								<@aButton href='jsp/admin/plugins/appointment/ManageAppointmentCategory.jsp?action=confirmRemoveCategory&id_category=${category.idCategory}' title='#i18n{portal.util.labelDelete}' buttonIcon='trash' color='danger' size='sm' hideTitle=['all']/>
-
-							</td>
-						</tr>
-						</#list>
-					</tbody>
-					</@table>
+<@pageContainer>
+	<@pageColumn>
+		<@pageHeader title='#i18n{appointment.adminFeature.manageCategories.name}'>
+			<@offcanvas id='offcanvasCreate' targetUrl='jsp/admin/plugins/appointment/ManageAppointmentCategory.jsp?view=createCategory' useIframe=true title='#i18n{appointment.manageCategory.buttonAdd}' btnTitle='#i18n{appointment.manageCategory.buttonAdd}' btnIcon='plus' btnColor='primary' position='end' size='sm' />
+		</@pageHeader>
+		<@messages infos=infos errors=errors />
+		<#if category_list?has_content>
+			<@manageFeature>
+				<#list category_list as category>
+				<@manageFeatureItem>
+					<@manageFeatureItemColumn auto=true>
+						<@p class='mb-0'><strong>${category.label}</strong> - #i18n{appointment.manageCategory.columnLabelNbMaxAppointments} : <@span class='fw-bold'>${category.nbMaxAppointmentsPerUser}</@span></@p>
+					</@manageFeatureItemColumn>
+					<@manageFeatureItemColumn align='end'>
+						<@offcanvas id='offcanvasModify-${category.idCategory}' targetUrl='jsp/admin/plugins/appointment/ManageAppointmentCategory.jsp?view=modifyCategory&id_category=${category.idCategory}' useIframe=true title='#i18n{portal.util.labelModify}' btnTitle='#i18n{portal.util.labelModify}' btnIcon='pencil' btnClass='me-1' hideTitle=['xs','md'] position='end' size='sm' />
+						<@aButton href='jsp/admin/plugins/appointment/ManageAppointmentCategory.jsp?action=confirmRemoveCategory&id_category=${category.idCategory}' title='#i18n{portal.util.labelDelete}' buttonIcon='trash' color='danger' hideTitle=['xs','md'] size='' />
+					</@manageFeatureItemColumn>
+				</@manageFeatureItem>
+				</#list>
+			</@manageFeature>
+			<#if category_list?size gte 10>
 				<@paginationAdmin paginator=paginator combo=1 />
-			</@boxBody>
-		</@box>
-	</@columns>
-</@row>
+			</#if>
+		<#else>
+			<@card>
+				<@empty title='#i18n{appointment.manageCategory.empty}' iconName='tags-off' actionTitle='#i18n{appointment.manageCategory.buttonAdd}' actionUrl='jsp/admin/plugins/appointment/ManageAppointmentCategory.jsp?view=createCategory' />
+			</@card>
+		</#if>
+	</@pageColumn>
+</@pageContainer>

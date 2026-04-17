@@ -455,6 +455,17 @@ public class SpecificWeekJspBean extends AbstractAppointmentFormAndSlotJspBean
         }
 
         String strJson = request.getParameter( PARAMETER_DATA );
+        if ( strJson != null )
+        {
+            // Unescape potentially double-encoded HTML entities from SafeRequestFilter
+            String strPrevious;
+            do
+            {
+                strPrevious = strJson;
+                strJson = org.apache.commons.text.StringEscapeUtils.unescapeHtml4( strJson );
+            }
+            while ( !strJson.equals( strPrevious ) );
+        }
         AppLogService.debug( "slot - Received strJson : {}", strJson );
         ObjectMapper mapper = new ObjectMapper( );
         mapper.registerModule( new JavaTimeModule( ) );

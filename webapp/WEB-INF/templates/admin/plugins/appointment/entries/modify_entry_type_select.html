@@ -1,90 +1,83 @@
 <#include "/admin/util/editor/editor.html" />
-<@row>
-	<@columns md=4>
+<#assign headerBreadcrumbs>
+<@breadcrumbs class='mt-2'>
+	<@breadcrumbItem><@link href='jsp/admin/plugins/appointment/ManageAppointmentFormEntries.jsp?view=modifyAppointmentFormEntries&id_form=${form.idForm}' label='#i18n{appointment.manageAppointments.pageTitle}' /></@breadcrumbItem>
+	<@breadcrumbItem>#i18n{appointment.modifyEntry.titleQuestion} : ${form.title}</@breadcrumbItem>
+</@breadcrumbs>
+</#assign>
+<@pageContainer>
+	<@pageColumn>
+		<@pageHeader title='#i18n{appointment.modifyEntry.titleQuestion} : "${form.title}"' class='col-md-8' breadcrumb=headerBreadcrumbs />
+		<@tform action='jsp/admin/plugins/appointment/ManageAppointmentFormEntries.jsp' boxed=true>
+		<@input type='hidden' name='action' value='doModifyEntry' />
+		<@input type='hidden' name='id_entry' value='${entry.idEntry}' />
+		<@p>#i18n{appointment.createEntry.labelType} <@tag color='info'>${entry.entryType.title}</@tag></@p>
+		<@formGroup labelFor='title' labelKey='#i18n{appointment.labelTitle}' helpKey='#i18n{appointment.createEntry.labelTitleComment}' mandatory=true rows=2>
+			<@input type='text' name='title' id='title' value='${entry.title}' maxlength=255 />
+		</@formGroup>
+		<@formGroup labelFor='help_message' labelKey='#i18n{appointment.createEntry.labelHelpMessage}' helpKey='#i18n{appointment.createEntry.labelHelpMessageComment}' rows=2>
+			<@input type='textarea' name='help_message' id='help_message' rows=2>${entry.helpMessage}</@input>
+		</@formGroup>
+		<@formGroup labelFor='comment' labelKey='#i18n{appointment.comment.name}' rows=2>
+			<@input type='textarea' name='comment' id='comment'>${entry.comment}</@input>
+		</@formGroup>
+		<@formGroup rows=2>
+			<@checkBox orientation='switch' labelKey='#i18n{appointment.createEntry.labelMandatory}' name='mandatory' id='mandatory' value='1' checked=entry.mandatory />
+		</@formGroup>
+		<@formGroup rows=2>
+			<@checkBox orientation='switch' labelKey='#i18n{appointment.createEntry.labelOnlyDisplayInBack}' name='only_display_in_back' id='only_display_in_back' value='1' checked=entry.onlyDisplayInBack />
+		</@formGroup>
+		<@formGroup labelFor='css_class' labelKey='#i18n{appointment.createEntry.labelCSSClass}' helpKey='#i18n{appointment.createEntry.labelCSSClassComment}' rows=2>
+			<@input type='text' name='css_class' id='css_class' value='${entry.CSSClass!}' maxlength=255 />
+		</@formGroup>
+		<@formGroup rows=2>
+			<@button type='submit' name='save' id='save' buttonIcon='check' title='#i18n{appointment.labelSave}' hideTitle=['xs'] class='form-validation' />
+			<@button type='submit' name='apply' id='apply' buttonIcon='check' title='#i18n{appointment.modifyEntry.buttonApply}' hideTitle=['xs'] class='form-validation' />
+			<@button type='submit' name='cancel' id='cancel' value='cancel' buttonIcon='arrow-left' color='secondary' title='#i18n{appointment.labelCancel}' cancel=true hideTitle=['xs'] class='form-validation' />
+		</@formGroup>
+		</@tform>
 		<@box color='primary'>
-			<@boxHeader title='#i18n{appointment.modifyEntry.titleQuestion} : "${form.title}"' />
-			<@boxBody>
-				<@tform action='jsp/admin/plugins/appointment/ManageAppointmentFormEntries.jsp'>
-					<@input type='hidden' name='action' value='doModifyEntry' />
-					<@input type='hidden' name='id_entry' value='${entry.idEntry}' />
-					
-					<@formGroup labelKey='#i18n{appointment.createEntry.labelType}' rows=2>
-						<@staticText>
-							<@tag color='info'>
-								${entry.entryType.title}
-							</@tag>
-						</@staticText>
-					</@formGroup>
-					<@formGroup labelFor='title' labelKey='#i18n{appointment.labelTitle}' helpKey='#i18n{appointment.createEntry.labelTitleComment}' mandatory=true rows=2>
-						<@input type='text' name='title' id='title' value='${entry.title}' maxlength=255 />
-					</@formGroup>
-					<@formGroup labelFor='help_message' labelKey='#i18n{appointment.createEntry.labelHelpMessage}' helpKey='#i18n{appointment.createEntry.labelHelpMessageComment}' rows=2>
-						<@input type='textarea' name='help_message' id='help_message' rows=2>${entry.helpMessage}</@input>
-					</@formGroup>
-					<@formGroup labelFor='comment' labelKey='#i18n{appointment.comment.name}' rows=2>
-						<@input type='textarea' name='comment' id='comment'>${entry.comment}</@input>
-					</@formGroup>
-					<@formGroup labelKey='#i18n{appointment.createEntry.labelMandatory}' rows=2>
-						<@checkBox labelFor='mandatory' labelKey='#i18n{appointment.createEntry.labelMandatory}' name='mandatory' id='mandatory' value='1' checked=entry.mandatory />
-					</@formGroup>
-					<@formGroup labelKey='#i18n{appointment.createEntry.labelOnlyDisplayInBack}' rows=2>
-						<@checkBox labelFor='only_display_in_back' labelKey='#i18n{appointment.createEntry.labelOnlyDisplayInBack}' name='only_display_in_back' id='only_display_in_back' value='1' checked=entry.onlyDisplayInBack />
-					</@formGroup>
-					<@formGroup labelFor='css_class' labelKey='#i18n{appointment.createEntry.labelCSSClass}' helpKey='#i18n{appointment.createEntry.labelCSSClassComment}' rows=2>
-						<@input type='text' name='css_class' id='css_class' value='${entry.CSSClass!}' maxlength=255 />
-					</@formGroup>
-					<@formGroup rows=2>
-						<@button type='submit' name='save' id='save' buttonIcon='check' title='#i18n{appointment.labelSave}' />
-						<@button type='submit' name='apply' id='apply' buttonIcon='check' title='#i18n{appointment.modifyEntry.buttonApply}' />
-						<@button type='submit' name='cancel' id='cancel' value='cancel' buttonIcon='times' title='#i18n{appointment.labelCancel}' color='btn-default' cancel=true />
-					</@formGroup>
-				</@tform>
-			</@boxBody>
-		</@box>
-	</@columns>
-
-	<@columns md=8>
-		<@box color='primary'>
-			<@boxHeader title='#i18n{appointment.createEntry.manageField.title}'>
-				<@aButton href='jsp/admin/plugins/appointment/ManageAppointmentFormFields.jsp?view=getCreateField&id_entry=${entry.idEntry}' buttonIcon='plus' title='#i18n{appointment.createEntry.manageField.buttonInsert}' />
+			<@boxHeader title='#i18n{appointment.createEntry.manageField.title}' boxTools=true>
+				<@aButton href='jsp/admin/plugins/appointment/ManageAppointmentFormFields.jsp?view=getCreateField&id_entry=${entry.idEntry}' title='#i18n{appointment.createEntry.manageField.buttonInsert}' buttonIcon='plus' color='primary' size='' />
 			</@boxHeader>
 			<@boxBody>
-			
-				<fieldset>
-				<legend class="hidden">#i18n{appointment.createEntry.manageField.title}</legend>
-				<@table>
-					<tr> 
-						<th>#i18n{appointment.labelTitle}</th>
-						<th>#i18n{appointment.createEntry.manageField.rowValue}</th>
-						<th>#i18n{appointment.createEntry.manageField.rowDefaultValue}</th>
-						<th>#i18n{appointment.actions.label}</th>
-					</tr>
-					<#assign cpt=0>
-					<#list list as field>
-						<#if field.code == 'answer_choice'>
-							<#assign cpt=cpt+1>
-							<tr>
-								<td>${field.title}</td>
-								<td>${field.value}</td>
-								<td><#if field.defaultValue><@tag color='success'><@icon style='check' /></@tag></#if></td>
-								<td>
-									<@aButton href='jsp/admin/plugins/appointment/ManageAppointmentFormFields.jsp?view=getModifyField&id_field=${field.idField}' title='#i18n{portal.util.labelModify}' buttonIcon='edit' size='sm' />
-								<#if cpt!=1>
-									<@aButton href='jsp/admin/plugins/appointment/ManageAppointmentFormFields.jsp?action=doMoveFieldUp&id_field=${field.idField}#list' title='#i18n{appointment.moveUp.title}' buttonIcon='chevron-up' size='sm' />
-								</#if> 
-								<#if field_has_next >
-									<@aButton  href='jsp/admin/plugins/appointment/ManageAppointmentFormFields.jsp?&action=doMoveFieldDown&id_field=${field.idField}#list' title='#i18n{appointment.moveDown.title}' buttonIcon='chevron-down' size='sm' />
-									</a>
-								</#if>
-									<@aButton href='jsp/admin/plugins/appointment/ManageAppointmentFormFields.jsp?view=getConfirmRemoveField&id_field=${field.idField}#list' title='#i18n{appointment.delete.title}' buttonIcon='trash' color='danger' size='sm' />
-								</td>
-							</tr>
-						</#if>
-					</#list> 
-				</@table>
-				</fieldset>
+				<#if list?has_content>
+					<@table headBody=true>
+						<@tr>
+							<@th>#i18n{appointment.labelTitle}</@th>
+							<@th>#i18n{appointment.createEntry.manageField.rowValue}</@th>
+							<@th>#i18n{appointment.createEntry.manageField.rowDefaultValue}</@th>
+							<@th>#i18n{appointment.actions.label}</@th>
+						</@tr>
+						<@tableHeadBodySeparator />
+						<#assign cpt=0>
+						<#list list as field>
+							<#if field.code == 'answer_choice'>
+								<#assign cpt=cpt+1>
+								<@tr>
+									<@td>${field.title}</@td>
+									<@td>${field.value}</@td>
+									<@td><#if field.defaultValue><@tag color='success'><@icon style='check' /></@tag></#if></@td>
+									<@td>
+										<@aButton href='jsp/admin/plugins/appointment/ManageAppointmentFormFields.jsp?view=getModifyField&id_field=${field.idField}' title='#i18n{portal.util.labelModify}' hideTitle=['all'] buttonIcon='edit' />
+										<#if cpt!=1>
+											<@aButton href='jsp/admin/plugins/appointment/ManageAppointmentFormFields.jsp?action=doMoveFieldUp&id_field=${field.idField}#list' title='#i18n{appointment.moveUp.title}' hideTitle=['all'] buttonIcon='chevron-up' />
+										</#if>
+										<#if field_has_next>
+											<@aButton href='jsp/admin/plugins/appointment/ManageAppointmentFormFields.jsp?action=doMoveFieldDown&id_field=${field.idField}#list' title='#i18n{appointment.moveDown.title}' hideTitle=['all'] buttonIcon='chevron-down' />
+										</#if>
+										<@aButton href='jsp/admin/plugins/appointment/ManageAppointmentFormFields.jsp?view=getConfirmRemoveField&id_field=${field.idField}#list' title='#i18n{appointment.delete.title}' hideTitle=['all'] buttonIcon='trash' color='danger' />
+
+									</@td>
+								</@tr>
+							</#if>
+						</#list>
+					</@table>
+				<#else>
+					<@empty title='#i18n{appointment.createEntry.manageField.title}' iconName='list-check' />
+				</#if>
 			</@boxBody>
 		</@box>
-	</@columns>
-</@row>
+	</@pageColumn>
+</@pageContainer>
 <@initEditor />

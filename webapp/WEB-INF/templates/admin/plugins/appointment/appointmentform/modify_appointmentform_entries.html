@@ -1,178 +1,125 @@
 <#include "/admin/plugins/appointment/appointmentform/modify_appointmentform_tabs.html" />
-
-<@row>
-	<@columns>
-		<@appointmentTabs tab="entries" appointmentform=appointmentform>
-			<@row>
-				<@columns class='appointment-list-group' md=10>
-					<@tform action='jsp/admin/plugins/appointment/ManageAppointmentFormEntries.jsp'>
-						<@input type='hidden' name='action' value='doChangeOrderEntry' />
-						<@input type='hidden' name='id_form' value='${appointmentform.idForm}' />
-						<#if entry_group_list?has_content>
-							<@formGroup formStyle='inline'>
-								<@inputGroup>
-									<!-- List all entry of type group  -->
-									<@select name='id_entry_group' default_value='' items=entry_group_list size='sm' />
-									<@inputGroupItem>
-										<@button type='submit' title='#i18n{appointment.move.name}' name='add_to_group' value='#i18n{appointment.moveAll.name}' buttonIcon='arrows' size='sm' />
-									</@inputGroupItem>
-								</@inputGroup>
-							</@formGroup>
-						</#if>
-						<@table headBody=true>
-							<@tr>
-								<@th>
-									<@checkBox labelFor='selectAll' name='selectAll' id='selectAll' value='selectAll' title='#i18n{appointment.modifyAppointmentForm.selectAll}' mandatory=false />
-								</@th>
-								<@th>#i18n{appointment.labelTitle}</@th>
-								<@th>#i18n{appointment.type.name}</@th>
-								<@th>#i18n{appointment.createEntry.manageField.rowConditionalQuestion}<@icon style='question-mark' title='#i18n{appointment.createEntry.manageField.rowConditionalQuestion}' /></@th>
-								<@th>#i18n{appointment.createEntry.manageField.rowOrder}</@th>
-								<@th>#i18n{appointment.actions.label}&nbsp;</@th>
-							</@tr>
-							<@tableHeadBodySeparator />
-							<#list entry_list as entry>
-								<#if entry.entryType.group>
-									<#assign lastGroup = entry>
-									<#assign trClass='group' />
-								<#else>
-									<#assign trClass='' />
+<@appointmentTabs tab="entries" appointmentform=appointmentform>
+	<@row>
+		<@columns class='appointment-list-group' xs=12 md=10>
+			<@tform action='jsp/admin/plugins/appointment/ManageAppointmentFormEntries.jsp' >
+				<@input type='hidden' name='action' value='doChangeOrderEntry' />
+				<@input type='hidden' name='id_form' value='${appointmentform.idForm}' />
+				<#if entry_group_list?has_content>
+				<@row>
+					<@columns xs=12 md=8>
+						<@checkBox orientation='switch' name='selectAll' id='selectAll' value='selectAll' labelKey='#i18n{appointment.modifyAppointmentForm.selectAll}' wrapperClass='mb-0 pt-1'	 />
+					</@columns>
+					<@columns xs=12 md=4>	
+						<@formGroup formStyle='inline'>
+							<@inputGroup>
+								<!-- List all entry of type group  -->
+								<@select name='id_entry_group' default_value='' items=entry_group_list size='sm' />
+								<@button type='submit' title='#i18n{appointment.move.name}' name='add_to_group' value='#i18n{appointment.moveAll.name}' buttonIcon='arrows' size='sm' />
+							</@inputGroup>
+						</@formGroup>
+					</@columns>
+				</@row>
+				</#if>
+				<@manageFeature>
+					<#list entry_list as entry>
+						<#if entry.entryType.group><#assign lastGroup = entry></#if>
+						<@manageFeatureItem class=entry.entryType.group?then('group','')>
+							<@manageFeatureItemColumn auto=true>
+								<#if entry.parent?exists>
+									<@icon style='arrow-bar-right' class='fs-1 me-1' />
 								</#if>
-								<@tr class=trClass>
-									<@td>
-										<!--  add checkbox if entry isn't a group -->
-										<#if entry.entryType.group>
-											<@icon style='${entry.entryType.iconName}' />
-										<#else>
-											<@checkBox labelFor='entry_id_move' name='entry_id_move' id='entry_id_${entry.idEntry}' value='${entry.idEntry!}' title='#i18n{appointment.modifyAppointmentForm.select}' mandatory=false />
-										</#if>
-									</@td>
-									<@td>
-										<#if entry.entryType.group>
-											<h4 class="text-primary">${entry.title}</h4>
-										<#elseif entry.parent?exists>
-											<@span class="text-primary"><@icon style='caret-right' /></@span>
-											<#if entry.entryType.comment>
-												${entry.comment}
-											<#else>
-												${entry.title}
-											</#if>
-										<#elseif entry.entryType.myLuteceUser>
-											<@span class="text-primary">
-												<@icon style='caret-right' />
-											</@span>
-											${entry.title}
-										<#else>
-											<#if entry.entryType.comment>
-												${entry.comment}
-											<#else>
-												${entry.title}
-											</#if>
-										</#if>
-									</@td>
-									<@td>
-										<#if !entry.entryType.group>
-											<@tag>
-												<@icon style='${entry.entryType.iconName}' />
-												&#160;${entry.entryType.title}
-											</@tag>
-										</#if>
-									</@td>
-									<@td>
-										<#if entry.numberConditionalQuestion!=0>${entry.numberConditionalQuestion}</#if>
-									</@td>
-									<!--  Change the order of the attribute -->
-									<#if entry.parent?exists>
-										<@td>
-											<@formGroup rows=2>
-												<@inputGroup>
-													<@entryOrderSelection name="order_id_${entry.idEntry!}" default_value=entry.position idParent=entry.parent.idEntry />
-													<@inputGroupItem>
-														<@button type='submit' name='id_entry' value='${entry.idEntry}' title='#i18n{appointment.move.name}' hideTitle=['all'] buttonIcon='check' size='sm' />
-													</@inputGroupItem>
-												</@inputGroup>
-											</@formGroup>
-										</@td>
-									<#else>
-										<@td>
-											<@inputGroup>
-												<@entryOrderSelection name="order_id_${entry.idEntry!}" default_value=entry.position idParent=0 />
-												<@inputGroupItem>
-													<@button type='submit' name='id_entry' title='#i18n{appointment.move.name}' hideTitle=['all'] value='${entry.idEntry}' buttonIcon='check' size='sm' />
-												</@inputGroupItem>
-											</@inputGroup>
-										</@td>
+								<#if entry.entryType.group>
+									<@icon style='${entry.entryType.iconName}' class='fs-1' title=entry.entryType.title />
+								<#else>
+									<#if entry_group_list?has_content>
+										<@checkBox orientation='switch' name='entry_id_move' id='entry_id_${entry.idEntry}' value='${entry.idEntry!}' wrapperClass='mb-0 pt-1' />
 									</#if>
-									<@td>
-										<#if !entry.entryType.myLuteceUser>
-											<@aButton href='jsp/admin/plugins/appointment/ManageAppointmentFormEntries.jsp?view=getModifyEntry&id_entry=${entry.idEntry}' buttonIcon='edit' size='sm' />
-										</#if>
-										<#if entry.parent?exists>
-											<@aButton href='jsp/admin/plugins/appointment/ManageAppointmentFormEntries.jsp?action=doMoveOutEntry&id_entry=${entry.idEntry}#list' title='#i18n{appointment.modifyField.manageConditionalQuestion.titleGoOut}' hideTitle=['all'] buttonIcon='indent-decrease' size='sm' />
-										</#if>
-										<#if !entry.entryType.group && !entry.entryType.myLuteceUser>
-											<@aButton href='jsp/admin/plugins/appointment/ManageAppointmentFormEntries.jsp?action=doCopyEntry&id_entry=${entry.idEntry}#list' title='#i18n{appointment.createEntry.manageField.titleCopy}' hideTitle=['all'] buttonIcon='copy' size='sm' />
-										</#if>
-										<#if !entry.entryType.group>
-											<#assign field_disabled=getFieldValueByCode( entry, "disabled")>
-											<#if entry.disabled>
-												<@aButton href='jsp/admin/plugins/appointment/ManageAppointmentFormEntries.jsp?action=doChangeDisabled&id_form=${appointmentform.idForm}&id_entry=${entry.idEntry}#list' title='#i18n{appointment.createEntry.manageField.titleEnable}' hideTitle=['all']  color='success' buttonIcon='play' size='sm' />
-											<#else>
-												<@aButton href='jsp/admin/plugins/appointment/ManageAppointmentFormEntries.jsp?action=doChangeDisabled&id_form=${appointmentform.idForm}&id_entry=${entry.idEntry}#list' title='#i18n{appointment.createEntry.manageField.titleDisable}' hideTitle=['all']  color='danger' buttonIcon='stop' size='sm' />
-											</#if>
-										</#if>
-											<@aButton href='jsp/admin/plugins/appointment/ManageAppointmentFormEntries.jsp?view=confirmRemoveEntry&id_entry=${entry.idEntry}#list' title='#i18n{appointment.delete.title}' hideTitle=['all'] buttonIcon='trash' color='danger' size='sm' />
-										</@td>
-									</@tr>
-								</#list>
-							</@table>
-						</@tform>
-				</@columns>
-				<@columns class='appointment-list-group' id='sticky-container' md=2>
-					<!-- Insert a space above the entryType List if a group selection list is available -->
-					<#if entry_group_list?has_content>
-						<@div params="style='margin-bottom:1cm;'" />
-					</#if>
-					<@ul class='list-group' id='info-right'>
-						<#list entry_type_list as entry>
-							<@li>
-								<@aButton href='jsp/admin/plugins/appointment/ManageAppointmentFormEntries.jsp?view=getCreateEntry&id_form=${appointmentform.idForm}&id_type=${entry.idType}'
-									buttonIcon='${entry.iconName}'
-									title='${entry.title}'
-									class='btn btn-primary btn-sm mb-2' />
-							</@li>
-                        </#list>
-                    </@ul>
-				</@columns>
-			</@row>
-		</@appointmentTabs>
-	</@columns>
-</@row>
-
+								</#if>
+							</@manageFeatureItemColumn>
+							<#if !entry.entryType.group>
+								<@manageFeatureItemColumn auto=true>
+									<@icon style='${entry.entryType.iconName}' class='fs-2' title=entry.entryType.title /> 
+								</@manageFeatureItemColumn>
+							</#if>
+							<@manageFeatureItemColumn auto=true>
+								<#if entry.entryType.group>
+									<@h level=3 class='my-0 h2'>${entry.title}</@h>
+								<#else>
+									<#if entry.entryType.comment?? && entry.entryType.comment>${entry.comment}<#else>${entry.title}</#if>
+								</#if>
+							</@manageFeatureItemColumn>
+							<#if entry.numberConditionalQuestion!=0>
+								<@manageFeatureItemColumn auto=true valign='top'>
+									<@formGroup labelFor='conditional_question_id_${entry.idEntry!}' labelKey='#i18n{appointment.createEntry.manageField.rowConditionalQuestion}' rows=2 >
+										${entry.numberConditionalQuestion}
+									</@formGroup>
+								</@manageFeatureItemColumn>
+							</#if>
+							<@manageFeatureItemColumn align='end'>
+								<@formGroup labelFor='order_id_${entry.idEntry!}' labelKey='#i18n{appointment.createEntry.manageField.rowOrder}' rows=2 class='ms-auto me-1' hideLabel=['all'] formStyle=''>
+								<#if entry.parent?exists>
+									<@inputGroup>
+										<@entryOrderSelection name="order_id_${entry.idEntry!}" default_value=entry.position idParent=entry.parent.idEntry />
+										<@button type='submit' name='id_entry' value='${entry.idEntry}' title='#i18n{appointment.move.name}' hideTitle=['all'] buttonIcon='check' size='sm' />
+									</@inputGroup>
+								<#else>
+									<@inputGroup>
+										<@entryOrderSelection name="order_id_${entry.idEntry!}" default_value=entry.position idParent=0 />
+										<@button type='submit' name='id_entry' title='#i18n{appointment.move.name}' hideTitle=['all'] value='${entry.idEntry}' buttonIcon='check' size='sm' />
+									</@inputGroup>
+								</#if>
+								</@formGroup>
+								<#if !entry.entryType.myLuteceUser>
+									<@aButton href='jsp/admin/plugins/appointment/ManageAppointmentFormEntries.jsp?view=getModifyEntry&id_entry=${entry.idEntry}' title='#i18n{portal.util.labelModify}' hideTitle=['all'] buttonIcon='edit' size='' />
+								</#if>
+								<#if entry.parent?exists>
+									<@aButton href='jsp/admin/plugins/appointment/ManageAppointmentFormEntries.jsp?action=doMoveOutEntry&id_entry=${entry.idEntry}#list' title='#i18n{appointment.modifyField.manageConditionalQuestion.titleGoOut}' hideTitle=['all'] buttonIcon='indent-decrease' size='' />
+								</#if>
+								<#if !entry.entryType.group && !entry.entryType.myLuteceUser>
+									<@aButton href='jsp/admin/plugins/appointment/ManageAppointmentFormEntries.jsp?action=doCopyEntry&id_entry=${entry.idEntry}#list' title='#i18n{appointment.createEntry.manageField.titleCopy}' hideTitle=['all'] buttonIcon='copy' size='' />
+								</#if>
+								<#if !entry.entryType.group>
+									<#assign field_disabled=getFieldValueByCode( entry, "disabled")>
+									<#if entry.disabled>
+										<@aButton href='jsp/admin/plugins/appointment/ManageAppointmentFormEntries.jsp?action=doChangeDisabled&id_form=${appointmentform.idForm}&id_entry=${entry.idEntry}#list' title='#i18n{appointment.createEntry.manageField.titleEnable}' hideTitle=['all'] color='success' buttonIcon='play' size='' />
+									<#else>
+										<@aButton href='jsp/admin/plugins/appointment/ManageAppointmentFormEntries.jsp?action=doChangeDisabled&id_form=${appointmentform.idForm}&id_entry=${entry.idEntry}#list' title='#i18n{appointment.createEntry.manageField.titleDisable}' hideTitle=['all'] color='danger' buttonIcon='stop' size='' />
+									</#if>
+								</#if>
+								<@aButton href='jsp/admin/plugins/appointment/ManageAppointmentFormEntries.jsp?view=confirmRemoveEntry&id_entry=${entry.idEntry}#list' title='#i18n{appointment.delete.title}' hideTitle=['all'] buttonIcon='trash' color='danger' size='' />
+							</@manageFeatureItemColumn>
+						</@manageFeatureItem>
+					</#list>
+				</@manageFeature>
+				</@tform>
+		</@columns>
+		<@columns class='appointment-list-group' id='sticky-container' xs=12 md=2>
+			<@ul class='list-unstyled' id='info-right'>
+				<#list entry_type_list as entry>
+					<@li>
+						<@aButton href='jsp/admin/plugins/appointment/ManageAppointmentFormEntries.jsp?view=getCreateEntry&id_form=${appointmentform.idForm}&id_type=${entry.idType}' title='${entry.title}' buttonIcon='${entry.iconName}' class='justify-content-start w-100 mb-1' size='' />
+					</@li>
+				</#list>
+			</@ul>
+		</@columns>
+	</@row>
+</@appointmentTabs>
 <#macro entryOrderSelection name default_value idParent >
-	<@select id='${name}' name='${name}' size='sm'>
-		<#if idParent &gt; 0 && lastGroup??>
-			<#assign start_enum = lastGroup.position + 1 >
-			<#assign nb_entries = lastGroup.position + lastGroup.children?size >
-			<#list start_enum..nb_entries as i>
-				<#if default_value == i>
-					<option selected="selected" value="${i}">${i}</option>
-				<#else>
-					<option value="${i}">${i}</option>
-				</#if>
-			</#list>
-		<#else>
-			<#list listOrderFirstLevel as i>
-				<#if default_value == i>
-					<option selected="selected" value="${i}">${i}</option>
-				<#else>
-					<option value="${i}">${i}</option>
-				</#if>
-			</#list>
-		</#if>
-	</@select>
+<@select id='${name}' name='${name}' size='sm'>
+<#if idParent gt 0 && lastGroup??>
+	<#assign start_enum = lastGroup.position + 1 >
+	<#assign nb_entries = lastGroup.position + lastGroup.children?size >
+	<#list start_enum..nb_entries as i>
+		<@option value='${i}' selected=(default_value == i) label='${i}' />
+	</#list>
+<#else>
+	<#list listOrderFirstLevel as i>
+		<@option value='${i}' selected=(default_value == i) label='${i}' />
+	</#list>
+</#if>
+</@select>
 </#macro>
-
 <script>
 <@headerTitle form=appointmentform />
 document.getElementById('selectAll').addEventListener('click', function() {

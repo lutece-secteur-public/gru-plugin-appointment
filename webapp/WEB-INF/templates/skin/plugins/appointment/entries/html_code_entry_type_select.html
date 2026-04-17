@@ -1,56 +1,19 @@
-<div class="form-group">
-	<label class="control-label col-xs-12"  for="attribute${entry.idEntry}">${entry.title} <#if entry.mandatory>*</#if></label>
-	<div class=" col-xs-12">	 
-		<select name="attribute${entry.idEntry}" id="attribute${entry.idEntry}" class="form-control 
-			<#if list_responses??>
-				<#list list_responses as response>
-					<#if response.entry.idEntry == entry.idEntry && response.entry.error??>
-						error
-						<#break>
-					</#if>
-				</#list>
-				${entry.CSSClass!}
-		</#if>"	>
-		<option value="">#i18n{appointment.xpage.form.noValue}</option>
+<#assign errorMsg = ''>
+<#assign helpMsg = ''>
+<#if list_responses??><#list list_responses as response><#if response.entry.idEntry == entry.idEntry && response.entry.error?? && response.entry.error.isDisplayableError><#assign error = response.entry.error><#assign errorMsg><#if error.mandatoryError>${error.errorMessage}<#else>#i18n{appointment.message.mandatory.entry}</#if></#assign></#if></#list></#if>
+<#if entry.helpMessage?? && entry.helpMessage != ''><#assign helpMsg>${entry.helpMessage}</#assign></#if>
+<#assign selectClass = 'form-select ${entry.CSSClass!}' />
+<@cField label='${entry.title}' required=entry.mandatory for='attribute${entry.idEntry}'>
+	<@cSelect name='attribute${entry.idEntry}' id='attribute${entry.idEntry}' class=selectClass helpMsg=helpMsg errorMsg=errorMsg>
+		<@cOption value='' label='#i18n{appointment.xpage.form.noValue}' />
 		<#list entry.fields as field>
 			<#if field.code == 'answer_choice'>
-				<option  value="${field.idField}" <#if field.comment?? && field.comment != ''>title="${field.comment}"</#if>
-					<#if list_responses??>
-						<#list list_responses as response>
-							<#if response.entry.idEntry == entry.idEntry && response.field??>
-								<#if response.field.idField == field.idField>
-									selected ="selected"
-									<#break>
-								</#if>
-							</#if>
-						</#list>
-					<#else>
-						<#if field.defaultValue>
-							selected ="selected"
-						</#if>
-					</#if>
-					>
-						${field.title}
-				</option>
-			</#if>	
+				<#assign isSelected = false>
+				<#if list_responses??><#list list_responses as response><#if response.entry.idEntry == entry.idEntry && response.field??><#if response.field.idField == field.idField><#assign isSelected = true></#if></#if></#list><#else><#if field.defaultValue><#assign isSelected = true></#if></#if>
+				<#assign optionParams = ''>
+				<#if field.comment?? && field.comment != ''><#assign optionParams>title="${field.comment}"</#assign></#if>
+				<@cOption value='${field.idField}' label=field.title! selected=isSelected params=optionParams />
+			</#if>
 		</#list>
-	</select>
-	<#if entry.helpMessage?exists&&entry.helpMessage!=''>
-	<p class="help-block">${entry.helpMessage}</p>
-	</#if>
-	<#if list_responses??>
-		<#list list_responses as response>
-			<#if response.entry.idEntry == entry.idEntry && response.entry.error?? && response.entry.error.isDisplayableError>
-				<div class="alert alert-error alert-danger">
-					<#assign error = response.entry.error>
-					<#if error.mandatoryError>
-						${error.errorMessage}
-					<#else>
-						#i18n{appointment.message.mandatory.entry}
-					</#if>
-				</div>	
-				</#if>
-			</#list>
-	</#if>
-	</div>
-</div>
+	</@cSelect>
+</@cField>

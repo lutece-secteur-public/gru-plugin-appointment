@@ -1,34 +1,55 @@
 <#if form.isMultislotAppointment>
-	<div class="row nextStepTitleRow">
-		<div class="col-xs-12">
-			<div class="container">
-				<h2>#i18n{appointment.label.labelNbConsecutiveSlots} <#if refAppointment??> : ${nbPlacesToTake} </#if></h2>
-			</div>
-			<#if !refAppointment??>
-			<div class="row steps">
-				<div class="col-xs-12">
-					<div class="container">
-						<form class="form-horizontal" role="form" id="form-validate" method="post" action="jsp/site/Portal.jsp?page=appointment&view=getViewAppointmentCalendar">
-							<input name="action" value="getViewAppointmentCalendar" type="hidden">
-							<input name="id_form" value="${form.idForm}" type="hidden">
-							<select name="nbPlacesToTake" class="form-control">
-								<#list 1..maxNbPlacesToTake as x>
-									<#if x == nbPlacesToTake>
-										<option value="${x}" selected="selected">${x}</option>
-									<#else>
-										<option value="${x}">${x}</option>
-									</#if>
-								</#list>
-							</select><br>
-							<button class="btn btn-primary btn-sm" type="submit" name="save" >
-								<i class="fa fa-chevron-down"></i>
-								<span class="hidden-xs">&nbsp;#i18n{appointment.nbPlacesToTakeForm.labelValidate}</span>
-							</button>
-						</form><br>
-					</div>
-				</div>
-			</div>
-			</#if>
-		</div>
-	</div>
+<#if refAppointment??>
+	<@cStepDone step='1' title='#i18n{appointment.label.labelNbConsecutiveSlots}' idx=0>
+		${nbPlacesToTake}
+	</@cStepDone>
+<#else>
+	<@cStepCurrent step='1' id="step_current_place_to_take" title='#i18n{appointment.label.labelNbConsecutiveSlots}' hasMandatory=false>
+		<@cForm id='form-validate' method='post' action='jsp/site/Portal.jsp?page=appointment&view=getViewAppointmentCalendar' params='role="form"'>
+			<@cInput type='hidden' name='action' value='getViewAppointmentCalendar' class='' />
+			<@cInput type='hidden' name='id_form' value='${form.idForm}' class='' />
+			<@cRow>
+				<@cCol cols='12 col-md-4'>
+					<@cLabel for='nbPlacesToTake' label='#i18n{appointment.label.labelNbConsecutiveSlots}' />
+					<@cInputGroup>
+						<@cSelect name='nbPlacesToTake'>
+							<#list 1..maxNbPlacesToTake as x>
+								<@cOption value=x label=x selected=(x == nbPlacesToTake ) />
+							</#list>
+						</@cSelect>
+						<@cBtn class='primary btn-sm' type='submit' label='' params=' name="save"' >
+							<@cIcon name='chevron-down' />
+							<@cInline class='d-none d-sm-inline'>#i18n{appointment.nbPlacesToTakeForm.labelValidate}</@cInline>
+						</@cBtn>
+					</@cInputGroup>
+				</@cCol>
+			</@cRow>
+		</@cForm>
+	</@cStepCurrent>
+	<script>
+	document.addEventListener('DOMContentLoaded', function() {
+		const placeStep = document.getElementById('step_current_place_to_take');
+		if (!placeStep) return;
+		const hasNbPlacesToTake = sessionStorage.getItem('appointmentNbPlacesToTake') === 'true';
+		if ( !hasNbPlacesToTake ) {
+			const currentStep = document.getElementById('current_step');
+			if ( currentStep && currentStep.classList.contains('step-current') ) {
+				currentStep.classList.add('step-next');
+				currentStep.classList.remove('step-current');
+				currentStep.querySelector('.step-title .title').classList.remove('h3');
+				currentStep.querySelector('.step-content').classList.add('d-none');
+				currentStep.querySelector('.step-footer').classList.add('d-none');
+			}
+
+			// currentStep.style.display = 'none';
+			const saveBtn = placeStep.querySelector('[name="save"]');
+			if (saveBtn) {
+				saveBtn.addEventListener('click', function() {
+					sessionStorage.setItem('appointmentNbPlacesToTake', 'true' );
+				});
+			}
+		} 
+	});
+	</script>
+</#if>
 </#if>

@@ -1,197 +1,213 @@
-<link rel="stylesheet" href="css/admin/plugins/appointment/js-year-calendar.min.css">
-<link rel="stylesheet" href="css/admin/plugins/appointment/appointment.css">
 <@appointmentTabs tab='year' form=appointmentform context='slot'>
-    <@row>
-        <@columns sm=10>
-            <@div id="calendar"></@div>
-        </@columns>
-        <@columns sm=2>
-			<@p params=' style="border-bottom: 1px solid #000;margin-bottom: 15px; padding:15px 0"'>
-                <@span params='style="border-radius: 50%;background-color:#DDD;width: 20px;height: 20px;display: inline-block;vertical-align: middle;"'></@span> #i18n{appointment.annual.label.daySpecifity}
-            </@p>
-            <@ul class="list-unstyled">
-                <#list listReservationRule as rule>
-                    <@li class='py-2'>
-                        <@aButton color='link btn-outline-default justify-content-start w-75' href='jsp/admin/plugins/appointment/ManageAppointmentSlots.jsp?view=manageTypicalWeek&id_form=${id_form}&id_reservation_rule=${rule.idReservationRule}'>
-                            <@icon prefix='fas fa-' style='circle me-2' params=' style="color:${rule.color!};"' /> ${rule.name} 
+	<@row>
+		<@columns sm=10>
+			<@div id="calendar"></@div>
+		</@columns>
+		<@columns sm=2>
+			<@p class='border-bottom pb-3 mb-3'>
+				<@span class='d-inline-block align-middle rounded-circle bg-secondary' params='style="width:20px;height:20px"'></@span> #i18n{appointment.annual.label.daySpecifity}
+			</@p>
+			<@ul class='list-unstyled'>
+				<#list listReservationRule as rule>
+					<@li class='py-2'>
+						<@aButton color='outline-primary justify-content-start px-2 w-100 text-wrap' href='jsp/admin/plugins/appointment/ManageAppointmentSlots.jsp?view=manageTypicalWeek&id_form=${id_form}&id_reservation_rule=${rule.idReservationRule}' params='style="border-color:${rule.color!};"'>
+                            <@icon style='circle-filled me-2 fs-4' params='style="color:${rule.color!};"' /> ${rule.name}
                         </@aButton>
-                    </@li>
-                </#list>
-            </@ul>
-        </@columns>
-    </@row>
+					</@li>
+				</#list>
+			</@ul>
+		</@columns>
+	</@row>
 </@appointmentTabs>
-<@div id="context-menu"></@div>
-<@modal id='event-modal' size='md' >
+<@modal id='event-modal' size='md'>
 	<@modalHeader modalTitle='#i18n{appointment.assign.typicalWeek.defaultTitle}' />
 	<@modalBody>
-		<@tform id='form-validate' action='jsp/admin/plugins/appointment/ManageAnnualCalendar.jsp' params='enctype="multipart/form-data"'>
+		<@tform id='form-validate' action='jsp/admin/plugins/appointment/ManageAnnualCalendar.jsp' enctype='multipart/form-data'>
 			<@input type='hidden' name='action' value='doAssignWeek' />
 			<@input type='hidden' name='id_form' value='${id_form}' />
 			<@input type='hidden' name='id_week_definition' value='' />
 			<@formGroup labelFor='date_of_apply' labelKey='#i18n{appointment.manageAppointments.startingDateOfSearch}' rows=2>
-				<@inputGroup>
-					<@input type='text' name='date_of_apply' id='date_of_apply' value="" />
-					<@inputGroupItem type='text'>
-						<@icon style='calendar' />
-					</@inputGroupItem>
-				</@inputGroup>
+				<@input type='date' name='date_of_apply' id='date_of_apply' value='' format='Y-m-d' />
 			</@formGroup>
-			<@formGroup labelFor='endingDate' labelKey='#i18n{appointment.manageAppointments.endingDateOfSearch}' rows=2>
-				<@inputGroup>
-					<@input type='text' name='ending_date_of_apply' id='ending_date_of_apply' value="" />
-					<@inputGroupItem type='text'>
-						<@icon style='calendar' />
-					</@inputGroupItem>
-				</@inputGroup>
-			</@formGroup>	
-			<@formGroup labelFor='type' labelKey='#i18n{appointment.week.toApplay}' rows=2>
-                <@select name='id_reservation_rule' id='id_reservation_rule'>
-                <#list listReservationRule as rule>
-				    <@option value=rule.idReservationRule label=rule.name />
-                </#list>
+			<@formGroup labelFor='ending_date_of_apply' labelKey='#i18n{appointment.manageAppointments.endingDateOfSearch}' rows=2>
+				<@input type='date' name='ending_date_of_apply' id='ending_date_of_apply' value='' format='Y-m-d' />
+			</@formGroup>
+			<@formGroup labelFor='id_reservation_rule' labelKey='#i18n{appointment.week.toApplay}' rows=2>
+				<@select name='id_reservation_rule' id='id_reservation_rule'>
+					<#list listReservationRule as rule>
+						<@option value=rule.idReservationRule label=rule.name />
+					</#list>
 				</@select>
-			</@formGroup>		
+			</@formGroup>
 			<@formGroup rows=2>
-                <@button type='submit' name='save' id='save' buttonIcon='check' title='#i18n{appointment.labelSave}' />
-                <@button type='submit' name='delete' id='delete' title='#i18n{portal.util.labelDelete}' buttonIcon='trash' color='danger'  />
-                <@button type='button' params='data-bs-dismiss="modal"' title='#i18n{portal.util.labelCancel}' buttonIcon='times' color='default' />   
-			</@formGroup>	
+				<@button type='submit' name='save' id='save' buttonIcon='check' title='#i18n{appointment.labelSave}' />
+				<@button type='submit' name='delete' id='delete' title='#i18n{portal.util.labelDelete}' buttonIcon='trash' color='danger' />
+				<@button type='button' params='data-bs-dismiss="modal"' title='#i18n{portal.util.labelCancel}' buttonIcon='times' color='default' />
+			</@formGroup>
 		</@tform>
 	</@modalBody>
 </@modal>
-<script src="js/admin/plugins/appointment/moment.min.js"></script>
-<script src="js/admin/plugins/appointment/locale-all.js"></script>
-<script src="js/admin/plugins/appointment/bootstrap-datetimepicker.min.js"></script>
-<script src="js/admin/plugins/appointment/js-year-calendar.min.js"></script>
-<script src="js/admin/plugins/appointment/locales/js-year-calendar.${language}.js"></script>
 <script>
-moment.locale( '${language}' );
-function isOlderThanToday( dtCompare ) {    
-    var dateToday = new Date().setUTCHours( 0, 0, 0, 0); // Today
-    var isOlder=dtCompare.setUTCHours( 24, 0, 0, 0) >= dateToday ? true : false; 
-    console.log( dtCompare.setUTCHours( 0, 0, 0, 0) );
-    return isOlder;   
-}    
-
-let calendar = null;
-function editEvent( event) {
-    if( event.weekDef != undefined  ){
-        document.querySelector('#event-modal input[name="id_week_definition"]').value = event.weekDef;
-        document.querySelector('#event-modal #delete').style.display = '';
-        if( !isOlderThanToday( event.startDate ) ){
-            document.querySelector('#event-modal #delete').setAttribute('disabled','disabled');
-        } else {
-            document.querySelector('#event-modal #delete').removeAttribute('disabled');
-        }
-    } else {
-        document.querySelector('#event-modal #delete').style.display = 'none';
-    }
-
-    var dateOfApplyInput = document.querySelector('#event-modal input[name="date_of_apply"]');
-    dateOfApplyInput.value = moment( event.startDate ).format('L');
-    $(dateOfApplyInput).datetimepicker({ locale: '${language}', format: 'L' });
-    var endingDateInput = document.querySelector('#event-modal input[name="ending_date_of_apply"]');
-    endingDateInput.value = moment( event.endDate ).format('L');
-    $(endingDateInput).datetimepicker({ locale: '${language}', format: 'L'});
-    //$('#event-modal').modal();
-    const eventModal = bootstrap.Modal.getOrCreateInstance('#event-modal')
-    eventModal.toggle()
+function fcFormatDateLocale( date, locale ) {
+	const d = date.getDate().toString().padStart(2, '0');
+	const m = (date.getMonth() + 1).toString().padStart(2, '0');
+	const y = date.getFullYear();
+	return d + '/' + m + '/' + y;
 }
 
-function deleteEvent(event) {
-   location.href= 'jsp/admin/plugins/appointment/ManageAnnualCalendar.jsp?action=doRemoveWeekFromCalendar&id_week_definition='+event.idweekdef+'&id_form=${id_form}';
+function fcFormatISO( date ) {
+	return date.getFullYear() + '-' + (date.getMonth() + 1).toString().padStart(2, '0') + '-' + date.getDate().toString().padStart(2, '0');
 }
 
-var specDates = [<#list specificSlotDates as sDate>'${sDate}',</#list>];
-var popover = null;
-$(function() {
-    calendar = new Calendar('#calendar', { 
-        language: '${language}',
-        startYear: ${start_year},
-        enableContextMenu: true,
-        enableRangeSelection: true,
-        contextMenuItems:[
-            {
-                text: '#i18n{appointment.createEntry.manageField.buttonItemsPerPage}',
-                click: editEvent
-            },
-            {
-                text: '#i18n{appointment.delete.title}',
-                click: deleteEvent
-            }
-        ],
-        selectRange: function(e) {
-            if ( e.events.length > 0 ){
-                editEvent({ startDate: e.startDate, endDate: e.endDate, weekDef: e.events[0].idweekdef });
-            } else {
-                editEvent({ startDate: e.startDate, endDate: e.endDate });
-            }
-        },
-        mouseOnDay: function(e) {
-            if(e.events.length > 0) {
-                var content = '';
-                for(var i in e.events) {
-                    content += '<div class="event-tooltip-content">'
-                            + '<div class="event-name" style="color:' + e.events[i].color + '">' + e.events[i].name + '</div>'
-                            + '<div class="event-location">' + e.events[i].location + '</div>'
-                            + '</div>';
-                }
-                // $(e.element).popover({ 
-                //     trigger: 'manual',
-                //     container: 'body',
-                //     html:true,
-                //     content: content
-                // });
-                //$(e.element).popover('show');
-                popover = new bootstrap.Popover( e.element, { 
-                    trigger: 'manual',
-                    container: 'body',
-                    html: true,
-                    content: content
-                });
-                popover.show()
-            }
-        },
-        mouseOutDay: function(e) {
-            if(e.events.length > 0) {
-                //$(e.element).popover('hide');
-                popover.hide();
-            }
-        },
-        dayContextMenu: function(e) {
-            //$(e.element).popover('hide');
-            popover.hide();
-        },
-        customDayRenderer: function( e, date){
-            const cDay = moment( date ).format('YYYY-MM-DD');
-            const result = specDates.findIndex( yday => yday === cDay );
-            if( result != -1 ){
-                e.classList.add( 'isSpecific' );
-            }
-        },
-        dataSource: [
-            <#list listReservationRule as rule>
-                <#list listWeekDefinition?filter( weekdef -> weekdef.idReservationRule  = rule.idReservationRule ) as weekdef>
-                    {
-                        id: ${rule.idReservationRule},
-                        name: '${rule.name?js_string}',
-                        location: '${rule.descriptionRule?js_string}',
-                        startDate: new Date(${weekdef.dateOfApply.year}, ${weekdef.dateOfApply.monthValue -1}, ${weekdef.dateOfApply.dayOfMonth}),
-                        endDate: new Date(${weekdef.endingDateOfApply.year}, ${weekdef.endingDateOfApply.monthValue -1}, ${weekdef.endingDateOfApply.dayOfMonth!}),
-                        color: '${rule.color}',
-                        idweekdef: ${weekdef.idWeekDefinition},
-                    },
-                </#list>
-            </#list>
-        ]
-    });
+function isOlderThanToday( dtCompare ) {
+	const dateToday = new Date();
+	dateToday.setUTCHours( 0, 0, 0, 0 );
+	const compare = new Date( dtCompare );
+	compare.setUTCHours( 24, 0, 0, 0 );
+	return compare >= dateToday;
+}
 
-    if( document.getElementById('loader') != undefined ){ document.getElementById('loader').remove() };
+let calendarInst = null;
 
-    document.querySelector('#event-modal #delete').addEventListener('click', function( em ) {
-        document.querySelector('#event-modal input[name="action"]').value = 'doUnssignWeek';
-    })
+function fpSet( el, dateStr ) {
+	var dateOnly = dateStr.substring(0, 10);
+	if (el && el._flatpickr) {
+		var fp = el._flatpickr;
+		fp.setDate(dateOnly, false, 'Y-m-d');
+	} else if (el) {
+		el.value = dateOnly;
+	}
+}
+
+function editEvent(eventData) {
+	if (eventData.weekDef != undefined) {
+		document.querySelector('#event-modal input[name="id_week_definition"]').value = eventData.weekDef;
+		document.querySelector('#event-modal #delete').style.display = '';
+		if (!isOlderThanToday(eventData.startDate)) {
+			document.querySelector('#event-modal #delete').setAttribute('disabled', 'disabled');
+		} else {
+			document.querySelector('#event-modal #delete').removeAttribute('disabled');
+		}
+	} else {
+		document.querySelector('#event-modal #delete').style.display = 'none';
+	}
+
+	const startStr = fcFormatISO(eventData.startDate);
+	const endStr = fcFormatISO(eventData.endDate);
+	fpSet(document.getElementById('date_of_apply'), startStr);
+	fpSet(document.getElementById('ending_date_of_apply'), endStr);
+	const eventModal = bootstrap.Modal.getOrCreateInstance('#event-modal');
+	eventModal.toggle();
+}
+
+function deleteEvent(eventData) {
+	location.href='jsp/admin/plugins/appointment/ManageAnnualCalendar.jsp?action=doRemoveWeekFromCalendar&id_week_definition=' + eventData.idweekdef + '&id_form=${id_form}';
+}
+
+const specDates=[<#list specificSlotDates as sDate>'${sDate}',</#list>];
+let activePopover=null;
+
+document.addEventListener('DOMContentLoaded', function() {
+	const calendarEl = document.getElementById('calendar');
+
+	const yearEvents = [
+	<#list listReservationRule as rule>
+		<#list listWeekDefinition?filter( weekdef -> weekdef.idReservationRule = rule.idReservationRule ) as weekdef>
+		{
+			id: '${rule.idReservationRule}-${weekdef.idWeekDefinition}',
+			title: '${rule.name?js_string}',
+			description: '${rule.descriptionRule?js_string}',
+			start: new Date(${weekdef.dateOfApply.year}, ${weekdef.dateOfApply.monthValue -1}, ${weekdef.dateOfApply.dayOfMonth}),
+			end: new Date(${weekdef.endingDateOfApply.year}, ${weekdef.endingDateOfApply.monthValue -1}, ${weekdef.endingDateOfApply.dayOfMonth!} + 1),
+			color: '${rule.color}',
+			textColor: '#000',
+			extendedProps: {
+				ruleId: ${rule.idReservationRule},
+				ruleName: '${rule.name?js_string}',
+				ruleDescription: '${rule.descriptionRule?js_string}',
+				idweekdef: ${weekdef.idWeekDefinition},
+				ruleColor: '${rule.color}'
+			}
+		},
+		</#list>
+	</#list>
+	];
+
+	const currentDate = new Date().toJSON().slice(0, 10);
+
+	calendarInst = new FullCalendar.Calendar(calendarEl, {
+		initialView: 'multiMonthYear',
+		initialDate: currentDate,
+		multiMonthMaxColumns: 3,
+		multiMonthMinWidth: 150,
+		locale: '${language}',
+		headerToolbar: {
+			left: 'prev',
+			center: 'title',
+			right: 'next'
+		},
+		selectable: true,
+		events: yearEvents,
+		select: function(info) {
+			const overlapping = calendarInst.getEvents().filter( function( ev ){
+				return ev.start < info.end && ev.end > info.start;
+			});
+
+			if ( overlapping.length > 0 ) {
+				const ep = overlapping[0].extendedProps;
+				// editEvent({ startDate: info.start, endDate: info.end, weekDef: ep.idweekdef });
+				editEvent({ startDate: info.start, endDate: new Date(info.end.getTime() - 86400000)  , weekDef: ep.idweekdef });
+			} else {
+				// editEvent({ startDate: info.start, info.end });
+				editEvent({ startDate: info.start, endDate: new Date(info.end.getTime() - 86400000)  });
+			}
+			
+			calendarInst.unselect();
+		},
+		eventMouseEnter: function(info) {
+			const ep = info.event.extendedProps;
+			const content = `<#noparse>
+				<div class="event-tooltip-content">
+					<p class="event-name" style="color:${ep.ruleColor}">${ep.ruleName}</p>
+					<p class="event-location">${ep.ruleDescription}</p>
+				</div>`</#noparse>
+			if ( activePopover ) { activePopover.dispose(); activePopover = null; }
+			activePopover = new bootstrap.Popover(info.el, {
+				trigger: 'manual',
+				container: 'body',
+				html: true,
+				content: content
+			});
+			activePopover.show();
+		},
+		eventMouseLeave: function(info) {
+			if ( activePopover ) {
+				activePopover.dispose();
+				activePopover = null;
+			}
+		},
+		eventClick: function(info) {
+			const ep = info.event.extendedProps;
+			info.jsEvent.preventDefault();
+			editEvent({ startDate: info.event.start, endDate: new Date(info.event.end.getTime() - 86400000), weekDef: ep.idweekdef });
+		},
+		dayCellDidMount: function(info) {
+			const cDay = fcFormatISO(info.date);
+			if ( specDates.indexOf(cDay) !== -1	) {
+				info.el.classList.add('isSpecific');
+			}
+		}
+	});
+
+	calendarInst.render();
+
+	requestAnimationFrame(function() { calendarInst.updateSize(); });
+
+	const loader = document.getElementById('loader');
+	if (loader) loader.remove();
+
+	document.querySelector('#event-modal #delete').addEventListener('click', function() {
+		document.querySelector('#event-modal input[name="action"]').value = 'doUnssignWeek';
+	});
 });
 </script>
-

@@ -1,205 +1,209 @@
 <#assign hasSuggestPOI = false />
 <#attempt>
-	<#include "/admin/plugins/address/modules/autocomplete/include/suggestPOI.html" />
-	<#assign hasSuggestPOI = true />
+<#include "/admin/plugins/address/modules/autocomplete/include/suggestPOI.html" />
+<#assign hasSuggestPOI = true />
 <#recover>
 </#attempt>
-<link rel="stylesheet" href="css/datepicker.css">
-<link rel="stylesheet" href="css/admin/plugins/appointment/appointment.css">
 <#macro appointmentTabs tab appointmentform>
-	<@tabs id='${tab}'>
-		<@tabList>
-			<#if tab="params"><#assign active = true /><#else><#assign active = false /></#if>
-			<@tabLink href='jsp/admin/plugins/appointment/ManageAppointmentForms.jsp?view=modifyAppointmentForm&id_form=${appointmentform.idForm}' title='	#i18n{appointment.modifyAppointmentForm.titleAlterablesParameters}' active=active />
-			<#if tab="entries"><#assign active = true /><#else><#assign active = false /></#if>
-			<@tabLink href='jsp/admin/plugins/appointment/ManageAppointmentFormEntries.jsp?view=modifyAppointmentFormEntries&id_form=${appointmentform.idForm}' title='#i18n{appointment.modifyAppointmentFormEntries.pageTitle}' active=active />
-			<#if isResourceInstalled?? && isResourceInstalled>
-			<#if tab="resources"><#assign active = true /><#else><#assign active = false /></#if>
-			<@tabLink href='jsp/admin/plugins/appointment/modules/resource/ManageAppointmentFormResources.jsp?view=manageFormResources&id_form=${appointmentform.idForm}' title='#i18n{module.appointment.resource.manageAppointmentFormResources.pageTitle}' active=active />
-			</#if>
-		</@tabList>
-		<@tabContent id='${tab}-content'>
-			<@messages infos=infos errors=errors />
-			<#nested>
-		</@tabContent>
-	</@tabs>
+<@tabs id='${tab}'>
+	<@tabList>
+		<#if tab="params"><#assign active = true /><#else><#assign active = false /></#if>
+		<@tabLink href='jsp/admin/plugins/appointment/ManageAppointmentForms.jsp?view=modifyAppointmentForm&id_form=${appointmentform.idForm}' title='	#i18n{appointment.modifyAppointmentForm.titleAlterablesParameters}' active=active />
+		<#if tab="entries"><#assign active = true /><#else><#assign active = false /></#if>
+		<@tabLink href='jsp/admin/plugins/appointment/ManageAppointmentFormEntries.jsp?view=modifyAppointmentFormEntries&id_form=${appointmentform.idForm}' title='#i18n{appointment.modifyAppointmentFormEntries.pageTitle}' active=active />
+		<#if isResourceInstalled?? && isResourceInstalled>
+		<#if tab="resources"><#assign active = true /><#else><#assign active = false /></#if>
+		<@tabLink href='jsp/admin/plugins/appointment/modules/resource/ManageAppointmentFormResources.jsp?view=manageFormResources&id_form=${appointmentform.idForm}' title='#i18n{module.appointment.resource.manageAppointmentFormResources.pageTitle}' active=active />
+		</#if>
+	</@tabList>
+	<@tabContent id='${tab}-content'>
+		<@messages infos=infos errors=errors />
+		<#nested>
+	</@tabContent>
+</@tabs>
 </#macro>
-
 <#macro modifyAppointmentFormLeftColumn appointmentform >
-<script src="js/admin/plugins/appointment/jquery.min.js"></script>
-<@tform id='formid' action='jsp/admin/plugins/appointment/ManageAppointmentForms.jsp' params='enctype="multipart/form-data"'>
-	<@input type='hidden' id='id_form' name='id_form' value='${appointmentform.idForm}' />
-	
-	<@formGroup labelFor='title' labelKey='#i18n{appointment.createAppointmentForm.labelTitle}' helpKey='#i18n{appointment.createAppointmentForm.labelTitle}' mandatory=true>
-		<@input type='text' name='title' id='title'  value=appointmentform.title!'' maxlength=255 />
-	</@formGroup>
-	
-	<@formGroup labelFor='idCategory' labelKey='#i18n{appointment.createAppointmentForm.labelCategory}'>
-		<@select name='idCategory' id='idCategory' items=listCategories default_value='${appointmentform.idCategory!}' />
-	</@formGroup>
-	
-	<@formGroup labelFor='description' labelKey='#i18n{appointment.labelDescription}' helpKey='#i18n{appointment.labelDescription}' mandatory=true>
-		<@input type='textarea' name='description' id='description'>${appointmentform.description!}</@input>
-	</@formGroup>
-	
-	<@formGroup labelFor='min_time_before_appointment' labelKey='#i18n{appointment.createAppointmentForm.labelMinTimeBeforeAppointment}' helpKey='#i18n{appointment.createAppointmentForm.labelMinTimeBeforeAppointment.help}' mandatory=true>
-		<@input type='text' name='min_time_before_appointment' id='min_time_before_appointment' value=appointmentform.minTimeBeforeAppointment!'' params='onkeypress="return validateQty(event);"' maxlength=3 />
-	</@formGroup>
-	
-	<@formGroup labelFor='date_start_validity' labelKey='#i18n{appointment.createAppointmentForm.labelDateStartValidity}' helpKey='#i18n{appointment.createAppointmentForm.labelDateStartValidity.help}'>
-		<@inputGroup>
-			<@inputGroupItem type='text'>
-				<@icon style='calendar' />
-			</@inputGroupItem>
-			<@input type='text' name='date_start_validity' id='date_start_validity' value=appointmentform.dateStartValidity!'' />
-		</@inputGroup>
-	</@formGroup>
-	
-	<@formGroup labelFor='date_end_validity' labelKey='#i18n{appointment.createAppointmentForm.labelDateEndValidity}' helpKey='#i18n{appointment.createAppointmentForm.labelDateEndValidity.help}'>
-		<@inputGroup>
-			<@inputGroupItem type='text'>
-				<@icon style='calendar' />
-			</@inputGroupItem>
-			<@input type='text' name='date_end_validity' id='date_end_validity' value=appointmentform.dateEndValidity!''  />
-		</@inputGroup>
-	</@formGroup>
-	<@formGroup labelFor='is_multislot_appointment' labelKey='#i18n{appointment.label.isMultislotAppointment}' helpKey='#i18n{appointment.label.isMultislotAppointment.help}'>
-		<@checkBox name='is_multislot_appointment_display' id='is_multislot_appointment_display' value='true' checked=appointmentform.isMultislotAppointment!false disabled=true />
-		<#assign multislotvalue=appointmentform.isMultislotAppointment!false />
-		<@input type='hidden' name="is_multislot_appointment" value=multislotvalue?string />
-	</@formGroup>
-	<#if appointmentform.isMultislotAppointment>
-		<@formGroup labelFor='nb_consecutive_slots' labelKey='#i18n{appointment.label.nbConsecutiveSlots}' helpKey='#i18n{appointment.label.nbConsecutiveSlots.help}' mandatory=true>
-			<@input type='text' name='nb_consecutive_slots' id='nb_consecutive_slots' value=appointmentform.nbConsecutiveSlots!'' params='onkeypress="return validateQty(event);"' maxlength=2/>
-		</@formGroup>
-	</#if>
-	 <@formGroup labelFor='bo_overbooking' labelKey='#i18n{appointment.label.BoOverbooking}' helpKey='#i18n{appointment.label.BoOverbooking.help}'>
-		<@checkBox labelFor='bo_overbooking' name='bo_overbooking' id='bo_overbooking' value='true' checked=appointmentform.boOverbooking!false />
-     </@formGroup>
-	<@formGroup labelFor='display_title_fo' labelKey='#i18n{appointment.label.displayTitleFo}' helpKey='#i18n{appointment.label.displayTitleFo.help}'>
-		<@checkBox labelFor='display_title_fo' name='display_title_fo' id='display_title_fo' value='true' checked=appointmentform.displayTitleFo!false />
-	</@formGroup>
-		
-	<@formGroup labelFor='is_displayed_on_portlet' labelKey='#i18n{appointment.label.displayOnPortlet}' helpKey='#i18n{appointment.label.displayOnPortlet.help}'>
-		<@checkBox labelFor='is_displayed_on_portlet' name='is_displayed_on_portlet' id='is_displayed_on_portlet' value='true' checked=appointmentform.isDisplayedOnPortlet!false />
-	</@formGroup>
-	
-	<@formGroup labelFor='nb_weeks_to_display' labelKey='#i18n{appointment.label.nbWeeksToDisplay}' helpKey='#i18n{appointment.label.nbWeeksToDisplay.help}' mandatory=true>
-		<@input type='text' name='nb_weeks_to_display' id='nb_weeks_to_display' value=appointmentform.nbWeeksToDisplay!'' params='onkeypress="return validateQty(event);"' maxlength=3 />
-	</@formGroup>
-
-	<@formGroup labelFor='nb_days_before_new_appointment' labelKey='#i18n{appointment.createAppointmentForm.labelNbDaysBeforeNewAppointment}' helpKey='#i18n{appointment.createAppointmentForm.labelNbDaysBeforeNewAppointment.help}' mandatory=true>
-		<@input type='text' name='nb_days_before_new_appointment' id='nb_days_before_new_appointment' value=appointmentform.nbDaysBeforeNewAppointment!'' params='onkeypress="return validateQty(event);"' maxlength=2 />
-	</@formGroup>
-	
-	<@formGroup labelFor='nb_max_appointments_per_user' labelKey='#i18n{appointment.createAppointmentForm.labelNbMaxAppointments}' helpKey='#i18n{appointment.createAppointmentForm.labelNbMaxAppointments.help}' mandatory=true>
-		<@input type='text' name='nb_max_appointments_per_user' id='nb_max_appointments_per_user' value=appointmentform.nbMaxAppointmentsPerUser!'' params='onkeypress="return validateQty(event);"' maxlength=2 />
-	</@formGroup>
-	
-	<@formGroup labelFor='nb_days_for_max_appointments_per_user' labelKey='#i18n{appointment.createAppointmentForm.labelNbDaysForMaxAppointments}' helpKey='#i18n{appointment.createAppointmentForm.labelNbDaysForMaxAppointments.help}' mandatory=true>
-		<@input type='text' name='nb_days_for_max_appointments_per_user' id='nb_days_for_max_appointments_per_user' value=appointmentform.nbDaysForMaxAppointmentsPerUser!'' params='onkeypress="return validateQty(event);"' maxlength=2 />
-	</@formGroup>
-	
-	<@formGroup labelFor='reference' labelKey='#i18n{appointment.createAppointmentForm.labelReference}' helpKey='#i18n{appointment.createAppointmentForm.labelReference.help}'>
-		<@input type='text' name='reference' id='reference' value=appointmentform.reference!'' maxlength=10 />
-	</@formGroup>
-	<@formGroup labelFor='capacity_per_slot' labelKey='#i18n{appointment.createAppointmentForm.labelCapacityPerSlot}' helpKey='#i18n{appointment.createAppointmentForm.labelCapacityPerSlot.help}'>
-		<@input type='text' name='capacity_per_slot' id='capacity_per_slot' value=appointmentform.capacityPerSlot!'' maxlength=4 />
-	</@formGroup>
-	
-	<@formGroup labelFor='calendarTemplateId' labelKey='#i18n{appointment.createAppointmentForm.labelCalendarTemplate}' helpKey='#i18n{}' mandatory=true>
-		<@select name='calendarTemplateId' id='calendarTemplateId' items=refListCalendarTemplates default_value='${appointmentform.calendarTemplateId!}' />
-	</@formGroup>
-
-	<#if isCaptchaEnabled>
-		<@formGroup labelFor='enableCaptcha'>
-			<@checkBox labelFor='enableCaptcha' labelKey='#i18n{appointment.createAppointmentForm.labelEnableCaptcha}' name='enableCaptcha' id='enableCaptcha' value='true' checked=appointmentform.enableCaptcha!false />
-		</@formGroup>
-	</#if>
-
-	<@formGroup labelFor='enableMandatoryEmail'>
-		<@checkBox labelFor='enableMandatoryEmail' labelKey='#i18n{appointment.createAppointmentForm.labelEnableMandatoryEmail}' name='enableMandatoryEmail' id='enableMandatoryEmail' value='true' checked=appointmentform.enableMandatoryEmail!false />
-	</@formGroup>
-	
-	<@formGroup labelFor='activeAuthentication'>
-		<@checkBox labelFor='activeAuthentication' labelKey='#i18n{appointment.createAppointmentForm.labelActiveAuthentication}' name='activeAuthentication' id='activeAuthentication' value='true' checked=appointmentform.activeAuthentication!false />
-	</@formGroup>
-
-	<@formGroup>
-		<@checkBox orientation='switch' labelFor='anonymizable' labelKey='#i18n{appointment.createAppointmentForm.labelAnonymizable}' name='anonymizable' id='anonymizable' value='true' checked=appointmentform.anonymizable!false params='onchange="javascript:changeVisilityAnonymizePattern();"' />
-	</@formGroup>
-	<@div id="anonymization_pattern_group">
-		<@formGroup labelFor='anonymization_pattern' labelKey='#i18n{appointment.createAppointmentForm.labelAnonymizePattern}' helpKey='#i18n{appointment.createAppointmentForm.labelAnonymizePattern.help}' >
-			<@input type='text' name='anonymization_pattern' id='anonymization_pattern' value=appointmentform.anonymizationPattern!'' maxlength=255 />
-		</@formGroup>
-	</@div>
-
-	<@formGroup labelFor='role' labelKey='#i18n{appointment.createAppointmentForm.labelRole}'>
-		<@select name='role' id='role' items=refListRoles default_value='${appointmentform.role!}' />
-	</@formGroup>
-	
-	<#if listWorkflows??>
-		<@formGroup labelFor='idWorkflow' labelKey='#i18n{appointment.createAppointmentForm.labelWorkflow}'>
-			<@select name='idWorkflow' id='idWorkflow' items=listWorkflows default_value='${appointmentform.idWorkflow!}' />
-		</@formGroup>
-	</#if>
-	
-	<@formGroup labelFor='workgroup' labelKey='#i18n{appointment.createAppointmentForm.labelWorkgroup}'>
-		<@select name='workgroup' id='workgroup' items=user_workgroup_list default_value='${appointmentform.workgroup!}' />
-	</@formGroup>
-	
-	<#if accesscontrol_list?has_content && accesscontrol_list?size gt 1>
-		<@formGroup labelFor='id_accesscontrol' labelKey='#i18n{appointment.createAppointmentForm.accesscontrol.label}' helpKey='#i18n{appointment.createAppointmentForm.accesscontrol.label.help}'>
-			<@select name='id_accesscontrol' id='id_accesscontrol' items=accesscontrol_list default_value='${accesscontrol_id!}' />
-		</@formGroup>
-	</#if>
-	
-	<#if appointmentform.getIcon()??>
-		<#assign xicon= appointmentform.getIcon()>
-		<#if xicon.mimeType?? >
-			<@formGroup labelFor='deleteIcon' labelKey='#i18n{appointment.modifyAppointmentForm.deleteIcon}'>
-				<@checkBox labelFor='deleteIcon' labelKey='#i18n{appointment.modifyAppointmentForm.deleteIcon}' name='deleteIcon' id='deleteIcon' value='true' />
-			</@formGroup>
-		</#if>
-	</#if>
-	
-	<@formGroup labelFor='image_resource' labelKey='#i18n{appointment.createAppointmentForm.labelIconForm}' helpKey='#i18n{appointment.modifyAppointmentForm.helpFormatIcon}'>
-		<@inputGroup>
-			<@input type='file' name='image_resource' id='image_resource' params='accept="image/*"' />
-			<@inputGroupItem>
-				<@button type='button' name='remove_img' id='remove_img' title='Effacer' size='' color='primary' params='onclick="document.getElementById(\'image_resource\').value=\'\'"' buttonIcon='times' />
-			</@inputGroupItem>
-		</@inputGroup>
-	</@formGroup>
-	
-	<@formGroup labelFor='fileHolidays' labelKey='#i18n{appointment.manageHolidays.labelImport}' helpKey='#i18n{appointment.manageHolidays.labelClosinglabelFormatFile}'>
-		<@inputGroup>
-			<@input type='file' name='fileClosingDays' id='fileClosingDays' params='accept=".csv, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel"' />
-			<@inputGroupItem>
-				<@button type='button' name='remove_file' id='remove_file' title='Effacer' size='' color='primary' params='onclick="document.getElementById(\'fileClosingDays\').value=\'\'"' buttonIcon='times' />
-			</@inputGroupItem>
-		</@inputGroup>
-	</@formGroup>
-	
-	<@formGroup labelFor='address_address-input' labelKey='#i18n{appointment.label.formAddress}' helpKey='#i18n{appointment.help.formAddress}'>
-		<input type="hidden" name="geoloc_address" id="geoloc_address" value="${(appointmentform.address?html)!}" />
-		<input type="hidden" name="geoloc_longitude" id="geoloc_longitude" value="${(appointmentform.longitude?c)!}" />
-		<input type="hidden" name="geoloc_latitude" id="geoloc_latitude" value="${(appointmentform.latitude?c)!}" />
-		<input type="hidden" name="hidden_address" id="hidden_address" />
-		<#if hasSuggestPOI>
-			<@suggestPOIInput id="address_address" name="address_address" currentValue="${(appointmentform.address?html)!}" />
-		<#else>
-			<input type="text" name="address_address" id="address_address" class="form-control" value="${(appointmentform.address?html)!}" />
-		</#if>
-		<p class="help-block">#i18n{appointment.label.addressDescription}</p>
-		<div id="map_address" style="height: 300px; width: 100%" class="mt-3"></div>
-	</@formGroup>
-	<@formGroup>
-		<@button type='submit' name='action_modifyAppointmentForm' title='#i18n{portal.util.labelModify}' buttonIcon='save' size='' />
-		<@button type='submit' name='view_manageAppointmentForms' title='#i18n{portal.util.labelCancel}' buttonIcon='times' size='' color='default' />
-	</@formGroup>        
+<@tform id='formid' action='jsp/admin/plugins/appointment/ManageAppointmentForms.jsp' enctype='multipart/form-data'>
+<@input type='hidden' id='id_form' name='id_form' value='${appointmentform.idForm}' />
+<@box>
+	<@boxHeader title='#i18n{appointment.modifyAppointmentForm.titleAlterablesParameters}' boxTools=true>
+		<@button type='submit' name='action_modifyAppointmentForm' title='#i18n{portal.util.labelModify}' buttonIcon='check' size='' />
+		<@button type='submit' name='view_manageAppointmentForms' title='#i18n{portal.util.labelCancel}' buttonIcon='times' size='' color='secondary' cancel=true />
+	</@boxHeader>
+	<@boxBody>
+		<@row>
+			<@columns xs=12 md=6>
+				<@box>
+					<@boxHeader title='#i18n{appointment.manageAppointments.columnFormTitle}' />
+					<@boxBody>
+						<@formGroup labelFor='title' labelKey='#i18n{appointment.createAppointmentForm.labelTitle}' helpKey='#i18n{appointment.createAppointmentForm.labelTitle}' mandatory=true>
+							<@input type='text' name='title' id='title'  value=appointmentform.title!'' maxlength=255 />
+						</@formGroup>
+						<@formGroup labelFor='idCategory' labelKey='#i18n{appointment.createAppointmentForm.labelCategory}'>
+							<@select name='idCategory' id='idCategory' items=listCategories default_value='${appointmentform.idCategory!}' />
+						</@formGroup>
+						<@formGroup labelFor='description' labelKey='#i18n{appointment.labelDescription}' helpKey='#i18n{appointment.labelDescription}' mandatory=true>
+							<@input type='textarea' name='description' id='description'>${appointmentform.description!}</@input>
+						</@formGroup>
+						<@row>
+							<@columns xs=12 md=6>
+								<@formGroup labelFor='date_start_validity' labelKey='#i18n{appointment.createAppointmentForm.labelDateStartValidity}' helpKey='#i18n{appointment.createAppointmentForm.labelDateStartValidity.help}'>
+									<@inputGroup>
+										<input type="date" class="form-control" name="date_start_validity" id="date_start_validity" value="${appointmentform.dateStartValidity!''}" />
+										<@inputGroupItem type='text'>
+											<@icon style='calendar' />
+										</@inputGroupItem>
+									</@inputGroup>
+								</@formGroup>
+							</@columns>
+							<@columns xs=12 md=6>
+								<@formGroup labelFor='date_end_validity' labelKey='#i18n{appointment.createAppointmentForm.labelDateEndValidity}' helpKey='#i18n{appointment.createAppointmentForm.labelDateEndValidity.help}'>
+									<@inputGroup>
+										<input type="date" class="form-control" name="date_end_validity" id="date_end_validity" value="${appointmentform.dateEndValidity!''}" />
+										<@inputGroupItem type='text'>
+											<@icon style='calendar' />
+										</@inputGroupItem>
+									</@inputGroup>
+								</@formGroup>
+							</@columns>
+						</@row>
+						<@formGroup labelFor='is_multislot_appointment' helpKey='#i18n{appointment.label.isMultislotAppointment.help}'>
+							<@checkBox orientation='switch' labelKey='#i18n{appointment.label.isMultislotAppointment}' name='is_multislot_appointment_display' id='is_multislot_appointment_display' value='true' checked=appointmentform.isMultislotAppointment!false disabled=true />
+							<#assign multislotvalue=appointmentform.isMultislotAppointment!false />
+							<@input type='hidden' name="is_multislot_appointment" value=multislotvalue?string />
+						</@formGroup>
+						<#if appointmentform.isMultislotAppointment>
+							<@formGroup labelFor='nb_consecutive_slots' labelKey='#i18n{appointment.label.nbConsecutiveSlots}' helpKey='#i18n{appointment.label.nbConsecutiveSlots.help}' mandatory=true>
+								<@input type='text' name='nb_consecutive_slots' id='nb_consecutive_slots' value=appointmentform.nbConsecutiveSlots!'' params='onkeypress="return validateQty(event);"' maxlength=2/>
+							</@formGroup>
+						</#if>
+						<@formGroup labelFor='bo_overbooking' labelKey='#i18n{appointment.label.BoOverbooking}' helpKey='#i18n{appointment.label.BoOverbooking.help}' hideLabel=['all']>
+							<@checkBox orientation='switch' labelKey='#i18n{appointment.label.BoOverbooking}' name='bo_overbooking' id='bo_overbooking' value='true' checked=appointmentform.boOverbooking!false />
+						</@formGroup>
+						<@row>
+							<@columns xs=12 md=6>
+								<@formGroup labelFor='min_time_before_appointment' labelKey='#i18n{appointment.createAppointmentForm.labelMinTimeBeforeAppointment}' helpKey='#i18n{appointment.createAppointmentForm.labelMinTimeBeforeAppointment.help}' mandatory=true>
+									<@input type='text' name='min_time_before_appointment' id='min_time_before_appointment' value=appointmentform.minTimeBeforeAppointment!'' params='onkeypress="return validateQty(event);"' maxlength=3 />
+								</@formGroup>
+								<@formGroup labelFor='is_displayed_on_portlet' labelKey='#i18n{appointment.label.displayOnPortlet}' helpKey='#i18n{appointment.label.displayOnPortlet.help}' hideLabel=['all']>
+									<@checkBox orientation='switch' labelKey='#i18n{appointment.label.displayOnPortlet}' name='is_displayed_on_portlet' id='is_displayed_on_portlet' value='true' checked=appointmentform.isDisplayedOnPortlet!false />
+								</@formGroup>
+								<@formGroup labelFor='nb_weeks_to_display' labelKey='#i18n{appointment.label.nbWeeksToDisplay}' helpKey='#i18n{appointment.label.nbWeeksToDisplay.help}' mandatory=true>
+									<@input type='text' name='nb_weeks_to_display' id='nb_weeks_to_display' value=appointmentform.nbWeeksToDisplay!'' params='onkeypress="return validateQty(event);"' maxlength=3 />
+								</@formGroup>
+								<@formGroup labelFor='nb_days_before_new_appointment' labelKey='#i18n{appointment.createAppointmentForm.labelNbDaysBeforeNewAppointment}' helpKey='#i18n{appointment.createAppointmentForm.labelNbDaysBeforeNewAppointment.help}' mandatory=true>
+									<@input type='text' name='nb_days_before_new_appointment' id='nb_days_before_new_appointment' value=appointmentform.nbDaysBeforeNewAppointment!'' params='onkeypress="return validateQty(event);"' maxlength=2 />
+								</@formGroup>
+							</@columns>
+							<@columns xs=12 md=6>
+								<@formGroup labelFor='nb_max_appointments_per_user' labelKey='#i18n{appointment.createAppointmentForm.labelNbMaxAppointments}' helpKey='#i18n{appointment.createAppointmentForm.labelNbMaxAppointments.help}' mandatory=true>
+									<@input type='text' name='nb_max_appointments_per_user' id='nb_max_appointments_per_user' value=appointmentform.nbMaxAppointmentsPerUser!'' params='onkeypress="return validateQty(event);"' maxlength=2 />
+								</@formGroup>
+								<@formGroup labelFor='display_title_fo' labelKey='#i18n{appointment.label.displayTitleFo}' helpKey='#i18n{appointment.label.displayTitleFo.help}' hideLabel=['all']>
+									<@checkBox orientation='switch' labelKey='#i18n{appointment.label.displayTitleFo}' name='display_title_fo' id='display_title_fo' value='true' checked=appointmentform.displayTitleFo!false />
+								</@formGroup>
+								<@formGroup labelFor='nb_days_for_max_appointments_per_user' labelKey='#i18n{appointment.createAppointmentForm.labelNbDaysForMaxAppointments}' helpKey='#i18n{appointment.createAppointmentForm.labelNbDaysForMaxAppointments.help}' mandatory=true>
+									<@input type='text' name='nb_days_for_max_appointments_per_user' id='nb_days_for_max_appointments_per_user' value=appointmentform.nbDaysForMaxAppointmentsPerUser!'' params='onkeypress="return validateQty(event);"' maxlength=2 />
+								</@formGroup>
+								<@formGroup labelFor='reference' labelKey='#i18n{appointment.createAppointmentForm.labelReference}' helpKey='#i18n{appointment.createAppointmentForm.labelReference.help}'>
+									<@input type='text' name='reference' id='reference' value=appointmentform.reference!'' maxlength=10 />
+								</@formGroup>
+								<@formGroup labelFor='capacity_per_slot' labelKey='#i18n{appointment.createAppointmentForm.labelCapacityPerSlot}' helpKey='#i18n{appointment.createAppointmentForm.labelCapacityPerSlot.help}'>
+									<@input type='text' name='capacity_per_slot' id='capacity_per_slot' value=appointmentform.capacityPerSlot!'' maxlength=4 />
+								</@formGroup>
+							</@columns>
+						</@row>
+					</@boxBody>
+				</@box>
+			</@columns>
+			<@columns xs=12 md=6>
+				<@box>
+					<@boxHeader title='#i18n{appointment.modifyAppointmentForm.titleAlterablesParameters}' />
+					<@boxBody>
+						<@formGroup labelFor='calendarTemplateId' labelKey='#i18n{appointment.createAppointmentForm.labelCalendarTemplate}' helpKey='#i18n{appointment.createAppointmentForm.labelCalendarTemplate.help}' mandatory=true>
+							<@select name='calendarTemplateId' id='calendarTemplateId' items=refListCalendarTemplates default_value='${appointmentform.calendarTemplateId!}' />
+						</@formGroup>
+						<#if isCaptchaEnabled>
+							<@formGroup labelFor='enableCaptcha'>
+								<@checkBox orientation='switch' labelKey='#i18n{appointment.createAppointmentForm.labelEnableCaptcha}' name='enableCaptcha' id='enableCaptcha' value='true' checked=appointmentform.enableCaptcha!false />
+							</@formGroup>
+						</#if>
+						<@formGroup labelFor='enableMandatoryEmail'>
+							<@checkBox orientation='switch' labelKey='#i18n{appointment.createAppointmentForm.labelEnableMandatoryEmail}' name='enableMandatoryEmail' id='enableMandatoryEmail' value='true' checked=appointmentform.enableMandatoryEmail!false />
+						</@formGroup>
+						<@formGroup labelFor='activeAuthentication'>
+							<@checkBox orientation='switch' labelKey='#i18n{appointment.createAppointmentForm.labelActiveAuthentication}' name='activeAuthentication' id='activeAuthentication' value='true' checked=appointmentform.activeAuthentication!false />
+						</@formGroup>
+						<@formGroup>
+							<@checkBox orientation='switch' labelKey='#i18n{appointment.createAppointmentForm.labelAnonymizable}' name='anonymizable' id='anonymizable' value='true' checked=appointmentform.anonymizable!false params='onchange="javascript:changeVisilityAnonymizePattern();"' />
+						</@formGroup>
+						<@div id="anonymization_pattern_group">
+							<@formGroup labelFor='anonymization_pattern' labelKey='#i18n{appointment.createAppointmentForm.labelAnonymizePattern}' helpKey='#i18n{appointment.createAppointmentForm.labelAnonymizePattern.help}' >
+								<@input type='text' name='anonymization_pattern' id='anonymization_pattern' value=appointmentform.anonymizationPattern!'' maxlength=255 />
+							</@formGroup>
+						</@div>
+						<@formGroup labelFor='role' labelKey='#i18n{appointment.createAppointmentForm.labelRole}'>
+							<@select name='role' id='role' items=refListRoles default_value='${appointmentform.role!}' />
+						</@formGroup>
+						<#if listWorkflows??>
+							<@formGroup labelFor='idWorkflow' labelKey='#i18n{appointment.createAppointmentForm.labelWorkflow}'>
+								<@select name='idWorkflow' id='idWorkflow' items=listWorkflows default_value='${appointmentform.idWorkflow!}' />
+							</@formGroup>
+						</#if>
+						<@formGroup labelFor='workgroup' labelKey='#i18n{appointment.createAppointmentForm.labelWorkgroup}'>
+							<@select name='workgroup' id='workgroup' items=user_workgroup_list default_value='${appointmentform.workgroup!}' />
+						</@formGroup>
+						<#if accesscontrol_list?has_content && accesscontrol_list?size gt 1>
+							<@formGroup labelFor='id_accesscontrol' labelKey='#i18n{appointment.createAppointmentForm.accesscontrol.label}' helpKey='#i18n{appointment.createAppointmentForm.accesscontrol.label.help}'>
+								<@select name='id_accesscontrol' id='id_accesscontrol' items=accesscontrol_list default_value='${accesscontrol_id!}' />
+							</@formGroup>
+						</#if>
+						<#if appointmentform.getIcon()??>
+							<#assign xicon= appointmentform.getIcon()>
+							<#if xicon.mimeType?? >
+								<@formGroup labelFor='deleteIcon'>
+									<@checkBox orientation='switch' labelKey='#i18n{appointment.modifyAppointmentForm.deleteIcon}' name='deleteIcon' id='deleteIcon' value='true' />
+								</@formGroup>
+							</#if>
+						</#if>
+						<@formGroup labelFor='image_resource' labelKey='#i18n{appointment.createAppointmentForm.labelIconForm}' helpKey='#i18n{appointment.modifyAppointmentForm.helpFormatIcon}'>
+							<@inputGroup>
+								<@input type='file' name='image_resource' id='image_resource' params='accept="image/*"' />
+								<@button type='button' name='remove_img' id='remove_img' title='#i18n{portal.util.labelDelete}' size='' color='danger' params='onclick="document.getElementById(\'image_resource\').value=\'\'"' buttonIcon='times' hideTitle=['all'] />
+							</@inputGroup>
+						</@formGroup>
+						<@formGroup labelFor='fileHolidays' labelKey='#i18n{appointment.manageHolidays.labelImport}' helpKey='#i18n{appointment.manageHolidays.labelClosinglabelFormatFile}'>
+							<@inputGroup>
+								<@input type='file' name='fileClosingDays' id='fileClosingDays' params='accept=".csv, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel"' />
+								<@button type='button' name='remove_file' id='remove_file' title='#i18n{portal.util.labelDelete}' size='' color='danger' params='onclick="document.getElementById(\'fileClosingDays\').value=\'\'"' buttonIcon='times' hideTitle=['all'] />
+							</@inputGroup>
+						</@formGroup>
+						<@formGroup labelFor='address_address-input' labelKey='#i18n{appointment.label.formAddress}' helpKey='#i18n{appointment.help.formAddress}'>
+							<@input type='hidden' name='geoloc_address' id='geoloc_address' value='${(appointmentform.address?html)!}' />
+							<@input type='hidden' name='geoloc_longitude' id='geoloc_longitude' value='${(appointmentform.longitude?c)!}' />
+							<@input type='hidden' name='geoloc_latitude' id='geoloc_latitude' value='${(appointmentform.latitude?c)!}' />
+							<@input type='hidden' name='hidden_address' id='hidden_address' />
+							<#if hasSuggestPOI>
+								<@suggestPOIInput id="address_address" name="address_address" currentValue="${(appointmentform.address?html)!}" />
+							<#else>
+								<@input name='address_address' id='address_address-input' value=(appointmentform.address?html)! />
+							</#if>
+							<@p class='text-muted'>#i18n{appointment.label.addressDescription}</@p>
+							<@div id='map_address' class='w-100 position-relative mt-3' params='style="min-height: 300px;"'></@div>
+						</@formGroup>
+					</@boxBody>
+				</@box>     
+			</@columns>
+		</@row>	
+		<@row class='my-3'>
+			<@columns>
+				<@button type='submit' name='action_modifyAppointmentForm' title='#i18n{portal.util.labelModify}' buttonIcon='check' size='' />
+				<@button type='submit' name='view_manageAppointmentForms' title='#i18n{portal.util.labelCancel}' buttonIcon='times' size='' color='secondary' cancel=true />
+			</@columns>
+		</@row>
+		</@boxBody>
+	</@box>
 </@tform>
-</fieldset>
 <@getDatePickerBootstrap idField="date_start_validity" language=language  />
 <@getDatePickerBootstrap idField="date_end_validity" language=language />
 <link rel="stylesheet" href="js/plugins/leaflet/leaflet/leaflet.css" />
@@ -280,25 +284,23 @@ document.addEventListener('DOMContentLoaded', function() {
 		map.fitBounds(markersLayer.getBounds());
 	}
 });
-</script>
-<script>
+
 document.getElementById('formid').addEventListener('keydown', function(e) {
 	if (e.key === 'Enter') {
 		e.preventDefault();
 	}
 });
+
 function validateQty(event) {
 	var key = window.event ? event.keyCode : event.which;
-
-if (event.keyCode == 8 || event.keyCode == 9 || event.keyCode == 46
-	|| event.keyCode == 37 || event.keyCode == 39) {
-	return true;
-}
-else if ( key < 48 || key > 57 ) {
-	return false;
-}
-else return true;
+	if (event.keyCode == 8 || event.keyCode == 9 || event.keyCode == 46	|| event.keyCode == 37 || event.keyCode == 39 ) {
+		return true;
+	} else if ( key < 48 || key > 57 ) {
+		return false;
+	}
+	else return true;
 };
+
 function validateNbConsecutiveSlots() {
 	var nbConsecutiveSlotsInput = document.getElementById('nb_consecutive_slots');
 	var enteredValue = parseInt(nbConsecutiveSlotsInput.value);
@@ -310,14 +312,13 @@ function validateNbConsecutiveSlots() {
 
 // Add event listener to validate the input value
 var nbConsecutiveSlotsInput = document.getElementById('nb_consecutive_slots');
-if ( nbConsecutiveSlotsInput )
-{
+if ( nbConsecutiveSlotsInput ){
 	nbConsecutiveSlotsInput.addEventListener('change', validateNbConsecutiveSlots);
 }
 
 changeVisilityAnonymizePattern();
-function changeVisilityAnonymizePattern()
-{
+
+function changeVisilityAnonymizePattern(){
 	if(document.getElementById("anonymizable").checked)
 	{
 		document.getElementById("anonymization_pattern_group").style.display = 'block';
@@ -329,4 +330,4 @@ function changeVisilityAnonymizePattern()
 	}
 }
 </script>
-</#macro> 
+</#macro>

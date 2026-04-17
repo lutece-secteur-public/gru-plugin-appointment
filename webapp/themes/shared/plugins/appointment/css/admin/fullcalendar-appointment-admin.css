@@ -1,0 +1,178 @@
+.appointment-tab{
+    margin-top: -30px;
+}
+
+.popover :is(hr, p){
+    margin-block: 0;
+    padding-block: .25rem;
+}
+
+.fc-v-event {
+    background-color: transparent;
+}
+
+.fc .fc-timegrid-slot {
+    height: 3em;
+}
+
+.fc-event {
+    cursor: pointer;
+}
+
+.fc-timegrid-event.ui-selected {
+    outline: 2px solid rgba(13, 110, 253, .8);
+    outline-offset: -2px;
+    background-color: rgba(13, 110, 253, .2) !important;
+    box-shadow: 0 0 0 4px rgba(13, 110, 253, .1);
+}
+
+/* Selection highlight — force bg layer above events layer */
+.fc .fc-timegrid-col-bg {
+    z-index: 4 !important;
+    pointer-events: none;
+}
+
+.fc .fc-timegrid-col-events {
+    z-index: 3 !important;
+}
+
+.fc .fc-highlight {
+    background-color: rgba(13, 110, 253, .3) !important;
+} 
+
+.fc .fc-button {
+    font-size: .75rem;
+    padding: .25rem .5rem;
+}
+
+/* Background events — visible color */
+.fc .fc-bg-event {
+    opacity: 1;
+}
+
+/* Background events for hour-specific comments only */
+.fc .fc-bg-event.hour-comment {
+    opacity: 1;
+    background: repeating-linear-gradient( -45deg, rgba(233, 250, 0, 0.3), rgba(233, 250, 0, 0.3) 4px, rgba(233, 250, 0, 0.1) 4px,rgba(233, 250, 0, 0.1) 8px ) !important;
+}
+
+.fc .fc-bg-event.hour-comment .fc-event-title {
+    color: #856404;
+    font-size: .75rem;
+    font-weight: 600;
+    padding: 2px 4px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.fc-timegrid-event-harness ,
+.fc-event-title.fc-sticky,
+.fc-timegrid-event-short .fc-event-title {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-inline: 5px;
+    height: 2.5rem
+}
+
+.fc-multiMonthYear-view.fc-multimonth.fc-multimonth-multicol .fc-multimonth-daygrid-table .fc-event-title.fc-sticky{
+    display: block;
+    padding-inline: initial;
+    height: initial;
+}
+
+.fc-daygrid-day-events .fc-event .fc-event-main .fc-event-title-container .fc-event-title p{
+    margin-block-end: 0;
+    text-wrap-mode: wrap;
+}
+
+.fc-daygrid-day-events .fc-event[data-slot-hover="true"] {
+    background: repeating-linear-gradient( -45deg, rgba(233, 250, 0, .3), rgba(233, 250, 0, .3) 4px, rgba(233, 250, 0, .1) 4px, rgba(233, 250, 0, .1) 8px )
+}
+
+.fc-daygrid-day-events .fc-event[data-slot-hover="true"] .fc-event-main  .fc-event-title-container .fc-event-title p{
+    color: #000;
+} 
+
+.fc-timegrid-cols .fc-event .fc-event-main .fc-event-title-container  .fc-event-title a{
+    width: 25px
+}
+
+/* Mini-calendar compact styles */
+#mini-calendar {
+    font-size: 0.75rem;
+}
+
+#mini-calendar .fc {
+    background: var(--tblr-bg-surface, #fff);
+    border-radius: var(--tblr-border-radius, .375rem);
+    box-shadow: var(--tblr-shadow-card, 0 0 4px rgba(0,0,0,.04));
+    padding: .5rem;
+}
+
+#mini-calendar .fc-toolbar {
+    margin-bottom: .25rem !important;
+    gap: .25rem;
+}
+
+#mini-calendar .fc-toolbar-title {
+    font-size: .85rem !important;
+}
+
+#mini-calendar .fc-button {
+    padding: .1rem .25rem !important;
+    font-size: .7rem !important;
+}
+
+#mini-calendar .fc-col-header-cell {
+    font-size: .7rem;
+    padding: 2px 0;
+}
+
+#mini-calendar .fc-daygrid-day {
+    min-height: 0 !important;
+}
+
+#mini-calendar .fc-daygrid-day-frame {
+    min-height: 2rem !important;
+    padding: 0 !important;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+}
+
+#mini-calendar .fc-daygrid-day-number {
+    padding: 1px 4px;
+    font-size: .8rem;
+}
+
+#mini-calendar .fc-daygrid-day-events {
+    display: none !important;
+}
+
+#mini-calendar .fc-daygrid-day-bg {
+    display: none !important;
+}
+
+#mini-calendar .fc-daygrid-day.mini-cal-active-week {
+    background-color: var(--bs-primary-bg-subtle, #cce5ff) !important;
+}
+
+.mini-cal-dot {
+    display: block;
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background-color: var(--bs-primary, #0d6efd);
+    margin: 1px auto 0;
+    position: absolute;
+    bottom: 2px;
+}
+
+.mini-cal-dot:hover {
+    transform: scale(1.5);
+    transition: transform .15s;
+}

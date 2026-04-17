@@ -1,42 +1,28 @@
-<@row>
-	<@columns>
-		<@box color='primary'>
-			<#if template.idCalendarTemplate?? && template.idCalendarTemplate &gt; 0>
-				<#assign boxHeaderTitle = '#i18n{appointment.createModifyCalendarTemplate.pageTitleModify}' />
-			<#else>
-				<#assign boxHeaderTitle = '#i18n{appointment.labelAddTemplate}' />
-			</#if>
-			<@boxHeader title='${boxHeaderTitle}' />
-			
-			<@boxBody>
-				<@tform action='jsp/admin/plugins/appointment/ManageCalendarTemplates.jsp'>
-					<fieldset>
-						<@messages infos=infos errors=errors />
-						<@formGroup labelKey='#i18n{appointment.labelTitle}'>
-							<@input type='text' name='title' id='title' value='${(template.title)!}' maxlength=255 />
-						</@formGroup>
-						<@formGroup labelKey='#i18n{appointment.labelDescription}'>
-							<@input type='text' name='description' id='description' value='${(template.description)!}' maxlength=255 />
-						</@formGroup>
-						<@formGroup labelKey='#i18n{appointment.createModifyCalendarTemplate.labelTemplatePath}'>
-							<@inputGroup>
-								<@select items=refListTemplates default_value=(template.templatePath)!'' name='templatePath' />
-								<@inputGroupItem>
-									<@button type='submit' name='action' value='doDownloadTemplate' title='#i18n{portal.util.labelDownload}' buttonIcon='download' title='#i18n{portal.util.labelDownload}' />
-								</@inputGroupItem>
-							</@inputGroup>
-						</@formGroup>
-						<@formGroup>
-							<#if (template.idCalendarTemplate)?? && template.idCalendarTemplate &gt; 0>
-								<input type='hidden' name='idCalendarTemplate' value='${template.idCalendarTemplate}' />
-							</#if>
-								<@button type='submit' name='action' id='action' value='doCreateModifyTemplate' buttonIcon='check' title='#i18n{portal.util.labelOk}' />
-								<@aButton href='jsp/admin/plugins/appointment/ManageCalendarTemplates.jsp' buttonIcon='times' title='#i18n{portal.util.labelBack}' color='btn-default' />
-							</div>
-						</@formGroup>
-					</fieldset>
-				</@tform>
-			</@boxBody>
-		</@box>
-	</@columns>
-</@row>
+<#if template.idCalendarTemplate?? && template.idCalendarTemplate gt 0><#assign pageTitle = '#i18n{appointment.createModifyCalendarTemplate.pageTitleModify}' /><#else><#assign pageTitle = '#i18n{appointment.labelAddTemplate}' /></#if>
+<@pageContainer>
+	<@pageColumn>
+		<@pageHeader title=pageTitle />
+		<@div id='form-create-modify-calendar-template' >
+		<@messages infos=infos errors=errors />
+		<@tform action='jsp/admin/plugins/appointment/ManageCalendarTemplates.jsp'>
+		<#if (template.idCalendarTemplate)?? && template.idCalendarTemplate gt 0><@input type='hidden' name='idCalendarTemplate' value='${template.idCalendarTemplate}' /></#if>
+		<@formGroup labelKey='#i18n{appointment.labelTitle}'>
+			<@input type='text' name='title' id='title' value='${(template.title)!}' maxlength=255 />
+		</@formGroup>
+		<@formGroup labelKey='#i18n{appointment.labelDescription}'>
+			<@input type='text' name='description' id='description' value='${(template.description)!}' maxlength=255 />
+		</@formGroup>
+		<@formGroup labelKey='#i18n{appointment.createModifyCalendarTemplate.labelTemplatePath}'>
+			<@inputGroup>
+				<@select items=refListTemplates default_value=(template.templatePath)!'' name='templatePath' />
+				<@button type='submit' name='action' value='doDownloadTemplate' title='#i18n{portal.util.labelDownload}' buttonIcon='download' />
+			</@inputGroup>
+		</@formGroup>
+		<@formGroup>
+			<@button type='submit' name='action' id='action' value='doCreateModifyTemplate' buttonIcon='check' title='#i18n{portal.util.labelOk}' />
+			<@aButton href='jsp/admin/plugins/appointment/ManageCalendarTemplates.jsp' buttonIcon='x' title='#i18n{portal.util.labelBack}' color='secondary' target='_top' />
+		</@formGroup>
+		</@tform>
+		</@div>
+	</@pageColumn>
+</@pageContainer>

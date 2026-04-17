@@ -1,53 +1,15 @@
-<div class="form-group">
-	<label class="control-label col-xs-12 col-sm-12 col-md-3 col-lg-3" for="attribute${entry.idEntry}">${entry.title}<#if entry.mandatory>* </#if></label>
-	<div class=" col-xs-12 col-sm-12 col-md-6 col-lg-6">
-		<select name="attribute${entry.idEntry}" id="attribute${entry.idEntry}"
-			<#if list_responses??>
-				<#list list_responses as response>
-					<#if response.entry.idEntry == entry.idEntry && response.entry.error??>
-						class="error"
-						<#break>
-					</#if>
-				</#list>
-				class="${entry.CSSClass!}"</#if> >
-				<option value="">#i18n{appointment.xpage.form.noValue}</option>
-				<#list entry.fields as field>
-					<option  value="${field.idField}"
-					<#if list_responses??>
-						<#list list_responses as response>
-							<#if response.entry.idEntry == entry.idEntry && response.field??>
-								<#if response.field.idField == field.idField>
-									selected ="selected"
-									<#break>
-								</#if>
-							</#if>
-						</#list>
-					<#else>
-						<#if field.defaultValue>
-							selected ="selected"
-						</#if>
-					</#if>
-					>
-					${field.title}
-				</option>
-			</#list>
-		</select>
-   <#if entry.helpMessage?exists&&entry.helpMessage!=''>
-		<p class="help-block">${entry.helpMessage}</p>
-	</#if>
-	</div>
-</div>
-<#if list_responses??>
-<#list list_responses as response>
-	<#if response.entry.idEntry == entry.idEntry && response.entry.error?? && response.entry.error.isDisplayableError>
-		<div class="alert alert-error alert-danger">
-		<#assign error = response.entry.error>
-		<#if error.mandatoryError>
-			${error.errorMessage}
-		<#else>
-			#i18n{appointment.message.mandatory.entry}
-		</#if>
-		</div>	
-	</#if>
-</#list>
-</#if>
+<#assign errorMsg = ''>
+<#assign helpMsg = ''>
+<#if list_responses??><#list list_responses as response><#if response.entry.idEntry == entry.idEntry && response.entry.error?? && response.entry.error.isDisplayableError><#assign error = response.entry.error><#assign errorMsg><#if error.mandatoryError>${error.errorMessage}<#else>#i18n{appointment.message.mandatory.entry}</#if></#assign></#if></#list></#if>
+<#if entry.helpMessage?? && entry.helpMessage != ''><#assign helpMsg>${entry.helpMessage}</#assign></#if>
+<#assign selectClass = 'form-control ${entry.CSSClass!}' />
+<@cField label='${entry.title}' required=entry.mandatory>
+	<@cSelect name='attribute${entry.idEntry}' id='attribute${entry.idEntry}' class=selectClass helpMsg=helpMsg errorMsg=errorMsg>
+		<@cOption value=''>#i18n{appointment.xpage.form.noValue}</@cOption>
+		<#list entry.fields as field>
+			<#assign isSelected = false>
+			<#if list_responses??><#list list_responses as response><#if response.entry.idEntry == entry.idEntry && response.field??><#if response.field.idField == field.idField><#assign isSelected = true></#if></#if></#list><#else><#if field.defaultValue><#assign isSelected = true></#if></#if>
+			<@cOption value='${field.idField}' selected=isSelected>${field.title}</@cOption>
+		</#list>
+	</@cSelect>
+</@cField>

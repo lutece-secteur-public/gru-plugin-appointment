@@ -1,0 +1,22 @@
+#appointment-picker #day-panel .card{
+	background-color: var(--main-info-color);
+	border: 1px solid var(--main-info-color);
+	border-radius: 15px;
+    color: var(--white-color);
+}
+
+#appointment-picker #day-panel .card:hover,
+#appointment-picker #day-panel .card.active{
+	background-color:  var(--white-color);
+    color: var(--main-color);
+}
+
+#appointment-picker #day-panel .card.active{
+	border-width: 4px;
+}
+
+#appointment-picker #day-panel .card .badge{
+    text-wrap-mode: wrap !important;
+	white-space-collapse: collapse !important;
+    white-space: normal!important;
+}

@@ -1,91 +1,81 @@
-<@row>
-	<@columns>
-		<@box color='primary'>
-			<@boxHeader title='#i18n{appointment.modifyField.title} : "${field.parentEntry.title}"' />
-			<@boxBody>
-				<@tform action='jsp/admin/plugins/appointment/ManageAppointmentFormFields.jsp'>
-					<fieldset>
-						<legend class="sr-only">#i18n{appointment.modifyField.title} : '${field.parentEntry.title}'</legend>
-						<@input type='hidden' name='action' value='doModifyFieldCC' />
-						<@input type='hidden' name='id_field' value='${field.idField}' />
-						<@formGroup labelFor='title' labelKey='#i18n{appointment.labelTitle}' mandatory=true>
-							<@input type='text' name='title' id='title' value='${field.title}' />
-						</@formGroup>
-						<@formGroup labelFor='value' labelKey='#i18n{appointment.value.name}' mandatory=true>
-							<@input type='text' name='value' id='value' inputSize=80 value='${field.value}' />
-						</@formGroup>
-						<@formGroup labelFor='comment' labelKey='#i18n{appointment.comment.name}'>
-							<@input type='textarea' name='comment' id='comment'>${field.comment!}</@input>
-						</@formGroup>
-						<@formGroup labelFor='default_value' labelKey='#i18n{appointment.defaultValue.name}'>
-							<@checkBox labelFor='default_value' name='default_value' id='default_value' value='1' checked=field.defaultValue />
-						</@formGroup>
-						<@formGroup labelFor='no_display_title' labelKey='#i18n{appointment.createField.labelNoDisplayTitle}'>
-							<@checkBox labelFor='no_display_title' name='no_display_title' id='no_display_title' value='1' checked=field.noDisplayTitle />
-						</@formGroup>
-						<@formGroup>
-							<@button type='submit' name='save' buttonIcon='save' title='#i18n{appointment.labelSave}' hideTitle=['xs'] />
-							<@button type='submit' name='apply' buttonIcon='check' title='&nbsp;#i18n{appointment.modifyEntry.buttonApply}' hideTitle=['xs'] />
-							<@button type='submit' name='cancel' params='onclick="javascript:window.history.back();"' buttonIcon='times' title='#i18n{appointment.labelCancel}' color='default' hideTitle=['xs'] />
-						</@formGroup>
-					</fieldset>
-				</@tform>
-			</@boxBody>
-		</@box>
-		
-		<@box color='primary'>
+<@pageContainer>
+	<@pageColumn>
+		<@pageHeader title='#i18n{appointment.modifyField.title} : "${field.parentEntry.title}"' class='col-md-8'/>
+		<@tform id='modify-field' action='jsp/admin/plugins/appointment/ManageAppointmentFormFields.jsp' boxed=true>
+		<@input type='hidden' name='action' value='doModifyFieldCC' />
+		<@input type='hidden' name='id_field' value='${field.idField}' />
+		<@formGroup labelFor='title' labelKey='#i18n{appointment.labelTitle}' mandatory=true>
+			<@input type='text' name='title' id='title' value='${field.title}' />
+		</@formGroup>
+		<@formGroup labelFor='value' labelKey='#i18n{appointment.value.name}' mandatory=true>
+			<@input type='text' name='value' id='value' inputSize=80 value='${field.value}' />
+		</@formGroup>
+		<@formGroup labelFor='comment' labelKey='#i18n{appointment.comment.name}'>
+			<@input type='textarea' name='comment' id='comment'>${field.comment!}</@input>
+		</@formGroup>
+		<@formGroup>
+			<@checkBox orientation='switch' labelKey='#i18n{appointment.defaultValue.name}' name='default_value' id='default_value' value='1' checked=field.defaultValue />
+		</@formGroup>
+		<@formGroup>
+			<@checkBox orientation='switch' labelKey='#i18n{appointment.createField.labelNoDisplayTitle}' name='no_display_title' id='no_display_title' value='1' checked=field.noDisplayTitle />
+		</@formGroup>
+		<@formGroup>
+			<@button type='submit' name='save' buttonIcon='check' title='#i18n{appointment.labelSave}' />
+			<@button type='submit' name='apply' buttonIcon='check' title='#i18n{appointment.modifyEntry.buttonApply}' />
+			<@button type='submit' name='cancel' buttonIcon='arrow-left' title='#i18n{appointment.labelCancel}' color='secondary' cancel=true />
+		</@formGroup>
+		</@tform>
+		<@box>
 			<@boxHeader title='#i18n{appointment.modifyField.manageConditionalQuestion.title}' boxTools=true>
-				<@tform class='form-inline' action='jsp/admin/plugins/appointment/ManageAppointmentFormEntries.jsp'>
-					<fieldset>
-						<legend class="sr-only">#i18n{appointment.modifyField.manageConditionalQuestion.title}</legend>
-						<@input type='hidden' name='view' value='getCreateEntry' />
-						<@input type='hidden' name='id_field' value='${field.idField}' />
-						<@input type='hidden' name='id_form' value='${field.parentEntry.idResource}' />
-						<@formGroup labelFor='id_type' labelKey='#i18n{appointment.modifyAppointmentForm.labelInsertEntry}' formStyle='inline'>
-							<@inputGroup>
-								<@select name='id_type'  items=entry_type_list default_value='-1' size='sm' />
-								<@inputGroupItem>
-									<@button type='submit' buttonIcon='plus' title='#i18n{appointment.label.insert}' size='sm' />
-								</@inputGroupItem>
-						</@inputGroup>
-					</@formGroup>
-				</fieldset>
+			<@tform action='jsp/admin/plugins/appointment/ManageAppointmentFormEntries.jsp'>
+			<@input type='hidden' name='view' value='getCreateEntry' />
+			<@input type='hidden' name='id_field' value='${field.idField}' />
+			<@input type='hidden' name='id_form' value='${field.parentEntry.idResource}' />
+			<@formGroup labelFor='id_type' labelKey='#i18n{appointment.modifyAppointmentForm.labelInsertEntry}' formStyle='inline'>
+			<@inputGroup>
+				<@select name='id_type' items=entry_type_list default_value='-1' />
+				<@button type='submit' buttonIcon='plus' title='#i18n{appointment.label.insert}' />
+			</@inputGroup>
+			</@formGroup>
 			</@tform>
-		</@boxHeader>
-		<@boxBody>
-			<a name="list" id="list"></a>
-			<@table>
-				<thead>
-					<tr> 
-						<th> #i18n{appointment.labelTitle}</th>
-						<th> #i18n{appointment.type.name}</th>
-						<th> #i18n{appointment.modifyField.manageConditionalQuestion.rowConditionalQuestion}</th>
-						<th> #i18n{appointment.actions.label}</th>
-					</tr>
-				</thead>
-				<tbody>
-					<#assign cpt=0>
+			</@boxHeader>
+			<@boxBody>
+			<#if entry_list?has_content>
+				<#assign cpt=0>
+				<@manageFeature>
 					<#list entry_list as entry>
 					<#assign cpt=cpt+1>
-					<tr>
-						<td>${entry.title!}</td>
-						<td>${entry.entryType.title}</td>
-						<td><#if entry.numberConditionalQuestion!=0>${entry.numberConditionalQuestion}</#if></td>
-						<td>
-							<@aButton href='jsp/admin/plugins/appointment/ManageAppointmentFormEntries.jsp?view=getModifyEntry&id_entry=${entry.idEntry}' title='edit' hideTitle=['all'] buttonIcon='edit' size='sm' />
+					<@manageFeatureItem>
+						<@manageFeatureItemColumn auto=true flex=false>
+							<strong>${entry.title!}</strong>
+						</@manageFeatureItemColumn>
+						<@manageFeatureItemColumn auto=true flex=false valign='top'>
+							<@p class='fw-bold fs-3'>#i18n{appointment.type.name}</@p>
+							${entry.entryType.title}
+						</@manageFeatureItemColumn>
+						<#if entry.numberConditionalQuestion!=0>
+							<@manageFeatureItemColumn auto=true flex=false valign='top'>
+								<@p class='fw-bold fs-3'>#i18n{appointment.modifyField.manageConditionalQuestion.rowConditionalQuestion}</@p>
+								${entry.numberConditionalQuestion}
+							</@manageFeatureItemColumn>
+						</#if>
+						<@manageFeatureItemColumn align='end'>
+							<@aButton href='jsp/admin/plugins/appointment/ManageAppointmentFormEntries.jsp?view=getModifyEntry&id_entry=${entry.idEntry}' title='#i18n{portal.util.labelModify}' hideTitle=['all'] buttonIcon='edit' size='' />
 							<#if cpt!=1>
-								<@aButton href='jsp/admin/plugins/appointment/ManageAppointmentFormEntries.jsp?action=doMoveUpEntryConditional&id_entry=${entry.idEntry}&id_field=${field.idField}' title='#i18n{appointment.modifyForm.manageEnter.titleMoveUp}' hideTitle=['all'] buttonIcon='chevron-up' size='sm' />
-							</#if>	
+								<@aButton href='jsp/admin/plugins/appointment/ManageAppointmentFormEntries.jsp?action=doMoveUpEntryConditional&id_entry=${entry.idEntry}&id_field=${field.idField}' title='#i18n{appointment.modifyForm.manageEnter.titleMoveUp}' hideTitle=['all'] buttonIcon='chevron-up' size='' />
+							</#if>
 							<#if entry_has_next>
-								<@aButton href='jsp/admin/plugins/appointment/ManageAppointmentFormEntries.jsp?action=doMoveDownEntryConditional&id_entry=${entry.idEntry}&id_field=${field.idField}' title='#i18n{appointment.modifyForm.manageEnter.titleMoveDown}' hideTitle=['all'] buttonIcon='chevron-down' size='sm' />
-							</#if>	
-							<@aButton href='jsp/admin/plugins/appointment/ManageAppointmentFormEntries.jsp?view=confirmRemoveEntry&id_entry=${entry.idEntry}&id_field=${field.idField}' title='#i18n{appointment.modifyForm.manageEnter.titleDelete}' hideTitle=['all'] buttonIcon='trash' color='danger' size='sm' />
-						</td>
-					</tr>
+								<@aButton href='jsp/admin/plugins/appointment/ManageAppointmentFormEntries.jsp?action=doMoveDownEntryConditional&id_entry=${entry.idEntry}&id_field=${field.idField}' title='#i18n{appointment.modifyForm.manageEnter.titleMoveDown}' hideTitle=['all'] buttonIcon='chevron-down' size='' />
+							</#if>
+							<@aButton href='jsp/admin/plugins/appointment/ManageAppointmentFormEntries.jsp?view=confirmRemoveEntry&id_entry=${entry.idEntry}&id_field=${field.idField}' title='#i18n{appointment.modifyForm.manageEnter.titleDelete}' hideTitle=['all'] buttonIcon='trash' color='danger' size='' />
+						</@manageFeatureItemColumn>
+					</@manageFeatureItem>
 					</#list>
-				</tbody>			
-			</@table>
-		</@boxBody>
-	</@box>
-</@columns>
-</@row>
+				</@manageFeature>
+			<#else>
+				<@empty title='#i18n{portal.util.labelNoItem}' iconName='list-search' />
+			</#if>
+			</@boxBody>
+		</@box>
+	</@pageColumn>
+</@pageContainer>

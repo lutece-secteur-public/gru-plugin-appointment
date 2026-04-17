@@ -1,103 +1,110 @@
 <#include "all_entry_commons.html" />
 <#include "/admin/util/editor/editor.html" />
-<@row>
-	<@columns>
-		<@box color='primary'>
-			<@boxHeader title='#i18n{appointment.modifyEntry.titleQuestion} : "${form.title}"' />
-			<@boxBody>
-					<@tform action='jsp/admin/plugins/appointment/ManageAppointmentFormEntries.jsp'>
-						<@input type='hidden' name='id_entry' value='${entry.idEntry}' />
-						<@input type='hidden' name='action' value='doModifyEntry' />
-						<@formGroup labelKey='#i18n{appointment.createEntry.labelType}'>
-							<@staticText><@tag color='info'>${entry.entryType.title}</@tag></@staticText>
-						</@formGroup>
-						<@formGroup labelFor='title' labelKey='#i18n{appointment.labelTitle}' helpKey='#i18n{appointment.createEntry.labelTitleComment}' mandatory=true>
-							<@input type='text' name='title' id='title' value='${entry.title}' maxlength=255 />
-						</@formGroup>
-						<@formGroup labelFor='help_message' labelKey='#i18n{appointment.createEntry.labelHelpMessage}' helpKey='#i18n{appointment.createEntry.labelHelpMessageComment}'>
-							<@input type='textarea' name='help_message' id='help_message' rows=10>${entry.helpMessage}</@input>
-						</@formGroup>
-						<@formGroup labelFor='comment' labelKey='#i18n{appointment.comment.name}'>
-							<@input type='textarea' name='comment' rows=2>${entry.comment}</@input>
-						</@formGroup>
-						<@formGroup labelKey='#i18n{appointment.createEntry.labelMandatory}'>
-							<@checkBox labelFor='mandatory' labelKey='#i18n{appointment.createEntry.labelMandatory}' name='mandatory' id='mandatory' value='1' checked=entry.mandatory />
-						</@formGroup>
-						<@formGroup labelKey='#i18n{appointment.createEntry.labelOnlyDisplayInBack}'>
-							<@checkBox labelFor='only_display_in_back' labelKey='#i18n{appointment.createEntry.labelOnlyDisplayInBack}' name='only_display_in_back' id='only_display_in_back' value='1' checked=entry.onlyDisplayInBack />
-						</@formGroup>
-						<@formGroup labelFor='file_max_size' labelKey='#i18n{appointment.createEntry.labelFileMaxSize}' mandatory=true>
-							<@input type='text' name='file_max_size' id='file_max_size' value='${getFileMaxSize(entry)}' />
-						</@formGroup>
-						<@formGroup labelFor='max_files' labelKey='#i18n{appointment.createEntry.labelMaxFiles}' mandatory=true>
-							<@input type='text' name='max_files' inputSize=2 value='${getMaxFiles(entry)}' maxlength=2 />
-						</@formGroup>
-						<@formGroup>
-							<#assign anonymizable=getFieldByCode( entry, "anonymizable")>
-							<#if anonymizable.value?boolean>
-								<#assign checkedValue = true />
-								<#assign anonPattern = anonymizable.title />
-							<#else>
-								<#assign checkedValue = false />
-								<#assign anonPattern ="" />
-							</#if>
-							<@checkBox orientation='switch' labelFor='anonymizable' labelKey='#i18n{appointment.createAppointmentForm.labelAnonymizable.genattField}' name='anonymizable' id='anonymizable' value='1' params='onchange="javascript:changeVisilityAnonymizePattern();"' checked=checkedValue />
-						</@formGroup>
-						<@formGroup labelFor='anonymize_pattern' id="anonymize_pattern_group" labelKey='#i18n{forms.createEntry.labelAnonymizePattern}' helpKey='${anonymization_help_message}' >
-							<@input type='text' name='anonymize_pattern' id='anonymize_pattern' value='${anonPattern!}' maxlength=255 />
-						</@formGroup>
-						<@formGroup labelFor='css_class' labelKey='#i18n{appointment.createEntry.labelCSSClass}' helpKey='#i18n{appointment.createEntry.labelCSSClassComment}'>
-							<@input type='text' name='css_class' id='css_class' value='${entry.CSSClass!}' maxlength=255 />
-						</@formGroup>
-						<@formGroup>
-							<@button type='submit' name='save' id='save' buttonIcon='check' title='#i18n{appointment.labelSave}' />
-							<@button type='submit' name='apply' id='apply' buttonIcon='check' title='#i18n{appointment.modifyEntry.buttonApply}' />
-							<@button name='cancel' id='cancel' cancel=true buttonIcon='times' params='onclick="javascript:window.history.back();"' title='#i18n{appointment.labelCancel}' />
-						</@formGroup>
-				</@tform>
-			</@boxBody>
-		</@box>
+<#assign headerBreadcrumbs>
+<@breadcrumbs class='mt-2'>
+	<@breadcrumbItem><@link href='jsp/admin/plugins/appointment/ManageAppointmentFormEntries.jsp?view=modifyAppointmentFormEntries&id_form=${form.idForm}' label='#i18n{appointment.manageAppointments.pageTitle}' /></@breadcrumbItem>
+	<@breadcrumbItem>#i18n{appointment.modifyEntry.titleQuestion} : ${form.title}</@breadcrumbItem>
+</@breadcrumbs>
+</#assign>
+<@pageContainer>
+	<@pageColumn>
+		<@pageHeader title='#i18n{appointment.modifyEntry.titleQuestion} : "${form.title}"' class='col-md-8' breadcrumb=headerBreadcrumbs />
+		<@tform action='jsp/admin/plugins/appointment/ManageAppointmentFormEntries.jsp' boxed=true>
+		<@input type='hidden' name='id_entry' value='${entry.idEntry}' />
+		<@input type='hidden' name='action' value='doModifyEntry' />
+		<@p>#i18n{appointment.createEntry.labelType} <@tag color='info'>${entry.entryType.title}</@tag></@p>
+		<@formGroup labelFor='title' labelKey='#i18n{appointment.labelTitle}' helpKey='#i18n{appointment.createEntry.labelTitleComment}' mandatory=true>
+			<@input type='text' name='title' id='title' value='${entry.title}' maxlength=255 />
+		</@formGroup>
+		<@formGroup labelFor='help_message' labelKey='#i18n{appointment.createEntry.labelHelpMessage}' helpKey='#i18n{appointment.createEntry.labelHelpMessageComment}'>
+			<@input type='textarea' name='help_message' id='help_message' rows=10>${entry.helpMessage}</@input>
+		</@formGroup>
+		<@formGroup labelFor='comment' labelKey='#i18n{appointment.comment.name}'>
+			<@input type='textarea' name='comment' id='comment' rows=2>${entry.comment}</@input>
+		</@formGroup>
+		<@formGroup>
+			<@checkBox orientation='switch' labelKey='#i18n{appointment.createEntry.labelMandatory}' name='mandatory' id='mandatory' value='1' checked=entry.mandatory />
+		</@formGroup>
+		<@formGroup>
+			<@checkBox orientation='switch' labelKey='#i18n{appointment.createEntry.labelOnlyDisplayInBack}' name='only_display_in_back' id='only_display_in_back' value='1' checked=entry.onlyDisplayInBack />
+		</@formGroup>
+		<@formGroup labelFor='file_max_size' labelKey='#i18n{appointment.createEntry.labelFileMaxSize}' mandatory=true>
+			<@input type='text' name='file_max_size' id='file_max_size' value='${getFileMaxSize(entry)}' />
+		</@formGroup>
+		<@formGroup labelFor='max_files' labelKey='#i18n{appointment.createEntry.labelMaxFiles}' mandatory=true>
+			<@input type='text' name='max_files' id='max_files' inputSize=2 value='${getMaxFiles(entry)}' maxlength=2 />
+		</@formGroup>
+		<@formGroup>
+			<#assign anonymizable=getFieldByCode( entry, "anonymizable")>
+			<#if anonymizable.value?boolean>
+				<#assign checkedValue = true />
+				<#assign anonPattern = anonymizable.title />
+			<#else>
+				<#assign checkedValue = false />
+				<#assign anonPattern ="" />
+			</#if>
+			<@checkBox orientation='switch' labelKey='#i18n{appointment.createAppointmentForm.labelAnonymizable.genattField}' name='anonymizable' id='anonymizable' value='1' params='onchange="javascript:changeVisilityAnonymizePattern();"' checked=checkedValue />
+		</@formGroup>
+		<@formGroup labelFor='anonymize_pattern' id="anonymize_pattern_group" labelKey='#i18n{forms.createEntry.labelAnonymizePattern}' helpKey='${anonymization_help_message}'>
+			<@input type='text' name='anonymize_pattern' id='anonymize_pattern' value='${anonPattern!}' maxlength=255 />
+		</@formGroup>
+		<@formGroup labelFor='css_class' labelKey='#i18n{appointment.createEntry.labelCSSClass}' helpKey='#i18n{appointment.createEntry.labelCSSClassComment}'>
+			<@input type='text' name='css_class' id='css_class' value='${entry.CSSClass!}' maxlength=255 />
+		</@formGroup>
+		<@formGroup>
+			<@button type='submit' name='save' id='save' buttonIcon='check' title='#i18n{appointment.labelSave}' class='form-validation' />
+			<@button type='submit' name='apply' id='apply' buttonIcon='check' title='#i18n{appointment.modifyEntry.buttonApply}' class='form-validation' />
+			<@button name='cancel' id='cancel' cancel=true buttonIcon='arrow-left' color='secondary' params='onclick="javascript:window.history.back();"' title='#i18n{appointment.labelCancel}' class='form-validation' />
+		</@formGroup>
+	</@tform>
 	<#if regular_expression_list?exists>
-		<@box>
-			<@boxHeader title='#i18n{appointment.createEntry.manageRegularExpression.title}' />
-			<@boxBody>
-				<@tform action='jsp/admin/plugins/appointment/ManageAppointmentFormEntries.jsp#list'>
-					<#assign field=getFieldByCode( entry, "file_config")>
-					<@input type='hidden' name='id_field' value='${field.idField!}' />
-					<@input type='hidden' name='action' value='doInsertRegularExpression' />
-					<@formGroup labelFor='id_expression' labelKey='#i18n{appointment.regularExpression.label}' helpKey='#i18n{appointment.createEntry.manageRegularExpression.labelInsertComment}'>
-						<@inputGroup>
-							<@select name='id_expression' items=regular_expression_list default_value='-1' />
-							<@inputGroupItem>
-								<@button type='submit' buttonIcon='check' title='#i18n{appointment.label.insert}' />
-							</@inputGroupItem>
-						</@inputGroup>
-					</@formGroup>
-					<a name="list" id="list"></a>
-					<@table>
-						<tr> 
-							<th>#i18n{appointment.createEntry.manageRegularExpression.rowTitle}</th>
-							<th>#i18n{appointment.labelDescription}</th>
-							<th>#i18n{appointment.createEntry.manageRegularExpression.rowValidExemple}</th>
-							<th>#i18n{appointment.actions.label}</th>
-						</tr>
-						<#list entry.fields as field>
-							<#list field.regularExpressionList as expression>
-							<tr>
-								<td>${expression.title}</td>
-								<td>${expression.informationMessage}</td>
-								<td>${expression.validExemple}</td>
-								<td>
-									<@aButton href='jsp/admin/plugins/appointment/ManageAppointmentFormEntries.jsp?action=doRemoveRegularExpression&id_expression=${expression.idExpression}&id_field=${field.idField}#list' title='#i18n{appointment.delete.title}' buttonIcon='trash' color='danger' size='sm' />
-								</td>
-							</tr>
+	<@box>
+		<@boxHeader title='#i18n{appointment.createEntry.manageRegularExpression.title}' />
+		<@boxBody>
+			<@tform action='jsp/admin/plugins/appointment/ManageAppointmentFormEntries.jsp#list'>
+				<#assign field=getFieldByCode( entry, "file_config")>
+				<@input type='hidden' name='id_field' value='${field.idField!}' />
+				<@input type='hidden' name='action' value='doInsertRegularExpression' />
+				<@formGroup labelFor='id_expression' labelKey='#i18n{appointment.regularExpression.label}' helpKey='#i18n{appointment.createEntry.manageRegularExpression.labelInsertComment}'>
+					<@inputGroup>
+						<@select name='id_expression' items=regular_expression_list default_value='-1' />
+						<@button type='submit' buttonIcon='check' title='#i18n{appointment.label.insert}' />
+					</@inputGroup>
+				</@formGroup>
+				<@link href='' params='name="list"' id='list' />
+				<#assign hasExpressions = false>
+				<#list entry.fields as exprField>
+					<#if exprField.regularExpressionList?has_content><#assign hasExpressions = true></#if>
+				</#list>
+				<#if hasExpressions>
+					<@table headBody=true>
+						<@tr>
+							<@th>#i18n{appointment.createEntry.manageRegularExpression.rowTitle}</@th>
+							<@th>#i18n{appointment.labelDescription}</@th>
+							<@th>#i18n{appointment.createEntry.manageRegularExpression.rowValidExemple}</@th>
+							<@th>#i18n{appointment.actions.label}</@th>
+						</@tr>
+						<@tableHeadBodySeparator />
+						<#list entry.fields as exprField>
+							<#list exprField.regularExpressionList as expression>
+							<@tr>
+								<@td>${expression.title}</@td>
+								<@td>${expression.informationMessage}</@td>
+								<@td>${expression.validExemple}</@td>
+								<@td>
+									<@aButton href='jsp/admin/plugins/appointment/ManageAppointmentFormEntries.jsp?action=doRemoveRegularExpression&id_expression=${expression.idExpression}&id_field=${exprField.idField}#list' title='#i18n{appointment.delete.title}' hideTitle=['all'] buttonIcon='trash' color='danger' size='sm' />
+								</@td>
+							</@tr>
 							</#list>
 						</#list>
 					</@table>
-				</@tform>
-			</@boxBody>
-		</@box>
-		</#if>
-	</@columns>
-</@row>
+				<#else>
+					<@empty title='#i18n{appointment.createEntry.manageRegularExpression.title}' iconName='regex' />
+				</#if>
+			</@tform>
+		</@boxBody>
+	</@box>
+	</#if>
+	</@pageColumn>
+</@pageContainer>
 <@initEditor />
