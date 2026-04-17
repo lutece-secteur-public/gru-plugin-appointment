@@ -1,26 +1,24 @@
 <#include "/admin/plugins/asynchronousupload/upload_commons.html" />
-
-<@row>
-	<@columns>
-<!-- 		<form class="form-horizontal" action="jsp/admin/plugins/appointment/DoSaveTasksFormWorkflow.jsp?plugin_name=directory" method="post" name="" id=""  enctype="multipart/form-data" > -->
-			<@tform action='jsp/admin/plugins/appointment/ManageAppointments.jsp' params='enctype="multipart/form-data"'>
-				<fieldset>
-					<legend> #i18n{appointment.taskFormWorkflow.pageTitle}</legend>
-					<input type='hidden' name='action' value='doProcessWorkflowAction' />
-					<input type='hidden' name='id_action' value='${id_action}' />
-					<input type='hidden' name='id_appointment' value='${id_appointment}' />
+<@pageContainer>
+	<@pageColumn>
+		<@pageHeader title='#i18n{appointment.taskFormWorkflow.pageTitle}' />
+		<@box>
+			<@boxBody>
+				<@tform action='jsp/admin/plugins/appointment/ManageAppointments.jsp' enctype='multipart/form-data'>
+					<@input type='hidden' name='action' value='doProcessWorkflowAction' />
+					<@input type='hidden' name='id_action' value='${id_action}' />
+					<@input type='hidden' name='id_appointment' value='${id_appointment}' />
 					${tasks_form}
 					<@formGroup>
 						<@button type='submit' name='save' buttonIcon='check' title='#i18n{workflow.tasks_form_test_workflow.button_save}' />
-						<@button type='submit' name='back' value='back' buttonIcon='times' title='#i18n{workflow.tasks_form_test_workflow.button_cancel}' color='btn-default' cancel=true />
+						<@button type='submit' name='back' value='back' buttonIcon='arrow-left' title='#i18n{workflow.tasks_form_test_workflow.button_cancel}' color='secondary' cancel=true />
 					</@formGroup>
-				</fieldset>
-		    </@tform>
-	</@columns>
- </@row>
-
+				</@tform>
+			</@boxBody>
+		</@box>
+	</@pageColumn>
+</@pageContainer>
 <@addRequiredBOJsFiles />
-
 <script src="themes/shared/plugins/appointment/js/appointment.js" ></script>
-<script src="js/admin/plugins/appointment/appointment.js" ></script>
+<script src="themes/shared/plugins/appointment/js/admin/appointment.js" ></script>
 <script src="jsp/admin/plugins/asynchronousupload/GetMainUploadJs.jsp?handler=appointmentAsynchronousUploadHandler" ></script>

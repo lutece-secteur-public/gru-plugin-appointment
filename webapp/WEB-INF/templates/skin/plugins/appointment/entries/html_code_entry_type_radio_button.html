@@ -1,101 +1,63 @@
 <#assign hide="">
 <#assign disableRequiredFields="">
 <#list entry.fields as field>
-<#if field.conditionalQuestions?exists&&field.conditionalQuestions?size!=0>
-	<#assign hide=hide+"hide(${field.idField});">
+<#if field.conditionalQuestions?exists && field.conditionalQuestions?size != 0>
+	<#assign hide = hide + "hide(${field.idField});">
 	<#assign disableRequiredFields>changeDisabledStateOfRequiredFields(${field.idField}, true);</#assign>
-</#if>	
-</#list>
-${entry.CSSClass!}
-
-<#if list_responses??>
-	<#list list_responses as response>
-		<#if response.entry.idEntry == entry.idEntry && response.entry.error?? && response.entry.error.isDisplayableError>
-			<#assign hasError = true>
-		</#if>
-	</#list>
 </#if>
-
-<div class="form-group<#if hasError??> has-error</#if>">
-	<label class="control-label col-xs-12" for="form${entry.idEntry}" id="form${entry.idEntry}">${entry.title}<#if entry.mandatory> *</#if></label>
-	<div class=" col-xs-12">
-    <#list entry.fields as field>
-    	<#if field.code == 'answer_choice'>
-			<#if !entry.fieldInLine><div class="radio"></#if>
-			<label class="<#if entry.fieldInLine>radio-inline</#if>" for="attribute${entry.idEntry}_${field.idField}" <#if field.comment?? && field.comment != ''>title="${field.comment}"</#if> >
-			
-			<#assign onclickEvent = 'onclick="${hide} ${disableRequiredFields}"' />
-			<#if field.conditionalQuestions?exists && field.conditionalQuestions?size!=0>
-				<#assign onclickEvent = 'onclick="${hide} doDisplay(${field.idField}); changeDisabledStateOfRequiredFields(${field.idField}, false);"'>
-			</#if>
-			
-			<input type="radio" id="attribute${entry.idEntry}_${field.idField}" name="attribute${entry.idEntry}" value="${field.idField}"
-			<#if list_responses??>
-				<#list list_responses as response>
-					<#if response.entry.idEntry == entry.idEntry && response.field??>
-						<#if response.field.idField == field.idField>checked="checked"<#break></#if>
-					</#if>
-				</#list>
-			<#else>
-				<#if field.defaultValue>checked="checked"</#if>
-			</#if>
-			${onclickEvent} "/>
-			 <#if !field.noDisplayTitle>
-			 	${field.title}
-			 </#if>
-			</label>
-			<#if !entry.fieldInLine></div></#if>
-		</#if>
-	</#list>
-		<#if !entry.fieldInLine && entry.helpMessage?exists && entry.helpMessage != ''>
-			<span class="help-block">${entry.helpMessage}</span>
-		</#if>
-		<#if entry.fieldInLine&&entry.helpMessage?exists&&entry.helpMessage!=''>
-		<p class="help-block">${entry.helpMessage}</p>
-		</#if>
-		<#if list_responses??>
-			<#list list_responses as response>
-				<#if response.entry.idEntry == entry.idEntry && response.entry.error?? && response.entry.error.isDisplayableError>
-					<span class="help-block">
-					<#assign error = response.entry.error>
-						<#if error.mandatoryError>
-								${error.errorMessage}
-							<#else>
-								#i18n{appointment.message.mandatory.entry}
-							</#if>
-					</span>
-				</#if>
-			</#list>
-		</#if>
-	</div>
- </div>	
-<#if str_list_entry_children?exists>${str_list_entry_children}</#if>
-
+</#list>
+<#assign errorMsg = ''>
+<#assign helpMsg = ''>
+<#if entry.helpMessage?exists && entry.helpMessage != ''><#assign helpMsg>${entry.helpMessage}</#assign></#if>
 <#if list_responses??>
-	<script type="text/javascript">
-		<#list list_responses as response>
-			<#if response.entry.idEntry == entry.idEntry && response.field??>
-				var baliseId = "div" + ${response.field.idField};
-				if(document.getElementById && document.getElementById(baliseId) != null)
-				{
-					document.getElementById(baliseId).style.visibility='visible';
-					document.getElementById(baliseId).style.display='block';
-				}
-			</#if>
-		</#list>
-	</script>
+<#list list_responses as response>
+<#if response.entry.idEntry == entry.idEntry && response.entry.error?? && response.entry.error.isDisplayableError>
+<#assign hasError = true>
+<#assign error = response.entry.error>
+<#assign errorMsg><#if error.mandatoryError>${error.errorMessage}<#else>#i18n{appointment.message.mandatory.entry}</#if></#assign>
+</#if>
+</#list>
+</#if>
+<#assign answerChoiceCount = 0>
+<#list entry.fields as field><#if field.code == 'answer_choice'><#assign answerChoiceCount = answerChoiceCount + 1></#if></#list>
+<@cField label='${entry.title}' required=entry.mandatory class='${entry.CSSClass!} <#if hasError??>is-invalid</#if>'>
+<#assign answerChoiceIdx = 0>
+<#list entry.fields as field>
+	<#if field.code == 'answer_choice'>
+		<#assign answerChoiceIdx = answerChoiceIdx + 1>
+		<#assign onclickEvent = 'onclick="${hide} ${disableRequiredFields}"' />
+		<#if field.conditionalQuestions?exists && field.conditionalQuestions?size != 0><#assign onclickEvent = 'onclick="${hide} doDisplay(${field.idField}); changeDisabledStateOfRequiredFields(${field.idField}, false);"'></#if>
+		<#assign isChecked = false><#if list_responses??><#list list_responses as response><#if response.entry.idEntry == entry.idEntry && response.field??><#if response.field.idField == field.idField><#assign isChecked = true></#if></#if></#list><#else><#if field.defaultValue><#assign isChecked = true></#if></#if>
+		<#assign radioParams = onclickEvent>
+		<#if field.comment?? && field.comment != ''><#assign radioParams = radioParams + ' title="${field.comment}"'></#if>
+		<#assign radioLabel><#if !field.noDisplayTitle>${field.title}<#else> </#if></#assign>
+		<@cRadio name='attribute${entry.idEntry}' id='attribute${entry.idEntry}_${field.idField}' value='${field.idField}' checked=isChecked label=radioLabel params=radioParams inline=entry.fieldInLine errorMsg=(answerChoiceIdx == answerChoiceCount)?then(errorMsg,'') helpMsg=(answerChoiceIdx == answerChoiceCount)?then(helpMsg,'') />
+	</#if>
+</#list>
+</@cField>
+<#if str_list_entry_children?exists>${str_list_entry_children}</#if>
+<#if list_responses??>
+<script>
+<#list list_responses as response>
+<#if response.entry.idEntry == entry.idEntry && response.field??>
+var baliseId = "div" + ${response.field.idField};
+if(document.getElementById && document.getElementById(baliseId) != null) {
+	document.getElementById(baliseId).style.visibility='visible';
+	document.getElementById(baliseId).style.display='block';
+}
+</#if>
+</#list>
+</script>
 <#else>
-	<#list entry.fields as field>
-		<#if field.defaultValue && field.conditionalQuestions?exists && field.conditionalQuestions?size != 0>
-			<script type="text/javascript">
-				var baliseId = "div" + ${field.idField};
-				
-				if(document.getElementById && document.getElementById(baliseId) != null)
-				{
-					document.getElementById(baliseId).style.visibility='visible';
-					document.getElementById(baliseId).style.display='block';
-				}
-			</script>
-		</#if>
-	</#list>
+<#list entry.fields as field>
+<#if field.defaultValue && field.conditionalQuestions?exists && field.conditionalQuestions?size != 0>
+<script>
+var baliseId = "div" + ${field.idField};
+if(document.getElementById && document.getElementById(baliseId) != null) {
+	document.getElementById(baliseId).style.visibility='visible';
+	document.getElementById(baliseId).style.display='block';
+}
+</script>
+</#if>
+</#list>
 </#if>

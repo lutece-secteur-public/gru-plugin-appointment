@@ -1,31 +1,20 @@
 <#macro commonsAppJS >
-<!--  CSS admin -->
-<link rel="stylesheet" href="css/admin/plugins/appointment/bootstrap-datepicker.css" >
-<link rel="stylesheet" href="css/admin/plugins/appointment/bootstrap-datetimepicker.css" >
-<link rel="stylesheet" href="css/admin/plugins/appointment/fullcalendar.min.css" >
-<link rel="stylesheet" href="css/admin/plugins/appointment/fullcalendar.custom.css" >
-<link rel="stylesheet" href="css/admin/plugins/appointment/appointment.css" >
-<!--  JS admin -->
-<#-- <script src="themes/admin/shared/js/lib/bootstrap/bootstrap.bundle.min.js"></script> -->
-<script src="js/admin/plugins/appointment/jquery.min.js"></script>
-<script src="js/admin/plugins/appointment/moment.min.js" ></script>
-<script src="js/admin/plugins/appointment/fullcalendar.min.js"></script>
-<script src="js/admin/plugins/appointment/locale-all.js"></script>
-<script src="js/admin/plugins/appointment/bootstrap-datepicker.js" ></script>
-<script src="js/admin/plugins/appointment/locales/bootstrap-datepicker.fr.js" ></script>
-<script src="js/admin/plugins/appointment/bootstrap-datetimepicker.min.js"></script>
-<script src="js/admin/plugins/appointment/tinycolor-min.js"></script>
-<script src="js/admin/plugins/appointment/appointment.js" ></script>
-<script>
-document.querySelector('body').classList.add('loaded')
-</script>
+<!--  CSS/JS admin -->
+<link rel="stylesheet" href="themes/shared/plugins/appointment/css/admin/fullcalendar-appointment-admin.css" />
+<script src="themes/shared/plugins/appointment/js/fullcalendar.min.js"></script>
+<script src="themes/shared/plugins/appointment/js/admin/appointment.js" ></script>
 </#macro>
 <#macro headerTitle form=form >
-/* Add Form title */
-var featureTitle = document.querySelector('#feature-title');
-if (featureTitle) {
-    featureTitle.innerHTML = '<a href="jsp/admin/plugins/appointment/ManageAppointmentForms.jsp" title="#i18n{appointment.adminFeature.ManageAppointmentForm.name}">#i18n{appointment.adminFeature.ManageAppointmentForm.name}</a><#if form.title?has_content> > ${form.title!?js_string}</#if>';
-}
+<#if form.title?has_content>
+document.addEventListener('DOMContentLoaded', function() {
+	/* Add Form title */
+	const pageTitle = document.querySelector('#feature-title + .page-title');
+	if (pageTitle) {
+		const title = '${form.title!?js_string}';	
+		<#noparse>pageTitle.setHTML( `${pageTitle.textContent} : ${title}`);</#noparse>
+	}
+});
+</#if>
 </#macro> 
 <#--
 -- Check if the checkbox must be checked or not
@@ -34,14 +23,7 @@ if (featureTitle) {
 -- @return the String 'checked="checked" if the checkbox must be checked, an empty String otherwise
 -->
 <#function getChecked code reference_list>
-<#if reference_list?has_content>
-<#list reference_list as reference_item>
-	<#if reference_item.code = code>
-		<#if reference_item.checked><#return "checked='checked'"><#else><#return ""></#if>
-	</#if>
-</#list>
-</#if>
-<#return "">
+<#if reference_list?has_content><#list reference_list as reference_item><#if reference_item.code = code><#if reference_item.checked><#return "checked='checked'"><#else><#return ""></#if></#if></#list></#if><#return "">
 </#function>
 <#--
 -- Get the value of the parameter
@@ -50,14 +32,7 @@ if (featureTitle) {
 -- @return the value of the parameter
 -->
 <#function getName code reference_list>
-	<#if reference_list?has_content>
-		<#list reference_list as reference_item>
-			<#if reference_item.code = code>
-  				<#return reference_item.name>
-  			</#if>
-  		</#list>
-	</#if>
-	<#return "">
+<#if reference_list?has_content><#list reference_list as reference_item><#if reference_item.code = code><#return reference_item.name></#if></#list></#if><#return "">
 </#function>
 <#--
 -- Get the field from a given title
@@ -66,13 +41,7 @@ if (featureTitle) {
 -- @return the field
 -->
 <#function getField entry fieldTitle>
-	<#if entry.fields?? && entry.fields?has_content>
-		<#list entry.fields as field>
-			<#if field?? && field.title?? && field.title == fieldTitle>
-				<#return field>
-			</#if>
-		</#list>
-	</#if>
+<#if entry.fields?? && entry.fields?has_content><#list entry.fields as field><#if field?? && field.title?? && field.title == fieldTitle><#return field></#if></#list></#if>
 </#function>
 <#-- 
 -- Get the field value from a given entry and a given title
@@ -81,11 +50,7 @@ if (featureTitle) {
 -- @return the field
 -->
 <#function getFieldValue entry fieldTitle>
-	<#if getField( entry, fieldTitle )??>
-		<#assign field = getField( entry, fieldTitle )>
-		<#return field.value>
-	</#if>
-	<#return "">
+<#if getField( entry, fieldTitle )??><#assign field = getField( entry, fieldTitle )><#return field.value></#if><#return "">
 </#function>
 <#-- 
 -- Get the max files value of an entry
@@ -93,11 +58,7 @@ if (featureTitle) {
 -- @return the number of max authorized uploaded files
 -->
 <#function getMaxFiles entry>
-	<#assign fieldMaxFiles = getFieldValueByCode( entry, "max_files" )>
-	<#if fieldMaxFiles?? && fieldMaxFiles != "">
-		<#return fieldMaxFiles>
-	</#if>
-	<#return "1">
+<#assign fieldMaxFiles = getFieldValueByCode( entry, "max_files" )><#if fieldMaxFiles?? && fieldMaxFiles != ""><#return fieldMaxFiles></#if><#return "1">
 </#function>
 <#-- 
 -- Get the max size an uploaded file is authorized to have
@@ -105,16 +66,8 @@ if (featureTitle) {
 -- @return the max size
 -->
 <#function getFileMaxSize entry>
-	<#assign fieldFileMaxSize = getFieldValueByCode( entry, "file_max_size" )>
-	<#if fieldFileMaxSize?? && fieldFileMaxSize != "">
-		<#return fieldFileMaxSize>
-	<#else>
-		<#if getField( entry, "option" )??>
-			<#assign fieldFileMaxSize = getFieldValueByCode( entry, "option" )>
-			<#return fieldFileMaxSize.width> 
-		</#if>
-	</#if>
-	<#return "5242880">
+<#assign fieldFileMaxSize = getFieldValueByCode( entry, "file_max_size" )>
+<#if fieldFileMaxSize?? && fieldFileMaxSize != ""><#return fieldFileMaxSize><#else><#if getField( entry, "option" )??><#assign fieldFileMaxSize = getFieldValueByCode( entry, "option" )><#return fieldFileMaxSize.width></#if></#if><#return "5242880">
 </#function>
 <#--
 -- Check if the given entry must export the binary
@@ -122,11 +75,7 @@ if (featureTitle) {
 -- @return true if it must export the binaries, false otherwise
 -->
 <#function exportBinary entry>
-	<#assign field = getFieldValue( entry, "export_binary" ) />
-	<#if field?? && field = "true">
-		<#return true />
-	</#if>
-	<#return false />
+<#assign field = getFieldValue( entry, "export_binary" ) /><#if field?? && field = "true"><#return true /></#if><#return false />
 </#function>
 <#-- 
 -- Get the field value from a given entry and a given title
@@ -135,11 +84,7 @@ if (featureTitle) {
 -- @return the field
 -->
 <#function getFieldValueByCode entry fieldCode>
-	<#if getFieldByCode( entry, fieldCode )??>
-		<#assign field = getFieldByCode( entry, fieldCode )>
-		<#return field.value>
-	</#if>
-	<#return "">
+<#if getFieldByCode( entry, fieldCode )??><#assign field = getFieldByCode( entry, fieldCode )><#return field.value></#if><#return "">
 </#function>
 <#--
 -- Get the field from a given code
@@ -148,13 +93,7 @@ if (featureTitle) {
 -- @return the field
 -->
 <#function getFieldByCode entry fieldCode>
-    <#if entry.fields?? && entry.fields?has_content>
-        <#list entry.fields as field>
-            <#if field?? && field.code?? && field.code == fieldCode>
-                <#return field>
-            </#if>
-        </#list>
-    </#if>
+<#if entry.fields?? && entry.fields?has_content><#list entry.fields as field><#if field?? && field.code?? && field.code == fieldCode><#return field></#if></#list></#if>
 </#function>
 <#macro getCommentModal modalId modalTitle idComment idStartingDate idEndingDate idStartingTime idEndingTime action idForm mailingList locale=locale from="" additionalParameters="">
 <#switch modalId>
@@ -172,64 +111,40 @@ if (featureTitle) {
 	<#assign endDateHelp='#i18n{appointment.create_comment.labelEndingValidityDate}'>
 	<#assign endTimeLabel='#i18n{appointment.create_comment.labelEndingValidityTime}'>
 </#switch>
-<@modal id=modalId >
-	<@modalHeader modalTitle=modalTitle />
-	<@modalBody>
-		<@tform action='jsp/admin/plugins/appointment/Comments.jsp' id='commentUpdate'>
+<@offcanvas id=modalId position='end' title=modalTitle btnTitle=modalTitle btnIcon='message-plus' btnColor='primary visually-hidden' size='sm' >
+	<@tform action='jsp/admin/plugins/appointment/Comments.jsp' id='commentUpdate'>
 		<@input type='hidden' name='id_form' value='${idForm!}' />
 		<@input type='hidden' name='id_comment' id='id_comment' />
 		<@input type='hidden' name='from' value='${from!}' />
 		<@input type='hidden' name='additional_parameters' value='${additionalParameters!}' />
 		<@formGroup labelFor='comment' labelKey='#i18n{appointment.comment.name}' helpKey='#i18n{appointment.comment.name}' mandatory=true rows=2>
-			<@input type='textarea' name='comment' id=idComment richtext=true />
-			<@span id=idComment+'_errorEmpty' class='text-red labelErrorComment' >
-				#i18n{appointment.message.comment.error.commentEmpty}
-			</@span>
+			<@input type='textarea' name='comment' id=idComment richtext=true mandatory=true />
+			<@span id=idComment+'_errorEmpty' class='text-danger labelErrorComment'>#i18n{appointment.message.comment.error.commentEmpty}</@span>
 		</@formGroup>
 		<@formGroup labelFor='startingValidityDate' labelKey=startDateLabel mandatory=true rows=2>
-			<@inputGroup class='date' id='${idStartingDate}Group'>
-				<@input type='text' name='startingValidityDate' id=idStartingDate />
-				<@inputGroupItem type='text'>
-					<@icon style='calendar' />
-				</@inputGroupItem>
-			</@inputGroup>
+			<@input type='date' name='startingValidityDate' id=idStartingDate />
 		</@formGroup>
 		<@formGroup labelFor='startingValidityTime' labelKey=startTimeLabel rows=2>
-			<@inputGroup id='${idStartingTime}Group' class='date'>
-				<@input type='text' name='startingValidityTime' id=idStartingTime value='00:00' />
-				<@inputGroupItem type='text' >
-					<@icon style='clock' />
-				</@inputGroupItem>
-			</@inputGroup>
+			<@input type='time' name='startingValidityTime' id=idStartingTime />
 		</@formGroup>
 		<@formGroup labelFor=idEndingDate labelKey=endDateLabel mandatory=true rows=2>
-			<@inputGroup class='date' id='${idEndingDate}Group'>
-				<@input type='text' name='endingValidityDate' id=idEndingDate />
-				<@inputGroupItem type='text'>
-					<@icon style='calendar' />
-				</@inputGroupItem>
-			</@inputGroup>
-			<@span id=idEndingDate+'_errorEndDateBeforeStartDate' class='text-red labelErrorComment'>
+			<@input type='date' name='endingValidityDate' id=idEndingDate />
+			<@span id=idEndingDate+'_errorEndDateBeforeStartDate' class='text-danger labelErrorComment'>
 				#i18n{appointment.message.comment.error.endDateBeforeStartDate}
 			</@span>
 		</@formGroup>
 		<@formGroup labelFor='endingValidityTime' labelKey=endTimeLabel rows=2>
-			<@inputGroup class='date' id='${idEndingTime}Group'>
-				<@input type='text' name='endingValidityTime' id=idEndingTime value='00:00' />
-				<@inputGroupItem type='text'>
-					<@icon style='clock' />
-				</@inputGroupItem>
-			</@inputGroup>
-			<@span id=idEndingTime+'_errorEndTimeEqualStartTime' class='text-red labelErrorComment'>
+			<@input type='time' name='endingValidityTime' id=idEndingTime />
+			<@span id=idEndingTime+'_errorEndTimeEqualStartTime' class='text-danger labelErrorComment'>
 				#i18n{appointment.message.comment.error.endTimeEqualStartTime}
 			</@span>
-			<@span id=idEndingTime+'_errorEndTimeBeforeStartTime' class='text-red labelErrorComment'>
+			<@span id=idEndingTime+'_errorEndTimeBeforeStartTime' class='text-danger labelErrorComment'>
 				#i18n{appointment.message.comment.error.endTimeBeforeStartTime}
 			</@span>
 		</@formGroup>
 		<@formGroup labelFor='idMailingList' labelKey='#i18n{appointment.create_comment.labelMailingList}' helpKey='#i18n{appointment.create_comment.labelMailingList.help}' mandatory=false rows=2>
 			<#assign default='-1'>
-			<@select name="idMailingList" size='sm'>
+			<@select name='idMailingList'>
 				<@option value='-1' label='#i18n{appointment.create_comment.labelNoNotification}' />
 				<#list mailing_list as item>
 					<#assign isSelected><#if default=item.code>true<#else>false</#if></#assign>
@@ -238,84 +153,105 @@ if (featureTitle) {
 				</#list>
 			</@select>
 		</@formGroup>
-		<@formGroup rows=2>
-			<@btnGroup>
-				<@button type='submit' name='action_${action}' buttonIcon='save' title='#i18n{portal.util.labelValidate}' /> 
-				<@button type='submit' id='commentDelete' name='action_confirmRemoveComment' buttonIcon='trash' title='#i18n{portal.util.labelDelete}' color='danger' /> 
-				<@button type='button' params='data-bs-dismiss="modal"' title='#i18n{portal.util.labelCancel}' buttonIcon='times' color='default' />
-			</@btnGroup>
-		</@formGroup>
-		</@tform>
-	</@modalBody>
-</@modal>
+		<@button type='submit' id='commentDelete' name='action_confirmRemoveComment' buttonIcon='trash' title='#i18n{portal.util.labelDelete}' color='danger' params='formnovalidate' /> 
+		<@button type='submit' id='action_${action}' name='action_${action}' buttonIcon='check' title='#i18n{portal.util.labelValidate}' params='formnovalidate'/> 
+		<@button type='button' params='data-bs-dismiss="offcanvas"' title='#i18n{portal.util.labelCancel}' buttonIcon='times' color='default' />
+	</@tform>
+</@offcanvas>
 <script>
-$(function(){
-
+document.addEventListener('DOMContentLoaded', function() {
 	document.querySelectorAll('.labelErrorComment').forEach(function(el) {
-	   el.style.display = 'none';
+		el.style.display = 'none';
 	});
 
-	var helpEl = document.getElementById('${idEndingDate}_help');
-	if (helpEl) helpEl.innerHTML = '';
-	$('#${idStartingDate}').datetimepicker({locale: '${locale}', format: 'DD/MM/YYYY'});
-	$('#${idStartingDate}').val( moment().format('DD/MM/YYYY') );
-	$('#${idStartingDate}Group').click(function(event){
-		$('#${idStartingDate}').data("DateTimePicker").show();
-	});
-	$('#${idEndingDate}').datetimepicker({locale: '${locale}', format: 'DD/MM/YYYY', useCurrent: false});
-	$('#${idEndingDate}').val( moment().format('DD/MM/YYYY') );
-	$('#${idEndingDate}Group').click(function(event){
-		$('#${idEndingDate}').data("DateTimePicker").show();
-	});
-	$('#${idStartingTime}').datetimepicker({format: 'HH:mm', stepping: 5});
-	$('#${idStartingTime}Group').click( function(event){
-		$('#${idStartingTime}').data("DateTimePicker").show();
-	});
-	$('#${idEndingTime}').datetimepicker({format: 'HH:mm', stepping: 5});
-	$('#${idEndingTime}Group').click(function(event){
-		$('#${idEndingTime}').data("DateTimePicker").show();
-	});
+	var startDateEl = document.getElementById('${idStartingDate}');
+	var endDateEl = document.getElementById('${idEndingDate}');
+	var startTimeEl = document.getElementById('${idStartingTime}');
+	var endTimeEl = document.getElementById('${idEndingTime}');
+	var now = new Date();
+	var today = now.getFullYear() + '-' + String(now.getMonth() + 1).padStart(2, '0') + '-' + String(now.getDate()).padStart(2, '0');
+
+	// Helper: set Flatpickr date/time via its API
+	function fpSet(el, value) {
+		if (el && el._flatpickr) { el._flatpickr.setDate(value, true); }
+		else if (el) { el.value = value; }
+	}
+
+	fpSet(startDateEl, today);
+	fpSet(endDateEl, today);
+	fpSet(startTimeEl, '00:00');
+	fpSet(endTimeEl, '00:00');
+
+	// Date constraint: end date >= start date
+	if (startDateEl && startDateEl._flatpickr && endDateEl && endDateEl._flatpickr) {
+		startDateEl._flatpickr.config.onChange.push(function(selectedDates) {
+			if (selectedDates[0]) endDateEl._flatpickr.set('minDate', selectedDates[0]);
+		});
+		endDateEl._flatpickr.config.onChange.push(function(selectedDates) {
+			if (selectedDates[0]) startDateEl._flatpickr.set('maxDate', selectedDates[0]);
+		});
+	}
+
 	<#if action !='doModifyComment'>
-	/* Set current date */
-	document.getElementById('${modalId}').addEventListener('shown.bs.modal', function(){
-		var workingDate=sessionStorage.getItem( 'appCurrentDate');
-		document.getElementById('${idStartingDate}').value = workingDate;
-		document.getElementById('${idEndingDate}').value = workingDate;
-		localStorage.setItem( 'commentContext', workingDate );
-  	});
+	/* Set default dates to first open day with appointments in displayed week */
+	document.getElementById('${modalId}').addEventListener('shown.bs.offcanvas', function() {
+		// Reset date constraints
+		if (startDateEl && startDateEl._flatpickr) { startDateEl._flatpickr.set('minDate', null); startDateEl._flatpickr.set('maxDate', null); }
+		if (endDateEl && endDateEl._flatpickr) { endDateEl._flatpickr.set('minDate', null); endDateEl._flatpickr.set('maxDate', null); }
+
+		var firstDay = today;
+		var cal = window.appointmentCalendar;
+		if (cal && cal.view) {
+			var viewStart = cal.view.activeStart;
+			var viewEnd = cal.view.activeEnd;
+			var earliest = null;
+			cal.getEvents().forEach(function(evt) {
+				var type = evt.extendedProps.type || '';
+				if (type !== 'comment' && type !== 'hour_comment' && evt.start && evt.start >= viewStart && evt.start < viewEnd) {
+					if (!earliest || evt.start < earliest) {
+						earliest = evt.start;
+					}
+				}
+			});
+			if (earliest) {
+				firstDay = earliest.getFullYear() + '-' + String(earliest.getMonth() + 1).padStart(2, '0') + '-' + String(earliest.getDate()).padStart(2, '0');
+			}
+		}
+		fpSet(startDateEl, firstDay);
+		fpSet(endDateEl, firstDay);
+		fpSet(startTimeEl, '00:00');
+		fpSet(endTimeEl, '00:00');
+		localStorage.setItem('commentContext', firstDay);
+	});
 	</#if>
-	$("#${idStartingDate}").on("dp.change", function (e) {
-		$('#${idEndingDate}').data("DateTimePicker").minDate(e.date);
-	});
-	$("#${idEndingDate}").on("dp.change", function (e) {
-		$('#${idStartingDate}').data("DateTimePicker").maxDate(e.date);
-	});
 	if( '${action!}' === 'doAddComment' ){
 		var commentDeleteEl = document.getElementById('commentDelete');
 		if (commentDeleteEl) commentDeleteEl.remove();
 	}
 	// Click on validation button events
 	document.querySelector( '[name="action_${action}"]' ).addEventListener( 'click', function(e){
-
 		document.querySelectorAll('.labelErrorComment').forEach(function(el) {
 		   el.style.display = 'none';
 		});
 
-		var dStart = document.getElementById('${idStartingDate}').value;
-		var dEnd = document.getElementById('${idEndingDate}').value;
-		if( moment(dEnd).isBefore( dStart ) ){
+		var dStart = startDateEl.value;
+		var dEnd = endDateEl.value;
+		var dStartDate = new Date(dStart);
+		var dEndDate = new Date(dEnd);
+		if( dEndDate < dStartDate ){
 			document.getElementById( '${idEndingDate}_errorEndDateBeforeStartDate' ).style.display = 'block'
 			e.preventDefault();
 		}
-		var tStart = document.getElementById('${idStartingTime}').value;
-		var tEnd = document.getElementById('${idEndingTime}').value;
-		var startDateAndTime = moment(dStart + ' ' + tStart, 'YYYY-MM-DD HH:mm');
-		var endDateAndTime = moment(dEnd + ' ' + tEnd, 'YYYY-MM-DD HH:mm');
-		if(( moment(endDateAndTime).isBefore( startDateAndTime ) ) || ( moment(endDateAndTime).isSame( startDateAndTime )) && (document.getElementById('${idStartingTime}').value != '00:00') && (document.getElementById('${idEndingTime}').value != '00:00')) {
-			if( moment(endDateAndTime).isBefore( startDateAndTime )) {
+		var tStart = startTimeEl.value || '00:00';
+		var tEnd = endTimeEl.value || '00:00';
+		var tsParts = tStart.split(':'), teParts = tEnd.split(':');
+		var startDateAndTime = new Date(dStartDate); startDateAndTime.setHours(parseInt(tsParts[0]),parseInt(tsParts[1]),0,0);
+		var endDateAndTime = new Date(dEndDate); endDateAndTime.setHours(parseInt(teParts[0]),parseInt(teParts[1]),0,0);
+		if(( endDateAndTime < startDateAndTime ) || ( endDateAndTime.getTime() === startDateAndTime.getTime() ) && (startTimeEl.value != '00:00') && (endTimeEl.value != '00:00')) {
+			if( endDateAndTime < startDateAndTime ) {
 				document.getElementById( '${idEndingTime}_errorEndTimeBeforeStartTime' ).style.display = 'block';
 			}
-			if ((moment(endDateAndTime).isSame( startDateAndTime )) && (document.getElementById('${idStartingTime}').value != '00:00') && (document.getElementById('${idEndingTime}').value != '00:00'))  {
+			if ((endDateAndTime.getTime() === startDateAndTime.getTime()) && (startTimeEl.value != '00:00') && (endTimeEl.value != '00:00'))  {
 				document.getElementById( '${idEndingTime}_errorEndTimeEqualStartTime' ).style.display = 'block';
 			}
 			e.preventDefault();
@@ -323,23 +259,16 @@ $(function(){
 		if( tinyMCE.activeEditor.getContent().trim().length === 0 ){
 			document.getElementById( '${idComment}_errorEmpty' ).style.display = 'block';
 			e.preventDefault();
-		}
+		} 
 	});
 });
 </script>
 </#macro>
 <#macro btnComment >
-<#if permission_add_comment?boolean>
-	<@button id='toggle-add-comment' style='none' color='info mt-2 me-1' title='#i18n{appointment.create_comment.pageTitle}' hideTitle=[''] params='data-bs-toggle="modal" data-bs-target="#commentModal"' >
-		<@iconStack class='fa-xs'>
-			<@icon prefix='' style='far fa-comment fa-stack-2x' />
-			<@icon prefix='' style='fas fa-plus fa-stack-1x' />
-		</@iconStack> 
-	</@button>
-</#if>
+<#if permission_add_comment?boolean><@button id='toggle-add-comment' buttonIcon='message-plus' title='#i18n{appointment.create_comment.pageTitle}' hideTitle=['xs','sm'] size='sm' color='action' params='data-bs-toggle="offcanvas" data-bs-target="#commentModal"' /></#if>
 </#macro>
 <#macro tabsComment tab>
-<@tabList id='${tab}-tab' params=' style="margin-top:15px"'>
+<@tabList id='${tab}-tab'>
 	<#if tab='comment'><#assign active = true /><#else><#assign active = false /></#if>
 	<@tabLink href='jsp/admin/plugins/appointment/Comments.jsp?view=manageComment' title='#i18n{appointment.manage_comments.title}' active=active />
 	<#if tab='notif'><#assign active = true /><#else><#assign active = false /></#if>
@@ -377,36 +306,48 @@ $(function(){
 	<#if isDeskInstalled?? && isDeskInstalled><@tabLink href='jsp/admin/plugins/appointment/modules/desk/ManageAppointmentDesks.jsp?plugin_name=appointment-desk&id_form=${form.idForm}&context=app' title='#i18n{appointment.specificDay.pageTitle}' active=true params=tabparams/></#if>
 </#if>
 </#macro>
-<#macro appointmentTabs tab form context >
+<#macro appointmentTabs tab form context tabBtn=''>
 <@commonsAppJS />
-<@row id='${tab}-tab'>
+<@row id='${tab}-tab' class='appointment-tab'>
 	<@columns>
-		<@tabs params=' style="margin-top:15px"'>
+		<@tabs class='mt-3'>
 			<@tabList>
 				<@appointmentTabList tab form context />
+				<#if tab !='typicalWeek' && tab !='year' && tab !='day' && tab !='filter'>
+					<@li class='nav-item ms-auto'>
+						<#if !tab?contains("filter") && !tab?contains("typicalWeek")><@btnComment /></#if>
+						<@button id='btn-toggle-mini-cal' type='button' title='#i18n{appointment.appointmentCalendar.labelHideMiniCalendar}' size='sm' color='action'>
+							<@icon style='calendar-off' />
+						</@button>
+					</@li>
+				</#if>
+				<#if tabBtn !=''>
+					<@li class='nav-item ms-auto'>
+						${tabBtn}
+					</@li>
+				</#if>
 			</@tabList>
 			<@tabContent id='${tab}-content'>
-				<@messages errors=errors warnings=warnings infos=infos />
-				<#nested>
 				<#if formCalendarErrors??>
-					<div class="layout-wrapper"></div>
+					<@messages errors=errors infos=infos/>
 				<#else>
-					<#if !tab?contains("filter")>
-						<#if !tab?contains("typicalWeek")>
-						<div id="btn-comment-main">
-							<@btnComment /> 
-						</div>
-						</#if>	
-					</#if>	
 					<#if tab !='typicalWeek' && tab !='year' && tab !='day' && tab !='filter'>
-						<div id="calendar">
-							<div id="loader" class="d-flex justify-content-center align-items-center vh-100 h-75">
-								<strong>#i18n{appointment.labelLoading}...</strong>
-								<div class="spinner-border" role="status" aria-hidden="true"></div>
-							</div>
-						</div>
+						<@row>
+							<@columns xs=12 md=12 lg=10 id='fc-calendar-col'>
+								<@div id='calendar'>
+									<@div id='loader' class='d-flex justify-content-center align-items-center vh-100 h-75'>
+										<@span class='fw-bold'>#i18n{appointment.labelLoading}...</@span>
+										<@div class='spinner-border' params='role="status" aria-hidden="true"' />
+									</@div>
+								</@div>
+							</@columns>
+							<@columns xs=12 md=12 lg=2 class='d-none d-lg-block' id='fc-sidebar-col'>
+								<@div id='mini-calendar' class='stickycommentModal-top' params='style="top:80px"' />
+							</@columns>
+						</@row>
 					</#if>
 				</#if>
+				<#nested>
 			</@tabContent>
 		</@tabs>
 	</@columns>
@@ -417,23 +358,30 @@ localStorage.setItem( 'appointmentContext', '${context}' );
 </script>
 </#macro>
 <#macro commentModal update=false >
+let commentOffcanvas = bootstrap.Offcanvas.getOrCreateInstance('#modify-comment');
+var modifyOffcanvasEl = document.getElementById('modify-comment');
+modifyOffcanvasEl.addEventListener('show.bs.offcanvas', function() {
 <#if update>
-	var formValues = JSON.parse( this.getAttribute( 'data-json' ) );
-	localStorage.setItem( 'commentContext', moment(formValues.comment_start).format('DD/MM/YYYY') );
-	tinyMCE.activeEditor.setContent( formValues.comment_text );
+	var formValues = JSON.parse( info.el.getAttribute( 'data-json' ) );
+	var csDate = new Date(formValues.comment_start);
+	localStorage.setItem( 'commentContext', fcFormatDate(csDate, 'YYYY-MM-DD') );
+	// Store text in textarea before offcanvas opens (TinyMCE will pick it up on init)
+	tinyMCE.activeEditor.setContent(formValues.comment_text );
+	// document.querySelector( '#modify-comment input[name="comment"]' ).value = formValues.comment_text; 
 	document.querySelector( '#modify-comment input[name="id_comment"]' ).value = formValues.id_comment.slice(1);
-	document.querySelector( '#modify-comment input[name="startingValidityDate"]' ).value = moment(formValues.comment_start).format('DD/MM/YYYY');
-	document.querySelector( '#modify-comment input[name="endingValidityDate"]' ).value = moment(formValues.comment_end).format('DD/MM/YYYY');
-	document.querySelector( '#modify-comment input[name="startingValidityTime"]' ).value = formValues.comment_start_time;
-	document.querySelector( '#modify-comment input[name="endingValidityTime"]' ).value = formValues.comment_end_time;
-	document.querySelectorAll('.labelErrorComment').forEach(function(el) {
-		el.style.display = 'none';
-	});
-
+	document.querySelectorAll('.labelErrorComment').forEach(function(el) { el.style.display = 'none'; });
+	// Set dates/times via Flatpickr API
+	var modStartDate = document.getElementById('modifyStartingValidityDate');
+	var modEndDate = document.getElementById('modifyEndingValidityDate');
+	var modStartTime = document.getElementById('idModifyStartingTime');
+	var modEndTime = document.getElementById('idModifyEndingTime');
+	if (modStartDate && modStartDate._flatpickr) { modStartDate._flatpickr.setDate(formValues.comment_start, true); } else if (modStartDate) { modStartDate.value = formValues.comment_start; }
+	if (modEndDate && modEndDate._flatpickr) { modEndDate._flatpickr.setDate(formValues.comment_end, true); } else if (modEndDate) { modEndDate.value = formValues.comment_end; }
+	if (modStartTime && modStartTime._flatpickr) { modStartTime._flatpickr.setDate(formValues.comment_start_time, true); } else if (modStartTime) { modStartTime.value = formValues.comment_start_time; }
+	if (modEndTime && modEndTime._flatpickr) { modEndTime._flatpickr.setDate(formValues.comment_end_time, true); } else if (modEndTime) { modEndTime.value = formValues.comment_end_time; }
 </#if>
-// const commentModal = new bootstrap.Modal( document.getElementById('modify-comment') )
-const commentModal = bootstrap.Modal.getOrCreateInstance('#modify-comment');
-commentModal.toggle();
+}, { once: true });
+commentOffcanvas.show();
 </#macro> 
 <#macro getComments comments_list>
 <#list comments_list as comment_event>
@@ -456,336 +404,554 @@ commentModal.toggle();
 },
 <#assign aDateTime = .now>
 <#if comment_event.startingValidityTime?? && comment_event.endingValidityTime??>
-	<#if ( comment_event.startingValidityTime != '00:00' && comment_event.endingValidityTime != '00:00' )>
+	<#if ( comment_event.startingValidityTime != '00:00' || comment_event.endingValidityTime != '00:00' )>
 	{
 		"start" : "${comment_event.startingValidityDate}T${comment_event.startingValidityTime!}",
 		"end" : "${comment_event.endingValidityDate}T${comment_event.endingValidityTime!}",
 		"type" : "hour_comment",
-		"backgroundColor" : 'rgb(233, 250, 0 )',
+	// "backgroundColor" : 'rgba(233, 250, 0, 0.4)', 
 		"className" : ["comment-${comment_event.id!}"],
-		"rendering" : "background",
+		"display" : "background",
 		"allDay" : false,
 	},
 	</#if>
 </#if>
 </#list>
 </#macro>
-<#macro fullCalendarScript selectable=true isSpecific=false isTypical=false showComments=true locale=locale>
-$( function(){
-    var calendar = $('#calendar');
-	calendar.fullCalendar({
+<#macro fullCalendarScript selectable=true isSpecific=false isTypical=false height='auto' showComments=true locale=locale>
+function fcFormatTime(date) {
+	if (!date) return '';
+	return String(date.getHours()).padStart(2, '0') + ':' + String(date.getMinutes()).padStart(2, '0');
+}
+
+function fcFormatDate(date, style) {
+	if (!date) return '';
+	var d = (date instanceof Date) ? date : new Date(date);
+	if (isNaN(d.getTime())) return '';
+	date = d;
+	if (style === 'ddd DD/MM') return FullCalendar.formatDate(date, { weekday: 'short', day: '2-digit', month: '2-digit', locale: '${locale}' });
+	if (style === 'DD/MM/YYYY') return FullCalendar.formatDate(date, { day: '2-digit', month: '2-digit', year: 'numeric', locale: '${locale}' });
+	if (style === 'YYYY-MM-DD') return date.getFullYear() + '-' + String(date.getMonth() + 1).padStart(2, '0') + '-' + String(date.getDate()).padStart(2, '0');
+	return FullCalendar.formatDate(date, { locale: '${locale}' });
+}
+
+function initMiniCalendar(fcInstance) {
+	var container = document.getElementById('mini-calendar');
+	if (!container) return null;
+	var minDate = typeof startingDateOfDisplay !== 'undefined' ? startingDateOfDisplay : null;
+	var maxDate = typeof endingDateOfDisplay !== 'undefined' ? endingDateOfDisplay : null;
+
+	// Local date key (avoids UTC shift from toISOString)
+	function toLocalDateKey(d) {
+		return d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0');
+	}
+
+	// Build available appointment counts per day from main calendar events
+	// A slot is available when: not filled, not overbooked, not closed (bgClosedColor)
+	function buildAppointmentCounts() {
+		var closedColor = (typeof bgClosedColor !== 'undefined') ? bgClosedColor.replace(';', '') : '#bebebe';
+		var counts = {};
+		fcInstance.getEvents().forEach(function(event) {
+			var type = event.extendedProps.type || '';
+			if (type !== 'comment' && type !== 'hour_comment' && event.start) {
+				var customClass = event.extendedProps.customClass || '';
+				var isFilled = customClass.indexOf('filled') !== -1;
+				var isOverbooked = customClass.indexOf('overbooked') !== -1;
+				var isClosed = event.backgroundColor === closedColor;
+				if (!isFilled && !isOverbooked && !isClosed) {
+					var dateKey = toLocalDateKey(event.start);
+					counts[dateKey] = (counts[dateKey] || 0) + 1;
+				}
+			}
+		});
+		return counts;
+	}
+
+	function updateDots() {
+		var appointmentCounts = buildAppointmentCounts();
+		container.querySelectorAll('.mini-cal-dot').forEach(function(dot) { dot.remove(); });
+		container.querySelectorAll('.fc-daygrid-day').forEach(function(cell) {
+			var dateAttr = cell.getAttribute('data-date');
+			if (!dateAttr) return;
+			var count = appointmentCounts[dateAttr];
+			if (count) {
+				var dot = document.createElement('span');
+				dot.className = 'mini-cal-dot';
+				dot.setAttribute('data-bs-toggle', 'tooltip');
+				dot.setAttribute('data-bs-placement', 'top');
+				dot.setAttribute('title', count + ' #i18n{appointment.appointmentCalendar.labelAvailableSlots}');
+				var frame = cell.querySelector('.fc-daygrid-day-frame');
+				if (frame) frame.appendChild(dot);
+				new bootstrap.Tooltip(dot);
+			}
+		});
+	}
+
+	// Highlight the week currently visible in the main calendar
+	function highlightCurrentWeek() {
+		var view = fcInstance.view;
+		if (!view) return;
+		container.querySelectorAll('.fc-daygrid-day').forEach(function(cell) {
+			var dateAttr = cell.getAttribute('data-date');
+			if (!dateAttr) return;
+			var cellDate = new Date(dateAttr + 'T00:00:00');
+			if (cellDate >= view.activeStart && cellDate < view.activeEnd) {
+				cell.classList.add('mini-cal-active-week');
+			} else {
+				cell.classList.remove('mini-cal-active-week');
+			}
+		});
+	}
+
+	var miniCal = new FullCalendar.Calendar(container, {
+		initialView: 'dayGridMonth',
+		initialDate: fcInstance.getDate(),
+		headerToolbar: { left: 'prev', center: 'title', right: 'next today' },
+		height: '${height!}',
+		contentHeight: 'auto',
+		fixedWeekCount: false,
+		locale: fcInstance.getOption('locale'),
+		validRange: { start: minDate, end: maxDate },
+		dateClick: function(info) {
+			fcInstance.gotoDate(info.date);
+			requestAnimationFrame(highlightCurrentWeek);
+		},
+		datesSet: function() {
+			requestAnimationFrame(function() {
+				highlightCurrentWeek();
+				updateDots();
+			});
+		}
+	});
+	miniCal.render();
+
+	// Force re-render after layout is fully computed
+	requestAnimationFrame(function() {
+		miniCal.updateSize();
+		highlightCurrentWeek();
+		updateDots();
+	});
+
+	// Expose methods for external update
+	miniCal.highlightCurrentWeek = highlightCurrentWeek;
+	miniCal.updateDots = updateDots;
+	return miniCal;
+}
+
+function initAppointmentCalendar() {
+    var calendarEl = document.getElementById('calendar');
+	var miniCalInstance = null;
+	var isDragging = false, selectedEls = [];
+	window.appointmentCalendar = null;
+	var calendarInst = new FullCalendar.Calendar(calendarEl, {
 		<#if !showComments>allDaySlot: false,</#if>
-		displayEventTime: false, 
+		displayEventTime: false,
+		allDayText: '#i18n{appointment.appointmentCalendar.labelAllDay}',
 		buttonText : {
 			prev : '#i18n{appointment.appointmentApp.previousWeek}',
 			next : '#i18n{appointment.appointmentApp.nextWeek}',
-		}, 
-		height: 'parent',
-		themeSystem: 'jquery-ui', 
-		navLinks: true, 
-		navLinkDayClick: function( date, jsEvent ) {
-			location.href = eventUrl + 'manageAppointments&id_form=' + idForm + '&starting_date_time=' + date.format() + 'T00:00&ending_date_time=' + date.format() + 'T23:59';
+			today : "#i18n{appointment.appointmentCalendar.labelToday}",
 		},
-		defaultDate: defaultDate,
+		height: 'auto',
+		navLinks: true,
+		navLinkDayClick: function( date, jsEvent ) {
+			var dateStr = date.toISOString().slice(0,10);
+			location.href = eventUrl + 'manageAppointments&id_form=' + idForm + '&starting_date_time=' + dateStr + 'T00:00&ending_date_time=' + dateStr + 'T23:59';
+		},
+		initialDate: defaultDate,
 		nowIndicator: true,
-		defaultView: 'agendaWeek',
+		initialView: 'timeGridWeek',
 		locale: '${locale}',
 		editable: false,
-		<#if !isTypical>
-		customButtons: {
-			datePicker: {
-				text: '#i18n{appointment.appointmentCalendar.labelChooseDate}',
-				click: function () {
-					var $btnCustom = $('.fc-datePicker-button' ); // name of custom  button in the generated code
-					$btnCustom.after('<input type="text" id="hiddenDate" class="datepicker">');
-					$( '#hiddenDate' ).datepicker({
-						showOn: "button",
-						language:'${locale}',
-						autoclose: true,
-						orientation: "bottom"
-					});
-					var $btnDatepicker = $( '.ui-datepicker-trigger' ); // name of the generated datepicker UI 
-					//Below are required for manipulating dynamically created datepicker on custom button click
-					$( '#hiddenDate' ).focus().hide();
-					$btnDatepicker.trigger( 'click' ); //dynamically generated button for datepicker when clicked on input textbox
-					$btnDatepicker.hide();
-					$btnDatepicker.remove();
-					$( 'input.datepicker' ).not( ':first' ).remove();//dynamically appended every time on custom button click
-					$( '#hiddenDate' ).change(function () {
-						calendar.fullCalendar( 'gotoDate', moment($("#hiddenDate").val(),'DD-MM-YYYY'));
-					});
-				}
-			}
-		},
-		</#if>
-		header: <#if isTypical>false<#else>{left: 'prev',center: 'today, datePicker, title',right: 'next'}</#if>,
-		<#if isTypical>columnFormat : 'dddd',<#else>columnHeaderHtml: function(mom) { return mom.format('dddd') + '</br>' + mom.format('LL'); },</#if>
-		slotLabelFormat: 'H:mm',
+		headerToolbar: <#if isTypical>false<#else>{ left: 'prev', center: 'title', right: 'next today' }</#if>,
+		<#if isTypical>dayHeaderFormat: { weekday: 'long' },<#else>dayHeaderContent: function(arg) { var d = arg.date; return { html: d.toLocaleDateString('fr-FR', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' }) }; },</#if>
+		slotLabelFormat: { hour: 'numeric', minute: '2-digit',  hour12: false },
 		slotLabelInterval: slotDuration,
 		slotDuration: slotDuration,
 		<#if selectable>
-			selectable: true,
-			selectHelper: true,
-			select: function( startDate, endDate  ) {
-				var selIdx=0, selData='', evData=''; 
-				var selected=$('.fc-event-container .fc-time-grid-event.fc-v-event.fc-event.fc-start.fc-end.fc-custom.ui-selectee');
-				selected.each( function(  ){ 
-					var evt='{' + $(this).data('event') + '}';
-					const event = JSON.parse( evt ); 
-					if( moment( event.startingDateTime ).isSameOrAfter( startDate.format() ) && moment( event.endingDateTime ).isSameOrBefore( endDate.format() ) ){
-						selData += JSON.stringify( event ) + ',' ;
-						selIdx++;
-					} 
-				}) ;
-				if ( selIdx > 1 ){
-					evtData='['+ selData.slice(0, -1) + ']';
-					const evt = JSON.parse(evtData); 
-					<#if isTypical>$('#timeSlotData')<#else>$('#slotsData')</#if>.val(evtData);
-					$('#date_of_display_multi').val( moment(evt[0].startingDateTime).format('YYYY-MM-DD') );
-					const updatePlanningMultiSlotModal = new bootstrap.Modal('#updatePlanningMultiSlot')
-					updatePlanningMultiSlotModal.toggle()
-				} else {
-					evtData=selData.slice(0, -1) ;
-					const evt = JSON.parse(evtData); 
-					<#if isTypical>$('#timeSlotData')<#else>$('#slotData')</#if>.val( '['+evtData+']' );
-					const isOpen = JSON.parse( evt.isOpen )
-					$('#is_open').prop( "checked", isOpen );
-					$('#maxCapacity').val( evt.maxCapacity );
-					$('#dtSlot .modal-title').append( moment(evt.startingDateTime).format('DD/MM/YYYY') );
-					$('#date_of_display_slot').val( moment(evt.startingDateTime).format('YYYY-MM-DD') );
-					$('#timeStart').text( evt.startingTime );
-					$('#timeEnd').val( evt.endingTime );
-					const updatePlanningModal = new bootstrap.Modal('#updatePlanningSlot')
-					updatePlanningModal.toggle()
+		selectable: true,
+		selectMirror: true,
+		select: function( info ) {
+			isDragging = false;
+			var startDate = info.start;
+			var endDate = info.end;
+			var selIdx=0, selData='';
+			calendarInst.getEvents().forEach(function(ev) {
+				var type = ev.extendedProps.type || '';
+				if (type === 'comment' || type === 'hour_comment') return;
+				if (ev.start >= startDate && ev.end <= endDate) {
+					var evObj = {
+						<#if isSpecific>idSlot: parseInt(ev.id) || 0,</#if>
+						<#if isTypical>idTimeSlot: parseInt(ev.id) || 0,</#if>
+						startingDateTime: fcFormatDate(ev.start, 'YYYY-MM-DD') + 'T' + fcFormatTime(ev.start),
+						startingTime: fcFormatTime(ev.start),
+						endingDateTime: fcFormatDate(ev.end, 'YYYY-MM-DD') + 'T' + fcFormatTime(ev.end),
+						endingTime: fcFormatTime(ev.end),
+						isOpen: ev.extendedProps.isOpen === 'true' || ev.extendedProps.isOpen === true,
+						<#if isSpecific>isSpecific: ev.extendedProps.isSpecific === 'true' || ev.extendedProps.isSpecific === true,</#if>
+						idForm: parseInt(ev.extendedProps.idForm) || 0,
+						<#if isSpecific>date: ev.extendedProps.date || '',</#if>
+						maxCapacity: parseInt(ev.extendedProps.maxCapacity) || 0
+					};
+					selData += JSON.stringify(evObj) + ',';
+					selIdx++;
 				}
-			},
+			});
+			if ( selIdx === 0 ) { return; }
+			if ( selIdx > 1 ){
+				var evtData='['+ selData.slice(0, -1) + ']';
+				var evt = JSON.parse(evtData);
+				document.getElementById(<#if isTypical>'timeSlotData'<#else>'slotsData'</#if>).value = evtData;
+				document.getElementById('date_of_display_multi').value = fcFormatDate(new Date(evt[0].startingDateTime), 'YYYY-MM-DD');
+				setTimeout(function() { bootstrap.Modal.getOrCreateInstance('#updatePlanningMultiSlot').show(); }, 50);
+			} else {
+				var evtData = selData.slice(0, -1);
+				var evt = JSON.parse(evtData);
+				document.getElementById(<#if isTypical>'timeSlotData'<#else>'slotData'</#if>).value = '['+evtData+']';
+				var isOpen = evt.isOpen === true || evt.isOpen === 'true';
+				document.getElementById(<#if isTypical>'timeIsOpen'<#else>'is_open'</#if>).checked = isOpen;
+				document.getElementById('maxCapacity').value = evt.maxCapacity;
+				<#if isSpecific>
+				document.querySelector('#dtSlot').textContent = fcFormatDate(new Date(evt.startingDateTime), 'DD/MM/YYYY');
+				document.getElementById('date_of_display_slot').value = fcFormatDate(new Date(evt.startingDateTime), 'YYYY-MM-DD');
+				</#if>
+				<#if isTypical>
+				document.getElementById('idTimeSlot').value = evt.idTimeSlot;
+				document.getElementById('idWorkingDay').value = evt.idWorkingDay || '';
+				</#if>
+				document.getElementById('timeStart').textContent = evt.startingTime;
+				document.getElementById('timeEnd').value = evt.endingTime;
+				setTimeout(function() { bootstrap.Modal.getOrCreateInstance('#updatePlanningSlot').show(); }, 50);
+			}
+		},
+		eventDidMount: function( info ) {
+			var tooltip = new Tooltip(info.el, {
+				title: info.event.extendedProps.description,
+				placement: 'top',
+				trigger: 'hover',
+				container: 'body'
+			});
+		},
 		</#if>
-		minTime: minTime,
-		maxTime: maxTime,
+		loading: function(isLoading) {
+			var loader = document.getElementById('loader');
+			if (loader) { loader.style.display = isLoading ? '' : 'none'; }
+		},
+		<#if !isTypical>
+		validRange: {
+			start: startingDateOfDisplay,
+			end: endingDateOfDisplay
+		},
+		</#if>
+		slotMinTime: minTime,
+		slotMaxTime: maxTime,
 		businessHours: {
-			start: minTime,
-			end: maxTime,
-			dow: dow
-		}, 
-		eventClick: function( calEvent, jsEvent, view ){
+			startTime: minTime,
+			endTime: maxTime,
+			daysOfWeek: dow
+		},
+		eventClick: function( info ){
+			var calEvent = info.event;
+			var jsEvent = info.jsEvent;
+			var type = calEvent.extendedProps.type || '';
+			/* Intercept click on .open-AddBookDialog link inside event */
+			var addBookLink = jsEvent.target.closest('.open-AddBookDialog');
+			if (addBookLink) {
+				jsEvent.preventDefault();
+				jsEvent.stopPropagation();
+				document.getElementById('starting_date_time').value = addBookLink.dataset.starting_date_time;
+				var dtDate = new Date(addBookLink.dataset.starting_date_time);
+				document.getElementById('starting_date_time_span').value = fcFormatDate(dtDate, 'DD/MM/YYYY') + ' ' + fcFormatTime(dtDate);
+				bootstrap.Modal.getOrCreateInstance('#addBookModalDialog').show();
+				return;
+			}
 		<#if showComments>
 			// Comments
 			var isCommentModerator=${permission_moderate_comment};
-			if( calEvent.type == "comment" && ( calEvent.creator_user === '${permission_access_code}' || isCommentModerator ) ){
+			if( type == "comment" && ( calEvent.extendedProps.creator_user === '${permission_access_code}' || isCommentModerator ) ){
 				<@commentModal update=true />
-			} else if( calEvent.type == "appointment" ) {
-				location.href = calEvent.manageUrl;
+			} else if( type == "appointment" ) {
+				jsEvent.preventDefault();
+				location.href = calEvent.extendedProps.manageUrl;
 			}
-		<#else>
-			// Typical week
-			location.href = eventUrl + calEvent.id;
+		</#if>
+		<#if selectable>
+			if ( type !== 'comment' && type !== 'hour_comment' && type !== 'appointment' ) {
+				jsEvent.preventDefault();
+				var ev = calEvent;
+				var evObj = {
+					<#if isSpecific>idSlot: parseInt(ev.id) || 0,</#if>
+					<#if isTypical>idTimeSlot: parseInt(ev.id) || 0,</#if>
+					startingDateTime: fcFormatDate(ev.start, 'YYYY-MM-DD') + 'T' + fcFormatTime(ev.start),
+					startingTime: fcFormatTime(ev.start),
+					endingDateTime: fcFormatDate(ev.end, 'YYYY-MM-DD') + 'T' + fcFormatTime(ev.end),
+					endingTime: fcFormatTime(ev.end),
+					isOpen: ev.extendedProps.isOpen === 'true' || ev.extendedProps.isOpen === true,
+					<#if isSpecific>isSpecific: ev.extendedProps.isSpecific === 'true' || ev.extendedProps.isSpecific === true,</#if>
+					idForm: parseInt(ev.extendedProps.idForm) || 0,
+					<#if isSpecific>date: ev.extendedProps.date || '',</#if>
+					maxCapacity: parseInt(ev.extendedProps.maxCapacity) || 0
+				};
+				var evtData = JSON.stringify(evObj);
+				document.getElementById(<#if isTypical>'timeSlotData'<#else>'slotData'</#if>).value = '[' + evtData + ']';
+				document.getElementById(<#if isTypical>'timeIsOpen'<#else>'is_open'</#if>).checked = evObj.isOpen;
+				document.getElementById('maxCapacity').value = evObj.maxCapacity;
+				<#if isSpecific>
+				document.querySelector('#dtSlot').textContent = fcFormatDate(ev.start, 'DD/MM/YYYY');
+				document.getElementById('date_of_display_slot').value = fcFormatDate(ev.start, 'YYYY-MM-DD');
+				</#if>
+				<#if isTypical>
+				document.getElementById('idTimeSlot').value = evObj.idTimeSlot;
+				document.getElementById('idWorkingDay').value = ev.extendedProps.idWorkingDay || '';
+				</#if>
+				document.getElementById('timeStart').textContent = evObj.startingTime;
+				document.getElementById('timeEnd').value = evObj.endingTime;
+				setTimeout(function() { bootstrap.Modal.getOrCreateInstance('#updatePlanningSlot').show(); }, 50);
+			}
 		</#if>
 		},
 		events: events,
 		<#if !isTypical>
-		viewRender: function(view, element) {
-			var minDate = moment(startingDateOfDisplay);
-			var maxDate = moment(endingDateOfDisplay);
-			// Past 
-			if (minDate >= view.start && minDate <= view.end || view.end <= minDate) {
-				$( '.fc-prev-button' ).prop('disabled', true);
-				$( '.fc-prev-button' ).addClass('fc-state-disabled');
-			} else {
-				$( '.fc-prev-button' ).removeClass('fc-state-disabled');
-				$( '.fc-prev-button' ).prop('disabled', false); 
-			}
-			// Future
-			if (maxDate >= view.start && maxDate <= view.end || maxDate <= view.start) {
-				$( '.fc-next-button' ).prop('disabled', true);
-				$( '.fc-next-button' ).addClass('fc-state-disabled');
-			} else {
-				$( '.fc-next-button' ).removeClass('fc-state-disabled');
-				$( '.fc-next-button' ).prop('disabled', false); 
+		datesSet: function(info) {
+			var d = info.start;
+			sessionStorage.setItem( 'appCurrentDate', d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0') );
+			if (miniCalInstance) {
+				miniCalInstance.gotoDate(info.start);
+				requestAnimationFrame(function() { miniCalInstance.highlightCurrentWeek(); });
 			}
 		},
 		</#if>
-		eventAfterAllRender: function( view ) {
-			if( document.getElementById('loader') != undefined ){ document.getElementById('loader').remove() };
-			sessionStorage.setItem( 'appCurrentDate', moment(view.start).format('DD/MM/YYYY') );
-			$('.fc-event').css('cursor', 'pointer');
-			<#if !isTypical>
-				$('.fc-next-button').attr('class', 'fc-next-button btn btn-primary btn-sm');
-				$('.fc-prev-button').attr('class', 'fc-prev-button btn btn-primary btn-sm');
-				$('.fc-today-button').attr('class', 'fc-today-button btn btn-primary btn-sm');
-				$('.fc-datePicker-button').attr('class', 'fc-datePicker-button btn btn-primary btn-sm');
-			</#if>
-			$('.open-AddBookDialog').click( function( e ) {
-				e.preventDefault();
-				$('#starting_date_time').val($(this).data('starting_date_time'));
-				var dt = $(this).data('starting_date_time');
-				$('#starting_date_time_span').val( moment(dt).format('DD/MM/YYYY hh:mm') );
-				const addbookModal = new bootstrap.Modal( '#addBookModalDialog' )
-				addbookModal.toggle();
-				return false;
-			});
-			<#if showComments>
-			// Set comments 
-			$( '.fc-view.fc-agendaWeek-view.fc-agenda-view .fc-body .ui-widget-content .fc-day-grid .fc-bg .fc-axis.ui-widget-content' ).html( '' );
-			$( '#toggle-add-comment' ).clone().appendTo( '.fc-body .ui-widget-content .fc-day-grid .fc-content-skeleton .fc-axis:first' );
-			$( '.fc-body .ui-widget-content .fc-day-grid .fc-content-skeleton .fc-axis:first' ).css('position', 'relative');
-			var tgc = $( '#toggle-add-comment' ).find('body');
-			tgc.click(function(ev) {
-				<@commentModal />
-			});	
-			var firstBgColor;
-			// Highlight comment from bg
-			$( '.fc-bgevent' ).hover(function(){
-			    firstBgColor = $( this ).css( "background-color" );
-				$( this ).css('background-color', 'orange' );
-				var classSel = $(this).attr('class'), bgColor=$(this).css('background-color'),
-				commentSel = classSel.split(' '),
-				c = '#' + commentSel[0].replace('-','-C');
-				$( c ).css('background-color', 'orange' );
-				$( c ).css('color', '#fff' );
-				return false;
-			}, function(){
-				$( this ).css('background-color', firstBgColor );
-				var classSel = $(this).attr('class'),
-				commentSel = classSel.split(' '),
-				c = '#' + commentSel[0].replace('-','-C');
-				$( c ).css('background-color', firstBgColor );
-				$( c ).css('color', '#000' );
-			});
-			// Show comment popover
-			$('.fc-bgevent').click(function(e){
-				var classSel = $(this).attr('class'),
-				commentSel = classSel.split(' '),
-				c = '#' + commentSel[0].replace('-','-C');
-				const popover = bootstrap.Popover.getOrCreateInstance( c )
-				popover.toggle();
-				return false;
-			});
-			</#if>
-			<#if isSpecific || isTypical >
-			/* Event selection if specific */ 
-			var eventIdx=0, eventData='',evtData='';        
-           	$( ".fc-content-skeleton" )<#if isSpecific>.not(":has(.comments)")</#if>.not(":has(.btn-comments)").selectable({
-                filter: ".fc-time-grid-event.fc-v-event",
-				selecting: function( event, ui ) {
-					eventIdx++;
-				},
-				unselecting: function( event, ui ) {
-					eventIdx--;
-				},
-				stop: function() {
-					$( '.ui-selected', this ).each( function( index ) {
-						index++;
-						<#if isSpecific>
-							if ( eventIdx > 1 ){
-								eventData += '{' + $(this).data('event') + '},' ;
-								const events =  JSON.stringify( eventData );
-								evtData='['+eventData.slice(0, -1)+']'
-								const evt = JSON.parse(evtData); 
-								$('#slotsData').val( evtData);
-								$('#date_of_display_multi').val( moment(evt[0].startingDateTime).format('YYYY-MM-DD') );
-								const updatePlanningMultiSlotModal = bootstrap.Modal.getOrCreateInstance('#updatePlanningMultiSlot')
-								updatePlanningMultiSlotModal.toggle()
-							} else {
-								eventData ='{' + $(this).data('event') + '}';  
-								const events = JSON.stringify(eventData); 
-								evtData= '['+eventData+']';
-								$('#slotData').val( evtData );
-								const evt = JSON.parse(eventData); 
-								const isOpen = JSON.parse( evt.isOpen )
-								$('#is_open').prop( "checked", isOpen );
-								$('#maxCapacity').val( evt.maxCapacity );
-								$('#dtSlot .modal-title').append( moment(evt.startingDateTime).format('DD/MM/YYYY') );
-								$('#date_of_display_slot').val( moment(evt.startingDateTime).format('YYYY-MM-DD') );
-								$('#timeStart').text( evt.startingTime );
-								$('#timeEnd').val( evt.endingTime );
-								const updatePlanningSlotModal = bootstrap.Modal.getOrCreateInstance('#updatePlanningSlot')
-								updatePlanningSlotModal.toggle()
+		<#if showComments>
+		eventMouseEnter: function(info) {
+			const bgHoverColor = 'rgba(233, 250, 0, .1)';
+			if (info.event.extendedProps.type === 'hour_comment') {
+				info.el.dataset.prevBgColor = info.el.style.backgroundColor;
+				var commentId = info.event.classNames[0];
+				var cEl = commentId ? document.getElementById(commentId.replace('comment-', 'comment-C')) : null;
+				if (cEl) { cEl.dataset.prevBgColor = cEl.style.backgroundColor; cEl.style.color = '#fff'; } 
+			} else if (info.event.extendedProps.type !== 'comment') {
+				/* Highlight allDay comments whose hour_comment overlaps this slot */
+				var slotStart = info.event.start, slotEnd = info.event.end;
+				if (slotStart && slotEnd) {
+					calendarInst.getEvents().forEach(function(evt) {
+						if (evt.extendedProps.type === 'hour_comment' && evt.start < slotEnd && evt.end > slotStart) {
+							var commentId = evt.classNames[0];
+							var cEl = commentId ? document.getElementById(commentId.replace('comment-', 'comment-C')) : null;
+							if (cEl && !cEl.dataset.slotHover) {
+								cEl.dataset.slotHover = 'true';
+								cEl.style.backgroundColor = bgHoverColor;
+								cEl.style.color = '#fff';
 							}
-						</#if>  
-						<#if isTypical>
-							if ( eventIdx > 1 ){
-								eventData += '{' + $(this).data('event') + '},' ;
-								const events =  JSON.stringify( eventData );
-								evtData='['+eventData.slice(0, -1)+']'
-								$('#timeSlotData').val( evtData );
-								const updatePlanningMultiSlotModal = bootstrap.Modal.getOrCreateInstance('#updatePlanningMultiSlot')
-								updatePlanningMultiSlotModal.toggle()
-							} else {
-								eventData ='{' + $(this).data('event') + '}';                       
-								const evt = JSON.parse(eventData); 
-								const isOpen = JSON.parse( evt.isOpen )
-								$('#timeIsOpen').prop( "checked", isOpen );
-								$('#idTimeSlot').val( evt.idTimeSlot );
-								$('#idWorkingDay').val( evt.idWorkingDay );
-								$('#maxCapacity').val( evt.maxCapacity );
-								$('#date_of_display_slotmaxCapacity').val( evt.maxCapacity );
-								$('#timeStart').text( evt.startingTime );
-								$('#timeEnd').val( evt.endingTime );
-								const updatePlanningSlotModal = bootstrap.Modal.getOrCreateInstance('#updatePlanningSlot')
-								updatePlanningSlotModal.toggle()
-							}
-						</#if> 
+						}
 					});
-					eventData='';
 				}
-			
-			});
-			</#if>
-			
-		},
-		eventRender: function( event, element, view ) {
-			var $title = element.find( '.fc-title' ), createSlot='', labelEventDate='';
-			$(element).addClass( event.customClass );
-			if ( event.customStyle !='' ){
-				$(element).css( 'background', event.customStyle );
 			}
-			$title.html( $title.text() );
-			if( event.type !== 'comment' ){
+		},
+		eventMouseLeave: function(info) {
+			if (info.event.extendedProps.type === 'hour_comment') {
+				info.el.style.backgroundColor = info.el.dataset.prevBgColor || '';
+				var commentId = info.event.classNames[0];
+				var cEl = commentId ? document.getElementById(commentId.replace('comment-', 'comment-C')) : null;
+				if (cEl) { cEl.style.backgroundColor = cEl.dataset.prevBgColor || ''; cEl.style.color = '#000'; }
+			} else if (info.event.extendedProps.type !== 'comment') {
+				/* Remove highlight from allDay comments */
+				document.querySelectorAll('[data-slot-hover="true"]').forEach(function(cEl) {
+					cEl.style.backgroundColor = cEl.dataset.prevBgColor2 || '';
+					cEl.style.color = '#000';
+					delete cEl.dataset.slotHover;
+					delete cEl.dataset.prevBgColor2;
+				});
+			}
+		},
+		</#if>
+		eventsSet: function( events ) {
+			<#if isSpecific || isTypical >
+			/* Event selection via native drag selection */
+			(function() {
+				var timegridBody = document.querySelector('.fc-timegrid-body');
+				if (!timegridBody) return;
+				<#if isSpecific>if (timegridBody.querySelector('.comments')) return;</#if>
+				if (timegridBody.querySelector('.btn-comments')) return;
+
+				var eventEls = timegridBody.querySelectorAll('.fc-timegrid-event.fc-v-event');
+
+				timegridBody.addEventListener('mousedown', function(e) {
+					if (e.button !== 0) return;
+					var target = e.target.closest('.fc-timegrid-event.fc-v-event');
+					if (!target || target.classList.contains('comments') || !target.dataset.event) return;
+					isDragging = true;
+					selectedEls = [target];
+					target.classList.add('ui-selected');
+					e.preventDefault();
+				});
+				timegridBody.addEventListener('mouseover', function(e) {
+					if (!isDragging) return;
+					var target = e.target.closest('.fc-timegrid-event.fc-v-event');
+					if (target && selectedEls.indexOf(target) === -1 && !target.classList.contains('comments') && target.dataset.event) {
+						selectedEls.push(target);
+						target.classList.add('ui-selected');
+					}
+				});
+				
+				document.addEventListener('mouseup', function() {
+					if (!isDragging) return;
+					isDragging = false;
+					if (selectedEls.length <= 1) {
+						/* Single slot: let FC select callback handle it */
+						selectedEls.forEach(function(el) { el.classList.remove('ui-selected'); });
+						selectedEls = [];
+						return;
+					}
+					var eventIdx = selectedEls.length;
+					var eventData = '', evtData = '';
+					selectedEls.forEach(function(el, index) {
+						<#if isSpecific>
+							eventData += '{' + (el.dataset.event || '') + '},';
+							evtData = '[' + eventData.slice(0, -1) + ']';
+							var evt = JSON.parse(evtData);
+							document.getElementById('slotsData').value = evtData;
+							document.getElementById('date_of_display_multi').value = fcFormatDate(new Date(evt[0].startingDateTime), 'YYYY-MM-DD');
+							if (index === eventIdx - 1) {
+								setTimeout(function() { bootstrap.Modal.getOrCreateInstance('#updatePlanningMultiSlot').show(); }, 50);
+							}
+						</#if>
+						<#if isTypical>
+							eventData += '{' + (el.dataset.event || '') + '},';
+							evtData = '[' + eventData.slice(0, -1) + ']';
+							document.getElementById('timeSlotData').value = evtData;
+							if (index === eventIdx - 1) {
+								setTimeout(function() { bootstrap.Modal.getOrCreateInstance('#updatePlanningMultiSlot').show(); }, 50);
+							}
+						</#if>
+					});
+					
+					var clearSel = function() {
+						selectedEls.forEach(function(el) { el.classList.remove('ui-selected'); });
+						selectedEls = [];
+					};
+					['#updatePlanningSlot', '#updatePlanningMultiSlot'].forEach(function(mid) {
+						var m = document.querySelector(mid);
+						if (m) { m.addEventListener('hidden.bs.modal', clearSel, { once: true }); }
+					});
+				});
+			})();
+			</#if>
+			/* Update mini-calendar dots after events are loaded */
+			if (miniCalInstance && typeof miniCalInstance.updateDots === 'function') {
+				miniCalInstance.updateDots();
+			}
+		},
+		eventDidMount: function( info ) {
+			var event = info.event;
+			var el = info.el;
+			if (event.extendedProps.type === 'hour_comment') { el.classList.add('hour-comment'); }
+			var titleEl = el.querySelector( '.fc-event-title' ), createSlot='', labelEventDate='';
+			var customClass = (event.extendedProps.customClass || '').trim();
+			if (customClass) { customClass.split(/\s+/).forEach(function(c) { el.classList.add(c); }); }
+			if ( event.extendedProps.customStyle && event.extendedProps.customStyle !== '' ){
+				el.style.background = event.extendedProps.customStyle;
+			}
+			if (titleEl) { titleEl.innerHTML = titleEl.textContent; }
+			if( event.extendedProps.type !== 'comment' ){
 			<#if isSpecific>
-				$(element).attr( 'data-event', '"idSlot":"' + event.id +'","startingDateTime":"' + event.start.toISOString()+ '","startingTime":"' + event.start.format('HH:mm') + '","endingDateTime":"' + event.end.toISOString() + '","endingTime":"' + event.end.format('HH:mm')+ '","isOpen":"' + event.isOpen + '","idForm":"' + event.idForm +'","date":"' + event.date + '","isSpecific":"' + event.isSpecific + '","maxCapacity":"' + event.maxCapacity + '"' );
-			</#if>  
+				el.setAttribute( 'data-event', '"idSlot":"' + event.id +'","startingDateTime":"' + fcFormatDate(event.start, 'YYYY-MM-DD') + 'T' + fcFormatTime(event.start) + '","startingTime":"' + fcFormatTime(event.start) + '","endingDateTime":"' + fcFormatDate(event.end, 'YYYY-MM-DD') + 'T' + fcFormatTime(event.end) + '","endingTime":"' + fcFormatTime(event.end)+ '","isOpen":"' + event.extendedProps.isOpen + '","idForm":"' + event.extendedProps.idForm +'","date":"' + event.extendedProps.date + '","isSpecific":"' + event.extendedProps.isSpecific + '","maxCapacity":"' + event.extendedProps.maxCapacity + '"' );
+			</#if>
 			<#if isTypical>
-				$(element).attr( 'data-event', '"idTimeSlot":"' + event.id +'","startingDateTime":"' + event.start.toISOString()+ '","startingTime":"' + event.start.format('HH:mm') + '","endingDateTime":"' + event.end.toISOString() + '","endingTime":"' + event.end.format('HH:mm')+ '","isOpen":"' + event.isOpen + '","idForm":"' + event.idForm +'","maxCapacity":"' + event.maxCapacity + '"' );
-			</#if>  
+				el.setAttribute( 'data-event', '"idTimeSlot":"' + event.id +'","startingDateTime":"' + fcFormatDate(event.start, 'YYYY-MM-DD') + 'T' + fcFormatTime(event.start) + '","startingTime":"' + fcFormatTime(event.start) + '","endingDateTime":"' + fcFormatDate(event.end, 'YYYY-MM-DD') + 'T' + fcFormatTime(event.end) + '","endingTime":"' + fcFormatTime(event.end)+ '","isOpen":"' + event.extendedProps.isOpen + '","idForm":"' + event.extendedProps.idForm +'","maxCapacity":"' + event.extendedProps.maxCapacity + '"' );
+			</#if>
 			}
 			var json = { "container": "body", "placement" : "bottom", "html" : true, "trigger" : "hover" };
 			<#if showComments>
-				if( event.type == 'comment' ){
-					$(element).addClass('comments').attr( 'id', 'comment-' + event.id ).attr( 'data-json', '{"id_comment":"' + event.id + '", "comment_text":"' + event.title.replace(/"/g,'\\"') + '", "comment_start":"' + event.start.format('YYYY-MM-DD') + '", "comment_start_time":"' + event.start_time + '", "comment_end":"' + event.validity_end + '", "comment_end_time\":"' + event.end_time + '"}' );
-					/* Add comment render */
-					labelEventDate=setLabelComment( event, '${locale}' );
-					var creator = event.creator_name.trim() !== '' ? event.creator_name : event.creator_user;
-					json.content = '<p>' + labelEventDate +'</p><p>Créé par <em>' + creator + '</em> le ' + event.creation_date + '</span><hr>'+ event.title + '</p>'  ;
+				if( event.extendedProps.type == 'comment' ){
+					el.classList.add('comments');
+					el.setAttribute( 'id', 'comment-' + event.id );
+					el.setAttribute( 'data-json', '{"id_comment":"' + event.id + '", "comment_text":"' + event.title.replace(/"/g,'\\"') + '", "comment_start":"' + fcFormatDate(event.start, 'YYYY-MM-DD') + '", "comment_start_time":"' + event.extendedProps.start_time + '", "comment_end":"' + event.extendedProps.validity_end + '", "comment_end_time\":"' + event.extendedProps.end_time + '"}' );
+					/* Add comment render — build flat object expected by setLabelComment */
+					var commentData = { start: event.start, validity_end: event.extendedProps.validity_end, start_time: event.extendedProps.start_time, end_time: event.extendedProps.end_time };
+					labelEventDate = (typeof setLabelComment === 'function') ? setLabelComment( commentData, '${locale}' ) : '';
+					var creator = (event.extendedProps.creator_name || '').trim() !== '' ? event.extendedProps.creator_name : event.extendedProps.creator_user;
+					<#noparse>json.content = `<p class="md-0">${labelEventDate}</p><p class="md-0">Créé par <em>${creator}</em> le ${event.extendedProps.creation_date}</span><hr>${event.title.replace(/"/g,'\\"')}</p>`;</#noparse>
 					var dateDebut='', dateFin='';
-					if ( ! ( event.start_time == null || event.start_time == undefined || event.start_time == '00:00' ) ){
-						if( event.start.format('DDMM') != moment(event.validity_end).format('DDMM') ){
-							dateDebut=event.start.format('ddd DD/MM à ');
-							dateFin=moment(event.validity_end).format('ddd DD/MM à ')
+					if ( ! ( event.extendedProps.start_time == null || event.extendedProps.start_time == undefined || event.extendedProps.start_time == '00:00' ) ){
+						var startDDMM = (event.start.getDate().toString().padStart(2,'0')) + (event.start.getMonth()+1).toString().padStart(2,'0');
+						var endValDate = new Date(event.extendedProps.validity_end);
+						var endDDMM = (endValDate.getDate().toString().padStart(2,'0')) + (endValDate.getMonth()+1).toString().padStart(2,'0');
+						if( startDDMM != endDDMM ){
+							dateDebut=fcFormatDate(event.start, 'ddd DD/MM') + ' à ';
+							dateFin=fcFormatDate(endValDate, 'ddd DD/MM') + ' à ';
 						}
-						var fcTitle = element.find('.fc-title p');
-						fcTitle.prepend( dateDebut + event.start_time + '/' + dateFin + event.end_time + ' ' );
+						var fcTitle = el.querySelector('.fc-event-title p');
+						if (fcTitle) { fcTitle.insertAdjacentHTML('afterbegin', dateDebut + event.extendedProps.start_time + '/' + dateFin + event.extendedProps.end_time + ' ' ); }
 					} else {
-						$(element).addClass('allday');
+						el.classList.add('allday');
 					}
 				} else {
-					if( event.id != undefined || event.id != undefined ){
-						json.content = "<p><b>" + event.start.format('HH:mm') + "</b> - <b>" + event.end.format('HH:mm')+"</b></p>";
+					if( event.id != undefined ){
+						<#noparse>json.content = `<p class=\"md-0\"><strong>${fcFormatTime(event.start)}</strong> - <strong>${fcFormatTime(event.end)}</strong></p>`;</#noparse>
 					}
 				}
 			<#else>
-				if( event.id != undefined || event.id != undefined ){
-					json.content = "<p><b>" + event.start.format('HH:mm') + "</b> - <b>" + event.end.format('HH:mm')+"</b></p>";
+				if( event.id != undefined ){
+					<#noparse>json.content = `<p class=\"md-0\"><strong>${fcFormatTime(event.start)}</strong> - <strong>${fcFormatTime(event.end)}</strong></p>`;</#noparse>
 				}
 			</#if>
-			const popover = new bootstrap.Popover( element.context, json )
+			const popover = new bootstrap.Popover( el, json )
 		}
 	});
+	calendarInst.render();
+	window.appointmentCalendar = calendarInst;
+	// Force re-render after layout is computed to ensure events display
+	requestAnimationFrame(function() { calendarInst.updateSize(); });
+	/* Mini-calendar toggle — apply visibility BEFORE rendering mini-cal */
+	(function() {
+		var toggleBtn = document.getElementById('btn-toggle-mini-cal');
+		var miniCalEl = document.getElementById('mini-calendar');
+		var sidebarCol = document.getElementById('fc-sidebar-col');
+		var calendarCol = document.getElementById('fc-calendar-col');
+		if (!toggleBtn || !miniCalEl) return;
+		function applyState(visible) {
+			if (visible) {
+				miniCalEl.style.display = '';
+				if (sidebarCol) sidebarCol.style.display = '';
+				if (calendarCol) { calendarCol.classList.remove('col-lg-12'); calendarCol.classList.add('col-lg-10'); }
+				toggleBtn.title = '#i18n{appointment.appointmentCalendar.labelHideMiniCalendar}';
+				toggleBtn.querySelector('i').className = 'ti ti-calendar-off';
+			} else {
+				miniCalEl.style.display = 'none';
+				if (sidebarCol) sidebarCol.style.display = 'none';
+				if (calendarCol) { calendarCol.classList.remove('col-lg-10'); calendarCol.classList.add('col-lg-12'); }
+				toggleBtn.title = '#i18n{appointment.appointmentCalendar.labelShowMiniCalendar}';
+				toggleBtn.querySelector('i').className = 'ti ti-calendar';
+			}
+			calendarInst.updateSize();
+			if (miniCalInstance) { miniCalInstance.updateSize(); }
+		}
+		var stored = localStorage.getItem('appointmentMiniCalVisible');
+		var visible = stored === null ? true : stored === 'true';
+		applyState(visible);
+		toggleBtn.addEventListener('click', function() {
+			visible = !visible;
+			localStorage.setItem('appointmentMiniCalVisible', String(visible));
+			applyState(visible);
+		});
+	})();
+	/* Init mini-calendar AFTER layout is stable */
+	miniCalInstance = initMiniCalendar(calendarInst);
+	/* Update dots now that both mini-cal and main calendar events are ready */
+	if (miniCalInstance && typeof miniCalInstance.updateDots === 'function') {
+		miniCalInstance.updateDots();
+	}
 	/* If comment creation set currentDate from "commentContext" localstorage */
 	const dtCurrent=localStorage.getItem('commentContext');
 	if(  dtCurrent !='' && dtCurrent != null ){
 		localStorage.removeItem( 'commentContext' );
-		calendar.fullCalendar( 'gotoDate', moment(dtCurrent,'DD-MM-YYYY'));
+		calendarInst.gotoDate(new Date(dtCurrent));
 	}
 	<#nested>
-});
+}
+if (document.readyState === 'loading') {
+	document.addEventListener('DOMContentLoaded', initAppointmentCalendar);
+} else {
+	initAppointmentCalendar();
+}
 </#macro>

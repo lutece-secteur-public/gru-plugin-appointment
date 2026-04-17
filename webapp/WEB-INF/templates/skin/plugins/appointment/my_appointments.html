@@ -1,55 +1,61 @@
-<div class="container">
-	<div class="row">
-
-		<div class="col-xs-12 col-sm-12">
-
-			<h2 style="margin-bottom:30px">#i18n{appointment.myAppointments.name}</h2>
-			<@messages infos=infos errors=errors/>
-			
-			<div class="table-responsive">
-				<table class="table">
-					<tr>
-						<th>#i18n{appointment.myAppointments.labelAppointmentFormTitle}</th>
-						<th>#i18n{appointment.myAppointments.labelDateAppointment}</th>
-						<th>#i18n{appointment.myAppointments.labelTime}</th>
-						<th>Nombre de places réservées</th>
-						<th>#i18n{appointment.actions.label}</th>
-					</tr>
-					
-					<#if list_appointments?? && list_appointments?size &gt; 0>
-						<#list list_appointments?sort_by('startingDateTime') as appointment>
-							<#assign dtApp=appointment.startingDateTime?string?datetime.iso > 
-							<#if !appointment.isCancelled && localeDateTime.isBefore(appointment.startingDateTime) >
-								<#list form_list as frm>
-									<#if frm.code?number = appointment.idForm>
-										<#assign formTitle=frm.name />
-										<#break>
+<@cTpl>
+<@cContainer>
+	<@cRow>
+		<@cCol>
+			<@cTitle level=2 class='mb-4'>#i18n{appointment.myAppointments.name}</@cTitle>
+			<#if infos?? && infos?size gt 0><#list infos as info><@cAlert type='info' title=info.message! /></#list></#if>
+			<#if errors?? && errors?size gt 0><#list errors as error><@cAlert type='danger' title=error.message! /></#list></#if>
+			<#if list_appointments?? && list_appointments?size gt 0>
+				<@chList>
+					<#list list_appointments?sort_by('startingDateTime') as appointment>
+						<#if !appointment.isCancelled && localeDateTime.isBefore(appointment.startingDateTime)>
+							<#assign dtApp=appointment.startingDateTime?string?datetime.iso>
+							<#list form_list as frm>
+								<#if frm.code?number = appointment.idForm>
+									<#assign formTitle=frm.name />
+									<#break>
+								</#if>
+							</#list>
+							<@chItem>
+								<@cCard title=formTitle>
+									<@chList>
+										<@chItem>
+											<@cIcon name='calendar' /> ${appointment.dateOfTheAppointment!}
+										</@chItem>
+										<@chItem>
+											<@cIcon name='clock' /> #i18n{appointment.labelFrom} ${appointment.startingTime} #i18n{appointment.labelTo} ${appointment.endingTime}
+										</@chItem>
+										<@chItem>
+											<@cIcon name='users' /> ${appointment.nbBookedSeats!} #i18n{appointment.myAppointments.labelNbBookedSeats}
+										</@chItem>
+									</@chList>
+									<#if appointment.listWorkflowActions?? && appointment.listWorkflowActions?size gt 0>
+										<@cRow class='mt-3'>
+											<@cCol>
+												<#list appointment.listWorkflowActions as action>
+													<#assign imgParams = 'title="' + action.name + '"'>
+													<#if action.icon.width != -1>
+														<#assign imgParams = imgParams + ' width="' + action.icon.width + '"'>
+													</#if>
+													<#if action.icon.height != -1>
+														<#assign imgParams = imgParams + ' height="' + action.icon.height + '"'>
+													</#if>
+													<@cBtn href='jsp/site/Portal.jsp?page=appointment&view=viewWorkflowActionForm&id_action=${action.id}&amp;refAppointment=${appointment.reference}' class='outline-secondary btn-sm me-1'>
+														<@cImg src='image?resource_type=workflow_icon_img&id=${action.icon.id}' alt='${action.name}' params=imgParams />
+													</@cBtn>
+												</#list>
+											</@cCol>
+										</@cRow>
 									</#if>
-								</#list>
-								<tr>
-									<td style="vertical-align: middle">${formTitle!}</td>
-									<td style="vertical-align: middle">${appointment.dateOfTheAppointment!}</td>
-									<td style="vertical-align: middle">#i18n{appointment.labelFrom} ${appointment.startingTime} #i18n{appointment.labelTo} ${appointment.endingTime}</td>
-									<td style="vertical-align: middle">${appointment.nbBookedSeats!}</td>
-									<td>
-									<#if localeDateTime.isBefore(appointment.startingDateTime) >
-										<#if appointment.listWorkflowActions?? && appointment.listWorkflowActions?size &gt; 0> 
-											<#list appointment.listWorkflowActions as action> 
-												<@aButton href='jsp/site/Portal.jsp?page=appointment&view=viewWorkflowActionForm&id_action=${action.id}&amp;refAppointment=${appointment.reference}' size='sm'>
-													<img src="image?resource_type=workflow_icon_img&id=${action.icon.id}"<#if action.icon.width!=-1> width="${action.icon.width}" </#if><#if action.icon.height!=-1> height="${action.icon.height}"</#if>title="${action.name}" alt="${action.name}" />
-												</@aButton> 
-											</#list>
-										</#if> 
-									</#if>
-									</td>
-								</tr>
-							</#if>
-						</#list>
-					<#else>
-						<tr><td colspan="5"><p class="lead text-warning text-center">#i18n{portal.util.labelNoItem}</p></td></tr>
-					</#if>
-				</table>
-			</div>
-		</div>
-	</div>
-</div>
+								</@cCard>
+							</@chItem>
+						</#if>
+					</#list>
+				</@chList>
+			<#else>
+				<@cAlert type='warning' title='#i18n{portal.util.labelNoItem}' />
+			</#if>
+		</@cCol>
+	</@cRow>
+</@cContainer>
+</@cTpl>

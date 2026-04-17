@@ -755,6 +755,10 @@ public final class AppointmentUtilities
      */
     public static LocalTime getMinTimeToDisplay( LocalTime minStartingTime )
     {
+        if ( minStartingTime == null )
+        {
+            return LocalTime.MIN;
+        }
         LocalTime minStartingTimeToDisplay;
         if ( minStartingTime.getMinute( ) < THIRTY_MINUTES )
         {
@@ -776,6 +780,10 @@ public final class AppointmentUtilities
      */
     public static LocalTime getMaxTimeToDisplay( LocalTime maxEndingTime )
     {
+        if ( maxEndingTime == null )
+        {
+            return LocalTime.MAX;
+        }
         LocalTime maxEndingTimeToDisplay;
         if ( maxEndingTime.getMinute( ) < THIRTY_MINUTES )
         {

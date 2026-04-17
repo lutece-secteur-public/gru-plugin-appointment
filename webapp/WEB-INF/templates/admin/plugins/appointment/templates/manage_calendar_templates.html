@@ -1,93 +1,71 @@
-<@row>
-	<@columns>
-		<@box color='primary'>
-			<@boxHeader title='#i18n{appointment.adminFeature.manageCalendarTemplates.name}'>
-				<@aButton href='jsp/admin/plugins/appointment/ManageCalendarTemplates.jsp?view=getCreateModifyTemplate' buttonIcon='plus' title='#i18n{appointment.labelAddTemplate}' />
-			</@boxHeader>
-			<@boxBody>
-				<@messages infos=infos errors=errors />
-
-				<#if 0 < dataTableManager.items?size >
-					<#if dataTableManager.enablePaginator>
-						<@tform type='inline' method='post' action='${dataTableManager.sortUrl}' align='right'>
-							<#if (dataTableManager.paginator.pagesCount > 1) >
-								<@paginationPageLinks paginator=dataTableManager.paginator />
+<@pageContainer>
+	<@pageColumn>
+		<@pageHeader title='#i18n{appointment.adminFeature.manageCalendarTemplates.name}'>
+			<@offcanvas id='offcanvasCreate' targetUrl='jsp/admin/plugins/appointment/ManageCalendarTemplates.jsp?view=getCreateModifyTemplate' targetElement='#form-create-modify-calendar-template' title='#i18n{appointment.labelAddTemplate}' btnTitle='#i18n{appointment.labelAddTemplate}' btnIcon='plus' btnColor='primary' position='end' size='half' />
+		</@pageHeader>
+		<@messages infos=infos errors=errors /> 
+		<#if 0 < dataTableManager.items?size>
+		<@manageFeature>
+			<#list dataTableManager.items as item>
+			<@manageFeatureItem>
+				<@manageFeatureItemColumn auto=true flex=false>
+					<#list dataTableManager.listColumn as column>
+						<#if column.typeColumn = "STRING">
+							<#assign propName = "item." + column.parameterName>
+							<#assign value = propName?eval>
+							<#if column.parameterName != 'templatePath'>
+								<#if column.parameterName = 'title'><#assign pClass='fw-bold mb-1' /><#else><#assign pClass='mb-0' /></#if>
+								<@p class=pClass>${value!}</@p>
+							<#else>
+								<@p class='mb-0 fs-5 bg-light p-2 border-radius'>#i18n{appointment.createModifyCalendarTemplate.labelTemplatePath} : <#if value?? && value != ""><@span class='text-muted'>${value}</@span></#if></@p>
 							</#if>
-							<div class="pull-right">
-								<@paginationItemCount paginator=dataTableManager.paginator combo=1 nb_items_per_page=dataTableManager.paginator.itemsPerPage?string />
-							</div>
-							<@input type='hidden' name='${dataTableManager.id}' id='${dataTableManager.id}' value='${dataTableManager.id}' />
-						</@tform>
-					</#if>
-					<@table params='summary="data table"'>
-						<caption>&nbsp;</caption>
-						<tr>
-							<#list dataTableManager.listColumn as column>
-								<th scope="col">
-									#i18n{${column.titleKey}}
-									<#if !(column.typeColumn = "ACTION") && column.sortable>
-										<@sort jsp_url=dataTableManager.sortUrl attribute=column.parameterName />
-									</#if>
-								</th>
-							</#list>
-						</tr>
-						<#list dataTableManager.items as item>
-							<tr>
-								<#list dataTableManager.listColumn as column>
-									<#if column.typeColumn = "STRING">
-										<#assign propName = "item." + column.parameterName>
-										<#assign value = propName?eval>
-										<td>${value!}</td>
-									<#elseif column.typeColumn = "LABEL">
-										<#assign propName = "item." + column.parameterName>
-										<#assign value = propName?eval>
-										<td>#i18n{${value!}}</td>
-									<#elseif column.typeColumn = "BOOLEAN">
-										<#assign propName = "item." + column.parameterName>
-										<#assign value = propName?eval>
-										<#if value?? && value>
-											<td><@tag color='success' title='#i18n{${column.labelTrue!}}' tagIcon='check'>#i18n{${column.labelTrue!}}</@tag></td>
-										<#else>
-											<td><@tag color='danger' title='#i18n{${column.labelFalse!}}' tagIcon='times'>#i18n{${column.labelFalse!}}</@tag></td>
-										</#if>
-									<#elseif column.typeColumn = "EMAIL">
-										<#assign propName = "item." + column.parameterName>
-										<#assign value = propName?eval>
-										<td><#if value?? && value != ""><a href="mailto:${value}" title="${value}" >${value}</a></#if></td>
-									<#elseif column.typeColumn = "ACTION">
-										<#if column.parameterName?? && column.parameterName != "">
-											<#assign macroName = column.parameterName>
-										<#else>
-											<#assign macroName = 'actionColumnCalendarTemplate'>
-										</#if>
-										<#if macroName?? && macroName != "">
-											<td><@.vars[macroName] item=item /></td>
-										</#if>
-									</#if>
-								</#list>
-							</tr>
-						</#list>
-					</@table>
-					<#if dataTableManager.enablePaginator>
-						<@tform type='inline' method='post' action='${dataTableManager.sortUrl}'>
-							<#if (dataTableManager.paginator.pagesCount > 1) >
-								<@paginationPageLinks paginator=dataTableManager.paginator />
+						<#elseif column.typeColumn = "LABEL">
+							<#assign propName = "item." + column.parameterName>
+							<#assign value = propName?eval>
+							<@p class='mb-0'>#i18n{${value!}}</@p>
+						<#elseif column.typeColumn = "BOOLEAN">
+							<#assign propName = "item." + column.parameterName>
+							<#assign value = propName?eval>
+							<@p class='mb-0'>#i18n{${column.titleKey}} : <#if value?? && value><@tag color='success' tagIcon='check'>#i18n{${column.labelTrue!}}</@tag><#else><@tag color='danger' tagIcon='times'>#i18n{${column.labelFalse!}}</@tag></#if></@p>
+						<#elseif column.typeColumn = "EMAIL">
+							<#assign propName = "item." + column.parameterName>
+							<#assign value = propName?eval>
+							<@p class='mb-0'>#i18n{${column.titleKey}} : <#if value?? && value != ""><@link href='mailto:${value}' title='${value}' label='${value}' /></#if></@p>
+						</#if>
+					</#list>
+				</@manageFeatureItemColumn>
+				<@manageFeatureItemColumn align='end'>
+					<#list dataTableManager.listColumn as column>
+						<#if column.typeColumn = "ACTION">
+							<#if column.parameterName?? && column.parameterName != "">
+								<#assign macroName = column.parameterName>
+							<#else>
+								<#assign macroName = 'actionColumnCalendarTemplate'>
 							</#if>
-							<div class="pull-right">
-								<@paginationItemCount paginator=dataTableManager.paginator combo=0 nb_items_per_page=dataTableManager.paginator.itemsPerPage?string />
-							</div>
-							<@input type='hidden' name='${dataTableManager.id}' id='${dataTableManager.id}' value='${dataTableManager.id}' />
-						</@tform>
-					</#if>
-				<#else>
-					#i18n{portal.util.labelNoItem}
-				</#if>
-			</@boxBody>
-		</@box>
-	</@columns>
-</@row>
-
+							<#if macroName?? && macroName != "">
+								<@.vars[macroName] item=item /> 
+							</#if>
+						</#if>
+					</#list>
+				</@manageFeatureItemColumn>
+			</@manageFeatureItem>
+			</#list>
+			</@manageFeature>
+			<#if dataTableManager.enablePaginator && (dataTableManager.paginator.pagesCount > 10)>
+			<@tform method='post' action='${dataTableManager.sortUrl}' class='w-100 d-flex justify-content-between align-items-center mt-3'>
+				<@input type='hidden' name='${dataTableManager.id}' id='${dataTableManager.id}' value='${dataTableManager.id}' />
+				<@paginationPageLinks paginator=dataTableManager.paginator />
+				<@paginationItemCount paginator=dataTableManager.paginator combo=1 showcount=0 nb_items_per_page=dataTableManager.paginator.itemsPerPage?string />
+			</@tform>
+			</#if>
+		<#else>
+			<@card>
+				<@empty title='#i18n{portal.util.labelNoItem}' iconName='template-off' actionTitle='#i18n{appointment.labelAddTemplate}' actionUrl='jsp/admin/plugins/appointment/ManageCalendarTemplates.jsp?view=getCreateModifyTemplate' />
+			</@card>
+		</#if>
+	</@pageColumn>
+</@pageContainer>
 <#macro actionColumnCalendarTemplate item>
-	<@aButton href='jsp/admin/plugins/appointment/ManageCalendarTemplates.jsp?view=getCreateModifyTemplate&idTemplate=${item.idCalendarTemplate}' buttonIcon='edit' size='sm' />
-	<@aButton href='jsp/admin/plugins/appointment/ManageCalendarTemplates.jsp?view=getConfirmRemoveTemplate&idTemplate=${item.idCalendarTemplate}' buttonIcon='trash' color='danger' size='sm' />
+<@offcanvas id='offcanvasModify-${item.idCalendarTemplate}' targetUrl='jsp/admin/plugins/appointment/ManageCalendarTemplates.jsp?view=getCreateModifyTemplate&idTemplate=${item.idCalendarTemplate}' targetElement='#form-create-modify-calendar-template' title='#i18n{portal.util.labelModify}' btnTitle='#i18n{portal.util.labelModify}' btnIcon='edit' btnClass='me-1' hideTitle=['xs','sm','md'] position='end' size='half' />
+<@aButton href='jsp/admin/plugins/appointment/ManageCalendarTemplates.jsp?view=getConfirmRemoveTemplate&idTemplate=${item.idCalendarTemplate}' buttonIcon='trash' color='danger' hideTitle=['all'] title='#i18n{portal.util.labelDelete}' hideTitle=['xs','sm','md'] />
 </#macro>

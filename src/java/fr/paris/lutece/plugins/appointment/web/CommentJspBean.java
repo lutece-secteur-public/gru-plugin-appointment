@@ -225,10 +225,8 @@ public class CommentJspBean extends AbstractAppointmentFormAndSlotJspBean
         _comment.setCreationDate( LocalDate.now( ) );
         _comment.setCreatorUserName( user.getAccessCode( ) );
         _comment.setComment( request.getParameter( PARAMETER_COMMENT ) );
-        _comment.setStartingValidityDate( DateUtil.formatDate( request.getParameter( PARAMETER_STARTING_VALIDITY_DATE ), getLocale( ) ).toInstant( )
-                .atZone( ZoneId.systemDefault( ) ).toLocalDate( ) );
-        _comment.setEndingValidityDate( DateUtil.formatDate( request.getParameter( PARAMETER_ENDING_VALIDITY_DATE ), getLocale( ) ).toInstant( )
-                .atZone( ZoneId.systemDefault( ) ).toLocalDate( ) );
+        _comment.setStartingValidityDate( LocalDate.parse( request.getParameter( PARAMETER_STARTING_VALIDITY_DATE ).substring( 0, 10 ) ) );
+        _comment.setEndingValidityDate( LocalDate.parse( request.getParameter( PARAMETER_ENDING_VALIDITY_DATE ).substring( 0, 10 ) ) );
         if ( !request.getParameter( PARAMETER_STARTING_VALIDITY_TIME ).isEmpty( ) )
         {
             _comment.setStartingValidityTime( LocalTime.parse( request.getParameter( PARAMETER_STARTING_VALIDITY_TIME ) ) );
@@ -316,10 +314,8 @@ public class CommentJspBean extends AbstractAppointmentFormAndSlotJspBean
             throw new AccessDeniedException( AppointmentResourceIdService.PERMISSION_MODERATE_COMMENT_FORM );
         }
         _comment.setComment( request.getParameter( PARAMETER_COMMENT ) );
-        _comment.setStartingValidityDate( DateUtil.formatDate( request.getParameter( PARAMETER_STARTING_VALIDITY_DATE ), getLocale( ) ).toInstant( )
-                .atZone( ZoneId.systemDefault( ) ).toLocalDate( ) );
-        _comment.setEndingValidityDate( DateUtil.formatDate( request.getParameter( PARAMETER_ENDING_VALIDITY_DATE ), getLocale( ) ).toInstant( )
-                .atZone( ZoneId.systemDefault( ) ).toLocalDate( ) );
+        _comment.setStartingValidityDate( LocalDate.parse( request.getParameter( PARAMETER_STARTING_VALIDITY_DATE ).substring( 0, 10 ) ) );
+        _comment.setEndingValidityDate( LocalDate.parse( request.getParameter( PARAMETER_ENDING_VALIDITY_DATE ).substring( 0, 10 ) ) );
         if ( !request.getParameter( PARAMETER_STARTING_VALIDITY_TIME ).isEmpty( ) )
         {
             _comment.setStartingValidityTime( LocalTime.parse( request.getParameter( PARAMETER_STARTING_VALIDITY_TIME ) ) );

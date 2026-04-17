@@ -9,67 +9,54 @@
 </#if>
 <#assign addressValue = "" />
 <#assign hasError = false />
-<div class="form-group">
-	<label class="control-label col-xs-12 col-sm-12 col-md-3 col-lg-3" for="${entry.idEntry}_address-input" id="attribute${entry.idEntry}">${entry.title}<#if entry.mandatory>   *</#if></label>
-	<div class=" col-xs-12 col-sm-12 col-md-6 col-lg-6">
-		<#if list_responses??>
-			<#list list_responses as response>
-				<#if response.entry.idEntry == entry.idEntry && response.toStringValueResponse??>
-					<#if response.field.code == "X">
-						<input type="hidden" name="${entry.idEntry}_x" id="${entry.idEntry}_x" value="${response.toStringValueResponse!}"/>
-					<#elseif response.field.code == "Y">
-						<input type="hidden" name="${entry.idEntry}_y" id="${entry.idEntry}_y" value="${response.toStringValueResponse!}"/>
-					<#elseif response.field.code == "idAddress">
-						<input type="hidden" name="${entry.idEntry}_idAddress" id="${entry.idEntry}_idAddress" value="${response.toStringValueResponse!}"/>
-					<#else>
-						<#assign addressValue = response.toStringValueResponse! />
-						<#if response.entry.error??>
-							<#assign hasError = true />
-						</#if>
-					</#if>
-				</#if>
-			</#list>
-			<#if useAddressAutocomplete>
-				<@suggestPOIInput id="${entry.idEntry}_address" name="${entry.idEntry}_address" currentValue="${addressValue!}" required=entry.mandatory cssClass="<#if hasError>is-invalid<#else>${entry.CSSClass!}</#if>" />
+<#assign errorMsg = ''>
+<#assign helpMsg = ''>
+<#if entry.helpMessage?exists && entry.helpMessage != ''><#assign helpMsg>${entry.helpMessage}</#assign></#if>
+<#if list_responses??>
+	<#list list_responses as response>
+		<#if response.entry.idEntry == entry.idEntry && response.toStringValueResponse??>
+			<#if response.field.code == "X">
+				<#assign xVal = response.toStringValueResponse! />
+			<#elseif response.field.code == "Y">
+				<#assign yVal = response.toStringValueResponse! />
+			<#elseif response.field.code == "idAddress">
+				<#assign idAddressVal = response.toStringValueResponse! />
 			<#else>
-				<input type="text" name="${entry.idEntry}_address" id="${entry.idEntry}_address" <#if hasError>class="error"<#else>class="${entry.CSSClass!}"</#if> value="${addressValue!}" />
+				<#assign addressValue = response.toStringValueResponse! />
+				<#if response.entry.error?? && response.entry.error.isDisplayableError>
+					<#assign hasError = true />
+					<#assign error = response.entry.error>
+					<#assign errorMsg><#if error.mandatoryError>${error.errorMessage}<#else>#i18n{appointment.message.mandatory.entry}</#if></#assign>
+				</#if>
 			</#if>
+		</#if>
+	</#list>
+</#if>
+<@cField label='${entry.title}' required=entry.mandatory>
+	<#if list_responses??>
+		<#if useAddressAutocomplete>
+			<@suggestPOIInput id="${entry.idEntry}_address" name="${entry.idEntry}_address" currentValue="${addressValue!}" required=entry.mandatory cssClass="<#if hasError>is-invalid<#else>${entry.CSSClass!}</#if>" />
 		<#else>
-			<#if useAddressAutocomplete>
-				<@suggestPOIInput id="${entry.idEntry}_address" name="${entry.idEntry}_address" currentValue="" required=entry.mandatory />
-			<#else>
-				<input type="text" value="" name="${entry.idEntry}_address" id="${entry.idEntry}_address" size="50" />
-			</#if>
-			<input type="hidden" name="${entry.idEntry}_x" id="${entry.idEntry}_x" value=""/>
-			<input type="hidden" name="${entry.idEntry}_y" id="${entry.idEntry}_y" value=""/>
-			<input type="hidden" name="${entry.idEntry}_geometry" id="${entry.idEntry}_geometry" value="${geometryValue!}">
-			<input type="hidden" name="${entry.idEntry}_idAddress" id="${entry.idEntry}_idAddress" value="${idAddressValue!}">
+			<@cInput type='text' name='${entry.idEntry}_address' id='${entry.idEntry}_address' class='form-control <#if hasError>is-invalid<#else>${entry.CSSClass!}</#if>' value='${addressValue!}' errorMsg=errorMsg helpMsg=helpMsg />
 		</#if>
-		<#if entry.helpMessage?exists&&entry.helpMessage!=''>
-		<p class="help-block">${entry.helpMessage}</p>
+		<@cInput type='hidden' name='${entry.idEntry}_x' id='${entry.idEntry}_x' class='' value='${xVal!}' />
+		<@cInput type='hidden' name='${entry.idEntry}_y' id='${entry.idEntry}_y' class='' value='${yVal!}' />
+		<@cInput type='hidden' name='${entry.idEntry}_idAddress' id='${entry.idEntry}_idAddress' class='' value='${idAddressVal!}' />
+	<#else>
+		<#if useAddressAutocomplete>
+			<@suggestPOIInput id="${entry.idEntry}_address" name="${entry.idEntry}_address" currentValue="" required=entry.mandatory />
+		<#else>
+			<@cInput type='text' value='' name='${entry.idEntry}_address' id='${entry.idEntry}_address' class='form-control' params='size="50"' helpMsg=helpMsg />
 		</#if>
-
-		<#if list_responses??>
-			<#assign show_error = 0>
-			<#list list_responses as response>
-				<#if response.entry.idEntry == entry.idEntry && response.entry.error?? && response.entry.error.isDisplayableError && show_error == 0>
-					<#assign show_error = 1>
-					<div class="alert alert-error alert-danger">
-						<#assign error = response.entry.error>
-						<#if error.mandatoryError>
-							${error.errorMessage}
-						<#else>
-							#i18n{appointment.message.mandatory.entry}
-						</#if>
-					</div>
-				</#if>
-			</#list>
-		</#if>
-		<#if entry.mapProvider?has_content>
-			<#include entry.mapProvider.htmlCode />
-		</#if>
-	</div>
-</div>
+		<@cInput type='hidden' name='${entry.idEntry}_x' id='${entry.idEntry}_x' class='' value='' />
+		<@cInput type='hidden' name='${entry.idEntry}_y' id='${entry.idEntry}_y' class='' value='' />
+		<@cInput type='hidden' name='${entry.idEntry}_geometry' id='${entry.idEntry}_geometry' class='' value='${geometryValue!}' />
+		<@cInput type='hidden' name='${entry.idEntry}_idAddress' id='${entry.idEntry}_idAddress' class='' value='${idAddressValue!}' />
+	</#if>
+	<#if entry.mapProvider?has_content>
+		<#include entry.mapProvider.htmlCode />
+	</#if>
+</@cField>
 <#if useAddressAutocomplete>
 <@setupSuggestPOI />
 <script>

@@ -1,40 +1,33 @@
 <#list entry.fields as field>
-	<#if list_responses??>
-		<#list list_responses as response>
+<#if list_responses??>
+	<#list list_responses as response>
 		<#if response.entry.idEntry == entry.idEntry>
-			<#if response.toStringValueResponse??>
-				<#assign value = response.toStringValueResponse />
-			</#if>
-			<#if response.entry.error??>
-				<#assign class = 'has-error' />
-			</#if>
-			</#if>
-		</#list>
-	<#else>
-			<#assign value=getFieldValueByCode( entry, "text_config")>
-	</#if>
+			<#if response.toStringValueResponse??><#assign value = response.toStringValueResponse /></#if>
+			<#if response.entry.error??><#assign class = 'has-error' /></#if>
+		</#if>
+	</#list>
+<#else>
+	<#assign value=getFieldValueByCode( entry, "text_config")>
+</#if>
 </#list>
 <#assign field_max_size=getFieldValueByCode( entry, "max_size")>
 <@formGroup labelFor='attribute${entry.idEntry}' labelKey='${entry.title}' helpKey='${entry.helpMessage!}' mandatory=entry.mandatory class=class>
 	<#assign field_width=getFieldValueByCode( entry, "width")>
-	<@input type='text' name='attribute${entry.idEntry}' id='attribute${entry.idEntry}' inputSize=field_width?number  class='${entry.CSSClass!}' value=value  maxlength=field_max_size?number/>
+	<@input type='text' name='attribute${entry.idEntry}' id='attribute${entry.idEntry}' inputSize=field_width?number class='form-control ${entry.CSSClass!}' value=value maxlength=field_max_size?number />
 	<#if list_responses??>
 		<#list list_responses as response>
-			<#if response.entry.idEntry == entry.idEntry && response.entry.error??  && response.entry.error.isDisplayableError>
+			<#if response.entry.idEntry == entry.idEntry && response.entry.error?? && response.entry.error.isDisplayableError>
 				<#assign error = response.entry.error>
-				<@alert color='danger' params='style="margin-top:10px;"'>
-					<#if error.mandatoryError>${error.errorMessage}<#else>#i18n{appointment.message.mandatory.entry}</#if>
-				</@alert>
+				<#if error.mandatoryError><#assign errorMsg = error.errorMessage><#else><#assign errorMsg = '#i18n{appointment.message.mandatory.entry}'></#if>
+				<@alert color='danger' title=errorMsg />
 			</#if>
 		</#list>
 	</#if>
 </@formGroup>
-
-
 <#assign confirmField=getFieldByCode( entry, "confirm_field")>
-<#if confirmField.value?boolean >
-<@formGroup labelFor='attribute${entry.idEntry}_confirm_field' labelKey=confirmField.title mandatory=entry.mandatory>
-	<#assign field_width=getFieldValueByCode( entry, "width")>
-	<@input type='text' name='attribute${entry.idEntry}_confirm_field' id='attribute${entry.idEntry}_confirm_field' inputSize=field_width?number value=entry.comment maxlength=field_max_size?number />
-</@formGroup>
+<#if confirmField.value?boolean>
+	<@formGroup labelFor='attribute${entry.idEntry}_confirm_field' labelKey=confirmField.title mandatory=entry.mandatory>
+		<#assign field_width=getFieldValueByCode( entry, "width")>
+		<@input type='text' name='attribute${entry.idEntry}_confirm_field' id='attribute${entry.idEntry}_confirm_field' inputSize=field_width?number class='form-control ${entry.CSSClass!}' value=entry.comment maxlength=field_max_size?number />
+	</@formGroup>
 </#if>

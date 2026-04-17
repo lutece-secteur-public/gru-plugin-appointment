@@ -9,8 +9,8 @@
     <description>appointment.plugin.description</description>
     <provider>appointment.plugin.provider</provider>
     <provider-url>http://dev.lutece.paris.fr</provider-url>
-    <icon-url>images/admin/skin/plugins/appointment/appointment.png</icon-url>
-    <copyright>Copyright (c) 2013 Mairie de Paris</copyright>
+    <icon-url>themes/shared/plugins/appointment/images/admin/appointment.svg</icon-url>
+    <copyright>Copyright (c) 2026 Mairie de Paris</copyright>
     <db-pool-required>1</db-pool-required>
 
     <core-version-dependency>
@@ -104,7 +104,6 @@
    </portlets>	
     <css-stylesheets>
         <css-stylesheets-scope>portal</css-stylesheets-scope>
-        <css-stylesheet>appointment/appointment.css</css-stylesheet>
     </css-stylesheets>
     
     <freemarker-macro-files>

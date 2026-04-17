@@ -1,20 +1,18 @@
-<div class="row">
-	<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
-		<div class="jumbotron">
-			<div class="container">
-				<p>${formMessages.textAppointmentCanceled}</p>
-				<p>
-				<#if backUrl??>
-					<a href="${backUrl}" class="btn btn-primary btn-lg">
-						#i18n{portal.util.labelBack}
-					</a>
-				<#else>
-					<a href="${formMessages.urlRedirectAfterCreation}" class="btn btn-primary btn-lg">
-						${formMessages.labelButtonRedirection}
-					</a>
-				</#if>
-				</p>
-			</div>
-		</div>
-	</div>
-</div>
+<@cTpl>
+<@cRow>
+	<@cCol>
+		<@cText>${formMessages.textAppointmentCanceled}</@cText>
+		<@cText>
+			<#if backUrl??>
+				<@cBtn href='${backUrl}' label='' class='primary btn-lg'>
+					#i18n{portal.util.labelBack}
+				</@cBtn>
+			<#else>
+				<@cBtn href='${formMessages.urlRedirectAfterCreation}' label='' class='primary btn-lg'>
+					${formMessages.labelButtonRedirection}
+				</@cBtn>
+			</#if>
+		</@cText>
+	</@cCol>
+</@cRow>
+</@cTpl>

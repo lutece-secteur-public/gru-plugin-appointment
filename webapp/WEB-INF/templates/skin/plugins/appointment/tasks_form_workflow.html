@@ -1,18 +1,24 @@
-<@row>
-	<@columns>
-			<@tform action='jsp/site/Portal.jsp?page=appointment' params='enctype="multipart/form-data"'>
-				<fieldset>
-					<legend> #i18n{appointment.taskFormWorkflow.pageTitle}</legend>
-					<@messages infos=infos errors=errors/>
-					<input type='hidden' name='action' value='doProcessWorkflowAction' />
-					<input type='hidden' name='id_action' value='${id_action}' />
-					<input type='hidden' name='refAppointment' value='${refAppointment}' />
-					${tasks_form}
-					<@formGroup>
-						<@button type='submit' name='save' buttonIcon='check' title='#i18n{workflow.tasks_form_test_workflow.button_save}' />
-						<@button type='submit' name='back' value='back' buttonIcon='times' title='#i18n{workflow.tasks_form_test_workflow.button_cancel}' color='btn-default' cancel=true />
-					</@formGroup>
-				</fieldset>
-		    </@tform>
-	</@columns>
- </@row>
+<@cRow>
+	<@cCol>
+		<#if infos??><#list infos as info><@cAlert type='info' title=info.message ! /></#list></#if>
+		<#if errors??><#list errors as error><@cAlert type='danger' title=error.message ! /></#list></#if>
+		<@cForm action='jsp/site/Portal.jsp?page=appointment' enctype='multipart/form-data'>
+			<@cFieldset legend='#i18n{appointment.taskFormWorkflow.pageTitle}'>
+				<@cInput type='hidden' name='action' value='doProcessWorkflowAction' class='' />
+				<@cInput type='hidden' name='id_action' value='${id_action}' class='' />
+				<@cInput type='hidden' name='refAppointment' value='${refAppointment}' class='' />
+				${tasks_form}
+				<@cRow class='mt-3'>
+					<@cCol>
+						<@cBtn type='submit' name='save' class='primary'>
+							<@cIcon name='check' /> #i18n{workflow.tasks_form_test_workflow.button_save}
+						</@cBtn>
+						<@cBtn type='submit' name='back' class='secondary'>
+							<@cIcon name='x' /> #i18n{workflow.tasks_form_test_workflow.button_cancel}
+						</@cBtn>
+					</@cCol>
+				</@cRow>
+			</@cFieldset>
+		</@cForm>
+	</@cCol>
+</@cRow>

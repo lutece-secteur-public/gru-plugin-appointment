@@ -1,74 +1,65 @@
 <#include "all_entry_commons.html" />
-<@row>
-    <@columns>
-        <@box color='primary'>
-            <@boxHeader title='#i18n{appointment.createEntry.titleQuestion} : ${form.title}' />
-            <@boxBody>
-                <@tform action='jsp/admin/plugins/appointment/ManageAppointmentFormEntries.jsp' method='post'>
-                    <fieldset>
-                        <legend class="hidden">#i18n{appointment.createEntry.titleQuestion} : '${form.title}'</legend>
-                        <@input type='hidden' name='id_form' value='${form.idForm}' />
-                        <@input type='hidden' name='action' value='doCreateEntry' />
-                        <@input type='hidden' name='id_type' value='${entry.entryType.idType}' />
-                        <#if entry.fieldDepend?exists>
-                            <@input type='hidden' name='id_field' value='${entry.fieldDepend.idField}' />
-                        </#if>
-						<@formGroup labelKey='#i18n{appointment.createEntry.labelType}'>
-							<@staticText>
-								<@tag color='info'>
-									${entry.entryType.title}
-								</@tag>
-							</@staticText>
-						</@formGroup>
-                        <@formGroup labelFor='title' labelKey='#i18n{appointment.labelTitle}' mandatory=true helpKey='#i18n{appointment.createEntry.labelTitleComment}'>
-                            <@input type='text' name='title' id='title' value='' maxlength=255 />
-                        </@formGroup>
-                        <@formGroup labelFor='help_message' labelKey='#i18n{appointment.createEntry.labelHelpMessage}' helpKey='#i18n{appointment.createEntry.labelHelpMessageComment}'>
-                            <@input type='textarea' name='help_message' id='help_message' rows=5 />
-                        </@formGroup>
-                        <@formGroup labelFor='comment' labelKey='#i18n{appointment.comment.name}'>
-                            <@input type='textarea' name='comment' rows=2 />
-                        </@formGroup>
-                        <@formGroup labelFor='value' labelKey='#i18n{appointment.defaultValue.name}'>
-                            <@input type='textarea' name='value' id='value' rows=5 />
-                        </@formGroup>
-                        <@formGroup labelFor='mandatory' labelKey='#i18n{appointment.createEntry.labelMandatory}'>
-                            <@checkBox name='mandatory' id='mandatory' value='1' />
-                        </@formGroup>
-                        <@formGroup labelFor='only_display_in_back' labelKey='#i18n{appointment.createEntry.labelOnlyDisplayInBack}'>
-                            <@checkBox name='only_display_in_back' id='only_display_in_back' value='1' />
-                        </@formGroup>
-                        <@formGroup labelFor='width' labelKey='#i18n{appointment.createEntry.labelWidth}' mandatory=true>
-                            <@input type='text' name='width' id='width' value='' inputSize=5 />
-                        </@formGroup>
-                        <@formGroup labelFor='height' labelKey='#i18n{appointment.createEntry.labelHeight}' mandatory=true>
-                            <@input type='text' name='height' id='height' value='' inputSize=5 />
-                        </@formGroup>
-                        <@formGroup labelFor='max_size_enter' labelKey='#i18n{appointment.createEntry.labelMaxSizeEnter}'>
-                            <@input type='text' name='max_size_enter' id='max_size_enter' value='' inputSize=5 />
-                        </@formGroup>
-                        <@formGroup>
-							<@checkBox orientation='switch' labelFor='anonymizable' labelKey='#i18n{appointment.createAppointmentForm.labelAnonymizable.genattField}' name='anonymizable' id='anonymizable' value='1' params='onchange="javascript:changeVisilityAnonymizePattern();"' />
-						</@formGroup>
-						<@formGroup labelFor='anonymize_pattern' id="anonymize_pattern_group" labelKey='#i18n{appointment.createAppointmentForm.labelAnonymizePattern}' helpKey='${anonymization_help_message}' >
-							<@input type='text' name='anonymize_pattern' id='anonymize_pattern' maxlength=255 />
-						</@formGroup>
-                        <@formGroup labelFor='css_class' labelKey='#i18n{appointment.createEntry.labelCSSClass}' helpKey='#i18n{appointment.createEntry.labelCSSClassComment}'>
-                            <@input type='text' name='css_class' value='' maxlength=255 />
-                        </@formGroup>
-                        <@formGroup labelFor='useRichText' labelKey='#i18n{appointment.createEntry.labelUseRichText}' helpKey='#i18n{appointment.createEntry.labelUseRichTextComment}'>
-                            <@checkBox name='useRichText' id='useRichText' value='true' />
-                        </@formGroup>
-                        <@formGroup>
-                            <@button type='submit' name='save' buttonIcon='save' title='#i18n{appointment.labelSave}' />
-                            <@button type='submit' name='cancel' value='cancel' buttonIcon='times' title='#i18n{appointment.labelCancel}' cancel=true />
-                        </@formGroup>
-                    </fieldset>
-                </@tform>
-            </@boxBody>
-        </@box>
-    </@columns>
-</@row>
+<#assign headerBreadcrumbs>
+<@breadcrumbs class='mt-2'>
+	<@breadcrumbItem><@link href='jsp/admin/plugins/appointment/ManageAppointmentFormEntries.jsp?view=modifyAppointmentFormEntries&id_form=${form.idForm}' label='#i18n{appointment.manageAppointments.pageTitle}' /></@breadcrumbItem>
+	<@breadcrumbItem>#i18n{appointment.createEntry.titleQuestion} : ${form.title}</@breadcrumbItem>
+</@breadcrumbs>
+</#assign>
+<@pageContainer>
+    <@pageColumn>
+        <@pageHeader title='#i18n{appointment.createEntry.titleQuestion} : ${form.title}' class='col-md-8' breadcrumb=headerBreadcrumbs />
+        <@tform action='jsp/admin/plugins/appointment/ManageAppointmentFormEntries.jsp' method='post' boxed=true>
+        <@input type='hidden' name='id_form' value='${form.idForm}' />
+        <@input type='hidden' name='action' value='doCreateEntry' />
+        <@input type='hidden' name='id_type' value='${entry.entryType.idType}' />
+        <#if entry.fieldDepend?exists><@input type='hidden' name='id_field' value='${entry.fieldDepend.idField}' /></#if>
+        <@p>#i18n{appointment.createEntry.labelType} <@tag color='info'>${entry.entryType.title}</@tag></@p>
+        <@formGroup labelFor='title' labelKey='#i18n{appointment.labelTitle}' mandatory=true helpKey='#i18n{appointment.createEntry.labelTitleComment}'>
+            <@input type='text' name='title' id='title' value='' maxlength=255 />
+        </@formGroup>
+        <@formGroup labelFor='help_message' labelKey='#i18n{appointment.createEntry.labelHelpMessage}' helpKey='#i18n{appointment.createEntry.labelHelpMessageComment}'>
+            <@input type='textarea' name='help_message' id='help_message' rows=5 />
+        </@formGroup>
+        <@formGroup labelFor='comment' labelKey='#i18n{appointment.comment.name}'>
+            <@input type='textarea' name='comment' rows=2 />
+        </@formGroup>
+        <@formGroup labelFor='value' labelKey='#i18n{appointment.defaultValue.name}'>
+            <@input type='textarea' name='value' id='value' rows=5 />
+        </@formGroup>
+        <@formGroup>
+            <@checkBox orientation='switch' name='mandatory' id='mandatory' labelKey='#i18n{appointment.createEntry.labelMandatory}' value='1' />
+        </@formGroup>
+        <@formGroup>
+            <@checkBox orientation='switch' name='only_display_in_back' id='only_display_in_back' labelKey='#i18n{appointment.createEntry.labelOnlyDisplayInBack}' value='1' />
+        </@formGroup>
+        <@formGroup labelFor='width' labelKey='#i18n{appointment.createEntry.labelWidth}' mandatory=true>
+            <@input type='text' name='width' id='width' value='' inputSize=5 />
+        </@formGroup>
+        <@formGroup labelFor='height' labelKey='#i18n{appointment.createEntry.labelHeight}' mandatory=true>
+            <@input type='text' name='height' id='height' value='' inputSize=5 />
+        </@formGroup>
+        <@formGroup labelFor='max_size_enter' labelKey='#i18n{appointment.createEntry.labelMaxSizeEnter}'>
+            <@input type='text' name='max_size_enter' id='max_size_enter' value='' inputSize=5 />
+        </@formGroup>
+        <@formGroup>
+            <@checkBox orientation='switch' name='anonymizable' id='anonymizable' labelKey='#i18n{appointment.createAppointmentForm.labelAnonymizable.genattField}' value='1' params='onchange="javascript:changeVisilityAnonymizePattern();"' />
+        </@formGroup>
+        <@formGroup labelFor='anonymize_pattern' id="anonymize_pattern_group" labelKey='#i18n{appointment.createAppointmentForm.labelAnonymizePattern}' helpKey='${anonymization_help_message}' >
+            <@input type='text' name='anonymize_pattern' id='anonymize_pattern' maxlength=255 />
+        </@formGroup>
+        <@formGroup labelFor='css_class' labelKey='#i18n{appointment.createEntry.labelCSSClass}' helpKey='#i18n{appointment.createEntry.labelCSSClassComment}'>
+            <@input type='text' name='css_class' value='' maxlength=255 />
+        </@formGroup>
+        <@formGroup>
+            <@checkBox orientation='switch' name='useRichText' id='useRichText' labelKey='#i18n{appointment.createEntry.labelUseRichText}' value='true' />
+        </@formGroup>
+        <@formGroup>
+            <@button type='submit' name='save' buttonIcon='check' title='#i18n{appointment.labelSave}' class='form-validation' />
+            <@button type='submit' name='cancel' value='cancel' buttonIcon='arrow-left' color='secondary' title='#i18n{appointment.labelCancel}' class='form-validation' cancel=true />
+        </@formGroup>
+        </@tform>
+    </@pageColumn>
+</@pageContainer>
 <#include "/admin/util/editor/editor.html" />
 <@initEditor />
 <@anonymPattern />

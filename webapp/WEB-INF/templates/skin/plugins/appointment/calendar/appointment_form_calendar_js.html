@@ -1,0 +1,292 @@
+<link rel="stylesheet" href="themes/shared/plugins/appointment/css/appointment.css" />
+<script>
+const eventUrl = 'jsp/site/Portal.jsp?page=appointment&view=getViewAppointmentForm';
+const defaultDate = '${date_of_display}';
+const minDateOfOpenDay = '${min_date_of_open_day}';
+const maxDateOfOpenDay = '${max_date_of_open_day}';
+const hiddenDays = [<#if hidden_days??><#list hidden_days as hd>${hd},</#list></#if>];
+const labelFull = '#i18n{appointment.appointmentCalendar.labelSlotFull}';
+const labelClosed = '#i18n{appointment.appointmentCalendar.labelSlotClosed}';
+const labelNoSlot = '#i18n{appointment.appointmentCalendar.labelNoSlot}';
+const labelAvailable = '#i18n{appointment.appointmentCalendar.labelAvailableSlots}';
+
+const slots = [
+<#if events??>
+<#list events as event>
+{
+	start: '${event.startingDateTime}',
+	end: '${event.endingDateTime}',
+	id: '${event.idSlot}',
+	url: eventUrl + '&id_form=${event.idForm}&starting_date_time=${event.startingDateTime}&modif_date=${modifDateAppointment?c}&anchor=step3',
+	open: <#if event.isOpen>true<#else>false</#if>,
+	available: <#if event.isOpen && (event.nbRemainingPlaces > 0) && (event.nbRemainingPlaces == event.nbPotentialRemainingPlaces)>true<#elseif event.isOpen && (event.nbRemainingPlaces > 0) && (event.nbPotentialRemainingPlaces > 0)>true<#else>false</#if>,
+	remaining: ${event.nbRemainingPlaces},
+	maxCapacity: ${event.maxCapacity}
+},
+</#list>
+</#if>
+];
+
+(function() {
+	function toDateKey(d) {
+		return d.getFullYear() + '-' + String(d.getMonth()+1).padStart(2,'0') + '-' + String(d.getDate()).padStart(2,'0');
+	}
+	function parseISO(s) { return new Date(s); }
+	function formatTime(d) {
+		return String(d.getHours()).padStart(2,'0') + ':' + String(d.getMinutes()).padStart(2,'0');
+	}
+	function formatDayLong(d) {
+		return d.toLocaleDateString('fr-FR', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' });
+	}
+	function formatDayShort(d) {
+		return d.toLocaleDateString('fr-FR', { weekday: 'short', day: 'numeric', month: 'short' });
+	}
+	function getMonday(d) {
+		const dt = new Date(d); dt.setHours(0,0,0,0);
+		const day = dt.getDay();
+		const diff = (day === 0 ? -6 : 1) - day;
+		dt.setDate(dt.getDate() + diff);
+		return dt;
+	}
+	function addDays(d, n) { const r = new Date(d); r.setDate(r.getDate() + n); return r; }
+	function sameDay(a, b) { return toDateKey(a) === toDateKey(b); }
+
+	// Group slots by date
+	const slotsByDate = {};
+	slots.forEach(function(s) {
+		const d = toDateKey(parseISO(s.start));
+		if (!slotsByDate[d]) slotsByDate[d] = [];
+		slotsByDate[d].push(s);
+	});
+
+	let currentMonday = getMonday(new Date(defaultDate));
+	const minDate = new Date(minDateOfOpenDay); minDate.setHours(0,0,0,0);
+	const maxDate = new Date(maxDateOfOpenDay); maxDate.setHours(0,0,0,0);
+	const today = new Date(); today.setHours(0,0,0,0);
+
+	const dayPanel = document.getElementById('day-panel');
+	const timePanel = document.getElementById('time-panel');
+	const dayList = document.getElementById('day-list');
+	const timeList = document.getElementById('time-list');
+	const weekLabel = document.getElementById('week-label');
+	const prevBtn = document.getElementById('week-prev');
+	const nextBtn = document.getElementById('week-next');
+	const backBtn = document.getElementById('back-to-days');
+	const selectedDayLabel = document.getElementById('selected-day-label');
+
+ 	let isAppointmentSelected = false;
+
+	// Current appointment info from URL params
+	const urlParams = new URLSearchParams(window.location.search);
+	const urlDate = urlParams.get('date_of_display');
+	const urlStartTime = urlParams.get('start_time');
+	const urlEndTime = urlParams.get('end_time');
+
+	if (urlDate && urlStartTime && urlEndTime) {
+		const locale = document.documentElement.lang || 'fr-FR';
+		const apptDate = new Date(urlDate + 'T00:00:00');
+		const formattedDate = apptDate.toLocaleDateString(locale, { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' });
+		const info = document.createElement('p');
+		info.className = 'text-center main-info-color mb-3';
+		info.setAttribute('role', 'status');
+		info.innerHTML = '<span><strong>#i18n{appointment.label.yourCurrentAppointment}</strong> '
+			+ '<span class="text-capitalize">' + formattedDate + '</span>, '
+			+ urlStartTime + ' — ' + urlEndTime + '</span>';
+		dayList.parentNode.insertBefore(info, dayList);
+		currentMonday = getMonday(apptDate);
+		isAppointmentSelected = true;
+	}
+
+	function renderWeek() {
+		dayList.innerHTML = '';
+		const sunday = addDays(currentMonday, 6);
+		weekLabel.textContent = formatDayShort(currentMonday) + ' — ' + formatDayShort(sunday);
+
+		const prevMonday = addDays(currentMonday, -7);
+		prevBtn.disabled = (prevMonday < minDate && addDays(prevMonday, 6) < minDate);
+		const nextMonday = addDays(currentMonday, 7);
+		nextBtn.disabled = (nextMonday > maxDate);
+
+		for (let i = 0; i < 7; i++) {
+			const dayDate = addDays(currentMonday, i);
+			const dayKey = toDateKey(dayDate);
+			const dayOfWeek = dayDate.getDay();
+
+			if (hiddenDays.indexOf(dayOfWeek) !== -1) continue;
+
+			const daySlots = slotsByDate[dayKey] || [];
+			let availableCount = 0;
+			daySlots.forEach(function(s) { if (s.available) availableCount++; });
+
+			const col = document.createElement('div');
+			col.className = 'col-sm-6 col-md-4 col-lg mb-3';
+
+			const card = document.createElement('div');
+			card.className = 'card h-100 text-center';
+			card.setAttribute('role', 'option');
+			card.setAttribute('tabindex', '0');
+			card.setAttribute('data-date', dayKey);
+
+			const isToday = sameDay(dayDate, today);
+			const hasAvailable = availableCount > 0;
+
+			if (hasAvailable) {
+				card.className += ' border-primary';
+				card.style.cursor = 'pointer';
+			} else {
+				card.className += ' bg-light text-muted';
+			}
+
+			const body = document.createElement('div');
+			body.className = 'card-body p-3';
+
+			const dayName = document.createElement('div');
+			dayName.className = 'text-capitalize fw-bold';
+			dayName.textContent = dayDate.toLocaleDateString('fr-FR', { weekday: 'long' });
+			body.appendChild(dayName);
+
+			const dayNum = document.createElement('div');
+			dayNum.className = 'display-6 my-2';
+			dayNum.textContent = dayDate.getDate();
+			body.appendChild(dayNum);
+
+			const monthYear = document.createElement('div');
+			monthYear.className = 'small';
+			monthYear.textContent = dayDate.toLocaleDateString('fr-FR', { month: 'long' });
+			body.appendChild(monthYear);
+
+			const badge = document.createElement('span');
+			badge.className = 'badge mt-2 d-inline-block' + (isToday ? ' bg-info' : ' invisible');
+			badge.textContent = "#i18n{appointment.appointmentCalendar.labelToday}";
+			body.appendChild(badge);
+
+			const status = document.createElement('div');
+			status.className = 'mt-2';
+			if (hasAvailable) {
+				status.innerHTML = '<span class="badge bg-success">' + availableCount + ' ' + labelAvailable + '</span>';
+			} else if (daySlots.length > 0) {
+				status.innerHTML = '<span class="badge bg-secondary">' + labelFull + '</span>';
+			} else {
+				status.innerHTML = '<span class="badge bg-light text-muted">' + labelNoSlot + '</span>';
+			}
+			body.appendChild(status);
+			card.appendChild(body);
+			col.appendChild(card);
+			dayList.appendChild(col);
+
+			if (hasAvailable) {
+				(function(dk, dd, cd) {
+					function selectDay() {
+						dayList.querySelectorAll('.card.active').forEach(function(c) { c.classList.remove('active'); });
+						cd.classList.add('active');
+						showTimeSlots(dk, dd);
+					}
+					cd.addEventListener('click', selectDay);
+					cd.addEventListener('keydown', function(e) {
+						if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); selectDay(); }
+					});
+				})(dayKey, dayDate, card);
+			}
+
+			card.setAttribute('aria-label',
+				dayDate.toLocaleDateString('fr-FR', { weekday: 'long', day: 'numeric', month: 'long' })
+				+ ', ' + (hasAvailable ? availableCount + ' ' + labelAvailable : labelNoSlot)
+			);
+		}
+	}
+
+	function showTimeSlots(dayKey, dayDate) {
+		timePanel.style.display = '';
+		selectedDayLabel.textContent = formatDayLong(dayDate);
+
+		const daySlots = (slotsByDate[dayKey] || []).slice();
+		daySlots.sort(function(a, b) { return a.start.localeCompare(b.start); });
+
+		timeList.innerHTML = '';
+
+		if (daySlots.length === 0) {
+			timeList.innerHTML = '<p class="text-muted">' + labelNoSlot + '</p>';
+			backBtn.focus();
+			return;
+		}
+
+		daySlots.forEach(function(slot) {
+			const startTime = formatTime(parseISO(slot.start));
+			const endTime = formatTime(parseISO(slot.end));
+
+			const item = document.createElement('a');
+			item.setAttribute('role', 'option');
+			item.className = 'd-flex align-items-center justify-content-between p-3 mb-2 rounded border text-decoration-none';
+
+			if (slot.available) {
+				item.href = slot.url;
+				item.className += ' border-primary bg-white';
+				item.style.cursor = 'pointer';
+				item.innerHTML =
+					'<span class="fw-bold fs-5">' + startTime + ' — ' + endTime + '</span>' +
+					'<span class="badge main-info-bg-color">' + slot.remaining + ' / ' + slot.maxCapacity + '</span>';
+				item.setAttribute('aria-label', startTime + ' \u00e0 ' + endTime + ', ' + slot.remaining + ' ' + labelAvailable);
+			} else if (slot.open) {
+				item.className += ' bg-light text-muted';
+				item.setAttribute('aria-disabled', 'true');
+				item.innerHTML =
+					'<span class="fw-bold fs-5">' + startTime + ' — ' + endTime + '</span>' +
+					'<span class="badge bg-secondary">' + labelFull + '</span>';
+				item.setAttribute('aria-label', startTime + ' \u00e0 ' + endTime + ', ' + labelFull);
+			} else {
+				item.className += ' bg-light text-muted';
+				item.setAttribute('aria-disabled', 'true');
+				item.innerHTML = '<span class="fw-bold fs-5">' + startTime + ' — ' + endTime + '</span>' +
+					'<span class="badge bg-dark">' + labelClosed + '</span>';
+				item.setAttribute('aria-label', startTime + ' \u00e0 ' + endTime + ', ' + labelClosed);
+				if ( isAppointmentSelected ){
+					item.href = slot.url;
+				}
+			}
+
+			// Highlight current appointment slot from URL params
+			if (urlStartTime && urlEndTime && startTime === urlStartTime && endTime === urlEndTime && dayKey === urlDate) {
+				item.classList.add('border-3');
+				item.style.borderColor = 'var(--main-info-color-40) !important';
+				item.style.borderStyle = 'dashed !important';
+				item.querySelector('.badge').insertAdjacentText('beforebegin', '#i18n{appointment.label.yourCurrentAppointment}');
+				// item.style.boxShadow = '0 0 0 0.2rem rgba(255, 193, 7, 0.4)';
+			}
+
+			item.setAttribute('tabindex', slot.available ? '0' : '-1');
+			timeList.appendChild(item);
+		});
+
+		const firstAvailable = timeList.querySelector('a[href]');
+		if (firstAvailable) firstAvailable.focus();
+	}
+
+	function showDays() {
+		timePanel.style.display = 'none';
+		dayPanel.style.display = '';
+		renderWeek();
+	}
+
+	prevBtn.addEventListener('click', function() {
+		currentMonday = addDays(currentMonday, -7);
+		renderWeek();
+	});
+	nextBtn.addEventListener('click', function() {
+		currentMonday = addDays(currentMonday, 7);
+		renderWeek();
+	});
+	backBtn.addEventListener('click', showDays);
+
+	renderWeek();
+
+	// Auto-select day card and show time slots if URL has appointment params
+	if (urlDate) {
+		const targetCard = dayList.querySelector('.card[data-date="' + urlDate + '"]');
+		if (targetCard && targetCard.style.cursor === 'pointer') {
+			targetCard.classList.remove('border-primary');
+			targetCard.classList.add('active', 'main-info-border-color-40', 'border-5');
+			showTimeSlots(urlDate, new Date(urlDate + 'T00:00:00'));
+		}
+	}
+})();
+</script>

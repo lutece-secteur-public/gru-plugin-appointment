@@ -1,37 +1,33 @@
 <#include "/skin/plugins/asynchronousupload/upload_commons.html" />
-<div class="form-group">
-	<label class="control-label col-xs-12 col-sm-12 col-md-3 col-lg-3" for="attribute${entry.idEntry}" id="form${entry.idEntry}">${entry.title}<#if entry.mandatory> *</#if></label>
-	<div class=" col-xs-12 col-sm-12 col-md-6 col-lg-6">
-		<#assign fieldName='attribute'+entry.idEntry >
-		<#assign cssClass=entry.CSSClass!'' >
-		<#if list_responses??>
-			<#list list_responses as response>
-				<#if response.entry.idEntry == entry.idEntry && response.entry.error??>
-					<#assign cssClass='error' >
-					<#break>
+<#assign fieldName = 'attribute' + entry.idEntry >
+<#assign cssClass = entry.CSSClass!'' >
+<#if list_responses??>
+	<#list list_responses as response>
+		<#if response.entry.idEntry == entry.idEntry && response.entry.error??>
+			<#assign cssClass = 'is-invalid' >
+			<#break>
+		</#if>
+	</#list>
+</#if>
+<@cField label='${entry.title}' required=entry.mandatory>
+	<@addFileInput fieldName=fieldName handler=uploadHandler cssClass=cssClass multiple=true />
+	<#if entry.helpMessage?exists && entry.helpMessage != ''>
+		<@cInline class='form-text'>${entry.helpMessage}</@cInline>
+	</#if>
+	<#if list_responses?? && list_responses?has_content>
+		<#assign response_error = list_responses[0]>
+		<#if response_error.entry.idEntry == entry.idEntry && response_error.entry.error?? && response_error.entry.error.isDisplayableError>
+			<@cAlert type='danger'>
+				<#assign error = response_error.entry.error>
+				<#if error.mandatoryError>
+					#i18n{appointment.message.mandatory.entry}
+				<#else>
+					${error.errorMessage}
 				</#if>
-			</#list>
+			</@cAlert>
 		</#if>
-		<@addFileInput fieldName=fieldName handler=uploadHandler cssClass=cssClass multiple=true />
-		<#if entry.helpMessage?exists&&entry.helpMessage!=''>
-			<span class="help-block">${entry.helpMessage}</span>
-		</#if>
-		<#if list_responses?? && list_responses?has_content>
-			<#assign response_error = list_responses[0]>
-			<#if response_error.entry.idEntry == entry.idEntry && response_error.entry.error?? && response_error.entry.error.isDisplayableError>
-				<div class="alert alert-error">
-					<#assign error = response_error.entry.error>
-					<#if error.mandatoryError>
-						#i18n{appointment.message.mandatory.entry}
-					<#else>
-						${error.errorMessage}
-					</#if>
-				</div>
-			</#if>
-		</#if>
-	</div>
-</div>
-
+	</#if>
+</@cField>
 <#if list_responses?? && list_responses?has_content>
 	<#list list_responses as response>
 		<#if response.file?? && response.file.title?? && response.file.title != ''>
@@ -45,6 +41,5 @@
 <#else>
 	<#assign listFiles = ''>
 </#if>
-
 <@addRequiredJsFiles />
 <@addUploadedFilesBox fieldName=fieldName handler=uploadHandler listFiles=listFiles!'' />

@@ -1,31 +1,27 @@
 <#include "/admin/util/editor/editor.html" />
-<@row>
-	<@columns>
-		<@box color='primary'>
-			<@boxHeader title='#i18n{appointment.modifyEntry.titleGroup} : "${form.title}"' />
-			<@boxBody>
-				<fieldset>
-				<legend class="hidden">#i18n{appointment.modifyEntry.titleGroup} : '${form.title}'</legend>
-				<@tform action='jsp/admin/plugins/appointment/ManageAppointmentFormEntries.jsp'>
-					<@input type='hidden' name='id_entry' value='${entry.idEntry}' />
-					<@input type='hidden' name='action' value='doModifyEntry' />
-					
-					<@formGroup labelFor='title' labelKey='#i18n{appointment.labelTitle}' mandatory=true>
-						<@input type='text' name='title' id='title' value='${entry.title}' maxlength=255 />
-					</@formGroup>
-					
-					<@formGroup labelFor='css_class' labelKey='#i18n{appointment.createEntry.labelCSSClass}' helpKey='#i18n{appointment.createEntry.labelCSSClassComment}'>
-						<@input type='text' name='css_class' id='css_class' value='${entry.CSSClass!}' maxlength=255 />
-					</@formGroup>
-					
-					<@formGroup>
-						<@button type='submit' name='save' id='save' buttonIcon='check' title='#i18n{appointment.labelSave}' />
-						<@button type='button' params='onclick="javascript:window.history.back();"' buttonIcon='times' title='#i18n{appointment.labelCancel}' cancel=true />
-					</@formGroup>	
-				</@tform>
-				</fieldset>
-			</@boxBody>
-		</@box>
-	</@columns>
-</@row>
+<#assign headerBreadcrumbs>
+<@breadcrumbs class='mt-2'>
+	<@breadcrumbItem><@link href='jsp/admin/plugins/appointment/ManageAppointmentFormEntries.jsp?view=modifyAppointmentFormEntries&id_form=${form.idForm}' label='#i18n{appointment.manageAppointments.pageTitle}' /></@breadcrumbItem>
+	<@breadcrumbItem>#i18n{appointment.modifyEntry.titleGroup} : ${form.title}</@breadcrumbItem>
+</@breadcrumbs>
+</#assign>
+<@pageContainer>
+	<@pageColumn>
+		<@pageHeader title='#i18n{appointment.modifyEntry.titleGroup} : "${form.title}"'  class='col-md-8' breadcrumb=headerBreadcrumbs />
+			<@tform action='jsp/admin/plugins/appointment/ManageAppointmentFormEntries.jsp' boxed=true>
+			<@input type='hidden' name='id_entry' value='${entry.idEntry}' />
+			<@input type='hidden' name='action' value='doModifyEntry' />
+			<@formGroup labelFor='title' labelKey='#i18n{appointment.labelTitle}' mandatory=true>
+				<@input type='text' name='title' id='title' value='${entry.title}' maxlength=255 />
+			</@formGroup>
+			<@formGroup labelFor='css_class' labelKey='#i18n{appointment.createEntry.labelCSSClass}' helpKey='#i18n{appointment.createEntry.labelCSSClassComment}'>
+				<@input type='text' name='css_class' id='css_class' value='${entry.CSSClass!}' maxlength=255 />
+			</@formGroup>
+			<@formGroup>
+				<@button type='submit' name='save' id='save' buttonIcon='check' title='#i18n{appointment.labelSave}' class='form-validation' />
+				<@button type='button' params='onclick="javascript:window.history.back();"' buttonIcon='arrow-left' color='secondary' title='#i18n{appointment.labelCancel}' class='form-validation' cancel=true />
+			</@formGroup>
+			</@tform>
+	</@pageColumn>
+</@pageContainer>
 <@initEditor />

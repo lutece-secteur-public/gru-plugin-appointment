@@ -1,12 +1,7 @@
-<@row>
-    <@columns>
-        <@appointmentTabs tab="calendar" form=form context='app' />
-    </@columns>
-</@row>
-
+<@appointmentTabs tab='calendar' form=form context='app' >
 <@getCommentModal 'commentModal' '#i18n{appointment.create_comment.pageTitle}' "comment" "startingValidityDate" "endingValidityDate" "idStartingTime" "idEndingTime" "doAddComment" id_form mailing_list locale "calendarmanageappointment" />
 <@getCommentModal 'modify-comment' '#i18n{appointment.modify_comment.pageTitle}' "modifyComment" "modifyStartingValidityDate" "modifyEndingValidityDate" "idModifyStartingTime" "idModifyEndingTime" "doModifyComment" id_form mailing_list locale "calendarmanageappointment" />
-
+</@appointmentTabs>
 <script>
 <#assign typeClass=''>
 var bgOpenColor = '#fff;'
@@ -14,14 +9,13 @@ var bgClosedColor = '#bebebe;'
 var slotDuration = '${min_duration}';
 var minTime = '${min_time}';
 var maxTime = '${max_time}';
-var dow = [<#if dow??><#list dow as day>'${day}',</#list></#if>];
+var dow = [<#if dow??><#list dow as day>${day},</#list></#if>];
 var defaultDate = '${date_of_display}';
 var startingDateOfDisplay = '${starting_date_of_display}';
 var endingDateOfDisplay = '${ending_date_of_display}';
 var strStartingDateOfDisplay = '${str_starting_date_of_display}';
 var strEndingDateOfDisplay = '${str_ending_date_of_display}';
 var idForm = '${id_form}';
-var columnFormat = 'dddd DD/MM/YYYY';
 var eventUrl = 'jsp/admin/plugins/appointment/ManageAppointments.jsp?view=';
 var events = [
     <#if comment_events??>
@@ -59,21 +53,17 @@ var events = [
                 "title" :   <#if modifDateAppointment>"<a href=" + eventUrl + "viewChangeDateAppointment&id_form=${event.idForm}&id_slot=${event.idSlot}&starting_date_time=${event.startingDateTime}&ending_date_time=${event.endingDateTime}&is_open=${event.isOpen?c}&is_specific=${event.isSpecific?c}&max_capacity=${event.maxCapacity}>${nbAppointments} / ${event.maxCapacity}</a>"
                             <#elseif event.isOpen & !event.isPassed & overbookingAllowed && (event.nbRemainingPlaces = event.nbPotentialRemainingPlaces)>
                             "<a href=" + eventUrl + "manageAppointments&id_form=${event.idForm}&starting_date_time=${event.startingDateTime}&ending_date_time=${event.endingDateTime}>${nbAppointments} / ${event.maxCapacity}</a>"
-                                + "&nbsp;"
-                                + "<a href=" + eventUrl + "createAppointment&id_form=${event.idForm}&id_slot=${event.idSlot}&starting_date_time=${event.startingDateTime}&ending_date_time=${event.endingDateTime}&is_open=${event.isOpen?c}&is_specific=${event.isSpecific?c}&max_capacity=${event.maxCapacity}\"><span class=\"badge badge-primary\"><i class=\"fa fa-plus\"></i></span></a>"
+                            + "<a href=" + eventUrl + "createAppointment&id_form=${event.idForm}&id_slot=${event.idSlot}&starting_date_time=${event.startingDateTime}&ending_date_time=${event.endingDateTime}&is_open=${event.isOpen?c}&is_specific=${event.isSpecific?c}&max_capacity=${event.maxCapacity}\" class=\"btn btn-outline-primary btn-sm rounded-circle\" title=\"#i18n{appointment.manageCalendarSlots.labelCreate}\"><i class=\"ti ti-plus\"></i></a>"
                             <#elseif event.isOpen & !event.isPassed & (event.nbRemainingPlaces > 0) & (event.nbRemainingPlaces = event.nbPotentialRemainingPlaces)>
                                 "<a href=" + eventUrl + "manageAppointments&id_form=${event.idForm}&starting_date_time=${event.startingDateTime}&ending_date_time=${event.endingDateTime}>${nbAppointments} / ${event.maxCapacity}</a>"
-                                + "&nbsp;"
-                                + "<a href=" + eventUrl + "createAppointment&id_form=${event.idForm}&id_slot=${event.idSlot}&starting_date_time=${event.startingDateTime}&ending_date_time=${event.endingDateTime}&is_open=${event.isOpen?c}&is_specific=${event.isSpecific?c}&max_capacity=${event.maxCapacity}\"><span class=\"badge badge-primary\"><i class=\"fa fa-plus\"></i></span></a>"
+                                + "<a href=" + eventUrl + "createAppointment&id_form=${event.idForm}&id_slot=${event.idSlot}&starting_date_time=${event.startingDateTime}&ending_date_time=${event.endingDateTime}&is_open=${event.isOpen?c}&is_specific=${event.isSpecific?c}&max_capacity=${event.maxCapacity}\" class=\"btn btn-outline-primary btn-sm rounded-circle\" title=\"#i18n{appointment.manageCalendarSlots.labelCreate}\"><i class=\"ti ti-plus\"></i></a>"
                             <#elseif event.isOpen & (event.nbRemainingPlaces = 0)>
                                 "<a href=" + eventUrl + "manageAppointments&id_form=${event.idForm}&starting_date_time=${event.startingDateTime}&ending_date_time=${event.endingDateTime}>${nbAppointments} / ${event.maxCapacity}</a>"
                             <#elseif event.isOpen & (event.nbRemainingPlaces > 0) & (event.nbPotentialRemainingPlaces = 0)>'#i18n{appointment.manageCalendarSlots.labelEditFull}'
                             <#elseif event.isOpen & !event.isPassed & (event.nbRemainingPlaces > 0) & (event.nbPotentialRemainingPlaces > 0) & (event.nbRemainingPlaces > event.nbPotentialRemainingPlaces)>
                                 "<a href=" + eventUrl + "manageAppointments&id_form=${event.idForm}&starting_date_time=${event.startingDateTime}&ending_date_time=${event.endingDateTime}>${nbAppointments} / ${event.maxCapacity}</a>"
-                                + "&nbsp;"
                                 + "#i18n{appointment.manageCalendarSlots.labelEdit}"
-                                + "&nbsp;"
-                                + "<a href=" + eventUrl + "createAppointment&id_form=${event.idForm}&id_slot=${event.idSlot}&starting_date_time=${event.startingDateTime}&ending_date_time=${event.endingDateTime}&is_open=${event.isOpen?c}&is_specific=${event.isSpecific?c}&max_capacity=${event.maxCapacity}\"><span class=\"badge badge-primary\"><i class=\"fa fa-plus\"></i></span></a>"
+                                + "<a href=" + eventUrl + "createAppointment&id_form=${event.idForm}&id_slot=${event.idSlot}&starting_date_time=${event.startingDateTime}&ending_date_time=${event.endingDateTime}&is_open=${event.isOpen?c}&is_specific=${event.isSpecific?c}&max_capacity=${event.maxCapacity}\" class=\"btn btn-outline-primary btn-sm rounded-circle\" title=\"#i18n{appointment.manageCalendarSlots.labelCreate}\"><i class=\"ti ti-plus\"></i></a>"
                             <#elseif event.isOpen>
                                 "<a href=" + eventUrl + "manageAppointments&id_form=${event.idForm}&starting_date_time=${event.startingDateTime}&ending_date_time=${event.endingDateTime}>${nbAppointments} / ${event.maxCapacity}</a>"
                             <#elseif !event.isOpen & ((event.maxCapacity - event.nbRemainingPlaces) > 0)>'<a href=' + eventUrl + 'manageAppointments&id_form=${event.idForm}&starting_date_time=${event.startingDateTime}&ending_date_time=${event.endingDateTime}>${nbAppointments} / ${event.maxCapacity}</a>'
@@ -103,7 +93,7 @@ var events = [
                                         eventUrl + "manageAppointments&id_form=${event.idForm}&starting_date_time=${event.startingDateTime}&ending_date_time=${event.endingDateTime}"
                                    </#if>,
                 "customClass"   : 'fc-custom ${strEventClass!}',
-                "customStyle"   : <#if event.isOpen & !event.isPassed>'linear-gradient( 90deg, ${strCustomColor} 0%, ${strCustomColor} ${nbFull?floor}%, rgba(255,255,255,1) ${nbFull?floor}% )',<#else>'',</#if>
+                "customStyle"   : '<#if event.isOpen & !event.isPassed & (nbAppointments > 0) & (nbAppointments < maxCap)>linear-gradient(90deg, rgba(180,180,180,0.45) ${nbFull?floor}%, transparent ${nbFull?floor}%)<#elseif event.isOpen & !event.isPassed & (nbAppointments >= maxCap)>rgba(180,180,180,0.45)</#if>',
                 "backgroundColor" : <#if event.isOpen & !event.isPassed & (nbAppointments > maxCap)>bgOpenColor
                                     <#elseif event.isOpen & !event.isPassed & (event.nbRemainingPlaces > 0) & (event.nbRemainingPlaces = event.nbPotentialRemainingPlaces)>bgOpenColor
                                     <#elseif event.isOpen & !event.isPassed & (event.nbRemainingPlaces > 0) & (event.nbPotentialRemainingPlaces = 0)>bgOpenColor
@@ -115,8 +105,7 @@ var events = [
         </#list>
     </#if>
 ];
-
-<@fullCalendarScript selectable=false />
+<@fullCalendarScript selectable=false height='100%' />
 </script>
 <#include "/admin/util/editor/editor.html" />
 <@initEditor type='comment' />

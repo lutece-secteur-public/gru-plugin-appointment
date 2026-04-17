@@ -1,25 +1,19 @@
-<@row>
-	<@columns>
-		<@box color='primary'>
-			<@boxHeader title='#i18n{appointment.modify.category.title}' />
-			<@boxBody>
-				<@tform action='jsp/admin/plugins/appointment/ManageAppointmentCategory.jsp' params='enctype="multipart/form-data"'>
-					<@input type='hidden' name='id_category' value='${category.idCategory}' />
-					<@fieldSet legend='#i18n{appointment.modify.category.title}' hideLegend=['all']>
-						<@messages errors=errors />										
-						<@formGroup labelFor='label' labelKey='#i18n{appointment.createCategory.label}' mandatory=true>
-							<@input type='text' name='label' id='label' value=category.label!'' maxlength=255 />
-						</@formGroup>
-						<@formGroup labelFor='nb_max_appointments_per_user' labelKey='#i18n{appointment.createCategory.labelNbMaxAppointments}' helpKey='#i18n{appointment.createCategory.labelNbMaxAppointments.help}' mandatory=true>
-							<@input type='number' name='nb_max_appointments_per_user' id='nb_max_appointments_per_user' value=category.nbMaxAppointmentsPerUser!'' maxlength=3 />
-						</@formGroup>
-						<@formGroup>
-							<@button name='action_modifyCategory' type='submit' buttonIcon='check' title='#i18n{portal.util.labelModify}' />
-							<@button name='view_manageCategory' type='submit' buttonIcon='times' title='#i18n{portal.util.labelCancel}' color='btn-default' cancel=true/>
-						</@formGroup>
-					</@fieldSet>
-				</@tform>
-			</@boxBody>
-		</@box>
-	</@columns>
-</@row>
+<@pageContainer>
+	<@pageColumn>
+		<@pageHeader title='#i18n{appointment.modify.category.title}' />
+		<@messages errors=errors />
+		<@tform action='jsp/admin/plugins/appointment/ManageAppointmentCategory.jsp' >
+			<@input type='hidden' name='id_category' value='${category.idCategory}' />
+			<@formGroup labelFor='label' labelKey='#i18n{appointment.createCategory.label}' mandatory=true>
+				<@input type='text' name='label' id='label' value='${category.label!}' maxlength=255 />
+			</@formGroup>
+			<@formGroup labelFor='nb_max_appointments_per_user' labelKey='#i18n{appointment.createCategory.labelNbMaxAppointments}' helpKey='#i18n{appointment.createCategory.labelNbMaxAppointments.help}' mandatory=true>
+				<@input type='number' name='nb_max_appointments_per_user' id='nb_max_appointments_per_user' value='${category.nbMaxAppointmentsPerUser!}' maxlength=3 />
+			</@formGroup>
+			<@formGroup>
+				<@button name='action_modifyCategory' type='submit' buttonIcon='check' title='#i18n{portal.util.labelModify}' class='form-validation' />
+				<@button name='view_manageCategory' type='submit' buttonIcon='arrow-left' title='#i18n{portal.util.labelCancel}' color='secondary' cancel=true class='form-validation' />
+			</@formGroup>
+		</@tform>
+	</@pageColumn>
+</@pageContainer>

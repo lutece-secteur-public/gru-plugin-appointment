@@ -1,46 +1,32 @@
+<#assign errorMsg = ''>
+<#assign helpMsg = ''>
+<#if entry.helpMessage?? && entry.helpMessage != ''>
+	<#assign helpMsg>${entry.helpMessage}</#assign>
+</#if>
 <#if list_responses??>
 	<#list list_responses as response>
 		<#if response.entry.idEntry == entry.idEntry && response.entry.error?? && response.entry.error.isDisplayableError>
-			<#assign hasError = true />
+			<#assign hasError = true>
+			<#assign error = response.entry.error>
+			<#assign errorMsg><#if error.mandatoryError>#i18n{appointment.message.mandatory.entry}<#else>${error.errorMessage}</#if></#assign>
 		</#if>
 	</#list>
 </#if>
-
-<div class="form-group<#if hasError??> has-error</#if>">
-<label class="control-label col-xs-12" for="attribute${entry.idEntry}">${entry.title}<#if entry.mandatory> *</#if></label>	
-<#assign field = getFieldByCode( entry, "default_date_value" ) >
-	<div class=" col-xs-12">
-		<div class="input-group">
-			<span class="input-group-addon"><i class="glyphicon glyphicon-calendar"></i></span>
-			<input type="text" name="attribute${entry.idEntry}" id="attribute${entry.idEntry}" class="form-control ${entry.CSSClass!} 
-			<#if list_responses??>
-			<#list list_responses as response>
-				<#if response.entry.idEntry == entry.idEntry>
-					<#if response.entry.error??>error</#if>" <#if response.responseValue??>value="${response.responseValue?number?number_to_date?string("yyyy-MM-dd")}"</#if>
-				</#if>
-			</#list>
-		<#else>
-			<#if field.valueTypeDate?exists>" value="${field.valueTypeDate}" <#else>" value="" 	</#if></#if>/>
-	</div>
-		<#if entry.helpMessage?exists&&entry.helpMessage!=''>
-		<p class="help-block">${entry.helpMessage}</p>
-		</#if>	
-		<#if list_responses??>
-			<#list list_responses as response>
-				<#if response.entry.idEntry == entry.idEntry && response.entry.error?? && response.entry.error.isDisplayableError>
-					<span class="help-block">
-						<#assign error = response.entry.error>
-						<#if error.mandatoryError>
-							${error.errorMessage}
-						<#else>
-							#i18n{appointment.message.mandatory.entry}
-						</#if>
-					</span>
-				</#if>
-			</#list>
+<#assign field = getFieldByCode(entry, "default_date_value")>
+<#assign dateValue = ''>
+<#if list_responses??>
+	<#list list_responses as response>
+		<#if response.entry.idEntry == entry.idEntry>
+			<#if response.responseValue??>
+				<#assign dateValue = response.responseValue?number?number_to_date?string("yyyy-MM-dd")>
+			</#if>
 		</#if>
-	</div>
-</div>
-<script src="js/jquery/plugins/ui/jquery-ui-1.9.2.custom.min.js"></script>
-<script src="js/jquery/plugins/ui/ui.datepicker-fr.js"></script>
-<@getDatePickerBootstrap idField="attribute${entry.idEntry}" language=locale format='Y-m-d H:i:S' />
+	</#list>
+<#else>
+	<#if field.valueTypeDate??>
+		<#assign dateValue = field.valueTypeDate>
+	</#if>
+</#if>
+<@cField label='${entry.title}' required=entry.mandatory>
+	<@cInputDate name='attribute${entry.idEntry}' value=dateValue! required=entry.mandatory! html5Required=false helpMsg=helpMsg! errorMsg=errorMsg! />
+</@cField>

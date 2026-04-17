@@ -1,213 +1,64 @@
-<div class="row nextStepTitleRow">
-	<div class="col-xs-12">
-		<div class="container">
-			<h2 class="stepTitle next">
-				<span class="stepTitleNumber previous"><i class="fa fa-check"></i></span>
-				<#if form.displayTitleFo && form.title != '' >
-					${form.title}
-				<#else>
-					#i18n{appointment.appointmentApp.defaultTitle}
+<@cTpl>
+<#assign formTitle><#if form.displayTitleFo && form.title != ''>${form.title}<#else>#i18n{appointment.appointmentApp.defaultTitle}</#if></#assign>
+<#assign stepTwoHref>jsp/site/Portal.jsp?page=appointment&view=getViewAppointmentCalendar&id_form=${form.idForm}<#if modifDateAppointment>&refAppointment=${appointment.reference!}</#if><#if nbPlacesToTake?? && nbPlacesToTake != 0>&nbPlacesToTake=${nbPlacesToTake!}</#if>#step2</#assign>
+<@cStepDone step='1' title=formTitle idx=1 actionName=''>
+	<@cText>${form.description!}</@cText>
+</@cStepDone>
+<@cStepDone step='2' title='#i18n{appointment.appointmentApp.choiceOfDate}' idx=2 actionHref=stepTwoHref actionLabel='#i18n{portal.util.labelModify}'>
+	<#assign i = appointment.slot?size>
+	<@chList>
+		<@chItem>#i18n{appointment.labelThe} ${appointment.dateOfTheAppointment} #i18n{appointment.labelFrom} ${appointment.slot[0].startingTime} #i18n{appointment.labelTo} ${appointment.slot[i - 1].endingTime}</@chItem>
+	</@chList>
+</@cStepDone>
+<@cStepDone step='3' title='#i18n{appointment.appointmentApp.enteringInformation}' idx=3 actionHref='javascript:history.back()' actionLabel='#i18n{portal.util.labelModify}'>
+	<@chList>
+		<@chItem>${formMessages.fieldLastNameTitle!} : ${appointment.lastName}</@chItem>
+		<@chItem>${formMessages.fieldFirstNameTitle!} : ${appointment.firstName}</@chItem>
+		<@chItem>${formMessages.fieldEmailTitle!} : ${appointment.email}</@chItem>
+		<#if form.maxPeoplePerAppointment gt 1><@chItem>#i18n{appointment.createAppointmentForm.labelNumberOfBookedseatsPerAppointment} : ${appointment.nbBookedSeats}</@chItem></#if>
+		<#list listResponseRecapDTO as response>
+			<#if response.recapValue?? && response.recapValue?has_content>
+				<#if !(entrySave??) || entrySave.idEntry != response.entry.idEntry>
+					<#assign entrySave = response.entry>
+					<@chItem>${response.entry.title} : ${response.recapValue}</@chItem>
 				</#if>
-			</h2>
-		</div>
-	</div>
-</div>
-<div class="row steps">
-	<div class="col-xs-12">
-		<div class="container recap">
-			<div class="row">
-				<div class="col-xs-12 col-sm-9 col-md-9">
-					<p>${form.description!}</p>
-				</div>
-				<div class="col-xs-12 col-sm-4 col-md-3 stepRecapButtonMargin">
-				</div>
-			</div>
-		</div>
-	</div>
-</div>
-<div class="row nextStepTitleRow">
-	<div class="col-xs-12">
-		<div class="container">
-			<h2 class="stepTitle next">
-				<span class="stepTitleNumber previous"><i class="fa fa-check"></i></span>
-				#i18n{appointment.appointmentApp.choiceOfDate}
-			</h2>
-		</div>
-	</div>
-</div>
-<div class="row steps">
-	<div class="col-xs-12">
-		<div class="container recap">
-			<div class="row">
-				<div class="col-xs-12 col-sm-9 col-md-9">
-                    <#assign i = appointment.slot?size>
-					<p>#i18n{appointment.labelThe} ${appointment.dateOfTheAppointment} #i18n{appointment.labelFrom} ${appointment.slot[0].startingTime} #i18n{appointment.labelTo} ${appointment.slot[i - 1].endingTime}</p></div>
-				<div class="col-xs-12 col-sm-4 col-md-3 stepRecapButtonMargin">
-					<a class="btn btn-primary btn-lg" href="jsp/site/Portal.jsp?page=appointment&view=getViewAppointmentCalendar&id_form=${form.idForm}&<#if modifDateAppointment >refAppointment=${appointment.reference!}</#if>&<#if nbPlacesToTake ?? && nbPlacesToTake != 0  >&nbPlacesToTake=${nbPlacesToTake!}</#if>#step2">
-						<i class="fa fa-pencil"></i> #i18n{portal.util.labelModify}
-					</a>
-				</div>
-			</div>
-		</div>
-	</div>
-</div>
-<div class="row nextStepTitleRow">
-	<div class="col-xs-12">
-		<div class="container">
-			<h2 class="stepTitle next">
-				<span class="stepTitleNumber previous"><i class="fa fa-check"></i></span>
-				#i18n{appointment.appointmentApp.enteringInformation}
-			</h2>
-		</div>
-	</div>
-</div>
-<div class="row steps">
-	<div class="col-xs-12">
-		<div class="container recap">
-			<div class="row">
-				<div class="col-xs-12 col-sm-9 col-md-9">
-					<div class="row">
-						<div class="col-sm-6">
-							<ul class="recap-step-list">
-								<li>${formMessages.fieldLastNameTitle!}</li>
-								<ul>
-									<li>${appointment.lastName}</li>
-								</ul>
-							</ul>
-						</div>
-						<div class="col-sm-6">
-							<ul class="recap-step-list">
-								<li>${formMessages.fieldFirstNameTitle!}</li>
-								<ul>
-									<li>${appointment.firstName}</li>
-								</ul>
-							</ul>
-						</div>
-						<div class="col-xs-12">
-							<ul class="recap-step-list">
-								<li>${formMessages.fieldEmailTitle!}</li>
-								<ul>
-									<li>${appointment.email}</li>
-								</ul>
-							</ul>
-						</div>
-						<#if form.maxPeoplePerAppointment &gt; 1>
-						<div class="col-xs-12">
-							<ul class="recap-step-list">
-								<li>#i18n{appointment.createAppointmentForm.labelNumberOfBookedseatsPerAppointment}</li>
-								<ul>
-									<li>${appointment.nbBookedSeats}</li>
-								</ul>
-							</ul>
-						</div>
-						</#if>
-						<#list listResponseRecapDTO as response>
-							<#if response.recapValue?? && response.recapValue?has_content>
-								<div class="col-xs-12">
-									<ul class="recap-step-list">
-									<#if !entrySave?exists||entrySave.idEntry!=response.entry.idEntry>
-										<li>${response.entry.title}<#assign entrySave=response.entry></li>
-									</#if>
-										<ul>
-											<li>${response.recapValue}</li>
-										</ul>
-									</ul>
-								</div>
-							</#if>
-						</#list>
-					</div>
-				</div>
-				<div class="col-xs-12 col-sm-4 col-md-3 stepRecapButtonMargin">
-				<#if modifDateAppointment?? && modifDateAppointment >
-				<#else>
-					<form class="form-horizontal" id="form-validate" action="jsp/site/Portal.jsp" method="post" enctype="multipart/form-data">
-						<input name="page" value="appointment" type="hidden">
-						<input name="action" value="doMakeAppointment" type="hidden">
-						<input name="anchor" value="step3" type="hidden">
-						<input name="is_modification" value="is_modification" type="hidden">
-						<input type="hidden" name="token" value="${token}">
-
-						<button name="back" class="btn btn-primary btn-sm" value="back">
-							<i class="fa fa-pencil"></i>
-							#i18n{portal.util.labelModify}
-						</button>
-					</form>
-				</#if>
-				</div>
-			</div>
-		</div>
-	</div>
-</div>
-<div class="row currentStepTitleRow">
-	<div class="col-xs-12">
-		<div class="container">
-			<h2 class="current stepTitle" id="step4">
-				<span class="current stepTitleNumber">4</span>
-				#i18n{appointment.appointmentApp.validation.title}
-			</h2>
-		</div>
-	</div>
-</div>
-<div class="row currentStepContentRow">
-	<div class="col-xs-12">
-		<div class="container" id="current_step">
-			<form class="form-horizontal" id="form-validate" action="jsp/site/Portal.jsp" method="post" enctype="multipart/form-data">
-					<input name="page" value="appointment" type="hidden">
-					<input name="action" value="doMakeAppointment" type="hidden">
-					<input name="lastname" value="${appointment.lastName}" type="hidden">
-					<input name="firstname" value="${appointment.firstName}" type="hidden">
-					<input name="email" value="${appointment.email}" type="hidden">
-					<input name="anchor" value="step5" type="hidden">
-					<input type="hidden" name="token" value="${token}">
-					<#if form.maxPeoplePerAppointment &gt; 1>
-						<input name="nbSeat" value="${appointment.nbBookedSeats}" type="hidden" />
-					</#if>
-					<fieldset>
-						<div class="row">
-							<div class="col-xs-12 col-sm-4 col-sm-push-8 col-md-3 col-md-push-9">
-							</div>
-							<div class="col-xs-12 col-sm-8 col-sm-pull-4 col-md-9 col-md-pull-3">
-								<div class="formGroupContainer">
-									<legend class="sr-only">
-										<p class="alert alert-info">#i18n{appointment.appointmentApp.recap.title} -
-										<#if form.displayTitleFo && form.title != '' >
-											${form.title}
-										<#else>
-											#i18n{appointment.appointmentApp.defaultTitle}
-										</#if>
-										</p>
-									</legend>
-									<p>#i18n{appointment.appointmentApp.validationText}</p>
-									<@messages errors=errors />
-									<#if captcha??>
-										${captcha!}
-									</#if>
-								</div>
-							</div>
-							<div class="col-xs-12 text-center" style="margin:20px 0;">
-								<div class="form-group">
-									<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
-										<button name="validate" class="btn btn-primary btn-sm" value="validate">
-											<i class="fa fa-chevron-down"></i>
-											&nbsp;#i18n{portal.util.labelValidate}
-										</button>
-									</div>
-								</div>
-							</div>
-						</div>
-					</fieldset>
-				</form>
-			</div>
-		</div>
-	</div>
-	<div class="row nextStepTitleRow">
-		<div class="col-xs-12">
-			<div class="container">
-				<h2 class="stepTitle next">
-					<span class="stepTitleNumber next">5</span>
-					#i18n{appointment.appointmentApp.confirmation}
-				</h2>
-			</div>
-		</div>
-	</div>
-</div>
+			</#if>
+		</#list>
+	</@chList>
+	<#--
+	<#if !(modifDateAppointment?? && modifDateAppointment)>
+		<@cForm id='form-validate' action='jsp/site/Portal.jsp' method='post' enctype='multipart/form-data'>
+			<@cInput name='page' value='appointment' type='hidden' class='' />
+			<@cInput name='action' value='doMakeAppointment' type='hidden' class='' />
+			<@cInput name='anchor' value='step3' type='hidden' class='' />
+			<@cInput name='is_modification' value='is_modification' type='hidden' class='' />
+			<@cInput type='hidden' name='token' value='${token}' class='' />
+			<@cBtn label='' name='back' class='primary btn-sm' value='back'>
+				<@cIcon name='pencil' /> #i18n{portal.util.labelModify}
+			</@cBtn>
+		</@cForm>
+	</#if>
+	-->
+</@cStepDone>
+<@cStepCurrent step='4' title='#i18n{appointment.appointmentApp.validation.title}' hasMandatory=false>
+	<@cForm id='form-validate' action='jsp/site/Portal.jsp' method='post' enctype='multipart/form-data'>
+		<@cInput name='page' value='appointment' type='hidden' class='' />
+		<@cInput name='action' value='doMakeAppointment' type='hidden' class='' />
+		<@cInput name='lastname' value='${appointment.lastName}' type='hidden' class='' />
+		<@cInput name='firstname' value='${appointment.firstName}' type='hidden' class='' />
+		<@cInput name='email' value='${appointment.email}' type='hidden' class='' />
+		<@cInput name='anchor' value='step5' type='hidden' class='' />
+		<@cInput type='hidden' name='token' value='${token}' class='' />
+		<#if form.maxPeoplePerAppointment gt 1><@cInput name='nbSeat' value='${appointment.nbBookedSeats}' type='hidden' class='' /></#if>
+		<@cText>#i18n{appointment.appointmentApp.validationText}</@cText>
+		<#if errors?? && errors?size gt 0><#list errors as error><@cAlert type='danger' title=error.message! /></#list></#if>
+		<#if captcha??>${captcha!}</#if>
+		<@cRow class='my-3'>
+			<@cCol class='d-flex justify-content-center'>
+				<@cBtn label='' name='validate' class='primary' value='validate'><@cIcon name='check' /> #i18n{portal.util.labelValidate}</@cBtn>
+			</@cCol>
+		</@cRow>
+	</@cForm>
+</@cStepCurrent>
+<@cStepNext step='5' title='#i18n{appointment.appointmentApp.confirmation}' />
+</@cTpl>

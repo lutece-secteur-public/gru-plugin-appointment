@@ -1,32 +1,25 @@
-<@row>
-	<@columns>
-		<@box color='primary'>
-			<@boxHeader title='#i18n{appointment.modifyField.title} : "${field.parentEntry.title}"' />
-			<@boxBody>
-				<@tform action='jsp/admin/plugins/appointment/ManageAppointmentFormFields.jsp'>
-					<fieldset>
-						<legend class="hidden">#i18n{appointment.modifyField.title} : '${field.parentEntry.title}'</legend>
-						<@input type='hidden' name='action' value='doModifyField' />
-						<@input type='hidden' name='id_field' value='${field.idField}' />
-						<@formGroup labelFor='title' labelKey='#i18n{appointment.labelTitle}' mandatory=true>
-							<@input type='text' name='title' id='title' inputSize=80 value='${field.title}' maxlength=255 />
-						</@formGroup>
-						<@formGroup labelFor='value' labelKey='#i18n{appointment.value.name}' mandatory=true>
-							<@input type='text' name='value' id='value' inputSize=80 value='${field.value}' />
-						</@formGroup>
-						<@formGroup labelFor='value' labelKey='#i18n{appointment.comment.name}'>
-							<@input type='textarea' name='comment' id='comment'>${field.comment!}</@input>
-						</@formGroup>
-						<@formGroup>
-							<@checkBox labelFor='default_value' labelKey='#i18n{appointment.defaultValue.name}' name='default_value' id='default_value' value='1' checked=field.defaultValue />
-						</@formGroup>
-						<@formGroup>
-							<@button type='submit' buttonIcon='check' title='#i18n{appointment.labelSave}' />
-							<@button type='submit' buttonIcon='times' title='#i18n{appointment.labelCancel}' color='btn-default' />
-						</@formGroup>
-					</fieldset>
-				</@tform>
-			</@boxBody>
-		</@box>
-	</@columns>
-</@row>
+<@pageContainer>
+	<@pageColumn>
+		<@pageHeader title='#i18n{appointment.modifyField.title} : "${field.parentEntry.title}"' class='col-md-8' />
+		<@tform id='modify-field' action='jsp/admin/plugins/appointment/ManageAppointmentFormFields.jsp' boxed=true>
+		<@input type='hidden' name='action' value='doModifyField' />
+		<@input type='hidden' name='id_field' value='${field.idField}' />
+		<@formGroup labelFor='title' labelKey='#i18n{appointment.labelTitle}' mandatory=true>
+			<@input type='text' name='title' id='title' inputSize=80 value='${field.title}' maxlength=255 />
+		</@formGroup>
+		<@formGroup labelFor='value' labelKey='#i18n{appointment.value.name}' mandatory=true>
+			<@input type='text' name='value' id='value' inputSize=80 value='${field.value}' />
+		</@formGroup>
+		<@formGroup labelFor='comment' labelKey='#i18n{appointment.comment.name}'>
+			<@input type='textarea' name='comment' id='comment'>${field.comment!}</@input>
+		</@formGroup>
+		<@formGroup>
+			<@checkBox orientation='switch' labelKey='#i18n{appointment.defaultValue.name}' name='default_value' id='default_value' value='1' checked=field.defaultValue />
+		</@formGroup>
+		<@formGroup>
+			<@button type='submit' buttonIcon='check' title='#i18n{appointment.labelSave}' />
+			<@button type='submit' buttonIcon='arrow-left' title='#i18n{appointment.labelCancel}' color='secondary' cancel=true />
+		</@formGroup>
+		</@tform>
+	</@pageColumn>
+</@pageContainer>
