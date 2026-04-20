@@ -411,6 +411,11 @@ public final class FormService
     public static AppointmentFormDTO buildAppointmentForm( int nIdForm, ReservationRule reservationRule )
     {
         AppointmentFormDTO appointmentForm = buildAppointmentFormWithoutReservationRule( nIdForm );
+        if ( appointmentForm == null)
+        {
+            return null;
+        }
+
         LocalDate dateOfApply = LocalDate.now( );
         if ( reservationRule == null )
         {
@@ -437,6 +442,11 @@ public final class FormService
     {
         AppointmentFormDTO appointmentForm = new AppointmentFormDTO( );
         Form form = FormService.findFormLightByPrimaryKey( nIdForm );
+        if (form == null)
+        {
+            return null;
+        }
+
         fillAppointmentFormWithFormPart( appointmentForm, form );
         Display display = DisplayService.findDisplayWithFormId( form.getIdForm( ) );
         if ( display != null )
