@@ -20,3 +20,88 @@
 	white-space-collapse: collapse !important;
     white-space: normal!important;
 }
+
+/* ---------------------------------------------------------
+   Mini calendar (accessible, WAI-ARIA grid pattern)
+   --------------------------------------------------------- */
+.appointment-mini-calendar {
+    max-width: 320px;
+    margin-left: auto;
+    margin-right: auto;
+}
+.appointment-mini-calendar .mini-calendar-grid {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 2px;
+    table-layout: fixed;
+    text-align: center;
+}
+.appointment-mini-calendar thead th {
+    font-weight: 600;
+    font-size: 0.8rem;
+    padding: 0.25rem 0;
+    color: var(--bs-secondary-color, #6c757d);
+    border: 0;
+}
+.appointment-mini-calendar .mini-cal-cell {
+    position: relative;
+    border: 1px solid transparent;
+    border-radius: 0.35rem;
+    padding: 0.35rem 0;
+    cursor: pointer;
+    font-size: 0.9rem;
+    line-height: 1.2;
+    min-width: 2rem;
+    min-height: 2rem;
+    background-color: transparent;
+}
+.appointment-mini-calendar .mini-cal-cell.disabled {
+    cursor: not-allowed;
+    color: var(--bs-secondary-color, #adb5bd);
+    background-color: transparent;
+}
+.appointment-mini-calendar .mini-cal-cell.has-slots {
+    background-color: var(--bs-success-bg-subtle, #d1e7dd);
+    color: var(--bs-success-text-emphasis, #0f5132);
+    font-weight: 600;
+}
+.appointment-mini-calendar .mini-cal-cell.no-slots {
+    color: var(--bs-body-color, #212529);
+}
+.appointment-mini-calendar .mini-cal-cell.today {
+    outline: 2px dashed var(--bs-primary, #0d6efd);
+    outline-offset: -2px;
+}
+.appointment-mini-calendar .mini-cal-cell.current-week {
+    background-color: var(--bs-primary, #0d6efd);
+    color: var(--bs-white, #fff);
+    border-color: var(--bs-primary, #0d6efd);
+}
+.appointment-mini-calendar .mini-cal-cell:hover:not(.disabled) {
+    border-color: var(--bs-primary, #0d6efd);
+}
+.appointment-mini-calendar .mini-cal-cell:focus {
+    outline: 3px solid var(--bs-focus-ring-color, rgba(13, 110, 253, 0.5));
+    outline-offset: 2px;
+    z-index: 1;
+}
+.appointment-mini-calendar .mini-cal-empty {
+    padding: 0.35rem 0;
+    min-height: 2rem;
+}
+.appointment-mini-calendar .mini-cal-dot {
+    display: block;
+    width: 0.35rem;
+    height: 0.35rem;
+    border-radius: 50%;
+    background-color: currentColor;
+    margin: 2px auto 0;
+}
+@media (prefers-contrast: more) {
+    .appointment-mini-calendar .mini-cal-cell.has-slots {
+        outline: 2px solid currentColor;
+    }
+}
+@media (prefers-reduced-motion: reduce) {
+    .appointment-mini-calendar * { transition: none !important; }
+}

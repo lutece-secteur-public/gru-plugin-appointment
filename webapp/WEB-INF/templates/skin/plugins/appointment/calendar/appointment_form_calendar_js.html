@@ -63,6 +63,7 @@ const slots = [
 	const minDate = new Date(minDateOfOpenDay); minDate.setHours(0,0,0,0);
 	const maxDate = new Date(maxDateOfOpenDay); maxDate.setHours(0,0,0,0);
 	const today = new Date(); today.setHours(0,0,0,0);
+	let onWeekChanged = null;
 
 	const dayPanel = document.getElementById('day-panel');
 	const timePanel = document.getElementById('time-panel');
@@ -73,6 +74,25 @@ const slots = [
 	const nextBtn = document.getElementById('week-next');
 	const backBtn = document.getElementById('back-to-days');
 	const selectedDayLabel = document.getElementById('selected-day-label');
+	let todayBtn = null;
+	<#if (form.displayTodayButton)!false>
+	(function createTodayButton() {
+		const navBar = prevBtn ? prevBtn.parentNode : null;
+		if (!navBar || !weekLabel) return;
+		todayBtn = document.createElement('button');
+		todayBtn.type = 'button';
+		todayBtn.id = 'week-today';
+		todayBtn.className = 'btn btn-outline-primary mx-2';
+		todayBtn.textContent = "#i18n{appointment.label.todayButton}";
+		todayBtn.setAttribute('aria-label', "#i18n{appointment.label.todayButton.ariaLabel}");
+		navBar.insertBefore(todayBtn, weekLabel);
+		todayBtn.addEventListener('click', function() {
+			currentMonday = getMonday(today);
+			renderWeek();
+			if (typeof weekLabel !== 'undefined' && weekLabel) weekLabel.focus && weekLabel.focus();
+		});
+	})();
+	</#if>
 
  	let isAppointmentSelected = false;
 
@@ -106,6 +126,10 @@ const slots = [
 		prevBtn.disabled = (prevMonday < minDate && addDays(prevMonday, 6) < minDate);
 		const nextMonday = addDays(currentMonday, 7);
 		nextBtn.disabled = (nextMonday > maxDate);
+		if (todayBtn) {
+			const todayMonday = getMonday(today);
+			todayBtn.disabled = sameDay(currentMonday, todayMonday);
+		}
 
 		for (let i = 0; i < 7; i++) {
 			const dayDate = addDays(currentMonday, i);
@@ -193,6 +217,7 @@ const slots = [
 				+ ', ' + (hasAvailable ? availableCount + ' ' + labelAvailable : labelNoSlot)
 			);
 		}
+		if (typeof onWeekChanged === 'function') onWeekChanged();
 	}
 
 	function showTimeSlots(dayKey, dayDate) {
@@ -288,5 +313,9 @@ const slots = [
 			showTimeSlots(urlDate, new Date(urlDate + 'T00:00:00'));
 		}
 	}
+
+	<#if (form.displayMiniCalendar)!false>
+	<#include "appointment_mini_calendar_js.html" />
+	</#if>
 })();
 </script>

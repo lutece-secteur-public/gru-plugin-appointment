@@ -102,6 +102,13 @@
 								<@formGroup labelFor='display_title_fo' labelKey='#i18n{appointment.label.displayTitleFo}' helpKey='#i18n{appointment.label.displayTitleFo.help}' hideLabel=['all']>
 									<@checkBox orientation='switch' labelKey='#i18n{appointment.label.displayTitleFo}' name='display_title_fo' id='display_title_fo' value='true' checked=appointmentform.displayTitleFo!false />
 								</@formGroup>
+								<@formGroup labelFor='display_mini_calendar' labelKey='#i18n{appointment.label.displayMiniCalendar}' helpKey='#i18n{appointment.label.displayMiniCalendar.help}' hideLabel=['all']>
+									<@checkBox orientation='switch' labelKey='#i18n{appointment.label.displayMiniCalendar}' name='display_mini_calendar' id='display_mini_calendar' value='true' checked=appointmentform.displayMiniCalendar!false />
+								</@formGroup>
+								<@formGroup labelKey='#i18n{appointment.label.displayTodayButton}' helpKey='#i18n{appointment.label.displayTodayButton.help}'>
+									<@radioButton orientation='inline' labelFor='display_today_button_yes' id='display_today_button_yes' name='display_today_button' value='true' labelKey='#i18n{portal.util.labelYes}' checked=(appointmentform.displayTodayButton!false) />
+									<@radioButton orientation='inline' labelFor='display_today_button_no'  id='display_today_button_no'  name='display_today_button' value='false' labelKey='#i18n{portal.util.labelNo}' checked=(!(appointmentform.displayTodayButton!false)) />
+								</@formGroup>
 								<@formGroup labelFor='nb_days_for_max_appointments_per_user' labelKey='#i18n{appointment.createAppointmentForm.labelNbDaysForMaxAppointments}' helpKey='#i18n{appointment.createAppointmentForm.labelNbDaysForMaxAppointments.help}' mandatory=true>
 									<@input type='text' name='nb_days_for_max_appointments_per_user' id='nb_days_for_max_appointments_per_user' value=appointmentform.nbDaysForMaxAppointmentsPerUser!'' params='onkeypress="return validateQty(event);"' maxlength=2 />
 								</@formGroup>
