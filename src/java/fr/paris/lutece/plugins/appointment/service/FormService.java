@@ -597,6 +597,8 @@ public final class FormService
         appointmentForm.setIcon( display.getIcon( ) );
         appointmentForm.setNbWeeksToDisplay( display.getNbWeeksToDisplay( ) );
         appointmentForm.setIsDisplayedOnPortlet( display.isDisplayedOnPortlet( ) );
+        appointmentForm.setDisplayMiniCalendar( display.isDisplayMiniCalendar( ) );
+        appointmentForm.setDisplayTodayButton( display.isDisplayTodayButton( ) );
         appointmentForm.setCalendarTemplateId( display.getIdCalendarTemplate( ) );
     }
 

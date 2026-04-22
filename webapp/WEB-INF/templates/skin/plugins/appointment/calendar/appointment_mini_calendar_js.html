@@ -1,0 +1,286 @@
+<#-- Accessible mini calendar widget (a11y compliant, WAI-ARIA grid pattern).
+     Injected inside the main calendar IIFE — has direct access to:
+       currentMonday, minDate, maxDate, hiddenDays, today, slotsByDate,
+       getMonday, addDays, toDateKey, sameDay, renderWeek.
+     Sets `onWeekChanged` callback so the main renderWeek() can re-highlight the current week. -->
+(function initMiniCalendar() {
+    const dayPanel = document.getElementById('day-panel');
+    if (!dayPanel) return;
+
+    const locale = document.documentElement.lang || 'fr-FR';
+    const LABEL_TODAY = "#i18n{appointment.appointmentCalendar.labelToday}";
+    const LABEL_UNAVAILABLE = "#i18n{appointment.appointmentCalendar.labelUnavailable}";
+    const LABEL_AVAILABLE = labelAvailable;
+    const LABEL_NO_SLOT = labelNoSlot;
+    const LABEL_PREV_MONTH = "#i18n{appointment.appointmentCalendar.labelPreviousMonth}";
+    const LABEL_NEXT_MONTH = "#i18n{appointment.appointmentCalendar.labelNextMonth}";
+    const LABEL_MINI_TITLE = "#i18n{appointment.appointmentCalendar.labelMiniCalendar}";
+    const DAY_ABBR = [
+        "#i18n{appointment.appointmentCalendar.labelAbbrevMonday}",
+        "#i18n{appointment.appointmentCalendar.labelAbbrevTuesday}",
+        "#i18n{appointment.appointmentCalendar.labelAbbrevWednesday}",
+        "#i18n{appointment.appointmentCalendar.labelAbbrevThursday}",
+        "#i18n{appointment.appointmentCalendar.labelAbbrevFriday}",
+        "#i18n{appointment.appointmentCalendar.labelAbbrevSaturday}",
+        "#i18n{appointment.appointmentCalendar.labelAbbrevSunday}"
+    ];
+    const DAY_FULL = [
+        "#i18n{appointment.appointmentCalendar.labelMonday}",
+        "#i18n{appointment.appointmentCalendar.labelTuesday}",
+        "#i18n{appointment.appointmentCalendar.labelWednesday}",
+        "#i18n{appointment.appointmentCalendar.labelThursday}",
+        "#i18n{appointment.appointmentCalendar.labelFriday}",
+        "#i18n{appointment.appointmentCalendar.labelSaturday}",
+        "#i18n{appointment.appointmentCalendar.labelSunday}"
+    ];
+
+    const wrapper = document.createElement('section');
+    wrapper.className = 'appointment-mini-calendar mb-3';
+    wrapper.setAttribute('aria-labelledby', 'mini-cal-title');
+    wrapper.innerHTML =
+        '<h3 id="mini-cal-title" class="visually-hidden">' + LABEL_MINI_TITLE + '</h3>' +
+        '<div class="d-flex justify-content-between align-items-center mb-2">' +
+            '<button type="button" class="btn btn-sm btn-outline-secondary" id="mini-cal-prev" aria-label="' + LABEL_PREV_MONTH + '">' +
+                '<span aria-hidden="true">&#8249;</span>' +
+            '</button>' +
+            '<span id="mini-cal-label" class="fw-bold text-capitalize" aria-live="polite" aria-atomic="true"></span>' +
+            '<button type="button" class="btn btn-sm btn-outline-secondary" id="mini-cal-next" aria-label="' + LABEL_NEXT_MONTH + '">' +
+                '<span aria-hidden="true">&#8250;</span>' +
+            '</button>' +
+        '</div>' +
+        '<table class="mini-calendar-grid" role="grid" aria-labelledby="mini-cal-label">' +
+            '<thead><tr role="row">' +
+                DAY_ABBR.map((a, i) => '<th scope="col" abbr="' + DAY_FULL[i] + '">' + a + '</th>').join('') +
+            '</tr></thead>' +
+            '<tbody id="mini-cal-body"></tbody>' +
+        '</table>';
+
+    dayPanel.insertBefore(wrapper, dayPanel.firstChild);
+
+    const body = wrapper.querySelector('#mini-cal-body');
+    const label = wrapper.querySelector('#mini-cal-label');
+    const prevBtn = wrapper.querySelector('#mini-cal-prev');
+    const nextBtn = wrapper.querySelector('#mini-cal-next');
+
+    // The month currently displayed in the mini calendar (first day of the month)
+    let viewMonth = new Date(currentMonday.getFullYear(), currentMonday.getMonth(), 1);
+
+    function isSelectable(day) {
+        if (day < minDate || day > maxDate) return false;
+        if (hiddenDays.indexOf(day.getDay()) !== -1) return false;
+        return true;
+    }
+
+    function buildCellLabel(day, hasAvailable, daySlotsLength, isToday, selectable) {
+        const parts = [ day.toLocaleDateString(locale, { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' }) ];
+        if (isToday) parts.push(LABEL_TODAY);
+        if (!selectable) {
+            parts.push(LABEL_UNAVAILABLE);
+        } else if (hasAvailable) {
+            parts.push(LABEL_AVAILABLE);
+        } else if (daySlotsLength > 0) {
+            parts.push(LABEL_NO_SLOT);
+        } else {
+            parts.push(LABEL_NO_SLOT);
+        }
+        return parts.join(', ');
+    }
+
+    function renderMiniCalendar() {
+        label.textContent = viewMonth.toLocaleDateString(locale, { month: 'long', year: 'numeric' });
+        body.innerHTML = '';
+
+        const firstDayOfMonth = new Date(viewMonth);
+        const lastDayOfMonth = new Date(viewMonth.getFullYear(), viewMonth.getMonth() + 1, 0);
+        const gridStart = getMonday(firstDayOfMonth);
+        const weekOfCurrentMonday = toDateKey(currentMonday);
+
+        // Week index containing the first preferred cell to have tabindex=0
+        let tabStopSet = false;
+        let cursor = new Date(gridStart);
+        while (cursor <= lastDayOfMonth || cursor.getDay() !== 1) {
+            const tr = document.createElement('tr');
+            tr.setAttribute('role', 'row');
+
+            for (let i = 0; i < 7; i++) {
+                const day = addDays(cursor, i);
+                const td = document.createElement('td');
+                td.setAttribute('role', 'gridcell');
+
+                const isInMonth = day.getMonth() === viewMonth.getMonth();
+                if (!isInMonth) {
+                    td.className = 'mini-cal-empty';
+                    td.setAttribute('aria-hidden', 'true');
+                    tr.appendChild(td);
+                    continue;
+                }
+
+                const dayKey = toDateKey(day);
+                const daySlots = slotsByDate[dayKey] || [];
+                let availableCount = 0;
+                daySlots.forEach(function(s) { if (s.available) availableCount++; });
+                const hasAvailable = availableCount > 0;
+                const isToday = sameDay(day, today);
+                const selectable = isSelectable(day);
+                const weekStartOfDay = getMonday(day);
+                const isCurrentWeek = toDateKey(weekStartOfDay) === weekOfCurrentMonday;
+
+                td.dataset.date = dayKey;
+                td.setAttribute('aria-label', buildCellLabel(day, hasAvailable, daySlots.length, isToday, selectable));
+
+                const classes = [ 'mini-cal-cell' ];
+                if (isToday) {
+                    td.setAttribute('aria-current', 'date');
+                    classes.push('today');
+                }
+                if (isCurrentWeek) {
+                    td.setAttribute('aria-selected', 'true');
+                    classes.push('current-week');
+                } else {
+                    td.setAttribute('aria-selected', 'false');
+                }
+                if (!selectable) {
+                    td.setAttribute('aria-disabled', 'true');
+                    td.setAttribute('tabindex', '-1');
+                    classes.push('disabled');
+                } else {
+                    classes.push(hasAvailable ? 'has-slots' : 'no-slots');
+                    if (!tabStopSet && isCurrentWeek) {
+                        td.setAttribute('tabindex', '0');
+                        tabStopSet = true;
+                    } else {
+                        td.setAttribute('tabindex', '-1');
+                    }
+                    td.addEventListener('click', function() { selectDay(day); });
+                }
+                td.addEventListener('keydown', handleKeyDown);
+
+                td.className = classes.join(' ');
+                td.innerHTML =
+                    '<span class="mini-cal-day-num">' + day.getDate() + '</span>' +
+                    (selectable && hasAvailable ? '<span class="mini-cal-dot" aria-hidden="true"></span>' : '');
+                tr.appendChild(td);
+            }
+            body.appendChild(tr);
+            cursor = addDays(cursor, 7);
+            if (cursor > lastDayOfMonth && cursor.getDay() === 1) break;
+        }
+
+        if (!tabStopSet) {
+            const firstSelectable = body.querySelector('.mini-cal-cell:not(.disabled)');
+            if (firstSelectable) firstSelectable.setAttribute('tabindex', '0');
+        }
+
+        const lastOfPrevMonth = new Date(viewMonth.getFullYear(), viewMonth.getMonth(), 0);
+        const firstOfNextMonth = new Date(viewMonth.getFullYear(), viewMonth.getMonth() + 1, 1);
+        prevBtn.disabled = lastOfPrevMonth < minDate;
+        nextBtn.disabled = firstOfNextMonth > maxDate;
+    }
+
+    function selectDay(day) {
+        if (!isSelectable(day)) return;
+        currentMonday = getMonday(day);
+        renderWeek();
+    }
+
+    function moveFocus(delta) {
+        const cells = Array.from(body.querySelectorAll('.mini-cal-cell'));
+        const current = body.querySelector('.mini-cal-cell[tabindex="0"]') || cells[0];
+        if (!current) return;
+        const idx = cells.indexOf(current);
+        if (idx < 0) return;
+        const nextIdx = idx + delta;
+        if (nextIdx < 0) {
+            viewMonth = new Date(viewMonth.getFullYear(), viewMonth.getMonth() - 1, 1);
+            renderMiniCalendar();
+            const all = Array.from(body.querySelectorAll('.mini-cal-cell:not(.disabled)'));
+            const last = all[all.length - 1];
+            if (last) { focusCell(last); }
+            return;
+        }
+        if (nextIdx >= cells.length) {
+            viewMonth = new Date(viewMonth.getFullYear(), viewMonth.getMonth() + 1, 1);
+            renderMiniCalendar();
+            const first = body.querySelector('.mini-cal-cell:not(.disabled)');
+            if (first) { focusCell(first); }
+            return;
+        }
+        const target = cells[nextIdx];
+        if (target) focusCell(target);
+    }
+
+    function focusCell(cell) {
+        body.querySelectorAll('[tabindex="0"]').forEach(c => c.setAttribute('tabindex', '-1'));
+        cell.setAttribute('tabindex', '0');
+        cell.focus();
+    }
+
+    function handleKeyDown(e) {
+        const key = e.key;
+        switch (key) {
+            case 'ArrowRight': e.preventDefault(); moveFocus(1); return;
+            case 'ArrowLeft':  e.preventDefault(); moveFocus(-1); return;
+            case 'ArrowDown':  e.preventDefault(); moveFocus(7); return;
+            case 'ArrowUp':    e.preventDefault(); moveFocus(-7); return;
+            case 'Home': {
+                e.preventDefault();
+                const row = e.currentTarget.parentElement;
+                const first = row && row.querySelector('.mini-cal-cell');
+                if (first) focusCell(first);
+                return;
+            }
+            case 'End': {
+                e.preventDefault();
+                const row = e.currentTarget.parentElement;
+                if (!row) return;
+                const rowCells = row.querySelectorAll('.mini-cal-cell');
+                if (rowCells.length) focusCell(rowCells[rowCells.length - 1]);
+                return;
+            }
+            case 'PageUp':
+                e.preventDefault();
+                viewMonth = new Date(viewMonth.getFullYear(), viewMonth.getMonth() - 1, 1);
+                renderMiniCalendar();
+                const firstUp = body.querySelector('.mini-cal-cell:not(.disabled)');
+                if (firstUp) focusCell(firstUp);
+                return;
+            case 'PageDown':
+                e.preventDefault();
+                viewMonth = new Date(viewMonth.getFullYear(), viewMonth.getMonth() + 1, 1);
+                renderMiniCalendar();
+                const firstDn = body.querySelector('.mini-cal-cell:not(.disabled)');
+                if (firstDn) focusCell(firstDn);
+                return;
+            case 'Enter':
+            case ' ': {
+                const td = e.currentTarget;
+                if (td.getAttribute('aria-disabled') === 'true') return;
+                if (!td.dataset.date) return;
+                e.preventDefault();
+                selectDay(new Date(td.dataset.date + 'T00:00:00'));
+                return;
+            }
+            default:
+                return;
+        }
+    }
+
+    prevBtn.addEventListener('click', function() {
+        viewMonth = new Date(viewMonth.getFullYear(), viewMonth.getMonth() - 1, 1);
+        renderMiniCalendar();
+    });
+    nextBtn.addEventListener('click', function() {
+        viewMonth = new Date(viewMonth.getFullYear(), viewMonth.getMonth() + 1, 1);
+        renderMiniCalendar();
+    });
+
+    // Keep the mini calendar in sync with the main weekly view
+    onWeekChanged = function() {
+        if (viewMonth.getMonth() !== currentMonday.getMonth() || viewMonth.getFullYear() !== currentMonday.getFullYear()) {
+            viewMonth = new Date(currentMonday.getFullYear(), currentMonday.getMonth(), 1);
+        }
+        renderMiniCalendar();
+    };
+
+    renderMiniCalendar();
+})();

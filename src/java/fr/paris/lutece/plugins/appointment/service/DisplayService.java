@@ -70,6 +70,8 @@ public final class DisplayService
         display.setIcon( appointmentForm.getIcon( ) );
         display.setNbWeeksToDisplay( appointmentForm.getNbWeeksToDisplay( ) );
         display.setIsDisplayedOnPortlet( appointmentForm.getIsDisplayedOnPortlet( ) );
+        display.setDisplayMiniCalendar( appointmentForm.getDisplayMiniCalendar( ) );
+        display.setDisplayTodayButton( appointmentForm.getDisplayTodayButton( ) );
         display.setIdCalendarTemplate( appointmentForm.getCalendarTemplateId( ) );
         display.setIdForm( nIdForm );
         return display;

@@ -69,6 +69,16 @@ public final class Display implements Serializable
     private boolean _bIsDisplayedOnPortlet;
 
     /**
+     * Indicate whether the mini calendar navigation is displayed in the front office or not
+     */
+    private boolean _bIsDisplayMiniCalendar;
+
+    /**
+     * Indicate whether the "Today" navigation button is displayed in the front office or not
+     */
+    private boolean _bIsDisplayTodayButton;
+
+    /**
      * Form Icon
      */
     private ImageResource _icon;
@@ -138,6 +148,48 @@ public final class Display implements Serializable
     public void setIsDisplayedOnPortlet( boolean bIsDisplayedOnPortlet )
     {
         this._bIsDisplayedOnPortlet = bIsDisplayedOnPortlet;
+    }
+
+    /**
+     * Get the boolean value indicating if the mini calendar has to be displayed in FO
+     *
+     * @return true if the mini calendar has to be displayed
+     */
+    public boolean isDisplayMiniCalendar( )
+    {
+        return _bIsDisplayMiniCalendar;
+    }
+
+    /**
+     * Set the boolean value to display or not the mini calendar in FO
+     *
+     * @param bIsDisplayMiniCalendar
+     *            the boolean value to set
+     */
+    public void setDisplayMiniCalendar( boolean bIsDisplayMiniCalendar )
+    {
+        this._bIsDisplayMiniCalendar = bIsDisplayMiniCalendar;
+    }
+
+    /**
+     * Get the boolean value indicating if the "Today" button has to be displayed in FO
+     *
+     * @return true if the "Today" button has to be displayed
+     */
+    public boolean isDisplayTodayButton( )
+    {
+        return _bIsDisplayTodayButton;
+    }
+
+    /**
+     * Set the boolean value to display or not the "Today" button in FO
+     *
+     * @param bIsDisplayTodayButton
+     *            the boolean value to set
+     */
+    public void setDisplayTodayButton( boolean bIsDisplayTodayButton )
+    {
+        this._bIsDisplayTodayButton = bIsDisplayTodayButton;
     }
 
     /**

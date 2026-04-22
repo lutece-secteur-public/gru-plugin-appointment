@@ -164,6 +164,16 @@ public final class AppointmentFormDTO extends ReservationRule implements RBACRes
     private boolean _bIsDisplayOnPortlet = true;
 
     /**
+     * True if the mini calendar navigation has to be displayed on the front office
+     */
+    private boolean _bDisplayMiniCalendar;
+
+    /**
+     * True if the "Today" navigation button has to be displayed on the front office
+     */
+    private boolean _bDisplayTodayButton;
+
+    /**
      * Number of weeks to display the form to the user
      */
     @NotNull( message = "#i18n{portal.validation.message.notEmpty}" )
@@ -758,6 +768,48 @@ public final class AppointmentFormDTO extends ReservationRule implements RBACRes
     public void setIsDisplayedOnPortlet( boolean bIsDisplayedOnPortlet )
     {
         this._bIsDisplayOnPortlet = bIsDisplayedOnPortlet;
+    }
+
+    /**
+     * Returns if the mini calendar navigation has to be displayed on the front office
+     *
+     * @return true if it has to be displayed
+     */
+    public boolean getDisplayMiniCalendar( )
+    {
+        return _bDisplayMiniCalendar;
+    }
+
+    /**
+     * Sets if the mini calendar navigation has to be displayed on the front office
+     *
+     * @param bDisplayMiniCalendar
+     *            The boolean value
+     */
+    public void setDisplayMiniCalendar( boolean bDisplayMiniCalendar )
+    {
+        this._bDisplayMiniCalendar = bDisplayMiniCalendar;
+    }
+
+    /**
+     * Returns if the "Today" navigation button has to be displayed on the front office
+     *
+     * @return true if it has to be displayed
+     */
+    public boolean getDisplayTodayButton( )
+    {
+        return _bDisplayTodayButton;
+    }
+
+    /**
+     * Sets if the "Today" navigation button has to be displayed on the front office
+     *
+     * @param bDisplayTodayButton
+     *            The boolean value
+     */
+    public void setDisplayTodayButton( boolean bDisplayTodayButton )
+    {
+        this._bDisplayTodayButton = bDisplayTodayButton;
     }
 
     /**
