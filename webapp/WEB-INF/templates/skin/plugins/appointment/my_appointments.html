@@ -2,6 +2,13 @@
 <@cContainer>
 	<@cRow>
 		<@cCol>
+			<@cBreadCrumb home='#i18n{portal.util.labelHome}'>
+				<@chItem class='breadcrumb-item active' params='aria-current="page"' />
+			</@cBreadCrumb>
+			</@cCol>
+	</@cRow>   
+	<@cRow>
+		<@cCol>
 			<@cTitle level=2 class='mb-4'>#i18n{appointment.myAppointments.name}</@cTitle>
 			<#if infos?? && infos?size gt 0><#list infos as info><@cAlert type='info' title=info.message! /></#list></#if>
 			<#if errors?? && errors?size gt 0><#list errors as error><@cAlert type='danger' title=error.message! /></#list></#if>

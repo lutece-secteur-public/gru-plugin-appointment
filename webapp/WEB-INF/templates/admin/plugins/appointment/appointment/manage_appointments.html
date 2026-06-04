@@ -22,10 +22,14 @@
 				</@inputGroup>
 			</@formGroup>
 		</@columns>
-		<@columns md=4>
+		<@columns md=1>
 			<@formGroup labelFor='status' labelKey='#i18n{appointment.manageAppointments.columnState}' rows=2 formStyle='inline'>
+				<@select name='status' id='status' items=listStatus default_value='${filter.status!}' />
+			</@formGroup>
+		</@columns>
+		<@columns md=3>
+			<@formGroup labelFor='status' labelKey='#i18n{appointment.manageAppointments.labelSearch}' hideLabel=['all'] rows=2 formStyle='inline' params='style="margin-block-start: 1.75rem;"'>
 				<@inputGroup>
-					<@select name='status' id='status' items=listStatus default_value='${filter.status!}' />
 					<@button name='Search' type='submit' title='#i18n{appointment.manageAppointments.labelSearch}' buttonIcon='search' hideTitle=['xs','sm'] />
 					<@offcanvas id='offcanvasSearch' title='#i18n{appointment.manageAppointments.labelAdvancedSearch}' btnTitle='#i18n{appointment.manageAppointments.labelAdvancedSearch}' btnIcon='list-search' btnClass='rounded-end' hideTitle=['xs','sm','md','lg','xl','xxl'] position='end' size='sm'>
 						<@fieldSet legend='#i18n{appointment.manageAppointments.labelSearch}'>

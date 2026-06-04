@@ -17,7 +17,7 @@
 								<@cOption value=x label=x selected=(x == nbPlacesToTake ) />
 							</#list>
 						</@cSelect>
-						<@cBtn class='primary btn-sm' type='submit' label='' params=' name="save"' >
+						<@cBtn class='primary btn-sm btn-save-placetotake' type='submit' label='' params=' name="save"' >
 							<@cIcon name='chevron-down' />
 							<@cInline class='d-none d-sm-inline'>#i18n{appointment.nbPlacesToTakeForm.labelValidate}</@cInline>
 						</@cBtn>
@@ -29,8 +29,15 @@
 	<script>
 	document.addEventListener('DOMContentLoaded', function() {
 		const placeStep = document.getElementById('step_current_place_to_take');
-		if (!placeStep) return;
 		const hasNbPlacesToTake = sessionStorage.getItem('appointmentNbPlacesToTake') === 'true';
+		<#if !refAppointment??>
+		const breadcrumb = document.querySelector('.breadcrumb');
+		if (breadcrumb) {
+			const lastCrumb = breadcrumb.querySelector('.breadcrumb-item:last-child');
+			if (!hasNbPlacesToTake) lastCrumb.textContent = '#i18n{appointment.label.labelNbConsecutiveSlots}';
+		}
+		</#if>
+		if (!placeStep) return;
 		if ( !hasNbPlacesToTake ) {
 			const currentStep = document.getElementById('current_step');
 			if ( currentStep && currentStep.classList.contains('step-current') ) {
@@ -42,7 +49,7 @@
 			}
 
 			// currentStep.style.display = 'none';
-			const saveBtn = placeStep.querySelector('[name="save"]');
+			const saveBtn = placeStep.querySelector('.btn-save-placetotake');
 			if (saveBtn) {
 				saveBtn.addEventListener('click', function() {
 					sessionStorage.setItem('appointmentNbPlacesToTake', 'true' );

@@ -1,23 +1,36 @@
 <@cTpl>
 <@cContainer>
+ 	<@cRow>
+        <@cCol>
+            <@cBreadCrumb home='#i18n{portal.util.labelHome}'>
+                <@chItem class='breadcrumb-item active' params='aria-current="page"'><#if portlet_name??><#if portlet_name?has_content>${portlet_name}</#if><#else>#i18n{appointment.xpage.formList.labelFormList}</#if></@chItem>
+            </@cBreadCrumb>
+         </@cCol>
+    </@cRow>   
 	<@cRow id='app-form-list'>
 		<@cCol>
 			<@messages infos=infos errors=errors />
-			<@cTitle level=3><#if portlet_name??><#if portlet_name?has_content>${portlet_name}</#if><#else>#i18n{appointment.xpage.formList.labelFormList}</#if></@cTitle>
+			<@cTitle level=3 class='mt-l'><#if portlet_name??><#if portlet_name?has_content>${portlet_name}</#if><#else>#i18n{appointment.xpage.formList.labelFormList}</#if></@cTitle>
 			<#if form_list?has_content>
-				<@chList>
+				<@chList class='packs px-0'>
 				<#assign cpt=form_list?size - 1>
 				<#list 0..cpt as item>
-					<@chItem class='col-xs-12 col-sm-6 col-md-4 appointment-form-list'>
+					<@chItem class='card pack'>
 						<#if icons?? && icons[item]?? && icons[item]!='NULL'>
-							<@cImg src='${icons[item]}' class='icon' title='icon_form' alt='icon_form' />
+							<@cImg src='${icons[item]}' class='icon icon-l' title='icon_form'  />
 						<#else>
-							<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-tabler icons-tabler-outline icon-tabler-calendar-clock"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M10.5 21h-4.5a2 2 0 0 1 -2 -2v-12a2 2 0 0 1 2 -2h12a2 2 0 0 1 2 2v3" /><path d="M16 3v4" /><path d="M8 3v4" /><path d="M4 11h10" /><path d="M14 18a4 4 0 1 0 8 0a4 4 0 1 0 -8 0" /><path d="M18 16.5v1.5l.5 .5" /></svg>
+							<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-tabler icons-tabler-outline icon-tabler-calendar-clock me-m">
+								<path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+								<path d="M10.5 21h-4.5a2 2 0 0 1 -2 -2v-12a2 2 0 0 1 2 -2h12a2 2 0 0 1 2 2v3" />
+								<path d="M16 3v4" />
+								<path d="M8 3v4" />
+								<path d="M4 11h10" />
+								<path d="M14 18a4 4 0 1 0 8 0a4 4 0 1 0 -8 0" />
+								<path d="M18 16.5v1.5l.5 .5" />
+							</svg>
 						</#if>
 						<@cLink label='' href='jsp/site/Portal.jsp?page=appointment&view=getViewAppointmentCalendar&id_form=${form_list[item].idForm}'>
-							<@cInline class='visible-xs'>${form_list[item].title}</@cInline>
-							<@cInline class='hidden-xs hidden-lg'><#if form_list[item].title?length &gt; 80>${form_list[item].title?substring(0,80)}...<#else>${form_list[item].title}</#if></@cInline>
-							<@cInline class='visible-lg'><#if form_list[item].title?length &gt; 90>${form_list[item].title?substring(0,90)}...<#else>${form_list[item].title}</#if></@cInline>
+							${form_list[item].title}
 						</@cLink>
 					</@chItem>
 				</#list>
@@ -28,4 +41,5 @@
 		</@cCol>
 	</@cRow>
 </@cContainer>
+<style>.banner.credits{display: none}</style>
 </@cTpl>

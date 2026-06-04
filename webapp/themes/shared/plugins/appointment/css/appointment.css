@@ -1,22 +1,43 @@
 #appointment-picker #day-panel .card{
-	background-color: var(--main-info-color);
-	border: 1px solid var(--main-info-color);
+	border: 2px solid var(--lutece-ds-color-neutral-600) !important;
 	border-radius: 15px;
     color: var(--white-color);
+	transition: all 0.3s ease;
 }
 
-#appointment-picker #day-panel .card:hover,
-#appointment-picker #day-panel .card.active{
-	background-color:  var(--white-color);
-    color: var(--main-color);
+#appointment-picker #day-panel :is(.card, .card.active):hover {
+    border-color: var(--lutece-ds-color-primary) !important;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(14,57,104,0.08);
 }
 
 #appointment-picker #day-panel .card.active{
-	border-width: 4px;
+    border: 2px solid var(--lutece-ds-color-blue-strong) !important;
 }
 
 #appointment-picker #day-panel .card .badge{
     text-wrap-mode: wrap !important;
 	white-space-collapse: collapse !important;
     white-space: normal!important;
+}
+
+#appointment-picker #day-panel .card .badge.bg-success::before {
+    content: "";
+    width: var(--lutece-ds-spacing-sm);
+    height: calc(var(--lutece-ds-spacing-sm) / 1.5 );
+    border-radius: var(--bs-border-radius-pill);
+    background: var(--lutece-ds-color-success-soft);
+}
+
+#appointment-picker #time-panel{
+    padding: var(--lutece-ds-spacing-md);
+    background: var(--lutece-ds-color-white);
+    border: 1px solid var(--lutece-ds-color-neutral-200);
+    border-radius: var(--bs-border-radius-lg);
+}
+
+#appointment-picker #time-list > a:hover {
+    border-color: var(--lutece-ds-color-primary) !important;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(14,57,104,0.08);
 }

@@ -1,4 +1,11 @@
 <@cTpl>
+<@cRow>
+    <@cCol>
+        <@cBreadCrumb home='#i18n{portal.util.labelHome}'>
+            <@chItem class='breadcrumb-item active' params='aria-current="page"'>${form.title}</@chItem>
+        </@cBreadCrumb>
+	</@cCol>
+</@cRow>   
 <#assign i = appointment.slot?size>
 <#assign stepFormTitle><#if form.displayTitleFo && form.title != "">${form.title}<#else>#i18n{appointment.appointmentApp.defaultTitle}</#if></#assign>
 <#assign stepTwoHref>jsp/site/Portal.jsp?page=appointment&view=getViewAppointmentCalendar&id_form=${form.idForm}<#if nbPlacesToTake?? && nbPlacesToTake != 0>&nbPlacesToTake=${nbPlacesToTake!}</#if>&date_of_display=${date_of_display}&start_time=${appointment.slot[0].startingTime}&end_time=${appointment.slot[i - 1].endingTime}#step2</#assign>
@@ -10,7 +17,7 @@
 		<@chItem>#i18n{appointment.labelThe} ${appointment.dateOfTheAppointment} #i18n{appointment.labelFrom} ${appointment.slot[0].startingTime} #i18n{appointment.labelTo} ${appointment.slot[i - 1].endingTime}</@chItem>
 	</@chList>
 </@cStepDone>
-<@cStepCurrent step='3' title='#i18n{appointment.appointmentApp.enteringInformation}' showPrevStep=false actionSaveStep='save'>
+<@cStepCurrent step='3' title='#i18n{appointment.appointmentApp.enteringInformation}' showPrevStep=false >
 	<@cRow>
 		<@cCol>
 			<@cBlock id='messageview'></@cBlock>
@@ -156,7 +163,7 @@
 <@cStepNext step='5' title='#i18n{appointment.appointmentApp.confirmation}' />
 <script>
 function validateQty(event) {
-	var key = window.event ? event.keyCode : event.which;
+	const key = window.event ? event.keyCode : event.which;
 	if (event.keyCode == 8 || event.keyCode == 9 || event.keyCode == 46
 		|| event.keyCode == 37 || event.keyCode == 39) {
 		return true;
@@ -174,16 +181,21 @@ function minmax(value, min, max) {
 }
 
 document.addEventListener('DOMContentLoaded', function() {
-	var emailConfirm = document.getElementById('emailConfirm');
+	const emailConfirm = document.getElementById('emailConfirm');
 	if (emailConfirm) {
 		emailConfirm.addEventListener('paste', function(e) {
 			e.preventDefault();
 		});
 	}
-	var infomessage = document.getElementById('infomessage');
-	var messageview = document.getElementById('messageview');
+	const infomessage = document.getElementById('infomessage');
+	const messageview = document.getElementById('messageview');
 	if (infomessage && messageview) {
 		messageview.innerHTML = infomessage.innerHTML;
+	}
+
+	const banner = document.getElementById('.banner');
+	if (banner) {
+		banner.remove();
 	}
 });
 </script>
