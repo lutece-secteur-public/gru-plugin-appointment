@@ -1,4 +1,5 @@
 <@cTpl>
+<@cSection class='lutece-appointment'>
 <#assign stepFormTitle><#if form.displayTitleFo && form.title != "">${form.title}<#else>#i18n{appointment.appointmentApp.defaultTitle}</#if></#assign>
 <#assign stepCalendarTitle><#if formMessages.calendarTitle?? && formMessages.calendarTitle != "">${formMessages.calendarTitle}<#else>#i18n{appointment.appointmentCalendar.labelSelectDay}</#if></#assign>
 <@cBreadCrumb home='#i18n{portal.util.labelHome}'>
@@ -28,11 +29,11 @@ ${mark_nb_places_to_take_form!}
 		<@cBlock id='appointment-picker'>
 			<@cBlock id='day-panel' params='role="region" aria-label="#i18n{appointment.appointmentCalendar.labelSelectDay}"'>
 				<@cBlock type='nav' class='d-flex justify-content-between align-items-center mb-3' params='aria-label="#i18n{appointment.appointmentApp.previousWeek} / #i18n{appointment.appointmentApp.nextWeek}"'>
-					<@cBtn class='outline-primary btn-sm' id='week-prev' label=''>
+					<@cBtn class='secondary btn-sm' id='week-prev' label=''>
 						<@cIcon name='chevron-left' /> #i18n{appointment.appointmentApp.previousWeek}
 					</@cBtn>
 					<@cInline type='strong' id='week-label' params='aria-live="polite"' />
-					<@cBtn class='outline-primary btn-sm' id='week-next' label=''>
+					<@cBtn class='secondary btn-sm' id='week-next' label=''>
 						#i18n{appointment.appointmentApp.nextWeek} <@cIcon name='chevron-right' />
 					</@cBtn>
 				</@cBlock>
@@ -52,4 +53,5 @@ ${mark_nb_places_to_take_form!}
 <@cStepNext step='4' title='#i18n{appointment.appointmentApp.recap.title}' />
 <@cStepNext step='5' title='#i18n{appointment.appointmentApp.confirmation}' />
 <#include "appointment_form_calendar_js.html" />
+</@cSection>
 </@cTpl>

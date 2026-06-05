@@ -134,7 +134,9 @@ const slots = [
 				card.className += ' bg-white rounded dark-border-color' + (isToday ? ' active' : '');
 				card.style.cursor = 'pointer';
 			} else {
-				card.className += ' bg-light text-muted dark-lighter-color';
+				card.className += ' bg-light text-muted dark-lighter-color disabled';
+				card.setAttribute('aria-disabled', 'true');
+				card.setAttribute('tabindex', '-1');
 			}
 
 			const body = document.createElement('div');

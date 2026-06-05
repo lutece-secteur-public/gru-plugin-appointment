@@ -4,14 +4,14 @@
 		${nbPlacesToTake}
 	</@cStepDone>
 <#else>
-	<@cStepCurrent step='1' id="step_current_place_to_take" title='#i18n{appointment.label.labelNbConsecutiveSlots}' hasMandatory=false>
+	<@cStepCurrent step='1' id='step_current_place_to_take' title='#i18n{appointment.label.labelNbConsecutiveSlots}' hasMandatory=false>
 		<@cForm id='form-validate' method='post' action='jsp/site/Portal.jsp?page=appointment&view=getViewAppointmentCalendar' params='role="form"'>
 			<@cInput type='hidden' name='action' value='getViewAppointmentCalendar' class='' />
 			<@cInput type='hidden' name='id_form' value='${form.idForm}' class='' />
 			<@cRow>
 				<@cCol cols='12 col-md-4'>
 					<@cLabel for='nbPlacesToTake' label='#i18n{appointment.label.labelNbConsecutiveSlots}' />
-					<@cInputGroup>
+					<@cInputGroup params='style="max-width:200px;"'>
 						<@cSelect name='nbPlacesToTake'>
 							<#list 1..maxNbPlacesToTake as x>
 								<@cOption value=x label=x selected=(x == nbPlacesToTake ) />

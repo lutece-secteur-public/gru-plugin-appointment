@@ -5,14 +5,15 @@
 	transition: all 0.3s ease;
 }
 
-#appointment-picker #day-panel :is(.card, .card.active):hover {
+#appointment-picker #day-panel :is(.card:not(.disabled), .card:not(.disabled).active):hover {
     border-color: var(--lutece-ds-color-primary) !important;
-    transform: translateY(-2px);
+    transform: translateY(-2px) scale(1.05);
     box-shadow: 0 4px 12px rgba(14,57,104,0.08);
 }
 
 #appointment-picker #day-panel .card.active{
     border: 2px solid var(--lutece-ds-color-blue-strong) !important;
+    transform: scale(1.05);
 }
 
 #appointment-picker #day-panel .card .badge{
@@ -40,4 +41,8 @@
     border-color: var(--lutece-ds-color-primary) !important;
     transform: translateY(-2px);
     box-shadow: 0 4px 12px rgba(14,57,104,0.08);
+}
+
+#step_current_place_to_take .step-content{
+    padding-block: 0 var(--lutece-ds-spacing-md);
 }
