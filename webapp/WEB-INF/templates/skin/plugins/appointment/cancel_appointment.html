@@ -42,10 +42,10 @@
 				<@cInput type='hidden' name='action' value='doCancelAppointment' class='' />
 				<@cInput type='hidden' name='token' value='${token}' class='' />
 				<@cField label='#i18n{appointment.dateAppointment.title}'>
-					<@cInput type='text' disabled=true readonly=true value='${dateAppointment}' />
+					<@cInput type='text' name='dateAppointment' disabled=true readonly=true value='${dateAppointment}' />
 				</@cField>
 				<@cField label='#i18n{appointment.cancelAppointment.labelTimeAppointment}'>
-					<@cInput type='text' disabled=true readonly=true value='#i18n{appointment.labelFrom} ${startingTimeAppointment} #i18n{appointment.labelTo} ${endingTimeAppointment}' />
+					<@cInput type='text' name='timeAppointment' disabled=true readonly=true value='#i18n{appointment.labelFrom} ${startingTimeAppointment} #i18n{appointment.labelTo} ${endingTimeAppointment}' />
 				</@cField>
 				<!-- <@cRow class='mt-3'>
 					<@cCol>
