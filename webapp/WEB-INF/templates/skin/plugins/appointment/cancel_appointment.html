@@ -1,9 +1,9 @@
 <@cTpl>
 <@cSection class='lutece-appointment'>
-<#assign formTitle><#if form.displayTitleFo && form.title != ''>${form.title}<#else>#i18n{appointment.appointmentApp.defaultTitle}</#if></#assign>
 <#if noAppointmentWithThisReference??>
 	<@cAlert type='info' title='#i18n{appointment.message.error.noAppointmentWithThisReference}' />
 <#else>
+	<#assign formTitle><#if form.displayTitleFo && form.title != ''>${form.title}<#else>#i18n{appointment.appointmentApp.defaultTitle}</#if></#assign>
 	<@cStepDone step='1' title=formTitle idx=1 actionName=''>
 		<@cAlert type='info' title=form.description! />
 	</@cStepDone>
