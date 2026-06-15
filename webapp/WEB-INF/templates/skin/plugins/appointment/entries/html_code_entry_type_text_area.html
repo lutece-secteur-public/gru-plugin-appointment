@@ -20,7 +20,7 @@
 <@cTextArea name='attribute${entry.idEntry}' id='attribute${entry.idEntry}' cols='${field_width.value}' rows='${field_height.value}' maxlength='${field_max_size.value}' class='form-control ${entry.CSSClass!}<#if richtext> richtext</#if>' errorMsg=errorMsg helpMsg=helpMsg>${responseContent}</@cTextArea>
 </#macro>
 <@cField class='<#if hasError??> has-error</#if>'>
-<@cLabel for='attribute${entry.idEntry}'>${entry.title}<#if entry.mandatory> *</#if></@cLabel>
+<@cLabel for='attribute${entry.idEntry}' label=entry.title! required=entry.mandatory />
 <#if list_responses??>
 	<#list list_responses as response>
 		<#if response.entry.idEntry == entry.idEntry && response.toStringValueResponse??>
