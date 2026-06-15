@@ -5,11 +5,11 @@
 <#assign selectClass = 'form-control ${entry.CSSClass!}' />
 <@cField label='${entry.title}' required=entry.mandatory>
 	<@cSelect name='attribute${entry.idEntry}' id='attribute${entry.idEntry}' class=selectClass helpMsg=helpMsg errorMsg=errorMsg>
-		<@cOption value=''>#i18n{appointment.xpage.form.noValue}</@cOption>
+		<@cOption value='' label='#i18n{appointment.xpage.form.noValue}' />
 		<#list entry.fields as field>
 			<#assign isSelected = false>
 			<#if list_responses??><#list list_responses as response><#if response.entry.idEntry == entry.idEntry && response.field??><#if response.field.idField == field.idField><#assign isSelected = true></#if></#if></#list><#else><#if field.defaultValue><#assign isSelected = true></#if></#if>
-			<@cOption value='${field.idField}' selected=isSelected>${field.title}</@cOption>
+			<@cOption value='${field.idField}' label=field.title! selected=isSelected />
 		</#list>
 	</@cSelect>
 </@cField>
