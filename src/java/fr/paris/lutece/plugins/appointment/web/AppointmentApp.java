@@ -341,11 +341,22 @@ public class AppointmentApp extends MVCApplication
         Locale locale = getLocale( request );
         _nNbPlacesToTake = 0;
 
-        int nIdForm = Integer.parseInt( request.getParameter( PARAMETER_ID_FORM ) );
+        String strIdForm = request.getParameter( PARAMETER_ID_FORM );
+        if ( !StringUtils.isNumeric( strIdForm ) )
+        {
+            addError( ERROR_MESSAGE_FORM_NO_MORE_VALID, locale );
+            return redirectView( request, VIEW_APPOINTMENT_FORM_LIST );
+        }
+        int nIdForm = Integer.parseInt( strIdForm );
         String nbPlacesToTake = request.getParameter( PARAMETER_NB_PLACE_TO_TAKE );
         String refAppointment = request.getParameter( PARAMETER_REF_APPOINTMENT );
 
         _appointmentForm = FormService.buildAppointmentFormWithoutReservationRule( nIdForm );
+        if ( _appointmentForm == null )
+        {
+            addError( ERROR_MESSAGE_FORM_NO_MORE_VALID, locale );
+            return redirectView( request, VIEW_APPOINTMENT_FORM_LIST );
+        }
         _strNbPlacesToTakeLength = String.valueOf(_appointmentForm.getNbConsecutiveSlots());
         boolean bError = false;
         if ( !_appointmentForm.getIsActive( ) )
