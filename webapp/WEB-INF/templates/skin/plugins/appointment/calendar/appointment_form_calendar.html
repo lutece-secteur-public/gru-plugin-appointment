@@ -7,11 +7,11 @@
 	<@chItem class='breadcrumb-item'>${form.title!}</@chItem>
     <@chItem class='breadcrumb-item active' params='aria-current="page"'>${stepCalendarTitle}</@chItem>
 </@cBreadCrumb>
-<!-- 
+
 <@cStepDone step='1' title=stepTitleDone idx=0 actionName=''>
 <@chItem>${form.description!}</@chItem>
 </@cStepDone> 
--->
+
 ${mark_nb_places_to_take_form!}
 <@cStepCurrent step='2' title=stepCalendarTitle showPrevStep=false hasMandatory=false>
 	<#if infos?? && infos?size gt 0>

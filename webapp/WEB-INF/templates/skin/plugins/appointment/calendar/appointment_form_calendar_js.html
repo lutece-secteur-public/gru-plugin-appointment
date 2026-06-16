@@ -158,7 +158,7 @@ const slots = [
 			body.appendChild(monthYear);
 
 			const badge = document.createElement('span');
-			badge.className = 'badge ' + (isToday ? ' badge-primary' : ' invisible');
+			badge.className = 'badge ' + (isToday ? ' bg-primary' : ' invisible');
 			badge.textContent = "#i18n{appointment.appointmentCalendar.labelToday}";
 			body.appendChild(badge);
 
@@ -226,7 +226,7 @@ const slots = [
 				item.className += ' border-primary bg-white';
 				item.style.cursor = 'pointer';
 				item.innerHTML = '<span class="fw-bold fs-5">' + startTime + ' — ' + endTime + '</span>' +
-					'<span class="badge ">' + slot.remaining  + ' <span class="visually-hidden">' + labelAvailable+ '</span> / ' + slot.maxCapacity + '</span>';
+					'<span class="badge bg-primary">' + slot.remaining  + ' <span class="visually-hidden">' + labelAvailable+ '</span> / ' + slot.maxCapacity + '</span>';
 				item.setAttribute('title', startTime + ' \u00e0 ' + endTime + ', ' + slot.remaining + ' ' + labelAvailable+ ' / ' + slot.maxCapacity );
 			} else if (slot.open) {
 				item.className += ' bg-light text-muted';
@@ -293,4 +293,3 @@ const slots = [
 	}
 })();
 </script>
-<style>.banner.credits{display: none}</style>

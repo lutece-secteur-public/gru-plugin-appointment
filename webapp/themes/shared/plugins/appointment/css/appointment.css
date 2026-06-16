@@ -1,18 +1,17 @@
 #appointment-picker #day-panel .card{
-	border: 2px solid var(--lutece-ds-color-neutral-600) !important;
+	border: 2px solid var(--lutece-ds-neutral-600) !important;
 	border-radius: 15px;
-    color: var(--white-color);
 	transition: all 0.3s ease;
 }
 
 #appointment-picker #day-panel :is(.card:not(.disabled), .card:not(.disabled).active):hover {
-    border-color: var(--lutece-ds-color-primary) !important;
+    border-color: var(--lutece-ds-primary) !important;
     transform: translateY(-2px) scale(1.05);
     box-shadow: 0 4px 12px rgba(14,57,104,0.08);
 }
 
 #appointment-picker #day-panel .card.active{
-    border: 2px solid var(--lutece-ds-color-blue-strong) !important;
+    border: 2px solid var(--lutece-ds-blue-strong) !important;
     transform: scale(1.05);
 }
 
@@ -24,25 +23,25 @@
 
 #appointment-picker #day-panel .card .badge.bg-success::before {
     content: "";
-    width: var(--lutece-ds-spacing-sm);
-    height: calc(var(--lutece-ds-spacing-sm) / 1.5 );
+    width: var(--lutece-ds-sp-sm);
+    height: calc(var(--lutece-ds-sp-sm) / 1.5 );
     border-radius: var(--bs-border-radius-pill);
-    background: var(--lutece-ds-color-success-soft);
+    background: var(--lutece-ds-success-soft);
 }
 
 #appointment-picker #time-panel{
-    padding: var(--lutece-ds-spacing-md);
-    background: var(--lutece-ds-color-white);
-    border: 1px solid var(--lutece-ds-color-neutral-200);
+    padding: var(--lutece-ds-sp-md);
+    background: var(--lutece-ds-white);
+    border: 1px solid var(--lutece-ds-neutral-200);
     border-radius: var(--bs-border-radius-lg);
 }
 
 #appointment-picker #time-list > a:hover {
-    border-color: var(--lutece-ds-color-primary) !important;
+    border-color: var(--lutece-ds-primary) !important;
     transform: translateY(-2px);
     box-shadow: 0 4px 12px rgba(14,57,104,0.08);
 }
 
 #step_current_place_to_take .step-content{
-    padding-block: 0 var(--lutece-ds-spacing-md);
+    padding-block: 0 var(--lutece-ds-sp-md);
 }
