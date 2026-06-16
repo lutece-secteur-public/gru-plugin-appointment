@@ -144,7 +144,7 @@ public class AppointmentApp extends MVCApplication
     /**
      * Default page of XPages of this app
      */
-    public static final String MESSAGE_DEFAULT_PATH = "appointment.appointment.name";
+    public static final String MESSAGE_DEFAULT_PATH = "appointment.name";
 
     /**
      * Default page title of XPages of this app

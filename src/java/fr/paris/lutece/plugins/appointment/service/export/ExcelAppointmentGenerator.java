@@ -50,7 +50,7 @@ import fr.paris.lutece.util.file.FileUtil;
 
 public class ExcelAppointmentGenerator implements IFileGenerator
 {
-    private static final String KEY_RESOURCE_TYPE = "appointment.appointment.name";
+    private static final String KEY_RESOURCE_TYPE = "appointment.name";
     private static final String KEY_FILE_DESCRIPTION = "appointment.export.file.description";
     private static final String EXCEL_MIME_TYPE = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
     private static final String TMP_DIR = System.getProperty( "java.io.tmpdir" );

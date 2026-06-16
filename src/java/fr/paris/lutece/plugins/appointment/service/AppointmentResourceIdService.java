@@ -92,8 +92,8 @@ public final class AppointmentResourceIdService extends ResourceIdService
     public static final String PERMISSION_ADD_COMMENT_FORM = "ADD_COMMENT_FORM";
 
     // Permission labels
-    private static final String PROPERTY_LABEL_RESOURCE_TYPE = "appointment.appointment.name";
-    private static final String PROPERTY_LABEL_RESOURCE_TYPE_CREATE = "appointment.appointment.name.create";
+    private static final String PROPERTY_LABEL_RESOURCE_TYPE = "appointment.name";
+    private static final String PROPERTY_LABEL_RESOURCE_TYPE_CREATE = "appointment.name.create";
     private static final String PROPERTY_LABEL_CREATE_FORM = "appointment.permission.label.createForm";
     private static final String PROPERTY_LABEL_CREATE_APPOINTMENT = "appointment.permission.label.createAppointment";
     private static final String PROPERTY_LABEL_DELETE_FORM = "appointment.permission.label.deleteForm";

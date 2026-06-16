@@ -82,7 +82,7 @@ import fr.paris.lutece.util.ReferenceList;
 public final class AppointmentExportService
 {
 
-    private static final String KEY_RESOURCE_TYPE = "appointment.appointment.name";
+    private static final String KEY_RESOURCE_TYPE = "appointment.name";
     private static final String KEY_COLUMN_FORM_CATEGORY = "appointment.manageAppointments.columnFormCategory";
     private static final String KEY_COLUMN_FORM_TITLE = "appointment.manageAppointments.columnFormTitle";
     private static final String KEY_COLUMN_LAST_NAME = "appointment.manageAppointments.columnLastName";
