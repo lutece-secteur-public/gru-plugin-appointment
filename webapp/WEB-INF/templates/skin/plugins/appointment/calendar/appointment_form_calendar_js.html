@@ -131,7 +131,7 @@ const slots = [
 			const hasAvailable = availableCount > 0;
 
 			if (hasAvailable) {
-				card.className += ' bg-white rounded dark-border-color' + (isToday ? ' active' : '');
+				card.className += ' bg-white text-dark rounded dark-border-color' + (isToday ? ' active' : '');
 				card.style.cursor = 'pointer';
 			} else {
 				card.className += ' bg-light text-muted dark-lighter-color disabled';
@@ -223,7 +223,7 @@ const slots = [
 
 			if (slot.available) {
 				item.href = slot.url;
-				item.className += ' border-primary bg-white';
+				item.className += ' border-primary bg-white text-dark';
 				item.style.cursor = 'pointer';
 				item.innerHTML = '<span class="fw-bold fs-5">' + startTime + ' — ' + endTime + '</span>' +
 					'<span class="badge bg-primary">' + slot.remaining  + ' <span class="visually-hidden">' + labelAvailable+ '</span> / ' + slot.maxCapacity + '</span>';
