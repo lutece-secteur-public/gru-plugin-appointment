@@ -468,7 +468,7 @@ public final class SlotSafeService
         {
             WorkflowService workflowService = CDI.current( ).select( WorkflowService.class ).get( );
             workflowService.getState( appointment.getIdAppointment( ), Appointment.APPOINTMENT_RESOURCE_TYPE, form.getIdWorkflow( ),
-                    form.getIdForm( ) );
+                    form.getIdForm( ), locale );
 
             if ( isReport && appointment.getIdActionReported( ) != 0 )
             {
