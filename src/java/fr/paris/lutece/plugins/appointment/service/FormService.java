@@ -65,6 +65,7 @@ import fr.paris.lutece.plugins.appointment.business.rule.FormRuleHome;
 import fr.paris.lutece.plugins.appointment.business.rule.ReservationRule;
 import fr.paris.lutece.plugins.appointment.business.rule.ReservationRuleHome;
 import fr.paris.lutece.plugins.appointment.business.slot.Slot;
+import fr.paris.lutece.plugins.appointment.business.slot.SlotHoldHome;
 import fr.paris.lutece.plugins.appointment.business.slot.SlotHome;
 import fr.paris.lutece.plugins.appointment.service.event.AppointmentFormRemovalEvent;
 import fr.paris.lutece.plugins.appointment.service.event.FormEvent;
@@ -725,6 +726,7 @@ public final class FormService
                 AppointmentResponseService.removeResponsesByIdAppointment( appointment.getIdAppointment( ) );
             }
 
+            SlotHoldHome.deleteByIdForm( nIdForm );
             SlotHome.deleteByIdForm( nIdForm );
 
             for ( ReservationRule rule : ReservationRuleHome.findByIdForm( nIdForm ) )
