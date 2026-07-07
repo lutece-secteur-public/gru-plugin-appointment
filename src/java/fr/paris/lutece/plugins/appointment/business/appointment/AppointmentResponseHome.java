@@ -42,6 +42,7 @@ import fr.paris.lutece.plugins.genericattributes.business.Response;
 import fr.paris.lutece.plugins.genericattributes.business.ResponseHome;
 import fr.paris.lutece.portal.service.plugin.Plugin;
 import fr.paris.lutece.portal.service.plugin.PluginService;
+import fr.paris.lutece.portal.service.util.AppLogService;
 import jakarta.enterprise.inject.spi.CDI;
 
 /**
@@ -103,6 +104,12 @@ public final class AppointmentResponseHome
         for ( Integer nIdResponse : listIdResponse )
         {
             Response response = ResponseHome.findByPrimaryKey( nIdResponse );
+            if ( response == null )
+            {
+                AppLogService.error( "Orphan appointment response: Table appointment_response references a missing genatt_response. id_appointment="
+                        + nIdAppointment + ", id_response=" + nIdResponse );
+                continue;
+            }
             if ( response.getField( ) != null && response.getField( ).getIdField( ) != 0 )
             {
                 response.setField( FieldHome.findByPrimaryKey( response.getField( ).getIdField( ) ) );

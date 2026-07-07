@@ -86,7 +86,7 @@ public class AppointmentDAO implements IAppointmentDAO
             + " INNER JOIN appointment_appointment_slot app_slot ON app.id_appointment = app_slot.id_appointment"
             + " INNER JOIN appointment_slot slot ON app_slot.id_slot = slot.id_slot WHERE id_form != 0";
     private static final String SQL_QUERY_SELECT_IDS_BY_FILTER = "SELECT "
-            + " DISTINCT app.id_appointment"
+            + " app.id_appointment"
             + " FROM appointment_appointment app " + "INNER JOIN appointment_user user ON app.id_user = user.id_user "
             + " INNER JOIN appointment_appointment_slot app_slot ON app.id_appointment = app_slot.id_appointment"
             + " INNER JOIN appointment_slot slot ON app_slot.id_slot = slot.id_slot WHERE id_form != 0";
@@ -119,14 +119,14 @@ public class AppointmentDAO implements IAppointmentDAO
     private static final String SQL_FILTER_ID_LIST_START = "app.id_appointment IN ( ";
     private static final String SQL_FILTER_ID_LIST_END = " ) ";
 
-    private static final String SQL_SORT_USER_LAST_NAME = "user.last_name";
-    private static final String SQL_SORT_USER_FIRST_NAME = "user.first_name";
-    private static final String SQL_SORT_USER_EMAIL = "user.email";
-    private static final String SQL_SORT_USER_PHONE_NUMBER = "user.phone_number";
-    private static final String SQL_SORT_APP_NB_PLACES = "app.nb_places";
-    private static final String SQL_SORT_SLOT_STARTING_DATE_TIME = "slot.starting_date_time";
-    private static final String SQL_SORT_APP_ID_ADMIN_USER = "app.id_admin_user";
-    private static final String SQL_SORT_APP_IS_CANCELLED = "app.is_cancelled";
+    private static final String SQL_SORT_USER_LAST_NAME = "MAX(user.last_name)";
+    private static final String SQL_SORT_USER_FIRST_NAME = "MAX(user.first_name)";
+    private static final String SQL_SORT_USER_EMAIL = "MAX(user.email)";
+    private static final String SQL_SORT_USER_PHONE_NUMBER = "MAX(user.phone_number)";
+    private static final String SQL_SORT_APP_NB_PLACES = "MAX(app.nb_places)";
+    private static final String SQL_SORT_SLOT_STARTING_DATE_TIME = "MIN(slot.starting_date_time)";
+    private static final String SQL_SORT_APP_ID_ADMIN_USER = "MAX(app.id_admin_user)";
+    private static final String SQL_SORT_APP_IS_CANCELLED = "MAX(app.is_cancelled)";
     private static final String SQL_SORT_ASC = " ASC ";
     private static final String SQL_SORT_DESC = " DESC ";
 
@@ -423,6 +423,7 @@ public class AppointmentDAO implements IAppointmentDAO
         List<Integer> list = new ArrayList<>( );
 
         String sqlQueryFromFilter = getSqlQueryFromFilter(appointmentFilter, SQL_QUERY_SELECT_IDS_BY_FILTER);
+        sqlQueryFromFilter += " GROUP BY app.id_appointment";
         String sqlQuery = getOrderQuery( appointmentFilter, sqlQueryFromFilter );
         try (DAOUtil daoUtil = new DAOUtil(sqlQuery, plugin ) )
         {

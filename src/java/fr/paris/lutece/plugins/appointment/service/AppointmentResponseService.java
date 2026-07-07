@@ -38,6 +38,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import fr.paris.lutece.portal.service.util.AppLogService;
 import jakarta.servlet.http.HttpServletRequest;
 
 import fr.paris.lutece.portal.business.file.File;
@@ -137,6 +138,12 @@ public final class AppointmentResponseService
         for ( int nIdResponse : listIdResponse )
         {
             Response response = ResponseHome.findByPrimaryKey( nIdResponse );
+            if ( response == null )
+            {
+                AppLogService.error( "Orphan appointment response : Table appointment_response references a missing genatt_response. id_appointment="
+                        + nIdAppointment + ", id_response=" + nIdResponse );
+                continue;
+            }
             if ( response.getField( ) != null )
             {
                 response.setField( FieldHome.findByPrimaryKey( response.getField( ).getIdField( ) ) );
@@ -189,10 +196,10 @@ public final class AppointmentResponseService
      */
     public static void removeResponsesByIdAppointment( int nIdAppointment )
     {
-        List<Response> listResponse = AppointmentResponseService.findListResponse( nIdAppointment );
-        for ( Response response : listResponse )
+        List<Integer> listIdResponse = AppointmentResponseService.findListIdResponse( nIdAppointment );
+        for ( Integer nIdResponse : listIdResponse )
         {
-            AppointmentResponseService.removeResponseById( response.getIdResponse( ) );
+            AppointmentResponseService.removeResponseById( nIdResponse );
         }
     }
 

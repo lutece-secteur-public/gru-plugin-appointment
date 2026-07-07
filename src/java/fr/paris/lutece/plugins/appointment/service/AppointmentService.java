@@ -355,6 +355,7 @@ public final class AppointmentService
         }
         appointmentDTO.setSlot( appointment.getSlot( ) );
         appointmentDTO.setUser( appointment.getUser( ) );
+        appointmentDTO.setAdminUser( StringUtils.EMPTY );
         if ( appointment.getIdAdminUser( ) != 0 )
         {
             AdminUser adminUser = AdminUserHome.findByPrimaryKey( appointment.getIdAdminUser( ) );
@@ -364,10 +365,6 @@ public final class AppointmentService
                 appointmentDTO.setAdminUser(
                         new StringBuilder( adminUser.getFirstName( ) + org.apache.commons.lang3.StringUtils.SPACE + adminUser.getLastName( ) ).toString( ) );
             }
-        }
-        else
-        {
-            appointmentDTO.setAdminUser( StringUtils.EMPTY );
         }
         appointmentDTO.setAdminUserCreate( appointment.getAdminUserCreate( ) );
         appointmentDTO.setDateAppointmentTaken( appointment.getDateAppointmentTaken( ) );
@@ -416,7 +413,11 @@ public final class AppointmentService
             // Need to delete also the responses linked to this appointment
             AppointmentResponseService.removeResponsesByIdAppointment( nIdAppointment );
             AppointmentService.deleteAppointment( appointmentToDelete );
-            UserHome.delete( appointmentToDelete.getIdUser( ) );
+            //Delete id_user in table appointment_user if zero reference found in appointment_appointment
+            if ( CollectionUtils.isEmpty( findListAppointmentByUserId( appointmentToDelete.getIdUser( ) ) ) )
+            {
+                UserHome.delete( appointmentToDelete.getIdUser( ) );
+            }
             TransactionManager.commitTransaction( AppointmentPlugin.getPlugin( ) );
             CDI.current( ).getBeanManager( ).getEvent( ).select( AppointmentEvent.class, new TypeQualifier( EventAction.REMOVE ) ).fireAsync( new AppointmentEvent( nIdAppointment ) );
             for ( AppointmentSlot appSlot : appointmentToDelete.getListAppointmentSlot( ) )
