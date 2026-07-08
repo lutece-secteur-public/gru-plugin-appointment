@@ -410,11 +410,7 @@ public final class AppointmentService
             // Need to delete also the responses linked to this appointment
             AppointmentResponseService.removeResponsesByIdAppointment( nIdAppointment );
             AppointmentService.deleteAppointment( appointmentToDelete );
-            //Delete id_user in table appointment_user if zero reference found in appointment_appointment
-            if ( CollectionUtils.isEmpty( findListAppointmentByUserId( appointmentToDelete.getIdUser( ) ) ) )
-            {
-                UserHome.delete( appointmentToDelete.getIdUser( ) );
-            }
+            UserHome.delete( appointmentToDelete.getIdUser( ) );
             TransactionManager.commitTransaction( AppointmentPlugin.getPlugin( ) );
             AppointmentListenerManager.notifyListenersAppointmentRemoval( nIdAppointment );
             for ( AppointmentSlot appSlot : appointmentToDelete.getListAppointmentSlot( ) )

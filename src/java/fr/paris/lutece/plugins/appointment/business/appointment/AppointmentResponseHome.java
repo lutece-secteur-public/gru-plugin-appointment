@@ -106,8 +106,8 @@ public final class AppointmentResponseHome
             Response response = ResponseHome.findByPrimaryKey( nIdResponse );
             if ( response == null )
             {
-                AppLogService.error( "Orphan appointment response: Table appointment_response references a missing genatt_response. id_appointment="
-                        + nIdAppointment + ", id_response=" + nIdResponse );
+                AppLogService.error( "Orphan appointment response: Table appointment_response references a missing genatt_response. id_appointment={}, id_response={}",
+                        nIdAppointment, nIdResponse );
                 continue;
             }
             if ( response.getField( ) != null && response.getField( ).getIdField( ) != 0 )

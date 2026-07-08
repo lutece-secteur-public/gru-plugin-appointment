@@ -121,10 +121,10 @@ public final class AppointmentDAO implements IAppointmentDAO
     private static final String SQL_SORT_USER_FIRST_NAME = "MAX(user.first_name)";
     private static final String SQL_SORT_USER_EMAIL = "MAX(user.email)";
     private static final String SQL_SORT_USER_PHONE_NUMBER = "MAX(user.phone_number)";
-    private static final String SQL_SORT_APP_NB_PLACES = "MAX(app.nb_places)";
+    private static final String SQL_SORT_APP_NB_PLACES = "app.nb_places";
     private static final String SQL_SORT_SLOT_STARTING_DATE_TIME = "MIN(slot.starting_date_time)";
-    private static final String SQL_SORT_APP_ID_ADMIN_USER = "MAX(app.id_admin_user)";
-    private static final String SQL_SORT_APP_IS_CANCELLED = "MAX(app.is_cancelled)";
+    private static final String SQL_SORT_APP_ID_ADMIN_USER = "app.id_admin_user";
+    private static final String SQL_SORT_APP_IS_CANCELLED = "app.is_cancelled";
     private static final String SQL_SORT_ASC = " ASC ";
     private static final String SQL_SORT_DESC = " DESC ";
 
