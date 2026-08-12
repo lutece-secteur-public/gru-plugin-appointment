@@ -446,7 +446,7 @@ public class SpecificWeekJspBean extends AbstractAppointmentFormAndSlotJspBean
             endingTime = LocalTime.parse( strEndingTime );
         }
 
-        String strJson = request.getParameter( PARAMETER_DATA );
+        String strJson = getJsonParameter( request, PARAMETER_DATA );
         AppLogService.debug( "slot - Received strJson : " + strJson );
         ObjectMapper mapper = new ObjectMapper( );
         mapper.registerModule( new JavaTimeModule( ) );

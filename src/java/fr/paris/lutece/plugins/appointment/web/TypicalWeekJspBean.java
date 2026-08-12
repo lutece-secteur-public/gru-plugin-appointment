@@ -657,7 +657,7 @@ public class TypicalWeekJspBean extends AbstractAppointmentFormAndSlotJspBean
         {
             throw new AccessDeniedException( AppointmentResourceIdService.PERMISSION_MODIFY_ADVANCED_SETTING_FORM );
         }
-        String strJson = request.getParameter( PARAMETER_TIME_SLOT_DATA );
+        String strJson = getJsonParameter( request, PARAMETER_TIME_SLOT_DATA );
         AppLogService.debug( "slot - Received strJson : " + strJson );
         ObjectMapper mapper = new ObjectMapper( );
         mapper.registerModule( new JavaTimeModule( ) );

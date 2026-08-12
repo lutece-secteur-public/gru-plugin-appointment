@@ -41,6 +41,8 @@ import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.apache.commons.text.StringEscapeUtils;
+
 import fr.paris.lutece.api.user.User;
 import fr.paris.lutece.plugins.appointment.business.calendar.CalendarTemplateHome;
 import fr.paris.lutece.plugins.appointment.service.AppointmentResourceIdService;
@@ -360,5 +362,28 @@ public abstract class AbstractAppointmentFormAndSlotJspBean extends MVCAdminJspB
         model.put( AppointmentUtilities.MARK_PERMISSION_MODERATE_COMMENT, String.valueOf( RBACService.isAuthorized( AppointmentFormDTO.RESOURCE_TYPE,
                 String.valueOf( appointmentForm.getIdForm( ) ), AppointmentResourceIdService.PERMISSION_MODERATE_COMMENT_FORM, (User) user ) ) );
         model.put( AppointmentUtilities.MARK_PERMISSION_ACCESS_CODE, user.getAccessCode( ) );
+    }
+
+    /**
+     * Read a JSON payload sent by an admin screen.
+     *
+     * The payload travels in a multipart form field, so it goes through the XSS filter. Since lutece-core 7.1.10 the upload filters are mapped before the safe
+     * request filters ( see LUT-32598 ), which means the filters now scan multipart body form fields : with the admin defaults
+     * ( lutece.safe.request.admin.sanitizeFilterMode=true, xssCharacters containing the double quote ) every " reaches the bean as &amp;#34; and Jackson fails
+     * on the first field name. Up to 7.1.8 the filters ran before the multipart conversion and the payload was left untouched.
+     *
+     * The HTML entities are therefore decoded before parsing.
+     *
+     * @param request
+     *            The Http request
+     * @param strParameterName
+     *            The name of the request parameter holding the JSON payload
+     * @return the JSON payload, or null if the parameter is absent
+     */
+    protected String getJsonParameter( HttpServletRequest request, String strParameterName )
+    {
+        String strJson = request.getParameter( strParameterName );
+
+        return ( strJson == null ) ? null : StringEscapeUtils.unescapeHtml4( strJson );
     }
 }
