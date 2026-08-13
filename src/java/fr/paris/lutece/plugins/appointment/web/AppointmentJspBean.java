@@ -1175,7 +1175,6 @@ public class AppointmentJspBean extends MVCAdminJspBean
      * @param request
      *            the request
      * @return to the display recap view
-     * @throws FileServiceException
      *             If there is an error with the file service
      */
     @View( VIEW_CHANGE_DATE_APPOINTMENT )
@@ -1184,6 +1183,12 @@ public class AppointmentJspBean extends MVCAdminJspBean
         String strIdForm = request.getParameter( PARAMETER_ID_FORM );
         Locale locale = getLocale( );
         int nIdForm = Integer.parseInt( strIdForm );
+
+        if ( _validatedAppointment == null )
+        {
+            addError( ERROR_MESSAGE_SLOT_EDIT_TASK_EXPIRED_TIME, locale );
+            return redirect( request, VIEW_CALENDAR_MANAGE_APPOINTMENTS, PARAMETER_ID_FORM, nIdForm );
+        }
         LocalDateTime startingDateTime = LocalDateTime.parse( request.getParameter( PARAMETER_STARTING_DATE_TIME ) );
         LocalDateTime endingDateTime = LocalDateTime.parse( request.getParameter( PARAMETER_ENDING_DATE_TIME ) );
         // Get all the week definitions
@@ -1281,6 +1286,12 @@ public class AppointmentJspBean extends MVCAdminJspBean
     @View( VIEW_DISPLAY_RECAP_APPOINTMENT )
     public synchronized String displayRecapAppointment( HttpServletRequest request )
     {
+        String strIdForm = request.getParameter( PARAMETER_ID_FORM );
+        if ( _validatedAppointment == null || _appointmentForm == null )
+        {
+            addError( ERROR_MESSAGE_SLOT_EDIT_TASK_EXPIRED_TIME, getLocale( ) );
+            return redirect( request, VIEW_CALENDAR_MANAGE_APPOINTMENTS, PARAMETER_ID_FORM, Integer.parseInt( strIdForm ) );
+        }
 
         Map<String, Object> model = getModel( );
         String strComeFromCalendar = request.getParameter( PARAMETER_COME_FROM_CALENDAR );
@@ -1311,6 +1322,13 @@ public class AppointmentJspBean extends MVCAdminJspBean
     @Action( ACTION_DO_MAKE_APPOINTMENT )
     public synchronized String doMakeAppointment( HttpServletRequest request ) throws AccessDeniedException
     {
+        String strIdForm = request.getParameter( PARAMETER_ID_FORM );
+        if ( _validatedAppointment == null || _appointmentForm == null )
+        {
+            addError( ERROR_MESSAGE_SLOT_EDIT_TASK_EXPIRED_TIME, getLocale( ) );
+            return redirect( request, VIEW_CALENDAR_MANAGE_APPOINTMENTS, PARAMETER_ID_FORM, Integer.parseInt( strIdForm ) );
+        }
+
         boolean overbookingAllowed = false;
         if ( StringUtils.isNotEmpty( request.getParameter( PARAMETER_BACK ) ) )
         {
