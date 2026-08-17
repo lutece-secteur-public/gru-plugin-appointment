@@ -561,13 +561,22 @@ $( function(){
 			dow: dow
 		}, 
 		eventClick: function( calEvent, jsEvent, view ){
+			// A link inside the event already carries the navigation : let the browser handle it,
+			// otherwise the click would start a second navigation to the same URL
+			if( jsEvent && jsEvent.target && jsEvent.target.closest && jsEvent.target.closest( 'a[href]' ) ){
+				return;
+			}
 		<#if showComments>
 			// Comments
 			var isCommentModerator=${permission_moderate_comment};
 			if( calEvent.type == "comment" && ( calEvent.creator_user === '${permission_access_code}' || isCommentModerator ) ){
 				<@commentModal update=true />
 			} else if( calEvent.type == "appointment" ) {
-				location.href = calEvent.manageUrl;
+				// An empty target is intentional : the slot is not actionable, do not reload the page
+				var strTarget = calEvent.manageUrl || calEvent.url;
+				if( strTarget ){
+					location.href = strTarget;
+				}
 			}
 		<#else>
 			// Typical week

@@ -1212,6 +1212,8 @@ public class AppointmentJspBean extends MVCAdminJspBean
         boolean bool = true;
 
         // If nIdSlot == 0, the slot has not been created yet
+        List<Slot> listPreviousSlot = _validatedAppointment.getSlot( );
+        int nPreviousNbMaxPotentialBookedSeats = _validatedAppointment.getNbMaxPotentialBookedSeats( );
         _validatedAppointment.setSlot( null );
         _validatedAppointment.setNbMaxPotentialBookedSeats( 0 );
         for ( Slot slot : listSlot )
@@ -1238,6 +1240,8 @@ public class AppointmentJspBean extends MVCAdminJspBean
                     && ( !_appointmentForm.getBoOverbooking( ) || !RBACService.isAuthorized( AppointmentFormDTO.RESOURCE_TYPE, strIdForm,
                             AppointmentResourceIdService.PERMISSION_OVERBOOKING_FORM, (User) getUser( ) ) ) )
             {
+                _validatedAppointment.setSlot( listPreviousSlot );
+                _validatedAppointment.setNbMaxPotentialBookedSeats( nPreviousNbMaxPotentialBookedSeats );
                 addError( ERROR_MESSAGE_SLOT_FULL, locale );
                 return redirect( request, VIEW_CALENDAR_MANAGE_APPOINTMENTS, PARAMETER_ID_FORM, nIdForm );
             }
@@ -1250,6 +1254,8 @@ public class AppointmentJspBean extends MVCAdminJspBean
         if ( _validatedAppointment.getNbMaxPotentialBookedSeats( ) == 0 && ( !_appointmentForm.getBoOverbooking( ) || !RBACService
                 .isAuthorized( AppointmentFormDTO.RESOURCE_TYPE, strIdForm, AppointmentResourceIdService.PERMISSION_OVERBOOKING_FORM, (User) getUser( ) ) ) )
         {
+            _validatedAppointment.setSlot( listPreviousSlot );
+            _validatedAppointment.setNbMaxPotentialBookedSeats( nPreviousNbMaxPotentialBookedSeats );
             addError( ERROR_MESSAGE_SLOT_FULL, locale );
             return redirect( request, VIEW_CALENDAR_MANAGE_APPOINTMENTS, PARAMETER_ID_FORM, nIdForm );
         }
@@ -1281,6 +1287,11 @@ public class AppointmentJspBean extends MVCAdminJspBean
     @View( VIEW_DISPLAY_RECAP_APPOINTMENT )
     public synchronized String displayRecapAppointment( HttpServletRequest request )
     {
+        if ( _validatedAppointment == null || _appointmentForm == null || CollectionUtils.isEmpty( _validatedAppointment.getSlot( ) ) )
+        {
+            return redirect( request,
+                    AdminMessageService.getMessageUrl( request, ERROR_MESSAGE_SLOT_EDIT_TASK_EXPIRED_TIME, AdminMessage.TYPE_STOP ) );
+        }
 
         Map<String, Object> model = getModel( );
         String strComeFromCalendar = request.getParameter( PARAMETER_COME_FROM_CALENDAR );
@@ -1311,6 +1322,11 @@ public class AppointmentJspBean extends MVCAdminJspBean
     @Action( ACTION_DO_MAKE_APPOINTMENT )
     public synchronized String doMakeAppointment( HttpServletRequest request ) throws AccessDeniedException
     {
+        if ( _validatedAppointment == null || _appointmentForm == null || CollectionUtils.isEmpty( _validatedAppointment.getSlot( ) ) )
+        {
+            return redirect( request,
+                    AdminMessageService.getMessageUrl( request, ERROR_MESSAGE_SLOT_EDIT_TASK_EXPIRED_TIME, AdminMessage.TYPE_STOP ) );
+        }
         boolean overbookingAllowed = false;
         if ( StringUtils.isNotEmpty( request.getParameter( PARAMETER_BACK ) ) )
         {
