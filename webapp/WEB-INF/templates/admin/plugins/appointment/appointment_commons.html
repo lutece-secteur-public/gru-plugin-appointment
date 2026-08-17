@@ -672,7 +672,11 @@ function initAppointmentCalendar() {
 				<@commentModal update=true />
 			} else if( type == "appointment" ) {
 				jsEvent.preventDefault();
-				location.href = calEvent.extendedProps.manageUrl;
+				// An empty target is intentional : the slot is not actionable, do not reload the page
+				var strTarget = calEvent.extendedProps.manageUrl || calEvent.url;
+				if( strTarget ){
+					location.href = strTarget;
+				}
 			}
 		</#if>
 		<#if selectable>
