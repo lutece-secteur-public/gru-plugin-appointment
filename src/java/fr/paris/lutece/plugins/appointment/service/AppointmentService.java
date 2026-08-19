@@ -413,7 +413,12 @@ public final class AppointmentService
             // Need to delete also the responses linked to this appointment
             AppointmentResponseService.removeResponsesByIdAppointment( nIdAppointment );
             AppointmentService.deleteAppointment( appointmentToDelete );
-            UserHome.delete( appointmentToDelete.getIdUser( ) );
+            // The user row is shared as soon as several appointments reference it, deleting it
+            // would then break the foreign key appointment_appointment.id_user
+            if ( CollectionUtils.isEmpty( AppointmentHome.findByIdUser( appointmentToDelete.getIdUser( ) ) ) )
+            {
+                UserHome.delete( appointmentToDelete.getIdUser( ) );
+            }
             TransactionManager.commitTransaction( AppointmentPlugin.getPlugin( ) );
             AppointmentListenerManager.notifyListenersAppointmentRemoval( nIdAppointment );
             for ( AppointmentSlot appSlot : appointmentToDelete.getListAppointmentSlot( ) )
