@@ -352,6 +352,9 @@ public final class AppointmentService
         }
         appointmentDTO.setSlot( appointment.getSlot( ) );
         appointmentDTO.setUser( appointment.getUser( ) );
+        // Set first so that an appointment referencing an admin user that no longer exists keeps
+        // an empty label instead of a null one
+        appointmentDTO.setAdminUser( StringUtils.EMPTY );
         if ( appointment.getIdAdminUser( ) != 0 )
         {
             AdminUser adminUser = AdminUserHome.findByPrimaryKey( appointment.getIdAdminUser( ) );
@@ -361,10 +364,6 @@ public final class AppointmentService
                 appointmentDTO.setAdminUser(
                         new StringBuilder( adminUser.getFirstName( ) + org.apache.commons.lang3.StringUtils.SPACE + adminUser.getLastName( ) ).toString( ) );
             }
-        }
-        else
-        {
-            appointmentDTO.setAdminUser( StringUtils.EMPTY );
         }
         appointmentDTO.setAdminUserCreate( appointment.getAdminUserCreate( ) );
         appointmentDTO.setDateAppointmentTaken( appointment.getDateAppointmentTaken( ) );
