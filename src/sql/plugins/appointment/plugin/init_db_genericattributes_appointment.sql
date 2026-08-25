@@ -1,4 +1,5 @@
 -- liquibase formatted sql
+-- lutece runAfter:genericattributes
 -- changeset appointment:init_db_genericattributes_appointment.sql
 -- preconditions onFail:MARK_RAN onError:WARN
 INSERT INTO genatt_entry_type (title,is_group,is_comment,is_mylutece_user,class_name,icon_name,plugin,display_order,inactive) VALUES 
