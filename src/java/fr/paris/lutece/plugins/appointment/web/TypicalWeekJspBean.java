@@ -40,7 +40,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.locks.Lock;
 import java.util.stream.Collectors;
 
 import jakarta.servlet.http.HttpServletRequest;
@@ -895,17 +894,8 @@ public class TypicalWeekJspBean extends AbstractAppointmentFormAndSlotJspBean
         SlotService.deleteListSlots( listslotImpactedWithoutAppointments );
         for ( Slot slotImpacted : listSlotsImpactedWithAppointments )
         {
-            Lock lock = SlotSafeService.getLockOnSlot( slotImpacted.getIdSlot( ) );
-            lock.lock( );
-            try
-            {
-                slotImpacted = updateRemainingPlaces( slotImpacted, bMaxCapacityHasChanged, nMaxCapacity, bOpeningHasChanged, bIsOpen );
-                SlotSafeService.updateSlot( slotImpacted );
-            }
-            finally
-            {
-                lock.unlock( );
-            }
+            slotImpacted = updateRemainingPlaces( slotImpacted, bMaxCapacityHasChanged, nMaxCapacity, bOpeningHasChanged, bIsOpen );
+            SlotSafeService.updateSlot( slotImpacted );
         }
     }
 
@@ -939,36 +929,23 @@ public class TypicalWeekJspBean extends AbstractAppointmentFormAndSlotJspBean
             bOpeningHasChanged = false;
             bMaxCapacityHasChanged = false;
 
-            Lock lock = SlotSafeService.getLockOnSlot( slotImpacted.getIdSlot( ) );
-            lock.lock( );
-            try
+            if ( ( nMaxCapacity != -1 && slotImpacted.getMaxCapacity( ) != nMaxCapacity ) )
             {
-                if ( ( nMaxCapacity != -1 && slotImpacted.getMaxCapacity( ) != nMaxCapacity ) )
+                bMaxCapacityHasChanged = true;
+            }
+            else
+                if ( nVarMaxCapacity != 0 )
                 {
-
+                    nMaxCapacity = ( slotImpacted.getMaxCapacity( ) + nVarMaxCapacity ) >= 0 ? ( slotImpacted.getMaxCapacity( ) + nVarMaxCapacity ) : 0;
                     bMaxCapacityHasChanged = true;
                 }
-                else
-                    if ( nVarMaxCapacity != 0 )
-                    {
-
-                        nMaxCapacity = ( slotImpacted.getMaxCapacity( ) + nVarMaxCapacity ) >= 0 ? ( slotImpacted.getMaxCapacity( ) + nVarMaxCapacity ) : 0;
-                        bMaxCapacityHasChanged = true;
-
-                    }
-                if ( bStateHasChanged && slotImpacted.getIsOpen( ) != bIsOpen )
-                {
-
-                    bOpeningHasChanged = true;
-                    binfoOpeningHasChanged = true;
-                }
-                slotImpacted = updateRemainingPlaces( slotImpacted, bMaxCapacityHasChanged, nMaxCapacity, bOpeningHasChanged, bIsOpen );
-                SlotSafeService.updateSlot( slotImpacted );
-            }
-            finally
+            if ( bStateHasChanged && slotImpacted.getIsOpen( ) != bIsOpen )
             {
-                lock.unlock( );
+                bOpeningHasChanged = true;
+                binfoOpeningHasChanged = true;
             }
+            slotImpacted = updateRemainingPlaces( slotImpacted, bMaxCapacityHasChanged, nMaxCapacity, bOpeningHasChanged, bIsOpen );
+            SlotSafeService.updateSlot( slotImpacted );
         }
         // Get the slot whith appointment (the appointments that are not
         // cancelled)
@@ -997,29 +974,16 @@ public class TypicalWeekJspBean extends AbstractAppointmentFormAndSlotJspBean
     private static Slot updateRemainingPlaces( Slot slot, boolean bMaxCapacityHasChanged, int nNewNbMaxCapacity, boolean bOpeningHasChanged, boolean bIsOpen )
     {
         slot = SlotHome.findByPrimaryKey( slot.getIdSlot( ) );
-        // If the max capacity has been modified
         if ( bMaxCapacityHasChanged )
         {
-            int nOldBnMaxCapacity = slot.getMaxCapacity( );
-            nNewNbMaxCapacity = ( nNewNbMaxCapacity >= 0 ) ? nNewNbMaxCapacity : 0;
-            // Need to add the diff between the old value and the new value
-            // to the remaining places (if the new is higher)
-            if ( nNewNbMaxCapacity > nOldBnMaxCapacity )
+            int nNewMax = ( nNewNbMaxCapacity >= 0 ) ? nNewNbMaxCapacity : 0;
+            int nDelta = nNewMax - slot.getMaxCapacity( );
+            if ( nDelta != 0 )
             {
-                int nValueToAdd = nNewNbMaxCapacity - nOldBnMaxCapacity;
-                slot.setNbPotentialRemainingPlaces( slot.getNbPotentialRemainingPlaces( ) + nValueToAdd );
-                slot.setNbRemainingPlaces( slot.getNbRemainingPlaces( ) + nValueToAdd );
+                SlotHome.adjustMaxCapacity( slot.getIdSlot( ), nDelta );
+                SlotHome.recomputePotentialRemainingPlaces( slot.getIdSlot( ) );
+                slot = SlotHome.findByPrimaryKey( slot.getIdSlot( ) );
             }
-            else
-            {
-                // the new value is lower than the previous capacity
-                // !!!! If there are appointments on this slot and if the
-                // slot is already full, the slot will be surbooked !!!!
-                int nValueToSubstract = nOldBnMaxCapacity - nNewNbMaxCapacity;
-                slot.setNbPotentialRemainingPlaces( slot.getNbPotentialRemainingPlaces( ) - nValueToSubstract );
-                slot.setNbRemainingPlaces( slot.getNbRemainingPlaces( ) - nValueToSubstract );
-            }
-            slot.setMaxCapacity( nNewNbMaxCapacity );
         }
         if ( bOpeningHasChanged )
         {

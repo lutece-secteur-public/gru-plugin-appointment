@@ -55,9 +55,12 @@ public class SlotDAO implements ISlotDAO
 {
 
     private static final String SQL_QUERY_INSERT = "INSERT INTO appointment_slot (starting_date_time, ending_date_time, is_open, is_specific, max_capacity, nb_remaining_places, nb_potential_remaining_places, nb_places_taken, id_form) VALUES ( ?, ?, ?, ?, ?, ?, ?, ?, ?)";
-    private static final String SQL_QUERY_UPDATE = "UPDATE appointment_slot SET starting_date_time = ?, ending_date_time = ?, is_open = ?, is_specific = ?, max_capacity = ?, nb_remaining_places = ?, nb_potential_remaining_places = ?, nb_places_taken = ?, id_form = ? WHERE id_slot = ?";
-    private static final String SQL_QUERY_UPDATE_POTENTIAL_REMAINING_PLACE = "UPDATE appointment_slot SET nb_potential_remaining_places = ? WHERE id_slot = ?";
-    private static final String SQL_QUERY_UPDATE_POTENTIAL_REMAINING_PLACE_IF_SHUTDOWN = "UPDATE appointment_slot SET nb_potential_remaining_places = nb_remaining_places WHERE nb_potential_remaining_places < nb_remaining_places ";
+    private static final String SQL_QUERY_UPDATE = "UPDATE appointment_slot SET starting_date_time = ?, ending_date_time = ?, is_open = ?, is_specific = ?, id_form = ? WHERE id_slot = ?";
+    private static final String SQL_QUERY_BOOK_PLACES = "UPDATE appointment_slot SET nb_remaining_places = nb_remaining_places - ?, nb_places_taken = nb_places_taken + ? WHERE id_slot = ?";
+    private static final String SQL_QUERY_BOOK_PLACES_GUARD = " AND nb_remaining_places >= ?";
+    private static final String SQL_QUERY_RELEASE_PLACES = "UPDATE appointment_slot SET nb_remaining_places = nb_remaining_places + ?, nb_places_taken = nb_places_taken - ? WHERE id_slot = ?";
+    private static final String SQL_QUERY_ADJUST_MAX_CAPACITY = "UPDATE appointment_slot SET max_capacity = max_capacity + ?, nb_remaining_places = nb_remaining_places + ? WHERE id_slot = ?";
+    private static final String SQL_QUERY_RECOMPUTE_POTENTIAL = "UPDATE appointment_slot s SET s.nb_potential_remaining_places = s.nb_remaining_places - COALESCE( ( SELECT SUM( h.nb_places ) FROM appointment_slot_hold h WHERE h.id_slot = s.id_slot AND h.expired_date > CURRENT_TIMESTAMP ), 0 ) WHERE s.id_slot = ?";
     private static final String SQL_QUERY_DELETE = "DELETE FROM appointment_slot WHERE id_slot = ?";
     private static final String SQL_QUERY_DELETE_BY_ID_FORM = "DELETE FROM appointment_slot WHERE id_form = ?";
     private static final String SQL_QUERY_SELECT_COLUMNS = "SELECT id_slot, starting_date_time, ending_date_time, is_open, is_specific, max_capacity, nb_remaining_places, nb_potential_remaining_places, nb_places_taken, id_form ";
@@ -83,8 +86,18 @@ public class SlotDAO implements ISlotDAO
     @Override
     public void insert( Slot slot, Plugin plugin )
     {
-        try ( DAOUtil daoUtil = buildDaoUtil( SQL_QUERY_INSERT, slot, plugin, true ) )
+        try ( DAOUtil daoUtil = new DAOUtil( SQL_QUERY_INSERT, Statement.RETURN_GENERATED_KEYS, plugin ) )
         {
+            int nIndex = 1;
+            daoUtil.setTimestamp( nIndex++, slot.getStartingTimestampDate( ) );
+            daoUtil.setTimestamp( nIndex++, slot.getEndingTimestampDate( ) );
+            daoUtil.setBoolean( nIndex++, slot.getIsOpen( ) );
+            daoUtil.setBoolean( nIndex++, slot.getIsSpecific( ) );
+            daoUtil.setInt( nIndex++, slot.getMaxCapacity( ) );
+            daoUtil.setInt( nIndex++, slot.getNbRemainingPlaces( ) );
+            daoUtil.setInt( nIndex++, slot.getNbPotentialRemainingPlaces( ) );
+            daoUtil.setInt( nIndex++, slot.getNbPlacesTaken( ) );
+            daoUtil.setInt( nIndex, slot.getIdForm( ) );
             daoUtil.executeUpdate( );
             if ( daoUtil.nextGeneratedKey( ) )
             {
@@ -96,8 +109,15 @@ public class SlotDAO implements ISlotDAO
     @Override
     public void update( Slot slot, Plugin plugin )
     {
-        try ( DAOUtil daoUtil = buildDaoUtil( SQL_QUERY_UPDATE, slot, plugin, false ) )
+        try ( DAOUtil daoUtil = new DAOUtil( SQL_QUERY_UPDATE, plugin ) )
         {
+            int nIndex = 1;
+            daoUtil.setTimestamp( nIndex++, slot.getStartingTimestampDate( ) );
+            daoUtil.setTimestamp( nIndex++, slot.getEndingTimestampDate( ) );
+            daoUtil.setBoolean( nIndex++, slot.getIsOpen( ) );
+            daoUtil.setBoolean( nIndex++, slot.getIsSpecific( ) );
+            daoUtil.setInt( nIndex++, slot.getIdForm( ) );
+            daoUtil.setInt( nIndex, slot.getIdSlot( ) );
             daoUtil.executeUpdate( );
         }
     }
@@ -273,12 +293,56 @@ public class SlotDAO implements ISlotDAO
     }
 
     @Override
-    public void updatePotentialRemainingPlaces( int nbPotentialRemainingPlaces, int nIdSlot, Plugin plugin )
+    public int bookPlaces( int nIdSlot, int nbPlaces, boolean bOverbookingAllowed, Plugin plugin )
     {
-        try ( DAOUtil daoUtil = new DAOUtil( SQL_QUERY_UPDATE_POTENTIAL_REMAINING_PLACE, plugin ) )
+        String strQuery = bOverbookingAllowed ? SQL_QUERY_BOOK_PLACES : SQL_QUERY_BOOK_PLACES + SQL_QUERY_BOOK_PLACES_GUARD;
+        try ( DAOUtil daoUtil = new DAOUtil( strQuery, plugin ) )
         {
-            daoUtil.setInt( 1, nbPotentialRemainingPlaces );
-            daoUtil.setInt( 2, nIdSlot );
+            int nIndex = 1;
+            daoUtil.setInt( nIndex++, nbPlaces );
+            daoUtil.setInt( nIndex++, nbPlaces );
+            daoUtil.setInt( nIndex++, nIdSlot );
+            if ( !bOverbookingAllowed )
+            {
+                daoUtil.setInt( nIndex, nbPlaces );
+            }
+            daoUtil.executeUpdate( );
+            return daoUtil.getReturnedRowCount( );
+        }
+    }
+
+    @Override
+    public void releasePlaces( int nIdSlot, int nbPlaces, Plugin plugin )
+    {
+        try ( DAOUtil daoUtil = new DAOUtil( SQL_QUERY_RELEASE_PLACES, plugin ) )
+        {
+            int nIndex = 1;
+            daoUtil.setInt( nIndex++, nbPlaces );
+            daoUtil.setInt( nIndex++, nbPlaces );
+            daoUtil.setInt( nIndex, nIdSlot );
+            daoUtil.executeUpdate( );
+        }
+    }
+
+    @Override
+    public void adjustMaxCapacity( int nIdSlot, int nDelta, Plugin plugin )
+    {
+        try ( DAOUtil daoUtil = new DAOUtil( SQL_QUERY_ADJUST_MAX_CAPACITY, plugin ) )
+        {
+            int nIndex = 1;
+            daoUtil.setInt( nIndex++, nDelta );
+            daoUtil.setInt( nIndex++, nDelta );
+            daoUtil.setInt( nIndex, nIdSlot );
+            daoUtil.executeUpdate( );
+        }
+    }
+
+    @Override
+    public void recomputePotentialRemainingPlaces( int nIdSlot, Plugin plugin )
+    {
+        try ( DAOUtil daoUtil = new DAOUtil( SQL_QUERY_RECOMPUTE_POTENTIAL, plugin ) )
+        {
+            daoUtil.setInt( 1, nIdSlot );
             daoUtil.executeUpdate( );
         }
     }
@@ -306,57 +370,6 @@ public class SlotDAO implements ISlotDAO
         slot.setIdForm( daoUtil.getInt( nIndex ) );
 
         return slot;
-    }
-
-    /**
-     * Build a daoUtil object with the Slot business object
-     * 
-     * @param query
-     *            the query
-     * @param slot
-     *            the SLot
-     * @param plugin
-     *            the plugin
-     * @param isInsert
-     *            true if it is an insert query (in this case, need to set the id). If false, it is an update, in this case, there is a where parameter id to
-     *            set
-     * @return a new daoUtil with all its values assigned
-     */
-    private DAOUtil buildDaoUtil( String query, Slot slot, Plugin plugin, boolean isInsert )
-    {
-        int nIndex = 1;
-        DAOUtil daoUtil = null;
-        if ( isInsert )
-        {
-            daoUtil = new DAOUtil( query, Statement.RETURN_GENERATED_KEYS, plugin );
-        }
-        else
-        {
-            daoUtil = new DAOUtil( query, plugin );
-        }
-        daoUtil.setTimestamp( nIndex++, slot.getStartingTimestampDate( ) );
-        daoUtil.setTimestamp( nIndex++, slot.getEndingTimestampDate( ) );
-        daoUtil.setBoolean( nIndex++, slot.getIsOpen( ) );
-        daoUtil.setBoolean( nIndex++, slot.getIsSpecific( ) );
-        daoUtil.setInt( nIndex++, slot.getMaxCapacity( ) );
-        daoUtil.setInt( nIndex++, slot.getNbRemainingPlaces( ) );
-        daoUtil.setInt( nIndex++, slot.getNbPotentialRemainingPlaces( ) );
-        daoUtil.setInt( nIndex++, slot.getNbPlacesTaken( ) );
-        daoUtil.setInt( nIndex++, slot.getIdForm( ) );
-        if ( !isInsert )
-        {
-            daoUtil.setInt( nIndex, slot.getIdSlot( ) );
-        }
-        return daoUtil;
-    }
-
-    @Override
-    public void resetPotentialRemainingPlaces( Plugin plugin )
-    {
-        try ( DAOUtil daoUtil = new DAOUtil( SQL_QUERY_UPDATE_POTENTIAL_REMAINING_PLACE_IF_SHUTDOWN, plugin ) )
-        {
-            daoUtil.executeUpdate( );
-        }
     }
 
     @Override

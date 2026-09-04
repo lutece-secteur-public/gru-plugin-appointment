@@ -98,7 +98,9 @@ CREATE TABLE IF NOT EXISTS appointment_slot (
   PRIMARY KEY (id_slot),
   CONSTRAINT fk_appointment_slot_appointment_form
     FOREIGN KEY (id_form)
-    REFERENCES appointment_form (id_form)
+    REFERENCES appointment_form (id_form),
+  CONSTRAINT chk_appointment_slot_capacity
+    CHECK (nb_remaining_places + nb_places_taken = max_capacity)
     );
 
 CREATE INDEX fk_appointment_slot_appointment_form_idx ON appointment_slot (id_form ASC);
@@ -106,6 +108,23 @@ CREATE INDEX starting_date_time_idx ON appointment_slot (starting_date_time ASC)
 CREATE INDEX ending_date_time_idx ON appointment_slot (ending_date_time ASC);
 CREATE UNIQUE INDEX appointment_slot_unique_starting ON appointment_slot (id_form,starting_date_time);
 CREATE UNIQUE INDEX appointment_slot_unique_ending ON appointment_slot (id_form,ending_date_time);
+
+-- -----------------------------------------------------
+-- Table appointment_slot_hold : soft-hold of places during a booking in progress.
+-- Expiry is driven by expired_date and swept by SlotDaemon.
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS appointment_slot_hold (
+  id_slot INT NOT NULL,
+  hold_token VARCHAR(50) NOT NULL,
+  nb_places INT DEFAULT 0 NOT NULL,
+  expired_date TIMESTAMP NOT NULL,
+  PRIMARY KEY (id_slot, hold_token),
+  CONSTRAINT fk_appointment_slot_hold_slot
+    FOREIGN KEY (id_slot)
+    REFERENCES appointment_slot (id_slot)
+    );
+
+CREATE INDEX appointment_slot_hold_expired_idx ON appointment_slot_hold (expired_date ASC);
 
 -- -----------------------------------------------------
 -- Table appointment_appointment

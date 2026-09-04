@@ -41,17 +41,11 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ConcurrentMap;
-import java.util.concurrent.TimeUnit;
-import java.util.concurrent.locks.Lock;
-import java.util.concurrent.locks.ReentrantLock;
 import java.util.stream.Collectors;
 
 import jakarta.servlet.http.HttpServletRequest;
@@ -65,6 +59,8 @@ import fr.paris.lutece.plugins.appointment.business.planning.WorkingDay;
 import fr.paris.lutece.plugins.appointment.business.rule.ReservationRule;
 import fr.paris.lutece.plugins.appointment.business.slot.Period;
 import fr.paris.lutece.plugins.appointment.business.slot.Slot;
+import fr.paris.lutece.plugins.appointment.business.slot.SlotHold;
+import fr.paris.lutece.plugins.appointment.business.slot.SlotHoldHome;
 import fr.paris.lutece.plugins.appointment.business.slot.SlotHome;
 import fr.paris.lutece.plugins.appointment.business.user.User;
 import fr.paris.lutece.plugins.appointment.exception.AppointmentSavedException;
@@ -77,7 +73,6 @@ import fr.paris.lutece.plugins.appointment.service.event.SlotEvent;
 import fr.paris.lutece.portal.service.event.EventAction;
 import fr.paris.lutece.portal.service.event.Type.TypeQualifier;
 import fr.paris.lutece.plugins.appointment.service.event.SlotEndingTimeChangedEvent;
-import fr.paris.lutece.plugins.appointment.service.lock.SlotEditTask;
 import fr.paris.lutece.plugins.appointment.web.dto.AppointmentDTO;
 import fr.paris.lutece.plugins.genericattributes.business.Response;
 import fr.paris.lutece.plugins.genericattributes.business.ResponseHome;
@@ -92,9 +87,6 @@ import jakarta.enterprise.inject.spi.CDI;
 public final class SlotSafeService
 {
 
-    private static final ConcurrentMap<Integer, Lock> _listSlot = new ConcurrentHashMap<>( );
-    private static final ConcurrentMap<Integer, Object> _lockFormId = new ConcurrentHashMap<>( );
-
     /**
      * Private constructor - this class does not need to be instantiated
      */
@@ -103,86 +95,52 @@ public final class SlotSafeService
     }
 
     /**
-     * Get the slot in memory
-     * 
-     * @return Map of slot
-     */
-    public static Map<Integer, Lock> getListSlotInMemory( )
-    {
-
-        return _listSlot;
-    }
-
-    /**
-     * get lock for slot
-     * 
-     * @param nIdSlot
-     *            the Id Slot
-     * @return return the lock
-     */
-    public static Lock getLockOnSlot( int nIdSlot )
-    {
-        if ( nIdSlot == 0 )
-        {
-            return new ReentrantLock( );
-        }
-        _listSlot.putIfAbsent( nIdSlot, new ReentrantLock( ) );
-        return _listSlot.get( nIdSlot );
-    }
-
-    /**
-     * remove slot in map memory
-     * 
-     * @param nIdSlot
-     *            the Id Slot
-     */
-    public static void removeSlotInMemory( int nIdSlot )
-    {
-
-        _listSlot.remove( nIdSlot );
-    }
-
-    /**
-     * get lock for form
-     * 
-     * @param nIdform
-     *            Id from
-     * @return return lock
-     */
-    private static Object getLockOnForm( int nIdform )
-    {
-        _lockFormId.putIfAbsent( nIdform, new Object( ) );
-        return _lockFormId.get( nIdform );
-    }
-
-    /**
-     * Create slot
-     * 
+     * Create a slot, or return the existing one if it was already created (unique id_form, starting_date_time).
+     *
      * @param slot
-     * @return slot
+     *            the slot to create
+     * @return the created (or already existing) slot
      */
     public static Slot createSlot( Slot slot )
     {
-        Object formLock = getLockOnForm( slot.getIdForm( ) );
-        synchronized( formLock )
+        Slot slotInDb = findExistingSlot( slot );
+        if ( slotInDb != null )
         {
-            Slot slotSaved = null;
-            HashMap<LocalDateTime, Slot> slotInDbMap = SlotService.buildMapSlotsByIdFormAndDateRangeWithDateForKey( slot.getIdForm( ),
-                    slot.getStartingDateTime( ), slot.getEndingDateTime( ) );
-            if ( !slotInDbMap.isEmpty( ) )
-            {
-                slotSaved = slotInDbMap.get( slot.getStartingDateTime( ) );
-            }
-            else
-            {
-
-                slotSaved = SlotHome.create( slot );
-                CDI.current( ).getBeanManager( ).getEvent( ).select( SlotEvent.class, new TypeQualifier( EventAction.CREATE ) ).fireAsync( new SlotEvent( slot.getIdSlot( ) ) );
-            }
-
-            return slotSaved;
-
+            return slotInDb;
         }
+        try
+        {
+            Slot slotSaved = SlotHome.create( slot );
+            CDI.current( ).getBeanManager( ).getEvent( ).select( SlotEvent.class, new TypeQualifier( EventAction.CREATE ) ).fireAsync( new SlotEvent( slot.getIdSlot( ) ) );
+            return slotSaved;
+        }
+        catch( Exception e )
+        {
+            Slot slotConcurrentlyCreated = findExistingSlot( slot );
+            if ( slotConcurrentlyCreated != null )
+            {
+                return slotConcurrentlyCreated;
+            }
+            throw e;
+        }
+    }
+
+    /**
+     * Find the slot already in database for the form and starting date time of the given slot, if any.
+     *
+     * @param slot
+     *            the slot to look up
+     * @return the existing slot or null
+     */
+    private static Slot findExistingSlot( Slot slot )
+    {
+        HashMap<LocalDateTime, Slot> slotInDbMap = SlotService.buildMapSlotsByIdFormAndDateRangeWithDateForKey( slot.getIdForm( ),
+                slot.getStartingDateTime( ), slot.getEndingDateTime( ) );
+        if ( !slotInDbMap.isEmpty( ) )
+        {
+            return slotInDbMap.get( slot.getStartingDateTime( ) );
+        }
+        return null;
     }
 
     /**
@@ -236,115 +194,83 @@ public final class SlotSafeService
      */
     private static void incrementMaxCapacity( int nIncrementingValue, Slot slot )
     {
-        Slot editSlot = null;
-
-        if ( slot.getIdSlot( ) == 0 )
-        {
-            editSlot = createSlot( slot );
-        }
-        else
-        {
-            editSlot = slot;
-        }
-        Lock lock = getLockOnSlot( editSlot.getIdSlot( ) );
-        lock.lock( );
-        try
-        {
-            editSlot = SlotService.findSlotById( editSlot.getIdSlot( ) );
-
-            editSlot.setMaxCapacity( editSlot.getMaxCapacity( ) + nIncrementingValue );
-            editSlot.setNbPotentialRemainingPlaces( editSlot.getNbPotentialRemainingPlaces( ) + nIncrementingValue );
-            editSlot.setNbRemainingPlaces( editSlot.getNbRemainingPlaces( ) + nIncrementingValue );
-            editSlot.setIsSpecific( SlotService.isSpecificSlot( editSlot ) );
-            saveSlot( editSlot );
-        }
-        finally
-        {
-
-            lock.unlock( );
-        }
-
+        Slot editSlot = ( slot.getIdSlot( ) == 0 ) ? createSlot( slot ) : slot;
+        adjustSlotCapacity( editSlot.getIdSlot( ), nIncrementingValue );
     }
 
     /**
-     * Update potential remaining places
-     * 
-     * @param task
-     *            the task timer
-     */
-    public static Slot incrementPotentialRemainingPlaces( SlotEditTask task )
-    {
-        Lock lock = getLockOnSlot( task.getIdSlot( ) );
-        Slot slot;
-        lock.lock( );
-        try
-        {
-            slot = SlotService.findSlotById( task.getIdSlot( ) );
-            if ( slot != null )
-            {
-
-                int nNewPotentialRemainingPlaces = Math.min( slot.getNbPotentialRemainingPlaces( ) + task.getNbPlacesTaken( ), slot.getNbRemainingPlaces( ) );
-                slot.setNbPotentialRemainingPlaces( nNewPotentialRemainingPlaces );
-                SlotHome.updatePotentialRemainingPlaces( nNewPotentialRemainingPlaces, slot.getIdSlot( ) );
-                CDI.current( ).getBeanManager( ).getEvent( ).select( SlotEvent.class, new TypeQualifier( EventAction.UPDATE ) ).fireAsync( new SlotEvent( slot.getIdSlot( ) ) );
-
-            }
-        }
-        finally
-        {
-            lock.unlock( );
-
-        }
-        return slot;
-    }
-
-    /**
-     * Update potential remaining places
+     * Adjust the max capacity of an existing slot: applies the capacity delta, recomputes the potential places,
+     * refreshes the specificity flag and fires the slot update event. Used by the admin capacity edits (back-office
+     * weeks, annual calendar) and the desk module.
      *
-     * @param nbPotentialRemainingPlaces
-     *            the nbPotentialRemainingPlaces
      * @param nIdSlot
-     *            the is Slot
+     *            the slot id
+     * @param nDelta
+     *            the capacity delta (positive to open places, negative to close)
      */
-    public static void decrementPotentialRemainingPlaces( int nbPotentialRemainingPlaces, int nIdSlot )
+    public static void adjustSlotCapacity( int nIdSlot, int nDelta )
     {
-
-        Lock lock = getLockOnSlot( nIdSlot );
-        lock.lock( );
-        try
-        {
-            Slot slot = SlotService.findSlotById( nIdSlot );
-            if ( slot != null )
-            {
-                int nNewPotentialRemainingPlaces = slot.getNbPotentialRemainingPlaces( ) - nbPotentialRemainingPlaces;
-                slot.setNbPotentialRemainingPlaces( nNewPotentialRemainingPlaces );
-                SlotHome.updatePotentialRemainingPlaces( nNewPotentialRemainingPlaces, nIdSlot );
-                CDI.current( ).getBeanManager( ).getEvent( ).select( SlotEvent.class, new TypeQualifier( EventAction.UPDATE ) ).fireAsync( new SlotEvent( slot.getIdSlot( ) ) );
-
-            }
-
-        }
-        finally
-        {
-
-            lock.unlock( );
-        }
-
+        SlotHome.adjustMaxCapacity( nIdSlot, nDelta );
+        SlotHome.recomputePotentialRemainingPlaces( nIdSlot );
+        updateSpecificity( nIdSlot );
+        CDI.current( ).getBeanManager( ).getEvent( ).select( SlotEvent.class, new TypeQualifier( EventAction.UPDATE ) ).fireAsync( new SlotEvent( nIdSlot ) );
     }
 
     /**
-     * Save a slot in database
-     * 
-     * @param slot
-     *            the slot to save
-     * @return the slot saved
+     * Release the soft-holds that have expired and recompute the potential places of the slots they were holding.
+     *
+     * @return the number of expired holds released
+     */
+    public static int releaseExpiredHolds( )
+    {
+        List<SlotHold> listExpired = SlotHoldHome.findExpired( );
+        if ( listExpired.isEmpty( ) )
+        {
+            return 0;
+        }
+        Set<Integer> listIdSlot = listExpired.stream( ).map( SlotHold::getIdSlot ).collect( Collectors.toSet( ) );
+        SlotHoldHome.deleteExpired( );
+        for ( int nIdSlot : listIdSlot )
+        {
+            SlotHome.recomputePotentialRemainingPlaces( nIdSlot );
+        }
+        return listExpired.size( );
+    }
+
+    /**
+     * Recompute the specificity flag of a slot (capacity differing from the reservation rule) and persist it if it changed.
+     *
+     * @param nIdSlot
+     *            the slot id
+     */
+    private static void updateSpecificity( int nIdSlot )
+    {
+        Slot slot = SlotService.findSlotById( nIdSlot );
+        if ( slot == null )
+        {
+            return;
+        }
+        boolean bSpecific = SlotService.isSpecificSlot( slot );
+        if ( bSpecific != slot.getIsSpecific( ) )
+        {
+            slot.setIsSpecific( bSpecific );
+            SlotHome.update( slot );
+        }
+    }
+
+    /**
+     * Save an appointment and book its slots.
+     *
+     * @param appointmentDTO
+     *            the appointment to save
+     * @param request
+     *            the request (may be null in batch context)
+     * @return the id of the saved appointment
      */
     public static int saveAppointment( AppointmentDTO appointmentDTO, HttpServletRequest request )
     {
         Locale locale = null;
         User user = appointmentDTO.getUser( );
-        List<Lock> listLock = new ArrayList<>( );
-        // change date appointment
         boolean isReport = appointmentDTO.getIdAppointment( ) != 0;
         if ( appointmentDTO.getIsSaved( ) )
         {
@@ -364,7 +290,7 @@ public final class SlotSafeService
         TransactionManager.beginTransaction( AppointmentPlugin.getPlugin( ) );
         try
         {
-            Set<Integer> listSlotUpdated = saveSlots( appointmentDTO, listLock, request );
+            Set<Integer> listSlotUpdated = saveSlots( appointmentDTO, request );
             if ( !isReport )
             {
                 user = UserService.saveUser( appointmentDTO );
@@ -401,13 +327,6 @@ public final class SlotSafeService
             TransactionManager.rollBack( AppointmentPlugin.getPlugin( ) );
             AppLogService.error( "Error Save appointment: {}", e.getMessage( ), e );
             throw new SlotFullException( e.getMessage( ), e );
-        }
-        finally
-        {
-            for ( Lock lock : listLock )
-            {
-                lock.unlock( );
-            }
         }
     }
 
@@ -491,45 +410,8 @@ public final class SlotSafeService
      */
     static void updateRemaningPlacesWithAppointmentMovedDeletedOrCanceled( int nbPlaces, int nIdSlot )
     {
-        // The capacity of the slot (that can be less than the number of places
-        // taken on the slot --> overbook)
-
-        Lock lock = getLockOnSlot( nIdSlot );
-        lock.lock( );
-        try
-        {
-            Slot slot = SlotService.findSlotById( nIdSlot );
-            if ( slot != null )
-            {
-                int nMaxCapacity = slot.getMaxCapacity( );
-                // The old remaining places of the slot (before we delete or cancel or move the
-                // appointment
-                int nOldRemainingPlaces = slot.getNbRemainingPlaces( );
-                int nOldPotentialRemaningPlaces = slot.getNbPotentialRemainingPlaces( );
-                int nOldPlacesTaken = slot.getNbPlacesTaken( );
-                int nNewPlacesTaken = nOldPlacesTaken - nbPlaces;
-                // The new value of the remaining places of the slot is the minimal
-                // value between :
-                // - the minimal value between the potentially new max capacity and the old remaining places plus the number of places released by the
-                // appointment
-                // - and the capacity of the slot minus the new places taken on the slot
-                int nNewRemainingPlaces = Math.min( Math.min( nMaxCapacity, nOldRemainingPlaces + nbPlaces ), ( nMaxCapacity - nNewPlacesTaken ) );
-
-                int nNewPotentialRemainingPlaces = Math.min( Math.min( nMaxCapacity, nOldPotentialRemaningPlaces + nbPlaces ),
-                        ( nMaxCapacity - nNewPlacesTaken ) );
-
-                slot.setNbRemainingPlaces( nNewRemainingPlaces );
-                slot.setNbPotentialRemainingPlaces( nNewPotentialRemainingPlaces );
-                slot.setNbPlacestaken( nNewPlacesTaken );
-                SlotHome.update( slot );
-            }
-        }
-        finally
-        {
-
-            lock.unlock( );
-        }
-
+        SlotHome.releasePlaces( nIdSlot, nbPlaces );
+        SlotHome.recomputePotentialRemainingPlaces( nIdSlot );
     }
 
     /**
@@ -543,27 +425,8 @@ public final class SlotSafeService
      */
     static void updateRemaningPlacesWithAppointmentReactivated( int nbPlaces, int nIdSlot )
     {
-        // The capacity of the slot (that can be less than the number of places
-        // taken on the slot --> overbook)
-        Lock lock = getLockOnSlot( nIdSlot );
-        lock.lock( );
-        try
-        {
-            Slot slot = SlotService.findSlotById( nIdSlot );
-            if ( slot != null )
-            {
-                slot.setNbRemainingPlaces( slot.getNbRemainingPlaces( ) - nbPlaces );
-                slot.setNbPotentialRemainingPlaces( slot.getNbPotentialRemainingPlaces( ) - nbPlaces );
-                slot.setNbPlacestaken( slot.getNbPlacesTaken( ) + nbPlaces );
-                SlotHome.update( slot );
-            }
-        }
-        finally
-        {
-
-            lock.unlock( );
-        }
-
+        SlotHome.bookPlaces( nIdSlot, nbPlaces, true );
+        SlotHome.recomputePotentialRemainingPlaces( nIdSlot );
     }
 
     /**
@@ -880,51 +743,19 @@ public final class SlotSafeService
     }
 
     /**
-     * Build a Slot object from the resultset
-     * 
-     * @param daoUtil
-     *            the prepare statement util object
-     * 
-     */
-    /**
-     * Update the capacity of the slot
-     * 
+     * Apply a max capacity change of an existing slot, then recompute the potential places.
+     *
      * @param slot
-     *            the slot to update
+     *            the slot carrying the new max capacity
      */
     public static void updateRemainingPlaces( Slot slot )
     {
         Slot oldSlot = SlotHome.findByPrimaryKey( slot.getIdSlot( ) );
-        int nNewNbMaxCapacity = slot.getMaxCapacity( );
-        int nOldBnMaxCapacity = oldSlot.getMaxCapacity( );
-        // If the max capacity has been modified
-        if ( nNewNbMaxCapacity != nOldBnMaxCapacity )
+        int nDelta = slot.getMaxCapacity( ) - oldSlot.getMaxCapacity( );
+        if ( nDelta != 0 )
         {
-            // Need to update the remaining places
-
-            // Need to add the diff between the old value and the new value
-            // to the remaining places (if the new is higher)
-            if ( nNewNbMaxCapacity > nOldBnMaxCapacity )
-            {
-                int nValueToAdd = nNewNbMaxCapacity - nOldBnMaxCapacity;
-                slot.setNbPotentialRemainingPlaces( oldSlot.getNbPotentialRemainingPlaces( ) + nValueToAdd );
-                slot.setNbRemainingPlaces( oldSlot.getNbRemainingPlaces( ) + nValueToAdd );
-            }
-            else
-            {
-                // the new value is lower than the previous capacity
-                // !!!! If there are appointments on this slot and if the
-                // slot is already full, the slot will be surbooked !!!!
-                int nValueToSubstract = nOldBnMaxCapacity - nNewNbMaxCapacity;
-                slot.setNbPotentialRemainingPlaces( oldSlot.getNbPotentialRemainingPlaces( ) - nValueToSubstract );
-                slot.setNbRemainingPlaces( oldSlot.getNbRemainingPlaces( ) - nValueToSubstract );
-            }
-        }
-        else
-        {
-
-            slot.setNbPotentialRemainingPlaces( oldSlot.getNbPotentialRemainingPlaces( ) );
-            slot.setNbRemainingPlaces( oldSlot.getNbRemainingPlaces( ) );
+            SlotHome.adjustMaxCapacity( slot.getIdSlot( ), nDelta );
+            SlotHome.recomputePotentialRemainingPlaces( slot.getIdSlot( ) );
         }
     }
 
@@ -981,198 +812,62 @@ public final class SlotSafeService
     }
 
     /**
-     * Clean slotlist
-     */
-    public static void cleanSlotlist( )
-    {
-
-        Iterator<Integer> it = _listSlot.keySet( ).iterator( );
-        int idSlot;
-        while ( it.hasNext( ) )
-        {
-
-            idSlot = it.next( );
-            Slot slot = SlotService.findSlotById( idSlot );
-            if ( slot == null || slot.getStartingDateTime( ).isBefore( LocalDateTime.now( ) ) || slot.getMaxCapacity( ) <= slot.getNbPlacesTaken( ) )
-            {
-                _listSlot.remove( idSlot );
-            }
-
-        }
-    }
-
-    /**
-     * Save and update slots
-     * 
+     * Save and book the slots of an appointment. For a report (existing appointment) the places held by the old slots
+     * are released first, then the new slots are booked.
+     *
      * @param appointmentDTO
      *            the appointmentDTO
-     * @return list id slot updated
-     * @throws InterruptedException
+     * @param request
+     *            the request (may be null)
+     * @return the set of slot ids touched
+     * @throws CloneNotSupportedException
+     *             if the old slot cannot be cloned
      */
-    private static Set<Integer> saveSlots( AppointmentDTO appointmentDTO, List<Lock> listLock, HttpServletRequest request ) throws InterruptedException, CloneNotSupportedException
+    private static Set<Integer> saveSlots( AppointmentDTO appointmentDTO, HttpServletRequest request ) throws CloneNotSupportedException
     {
-        Appointment oldAppointment = null;
-        List<Slot> listOldSlot = new ArrayList<>( );
-        List<Slot> listSlotToUpdate = new ArrayList<>( );
-        int nbSumRemainingPlaces = 0;
-        // if it's an update for modification of the date of the appointment
+        Set<Integer> listSlotUpdated = new HashSet<>( );
+        boolean bOverbooking = appointmentDTO.getOverbookingAllowed( );
         if ( appointmentDTO.getIdAppointment( ) != 0 )
         {
-            oldAppointment = AppointmentService.findAppointmentById( appointmentDTO.getIdAppointment( ) );
+            Appointment oldAppointment = AppointmentService.findAppointmentById( appointmentDTO.getIdAppointment( ) );
             if ( oldAppointment.getIsCancelled( ) )
             {
                 throw new SlotFullException( "ERROR APPOINTMENT CANCELLED " );
             }
-            // Need to update the old slot
             for ( AppointmentSlot appointmentSlot : oldAppointment.getListAppointmentSlot( ) )
             {
-                Lock lock = getLockOnSlot( appointmentSlot.getIdSlot( ) );
-                if ( lock.tryLock( 3, TimeUnit.SECONDS ) )
-                {
-                    listLock.add( lock );
-                }
-                else
-                {
-                    throw new SlotFullException( "ERROR SLOT LOCKED" );
-                }
                 Slot slt = SlotService.findSlotById( appointmentSlot.getIdSlot( ) );
                 oldAppointment.addSlot( slt.clone( ) );
-                slt = updateRemaningPlacesWithAppointmentMoved( appointmentSlot.getNbPlaces( ), slt );
-                listOldSlot.add( slt );
+                SlotHome.releasePlaces( appointmentSlot.getIdSlot( ), appointmentSlot.getNbPlaces( ) );
+                SlotHome.recomputePotentialRemainingPlaces( appointmentSlot.getIdSlot( ) );
+                listSlotUpdated.add( appointmentSlot.getIdSlot( ) );
             }
-            //We set the appointmentDTO object in the request before proceeding with its update, 
-            //especially in the context of report an appointment. 
-            //This ensures that the object will be available in the request parameter that we pass during the execution of workflow tasks.
-            request.setAttribute(AppointmentUtilities.OLD_APPOINTMENT_DTO, AppointmentUtilities.buildAppointmentDTO(oldAppointment));
+            request.setAttribute( AppointmentUtilities.OLD_APPOINTMENT_DTO, AppointmentUtilities.buildAppointmentDTO( oldAppointment ) );
         }
         for ( AppointmentSlot appSlot : appointmentDTO.getListAppointmentSlot( ) )
         {
-            Slot slt = null;
-            // if it's an update for modification of the date of the appointment we load the slots in the listOldSlot because are updated already
-            if ( appointmentDTO.getIdAppointment( ) != 0 && listOldSlot.stream( ).anyMatch( slot -> slot.getIdSlot( ) == appSlot.getIdSlot( ) ) )
-            {
-                slt = listOldSlot.stream( ).filter( slot -> slot.getIdSlot( ) == appSlot.getIdSlot( ) ).findFirst( ).orElse( null );
-                listOldSlot.removeIf( slot -> slot.getIdSlot( ) == appSlot.getIdSlot( ) );
-            }
-            else
-            {
-                Lock lock = getLockOnSlot( appSlot.getIdSlot( ) );
-                if ( lock.tryLock( 3, TimeUnit.SECONDS ) )
-                {
-                    listLock.add( lock );
-                }
-                else
-                {
-                    throw new SlotFullException( "ERROR SLOT LOCKED" );
-                }
-                slt = SlotService.findSlotById( appSlot.getIdSlot( ) );
-            }
-            if ( slt == null || ( ( appSlot.getNbPlaces( ) > slt.getNbRemainingPlaces( ) && !appointmentDTO.getOverbookingAllowed( ) )
-                    || slt.getEndingDateTime( ).isBefore( LocalDateTime.now( ) ) ) )
-
+            Slot slt = SlotService.findSlotById( appSlot.getIdSlot( ) );
+            if ( slt == null || slt.getEndingDateTime( ).isBefore( LocalDateTime.now( ) ) )
             {
                 AppLogService.error( "ERROR SLOT FULL, ID SLOT: {}", appSlot.getIdSlot( ) );
                 throw new SlotFullException( "ERROR SLOT FULL " );
             }
-            nbSumRemainingPlaces = nbSumRemainingPlaces + slt.getNbRemainingPlaces( );
-            // Update of the remaining places of the slot and appointmentDTO if over booking Allowed
-            updateRemaningPlacesAndappointmentDTO( appSlot.getNbPlaces( ), slt, appointmentDTO );
-            listSlotToUpdate.add( slt );
-        }
-        // this test is for form with the possibility of taking several appointments on the same slot
-        if ( appointmentDTO.getNbBookedSeats( ) > nbSumRemainingPlaces && !appointmentDTO.getOverbookingAllowed( ) )
-        {
-            AppLogService.error( "ERROR SLOT FULL" );
-            throw new SlotFullException( "ERROR SLOT FULL" );
-        }
-        listSlotToUpdate.addAll( listOldSlot );
-        return updateListSlots( listSlotToUpdate );
-
-    }
-
-    /**
-     * Update slots passed in the parmaters
-     * 
-     * @param listSlotToUpdate
-     *            the list of slot to update
-     * @return ids list slot Updated
-     */
-    private static Set<Integer> updateListSlots( List<Slot> listSlotToUpdate )
-    {
-        Set<Integer> listSlot = new HashSet<>( );
-        for ( Slot slot : listSlotToUpdate )
-        {
-            SlotHome.update( slot );
-            listSlot.add( slot.getIdSlot( ) );
-        }
-        return listSlot;
-    }
-
-    /**
-     * Set the new number of remaining places (and potential) when an appointment is moved This new value must take in account the capacity of the slot, in case
-     * of the slot was already over booked
-     * 
-     * @param nbPlaces
-     *            the nb places taken of the appointment that we want to move
-     * @param slot
-     *            the related slot
-     * @return the slot updated
-     */
-    private static Slot updateRemaningPlacesWithAppointmentMoved( int nbPlaces, Slot slot )
-    {
-        // The capacity of the slot (that can be less than the number of places
-        // taken on the slot --> overbook)
-        int nMaxCapacity = slot.getMaxCapacity( );
-        // The old remaining places of the slot before we move the appointment
-        int nOldRemainingPlaces = slot.getNbRemainingPlaces( );
-        int nOldPotentialRemaningPlaces = slot.getNbPotentialRemainingPlaces( );
-        int nOldPlacesTaken = slot.getNbPlacesTaken( );
-        int nNewPlacesTaken = nOldPlacesTaken - nbPlaces;
-        // The new value of the remaining places of the slot is the minimal
-        // value between :
-        // - the minimal value between the potentially new max capacity and the old remaining places plus the number of places released by the appointment
-        // - and the capacity of the slot minus the new places taken on the slot
-        int nNewRemainingPlaces = Math.min( Math.min( nMaxCapacity, nOldRemainingPlaces + nbPlaces ), ( nMaxCapacity - nNewPlacesTaken ) );
-        int nNewPotentialRemainingPlaces = Math.min( Math.min( nNewRemainingPlaces, nOldPotentialRemaningPlaces + nbPlaces ),
-                ( nMaxCapacity - nNewPlacesTaken ) );
-        slot.setNbRemainingPlaces( nNewRemainingPlaces );
-        slot.setNbPotentialRemainingPlaces( nNewPotentialRemainingPlaces );
-        slot.setNbPlacestaken( nNewPlacesTaken );
-        return slot;
-    }
-
-    /**
-     * update remaning places and appointmentDTO
-     * 
-     * @param effectiveBookedSeats
-     *            the effective booked seats
-     * @param slt
-     *            the slot
-     * @param appointmentDTO
-     *            the appointment
-     */
-    private static void updateRemaningPlacesAndappointmentDTO( int effectiveBookedSeats, Slot slt, AppointmentDTO appointmentDTO )
-    {
-
-        // Update of the remaining places of the slot
-        int newNbRemainingPlaces = slt.getNbRemainingPlaces( ) - effectiveBookedSeats;
-        int newPotentialRemaningPlaces = slt.getNbPotentialRemainingPlaces( ) + appointmentDTO.getNbMaxPotentialBookedSeats( ) - effectiveBookedSeats;
-        int newNbPlacesTaken = slt.getNbPlacesTaken( ) + effectiveBookedSeats;
-        slt.setNbRemainingPlaces( newNbRemainingPlaces );
-        slt.setNbPlacestaken( newNbPlacesTaken );
-        slt.setNbPotentialRemainingPlaces( Math.min( newPotentialRemaningPlaces, newNbRemainingPlaces ) );
-
-        if ( slt.getNbPlacesTaken( ) > slt.getMaxCapacity( ) )
-        {
-            if ( appointmentDTO.getOverbookingAllowed( ) )
+            if ( SlotHome.bookPlaces( appSlot.getIdSlot( ), appSlot.getNbPlaces( ), bOverbooking ) == 0 )
             {
-
-                appointmentDTO.setIsSurbooked( true );
+                AppLogService.error( "ERROR SLOT FULL, ID SLOT: {}", appSlot.getIdSlot( ) );
+                throw new SlotFullException( "ERROR SLOT FULL " );
             }
-            else
+            SlotHome.recomputePotentialRemainingPlaces( appSlot.getIdSlot( ) );
+            if ( bOverbooking )
             {
-                throw new SlotFullException( "case of overbooking" );
+                Slot slotBooked = SlotService.findSlotById( appSlot.getIdSlot( ) );
+                if ( slotBooked.getNbPlacesTaken( ) > slotBooked.getMaxCapacity( ) )
+                {
+                    appointmentDTO.setIsSurbooked( true );
+                }
             }
+            listSlotUpdated.add( appSlot.getIdSlot( ) );
         }
+        return listSlotUpdated;
     }
 }

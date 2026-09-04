@@ -42,7 +42,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.locks.Lock;
 import java.util.stream.Collectors;
 
 import jakarta.servlet.http.HttpServletRequest;
@@ -320,14 +319,10 @@ public class SpecificWeekJspBean extends AbstractAppointmentFormAndSlotJspBean
             throw new AccessDeniedException( AppointmentResourceIdService.PERMISSION_MODIFY_ADVANCED_SETTING_FORM );
         }
         int nIdSlot = Integer.parseInt( strIdSlot );
-        Lock lock = SlotSafeService.getLockOnSlot( nIdSlot );
-        lock.lock( );
-        try
+        if ( nIdSlot != 0 )
         {
-            if ( nIdSlot != 0 )
-            {
-                _slot = SlotService.findSlotById( nIdSlot );
-            }
+            _slot = SlotService.findSlotById( nIdSlot );
+        }
 
             if ( bIsOpen != _slot.getIsOpen( ) )
             {
@@ -368,14 +363,8 @@ public class SpecificWeekJspBean extends AbstractAppointmentFormAndSlotJspBean
             {
                 return redirect( request, VIEW_MODIFY_SLOT, PARAMETER_ID_FORM, _slot.getIdForm( ) );
             }
-            SlotSafeService.updateSlot( _slot, bEndingTimeHasChanged, previousEndingTime, bShiftSlot );
+        SlotSafeService.updateSlot( _slot, bEndingTimeHasChanged, previousEndingTime, bShiftSlot );
 
-        }
-        finally
-        {
-
-            lock.unlock( );
-        }
         AppLogService.info( LogUtilities.buildLog( ACTION_DO_MODIFY_SLOT, strIdSlot, getUser( ) ) );
         addInfo( MESSAGE_INFO_SLOT_UPDATED, getLocale( ) );
         boolean appointmentsImpacted = !AppointmentUtilities.checkNoValidatedAppointmentsOnThisSlot( _slot );
@@ -626,10 +615,6 @@ public class SpecificWeekJspBean extends AbstractAppointmentFormAndSlotJspBean
 
         for ( Slot slot : listSlot )
         {
-            Lock lock = SlotSafeService.getLockOnSlot( slot.getIdSlot( ) );
-            lock.lock( );
-            try
-            {
                 if ( bStateHasChanged && bIsOpen != slot.getIsOpen( ) )
                 {
                     slot.setIsOpen( bIsOpen );
@@ -690,11 +675,6 @@ public class SpecificWeekJspBean extends AbstractAppointmentFormAndSlotJspBean
                         sbAlert.append( ", " );
                     }
                 }
-            }
-            finally
-            {
-                lock.unlock( );
-            }
         }
 
         if ( appointmentsImpacted && bOpeningHasChanged )
