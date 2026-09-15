@@ -201,7 +201,7 @@
 							$('#geoloc_address').clone().attr('type','hidden').insertAfter('#geoloc_address').prev().remove();
 							$('#geoloc_longitude').clone().attr('type','hidden').insertAfter('#geoloc_longitude').prev().remove();
 							$('#geoloc_latitude').clone().attr('type','hidden').insertAfter('#geoloc_latitude').prev().remove();
-							$('<div class="input-group"><input type="text" id="address_address" name="address_address" class="form-control"><span class="input-group-btn"><button class="btn btn-danger btn-flat" type="button" title="#i18n{appointment.label.clearAddress}" id="button_delete_address"><i class="fa fa-times"></i></button> </span>').insertAfter('#geoloc_address');
+							$('<div class="input-group"><input type="text" id="address_address" name="address_address" class="form-control"><span class="input-group-btn"><button class="btn btn-danger btn-flat" type="button" title="#i18n{appointment.label.clearAddress}" id="button_delete_address"><i class="ti ti-x"></i></button> </span>').insertAfter('#geoloc_address');
 							$('<div id=map_address style="height: 300px; width: 100%"></div>').insertBefore('#hidden_address');
 							if (typeof(lutece_map_resources_loaded) == 'undefined') {
 								lutece_map_resources_loaded = true

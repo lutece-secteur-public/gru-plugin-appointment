@@ -324,10 +324,7 @@ $(function(){
 <#macro btnComment >
 <#if permission_add_comment?boolean>
 	<@button id='toggle-add-comment' style='none' color='info mt-2 me-1' title='#i18n{appointment.create_comment.pageTitle}' hideTitle=[''] params='data-bs-toggle="modal" data-bs-target="#commentModal"' >
-		<@iconStack class='fa-xs'>
-			<@icon prefix='' style='far fa-comment fa-stack-2x' />
-			<@icon prefix='' style='fas fa-plus fa-stack-1x' />
-		</@iconStack> 
+		<@icon style='message-plus' /> 
 	</@button>
 </#if>
 </#macro>
