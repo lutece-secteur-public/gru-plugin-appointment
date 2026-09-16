@@ -237,29 +237,56 @@ public final class SlotHome
     }
 
     /**
-     * Update Potential Remaining Places
-     * 
-     * @param nbPotentialRemainingPlaces
+     * Book places on a slot. When overbooking is not allowed, the booking is rejected once the slot is full.
+     *
      * @param nIdSlot
+     *            the slot id
+     * @param nbPlaces
+     *            the number of places to book
+     * @param bOverbookingAllowed
+     *            true to allow booking beyond the capacity
+     * @return the number of rows updated : 1 if the booking succeeded, 0 if the slot was full
      */
-    public static void updatePotentialRemainingPlaces( int nbPotentialRemainingPlaces, int nIdSlot )
+    public static int bookPlaces( int nIdSlot, int nbPlaces, boolean bOverbookingAllowed )
     {
-
-        _dao.updatePotentialRemainingPlaces( nbPotentialRemainingPlaces, nIdSlot, _plugin );
-
+        return _dao.bookPlaces( nIdSlot, nbPlaces, bOverbookingAllowed, _plugin );
     }
 
     /**
-     * Reset Potential Remaining Places
-     * 
-     * @param nbPotentialRemainingPlaces
+     * Release places on a slot (cancel, move out, delete).
+     *
      * @param nIdSlot
+     *            the slot id
+     * @param nbPlaces
+     *            the number of places to release
      */
-    public static void resetPotentialRemainingPlaces( )
+    public static void releasePlaces( int nIdSlot, int nbPlaces )
     {
+        _dao.releasePlaces( nIdSlot, nbPlaces, _plugin );
+    }
 
-        _dao.resetPotentialRemainingPlaces( _plugin );
+    /**
+     * Adjust the max capacity of a slot by a delta.
+     *
+     * @param nIdSlot
+     *            the slot id
+     * @param nDelta
+     *            the capacity delta (positive to open, negative to close)
+     */
+    public static void adjustMaxCapacity( int nIdSlot, int nDelta )
+    {
+        _dao.adjustMaxCapacity( nIdSlot, nDelta, _plugin );
+    }
 
+    /**
+     * Recompute nb_potential_remaining_places from the still-active holds on the slot.
+     *
+     * @param nIdSlot
+     *            the slot id
+     */
+    public static void recomputePotentialRemainingPlaces( int nIdSlot )
+    {
+        _dao.recomputePotentialRemainingPlaces( nIdSlot, _plugin );
     }
 
     /**

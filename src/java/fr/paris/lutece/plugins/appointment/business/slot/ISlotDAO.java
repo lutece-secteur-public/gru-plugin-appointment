@@ -199,21 +199,54 @@ public interface ISlotDAO
     List<Slot> findByIdAppointment( int nIdAppointment, Plugin plugin );
 
     /**
-     * update Potential Remaining Places
-     * 
-     * @param nbPotentialRemainingPlaces
+     * Book places on a slot. When overbooking is not allowed, the booking is rejected once the slot is full.
+     *
      * @param nIdSlot
+     *            the slot id
+     * @param nbPlaces
+     *            the number of places to book
+     * @param bOverbookingAllowed
+     *            true to allow booking beyond the capacity
      * @param plugin
+     *            the plugin
+     * @return the number of rows updated : 1 if the booking succeeded, 0 if the slot was full
      */
-    void updatePotentialRemainingPlaces( int nbPotentialRemainingPlaces, int nIdSlot, Plugin plugin );
+    int bookPlaces( int nIdSlot, int nbPlaces, boolean bOverbookingAllowed, Plugin plugin );
 
     /**
-     * update the availabilities metrics
-     * 
+     * Release places on a slot (cancel, move out, delete).
+     *
+     * @param nIdSlot
+     *            the slot id
+     * @param nbPlaces
+     *            the number of places to release
      * @param plugin
      *            the plugin
      */
-    void resetPotentialRemainingPlaces( Plugin plugin );
+    void releasePlaces( int nIdSlot, int nbPlaces, Plugin plugin );
+
+    /**
+     * Adjust the max capacity of a slot by a delta.
+     *
+     * @param nIdSlot
+     *            the slot id
+     * @param nDelta
+     *            the capacity delta (positive to open places, negative to close)
+     * @param plugin
+     *            the plugin
+     */
+    void adjustMaxCapacity( int nIdSlot, int nDelta, Plugin plugin );
+
+    /**
+     * Recompute nb_potential_remaining_places of a slot as nb_remaining_places minus the sum of the still-active holds
+     * on that slot.
+     *
+     * @param nIdSlot
+     *            the slot id
+     * @param plugin
+     *            the plugin
+     */
+    void recomputePotentialRemainingPlaces( int nIdSlot, Plugin plugin );
 
     /**
      * Return the specific slot dates from the form

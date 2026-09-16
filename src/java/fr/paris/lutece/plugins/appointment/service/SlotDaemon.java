@@ -35,15 +35,20 @@ package fr.paris.lutece.plugins.appointment.service;
 
 import fr.paris.lutece.portal.service.daemon.Daemon;
 
+/**
+ * Daemon releasing the expired soft-holds of slots.
+ */
 public class SlotDaemon extends Daemon
 {
 
+    /**
+     * Release the expired soft-holds and recompute the potential places of the impacted slots.
+     */
     @Override
     public void run( )
     {
-
-        SlotSafeService.cleanSlotlist( );
-
+        int nbReleased = SlotSafeService.releaseExpiredHolds( );
+        setLastRunLogs( "Appointment slot daemon : " + nbReleased + " expired hold(s) released" );
     }
 
 }
