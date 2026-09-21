@@ -49,11 +49,7 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
-import java.util.concurrent.Executors;
-import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.ScheduledFuture;
-import java.util.concurrent.TimeUnit;
-import java.util.concurrent.locks.Lock;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 import jakarta.servlet.http.HttpServletRequest;
@@ -70,8 +66,10 @@ import fr.paris.lutece.plugins.appointment.business.planning.WeekDefinition;
 import fr.paris.lutece.plugins.appointment.business.planning.WorkingDay;
 import fr.paris.lutece.plugins.appointment.business.rule.ReservationRule;
 import fr.paris.lutece.plugins.appointment.business.slot.Slot;
+import fr.paris.lutece.plugins.appointment.business.slot.SlotHold;
+import fr.paris.lutece.plugins.appointment.business.slot.SlotHoldHome;
+import fr.paris.lutece.plugins.appointment.business.slot.SlotHome;
 import fr.paris.lutece.plugins.appointment.business.user.User;
-import fr.paris.lutece.plugins.appointment.service.lock.SlotEditTask;
 import fr.paris.lutece.plugins.appointment.web.dto.AppointmentDTO;
 import fr.paris.lutece.plugins.appointment.web.dto.AppointmentFilterDTO;
 import fr.paris.lutece.plugins.appointment.web.dto.AppointmentFormDTO;
@@ -113,15 +111,12 @@ public final class AppointmentUtilities
     public static final String MARK_PERMISSION_MODERATE_COMMENT = "permission_moderate_comment";
     public static final String MARK_PERMISSION_ACCESS_CODE = "permission_access_code";
     public static final String OLD_APPOINTMENT_DTO = "oldAppointment";
-    public static final String SESSION_TASK_TIMER_SLOT = "appointment.session.task.timer.slot";
+    public static final String SESSION_HOLD_TOKEN = "appointment.session.hold.token";
 
     public static final String PROPERTY_DEFAULT_EXPIRED_TIME_EDIT_APPOINTMENT = "appointment.edit.expired.time";
+    private static final int DEFAULT_EXPIRED_TIME_EDIT_APPOINTMENT = AppPropertiesService.getPropertyInt( PROPERTY_DEFAULT_EXPIRED_TIME_EDIT_APPOINTMENT, 1 );
 
     public static final int THIRTY_MINUTES = 30;
-    // We don't need to instantiate an ScheduledExecutorService with the removeOnCancel=true because we are using non-periodic and short time tasks.
-    // The getTask call removes the task from the queue.
-    private static final ScheduledExecutorService _secheduledExecutor = Executors
-            .newSingleThreadScheduledExecutor( r -> new Thread( r, "Lutece-AppointmentSecheduledExecutor-thread" ) );
 
     // CONSTANTS
     // Name of the phone number's generic attribute bean
@@ -642,74 +637,103 @@ public final class AppointmentUtilities
     }
 
     /**
-     * Attempts to cancel execution of the task.
+     * Release the soft-hold placed on a slot for the booking in progress: delete the hold row and recompute the potential places.
      *
      * @param request
      *            the request
      * @param idSlot
      *            the id Slot
      */
-
     public static void cancelTaskTimer( HttpServletRequest request, int idSlot )
     {
-        ScheduledFuture<Slot> task = (ScheduledFuture) request.getSession( ).getAttribute( SESSION_TASK_TIMER_SLOT + idSlot );
-        if ( task != null )
+        String strToken = getHoldToken( request );
+        if ( strToken != null )
         {
-            if ( !task.isDone( ) )
-                task.cancel( false );
-            request.getSession( ).removeAttribute( SESSION_TASK_TIMER_SLOT + idSlot );
+            SlotHoldHome.delete( idSlot, strToken );
+            SlotHome.recomputePotentialRemainingPlaces( idSlot );
         }
-    }
-
-    public static boolean isEditSlotTaskExpiredTime( HttpServletRequest request, int idSlot )
-    {
-        ScheduledFuture<Slot> task = (ScheduledFuture) request.getSession( ).getAttribute( SESSION_TASK_TIMER_SLOT + idSlot );
-        return ( task != null && task.isDone( ) );
     }
 
     /**
-     * Create a timer on a slot
+     * Tell whether the soft-hold placed on a slot for the booking in progress has expired.
      *
-     * @param slot
-     *            the slot
+     * @param request
+     *            the request
+     * @param idSlot
+     *            the id Slot
+     * @return true if a hold token exists for this session but no active (non-expired) hold remains for the slot
+     */
+    public static boolean isEditSlotTaskExpiredTime( HttpServletRequest request, int idSlot )
+    {
+        String strToken = getHoldToken( request );
+        return strToken != null && !SlotHoldHome.hasActiveHold( idSlot, strToken );
+    }
+
+    /**
+     * Place a soft-hold of places on a slot while the user fills the booking form. Inserts (or refreshes) a hold row
+     * in the database under the session hold token, then recomputes the potential places (= remaining minus the active
+     * holds).
+     *
+     * @param request
+     *            the request
+     * @param nIdSlot
+     *            the slot id
      * @param appointmentDTO
-     *            the appointment
+     *            the appointment being filled
      * @param maxPeoplePerAppointment
      *            the max people per appointment
-     * @return the ScheduledFuture
      */
-    public static ScheduledFuture<Slot> putTimerInSession( HttpServletRequest request, int nIdSlot, AppointmentDTO appointmentDTO, int maxPeoplePerAppointment )
+    public static void putTimerInSession( HttpServletRequest request, int nIdSlot, AppointmentDTO appointmentDTO, int maxPeoplePerAppointment )
     {
-        Lock lock = SlotSafeService.getLockOnSlot( nIdSlot );
-        lock.lock( );
-        try
+        Slot slot = SlotService.findSlotById( nIdSlot );
+        int nbPotentialPlacesTaken = Math.min( slot.getNbPotentialRemainingPlaces( ), maxPeoplePerAppointment );
+        int nNewNbMaxPotentialBookedSeats = Math.min( nbPotentialPlacesTaken + appointmentDTO.getNbMaxPotentialBookedSeats( ), maxPeoplePerAppointment );
+        if ( slot.getNbPotentialRemainingPlaces( ) > 0 )
         {
-            Slot slot = SlotService.findSlotById( nIdSlot );
-
-            int nbPotentialRemainingPlaces = slot.getNbPotentialRemainingPlaces( );
-            int nbPotentialPlacesTaken = Math.min( nbPotentialRemainingPlaces, maxPeoplePerAppointment );
-            int nNewNbMaxPotentialBookedSeats = Math.min( nbPotentialPlacesTaken + appointmentDTO.getNbMaxPotentialBookedSeats( ), maxPeoplePerAppointment );
-
-            if ( slot.getNbPotentialRemainingPlaces( ) > 0 )
-            {
-
-                ScheduledFuture<Slot> scheduledFuture = _secheduledExecutor.schedule( new SlotEditTask( slot.getIdSlot( ), nbPotentialPlacesTaken ),
-                        AppPropertiesService.getPropertyInt( PROPERTY_DEFAULT_EXPIRED_TIME_EDIT_APPOINTMENT, 1 ), TimeUnit.MINUTES );
-                appointmentDTO.setNbMaxPotentialBookedSeats( nNewNbMaxPotentialBookedSeats );
-                SlotSafeService.decrementPotentialRemainingPlaces( nbPotentialPlacesTaken, slot.getIdSlot( ) );
-
-                request.getSession( ).setAttribute( SESSION_TASK_TIMER_SLOT + slot.getIdSlot( ), scheduledFuture );
-                return scheduledFuture;
-            }
-            appointmentDTO.setNbMaxPotentialBookedSeats( 0 );
+            String strToken = getOrCreateHoldToken( request );
+            SlotHoldHome.delete( nIdSlot, strToken );
+            SlotHold slotHold = new SlotHold( );
+            slotHold.setIdSlot( nIdSlot );
+            slotHold.setHoldToken( strToken );
+            slotHold.setNbPlaces( nbPotentialPlacesTaken );
+            slotHold.setExpiredDateTime( LocalDateTime.now( ).plusMinutes( DEFAULT_EXPIRED_TIME_EDIT_APPOINTMENT ) );
+            SlotHoldHome.create( slotHold );
+            SlotHome.recomputePotentialRemainingPlaces( nIdSlot );
+            appointmentDTO.setNbMaxPotentialBookedSeats( nNewNbMaxPotentialBookedSeats );
+            return;
         }
+        appointmentDTO.setNbMaxPotentialBookedSeats( 0 );
+    }
 
-        finally
+    /**
+     * Get the hold token of the current booking session, or null if none was created yet.
+     *
+     * @param request
+     *            the request
+     * @return the hold token or null
+     */
+    private static String getHoldToken( HttpServletRequest request )
+    {
+        Object token = request.getSession( ).getAttribute( SESSION_HOLD_TOKEN );
+        return ( token != null ) ? token.toString( ) : null;
+    }
+
+    /**
+     * Get the hold token of the current booking session, creating and storing a new one if needed.
+     *
+     * @param request
+     *            the request
+     * @return the hold token
+     */
+    private static String getOrCreateHoldToken( HttpServletRequest request )
+    {
+        String strToken = getHoldToken( request );
+        if ( strToken == null )
         {
-
-            lock.unlock( );
+            strToken = UUID.randomUUID( ).toString( );
+            request.getSession( ).setAttribute( SESSION_HOLD_TOKEN, strToken );
         }
-        return null;
+        return strToken;
     }
 
     /**
@@ -1220,29 +1244,6 @@ public final class AppointmentUtilities
         return true;
     }
 
-    /**
-     * The following method shuts down the _executorService in two phases, first by calling shutdown to reject incoming tasks, and then calling shutdownNow, if
-     * necessary, to cancel any lingering tasks:
-     */
-    public static void shutdownSecheduledExecutor( )
-    {
-        _secheduledExecutor.shutdown( );
-        try
-        {
-            if ( !_secheduledExecutor.awaitTermination( 60, TimeUnit.SECONDS ) )
-            {
-                _secheduledExecutor.shutdownNow( );
-            }
-        }
-        catch( InterruptedException e )
-        {
-            // (Re-)Cancel if current thread also interrupted
-            AppLogService.error( e.getMessage( ), e );
-            _secheduledExecutor.shutdownNow( );
-            Thread.currentThread().interrupt();
-        }
-
-    }
     /**
      * Format the date of the appointment taken
      */

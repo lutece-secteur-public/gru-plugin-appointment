@@ -39,7 +39,6 @@ import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.locks.Lock;
 import java.util.stream.Collectors;
 
 import jakarta.servlet.http.HttpServletRequest;
@@ -403,58 +402,30 @@ public class AppointmentAnnualCalendarJspBean extends AbstractAppointmentFormAnd
                     slotImpacted.getStartingDateTime( ).getDayOfWeek( ) );
             timeSlot = TimeSlotService.getTimeSlotInListOfTimeSlotWithStartingTime( workingDay.getListTimeSlot( ), slotImpacted.getStartingTime( ) );
             nMaxCapacity = timeSlot.getMaxCapacity( );
-            Lock lock = SlotSafeService.getLockOnSlot( slotImpacted.getIdSlot( ) );
-            lock.lock( );
-            try
+            slotImpacted = SlotHome.findByPrimaryKey( slotImpacted.getIdSlot( ) );
+            int nDelta = nMaxCapacity - slotImpacted.getMaxCapacity( );
+            if ( nDelta != 0 )
             {
-
+                SlotHome.adjustMaxCapacity( slotImpacted.getIdSlot( ), nDelta );
+                SlotHome.recomputePotentialRemainingPlaces( slotImpacted.getIdSlot( ) );
                 slotImpacted = SlotHome.findByPrimaryKey( slotImpacted.getIdSlot( ) );
-                int nOldBnMaxCapacity = slotImpacted.getMaxCapacity( );
-                // If the max capacity has been modified
-                if ( nMaxCapacity != nOldBnMaxCapacity )
-                {
-                    // Need to update the remaining places
-                    // Need to add the diff between the old value and the new value
-                    // to the remaining places (if the new is higher)
-                    if ( nMaxCapacity > nOldBnMaxCapacity )
-                    {
-                        int nValueToAdd = nMaxCapacity - nOldBnMaxCapacity;
-                        slotImpacted.setNbPotentialRemainingPlaces( slotImpacted.getNbPotentialRemainingPlaces( ) + nValueToAdd );
-                        slotImpacted.setNbRemainingPlaces( slotImpacted.getNbRemainingPlaces( ) + nValueToAdd );
-                    }
-                    else
-                    {
-                        // the new value is lower than the previous capacity
-                        // !!!! If there are appointments on this slot and if the
-                        // slot is already full, the slot will be surbooked !!!!
-                        int nValueToSubstract = nOldBnMaxCapacity - nMaxCapacity;
-                        slotImpacted.setNbPotentialRemainingPlaces( slotImpacted.getNbPotentialRemainingPlaces( ) - nValueToSubstract );
-                        slotImpacted.setNbRemainingPlaces( slotImpacted.getNbRemainingPlaces( ) - nValueToSubstract );
-                    }
-                }
-                if ( slotImpacted.getIsOpen( ) && !timeSlot.getIsOpen( ) )
-                {
-
-                    bOpeningHasChanged = true;
-                }
-                slotImpacted.setIsOpen( timeSlot.getIsOpen( ) );
-                slotImpacted.setIsSpecific( false );
-                slotImpacted.setMaxCapacity( nMaxCapacity );
-
-                if ( slotImpacted.getMaxCapacity( ) < slotImpacted.getNbPlacesTaken( ) )
-                {
-                    sbAlert.append( slotImpacted.getStartingDateTime( ) );
-                    sbAlert.append( "-" );
-                    sbAlert.append( slotImpacted.getEndingDateTime( ) );
-                    sbAlert.append( ", " );
-                }
-
-                SlotSafeService.updateSlot( slotImpacted );
             }
-            finally
+            if ( slotImpacted.getIsOpen( ) && !timeSlot.getIsOpen( ) )
             {
-                lock.unlock( );
+                bOpeningHasChanged = true;
             }
+            slotImpacted.setIsOpen( timeSlot.getIsOpen( ) );
+            slotImpacted.setIsSpecific( false );
+
+            if ( slotImpacted.getMaxCapacity( ) < slotImpacted.getNbPlacesTaken( ) )
+            {
+                sbAlert.append( slotImpacted.getStartingDateTime( ) );
+                sbAlert.append( "-" );
+                sbAlert.append( slotImpacted.getEndingDateTime( ) );
+                sbAlert.append( ", " );
+            }
+
+            SlotSafeService.updateSlot( slotImpacted );
         }
         if ( bOpeningHasChanged )
         {
