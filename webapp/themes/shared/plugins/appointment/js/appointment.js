@@ -51,7 +51,7 @@ function hide(id){
 function doCheckboxEffect(isChecked,id) {
 	if (isChecked){
 		doDisplay( id );
-	} else {	{
+	} else {
 		hide( id );
 	}
 }
