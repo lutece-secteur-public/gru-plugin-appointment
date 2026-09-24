@@ -131,4 +131,16 @@ public final class DisplayHome
         return _dao.findByIdForm( nIdForm, _plugin );
     }
 
+
+    /**
+     * Count the forms displayed with a calendar template
+     *
+     * @param nIdCalendarTemplate
+     *            the calendar template id
+     * @return the number of displays using the template
+     */
+    public static int countByIdCalendarTemplate( int nIdCalendarTemplate )
+    {
+        return _dao.countByIdCalendarTemplate( nIdCalendarTemplate, _plugin );
+    }
 }

@@ -104,4 +104,15 @@ public interface IDisplayDAO
      * @return the form display
      */
     Display findByIdForm( int nIdForm, Plugin plugin );
+
+    /**
+     * Count the forms displayed with a calendar template
+     *
+     * @param nIdCalendarTemplate
+     *            the calendar template id
+     * @param plugin
+     *            the plugin
+     * @return the number of displays using the template
+     */
+    int countByIdCalendarTemplate( int nIdCalendarTemplate, Plugin plugin );
 }
