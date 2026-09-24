@@ -1,7 +1,7 @@
 <@pageContainer>
 	<@pageColumn>
 		<@pageHeader title='#i18n{appointment.adminFeature.manageCalendarTemplates.name}'>
-			<@offcanvas id='offcanvasCreate' targetUrl='jsp/admin/plugins/appointment/ManageCalendarTemplates.jsp?view=getCreateModifyTemplate' targetElement='#form-create-modify-calendar-template' title='#i18n{appointment.labelAddTemplate}' btnTitle='#i18n{appointment.labelAddTemplate}' btnIcon='plus' btnColor='primary' position='end' size='half' />
+			<@aButton href='jsp/admin/plugins/appointment/ManageCalendarTemplates.jsp?view=getCreateModifyTemplate' title='#i18n{appointment.labelAddTemplate}' buttonIcon='plus' color='primary' />
 		</@pageHeader>
 		<@messages infos=infos errors=errors /> 
 		<#if 0 < dataTableManager.items?size>
@@ -66,6 +66,6 @@
 	</@pageColumn>
 </@pageContainer>
 <#macro actionColumnCalendarTemplate item>
-<@offcanvas id='offcanvasModify-${item.idCalendarTemplate}' targetUrl='jsp/admin/plugins/appointment/ManageCalendarTemplates.jsp?view=getCreateModifyTemplate&idTemplate=${item.idCalendarTemplate}' targetElement='#form-create-modify-calendar-template' title='#i18n{portal.util.labelModify}' btnTitle='#i18n{portal.util.labelModify}' btnIcon='edit' btnClass='me-1' hideTitle=['xs','sm','md'] position='end' size='half' />
-<@aButton href='jsp/admin/plugins/appointment/ManageCalendarTemplates.jsp?view=getConfirmRemoveTemplate&idTemplate=${item.idCalendarTemplate}' buttonIcon='trash' color='danger' hideTitle=['all'] title='#i18n{portal.util.labelDelete}' hideTitle=['xs','sm','md'] />
+<@aButton href='jsp/admin/plugins/appointment/ManageCalendarTemplates.jsp?view=getCreateModifyTemplate&idTemplate=${item.idCalendarTemplate}' title='#i18n{portal.util.labelModify}' buttonIcon='edit' class='me-1' hideTitle=['xs','sm','md'] />
+<@aButton href='jsp/admin/plugins/appointment/ManageCalendarTemplates.jsp?view=getConfirmRemoveTemplate&idTemplate=${item.idCalendarTemplate}' buttonIcon='trash' color='danger' title='#i18n{portal.util.labelDelete}' hideTitle=['xs','sm','md'] />
 </#macro>

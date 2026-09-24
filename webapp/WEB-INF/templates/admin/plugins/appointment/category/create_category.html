@@ -2,7 +2,7 @@
 	<@pageColumn>
 		<@pageHeader title='#i18n{appointment.create.category.title}' />
 		<@messages errors=errors />
-		<@tform action='jsp/admin/plugins/appointment/ManageAppointmentCategory.jsp' >
+		<@tform action='jsp/admin/plugins/appointment/ManageAppointmentCategory.jsp' boxed=true>
 		<@formGroup labelFor='label' labelKey='#i18n{appointment.createCategory.label}' mandatory=true>
 			<@input type='text' name='label' id='label' value='${category.label!}' maxlength=255 />
 		</@formGroup>
@@ -10,8 +10,8 @@
 			<@input type='number' name='nb_max_appointments_per_user' id='nb_max_appointments_per_user' value='${category.nbMaxAppointmentsPerUser!}' maxlength=3 />
 		</@formGroup>
 		<@formGroup>
-			<@button type='submit' name='action_createCategory' buttonIcon='check' title='#i18n{portal.util.labelCreate}' class='form-validation' />
-			<@button type='submit' name='view_manageCategory' buttonIcon='arrow-left' title='#i18n{portal.util.labelCancel}' color='secondary' cancel=true class='form-validation' />
+			<@button type='submit' name='action_createCategory' buttonIcon='check' title='#i18n{portal.util.labelCreate}' />
+			<@button type='submit' name='view_manageCategory' buttonIcon='arrow-left' title='#i18n{portal.util.labelCancel}' color='light' cancel=true />
 		</@formGroup>
 		</@tform>
 	</@pageColumn>

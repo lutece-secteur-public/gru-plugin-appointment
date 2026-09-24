@@ -10,10 +10,10 @@
 						<#list list_config as config>
 						<@manageFeatureItem>
 							<@manageFeatureItemColumn auto=true flex=false>
-								<strong>${config.type}</strong>
+								<strong>#i18n{appointment.notificationType.${config.type}}</strong>
 							</@manageFeatureItemColumn>
 							<@manageFeatureItemColumn align='end'>
-								<@offcanvas targetUrl='jsp/admin/plugins/appointment/NotificationCommentConfig.jsp?view=modifyNotificationCommentConfig&type=${config.type}' useIframe=true id='edit-notif-${config.type}' btnIcon='edit' btnColor='primary' hideTitle=['xs','sm','md'] position='end' title='#i18n{portal.util.labelModify}' btnTitle='#i18n{portal.util.labelModify}' reloadOnClose=true size='half' />
+								<@aButton href='jsp/admin/plugins/appointment/NotificationCommentConfig.jsp?view=modifyNotificationCommentConfig&type=${config.type}' title='#i18n{portal.util.labelModify}' buttonIcon='edit' color='primary' hideTitle=['xs','sm','md'] />
 							</@manageFeatureItemColumn>
 						</@manageFeatureItem>
 						</#list>
