@@ -1,6 +1,6 @@
 <#assign headerBreadcrumbs>
 <@breadcrumbs class='mt-2'>
-	<@breadcrumbItem><@link href='jsp/admin/plugins/appointment/ManageAppointmentFormEntries.jsp?view=modifyAppointmentFormEntries&id_form=${form.idForm}' label='#i18n{appointment.manageAppointments.pageTitle}' /></@breadcrumbItem>
+	<@breadcrumbItem><@link href='jsp/admin/plugins/appointment/ManageAppointmentFormEntries.jsp?view=modifyAppointmentFormEntries&id_form=${form.idForm}' label='#i18n{appointment.modifyAppointmentFormEntries.pageTitle}' /></@breadcrumbItem>
 	<@breadcrumbItem>#i18n{appointment.createEntry.titleComment} : ${form.title}</@breadcrumbItem>
 </@breadcrumbs>
 </#assign>
@@ -14,14 +14,14 @@
             <#if entry.fieldDepend?exists> <@input type='hidden' name='id_field' value='${entry.fieldDepend.idField}' /></#if>
             <@p>#i18n{appointment.createEntry.labelType} <@tag color='info'>${entry.entryType.title}</@tag></@p>
             <@formGroup labelFor='comment' labelKey='#i18n{appointment.comment.name}' mandatory=true>
-                <@input type='textarea' name='comment' id='comment' rows=5 />
+                <@input type='textarea' name='comment' id='comment' rows=5 richtext=true />
             </@formGroup>
             <@formGroup labelFor='css_class' labelKey='#i18n{appointment.createEntry.labelCSSClass}' helpKey='#i18n{appointment.createEntry.labelCSSClassComment}'>
                 <@input type='text' name='css_class' id='css_class' value='' maxlength=255 />
             </@formGroup>
             <@formGroup>
                 <@button type='submit' name='save' buttonIcon='check' title='#i18n{appointment.labelSave}' class='form-validation' />
-                <@button type='submit' name='cancel' buttonIcon='arrow-left' class='form-validation' color='secondary' title='#i18n{appointment.labelCancel}' cancel=true />
+                <@button type='submit' name='cancel' buttonIcon='arrow-left' class='form-validation' color='light' title='#i18n{appointment.labelCancel}' cancel=true />
             </@formGroup>
         </@tform>
     </@pageColumn>

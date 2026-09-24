@@ -1,13 +1,12 @@
-<#include "/admin/util/editor/editor.html" />
 <#assign headerBreadcrumbs>
 <@breadcrumbs class='mt-2'>
-	<@breadcrumbItem><@link href='jsp/admin/plugins/appointment/ManageAppointmentFormEntries.jsp?view=modifyAppointmentFormEntries&id_form=${form.idForm}' label='#i18n{appointment.manageAppointments.pageTitle}' /></@breadcrumbItem>
+	<@breadcrumbItem><@link href='jsp/admin/plugins/appointment/ManageAppointmentFormEntries.jsp?view=modifyAppointmentFormEntries&id_form=${form.idForm}' label='#i18n{appointment.modifyAppointmentFormEntries.pageTitle}' /></@breadcrumbItem>
 	<@breadcrumbItem>#i18n{appointment.modifyEntry.titleQuestion} : ${form.title}</@breadcrumbItem>
 </@breadcrumbs>
 </#assign>
 <@pageContainer>
 	<@pageColumn>
-		<@pageHeader title='#i18n{appointment.modifyEntry.titleQuestion} : "${form.title}"' class='col-md-8' breadcrumb=headerBreadcrumbs />
+		<@pageHeader title='#i18n{appointment.modifyEntry.titleQuestion} : ${form.title}' class='col-md-8' breadcrumb=headerBreadcrumbs />
 		<@tform action='jsp/admin/plugins/appointment/ManageAppointmentFormEntries.jsp' boxed=true>
 		<@input type='hidden' name='action' value='doModifyEntry' />
 		<@input type='hidden' name='id_entry' value='${entry.idEntry}' />
@@ -33,7 +32,7 @@
 		<@formGroup rows=2>
 			<@button type='submit' name='save' id='save' buttonIcon='check' title='#i18n{appointment.labelSave}' hideTitle=['xs'] class='form-validation' />
 			<@button type='submit' name='apply' id='apply' buttonIcon='check' title='#i18n{appointment.modifyEntry.buttonApply}' hideTitle=['xs'] class='form-validation' />
-			<@button type='submit' name='cancel' id='cancel' value='cancel' buttonIcon='arrow-left' color='secondary' title='#i18n{appointment.labelCancel}' cancel=true hideTitle=['xs'] class='form-validation' />
+			<@button type='submit' name='cancel' id='cancel' value='cancel' buttonIcon='arrow-left' color='light' title='#i18n{appointment.labelCancel}' cancel=true hideTitle=['xs'] class='form-validation' />
 		</@formGroup>
 		</@tform>
 		<@box color='primary'>
@@ -80,4 +79,3 @@
 		</@box>
 	</@pageColumn>
 </@pageContainer>
-<@initEditor />

@@ -1,7 +1,7 @@
 <#include "/admin/util/editor/editor.html" />
 <#assign headerBreadcrumbs>
 <@breadcrumbs class='mt-2'>
-	<@breadcrumbItem><@link href='jsp/admin/plugins/appointment/ManageAppointmentFormEntries.jsp?view=modifyAppointmentFormEntries&id_form=${form.idForm}' label='#i18n{appointment.manageAppointments.pageTitle}' /></@breadcrumbItem>
+	<@breadcrumbItem><@link href='jsp/admin/plugins/appointment/ManageAppointmentFormEntries.jsp?view=modifyAppointmentFormEntries&id_form=${form.idForm}' label='#i18n{appointment.modifyAppointmentFormEntries.pageTitle}' /></@breadcrumbItem>
 	<@breadcrumbItem>#i18n{appointment.modifyEntry.titleComment} : ${form.title}</@breadcrumbItem>
 </@breadcrumbs>
 </#assign>
@@ -20,7 +20,7 @@
 		</@formGroup>
 		<@formGroup>
 			<@button type='submit' buttonIcon='check' title='#i18n{appointment.labelSave}' class='form-validation' />
-			<@aButton href='javascript:window.history.go(-1);' buttonIcon='arrow-left' title='#i18n{appointment.labelCancel}' class='form-validation' color='secondary' cancel=true />
+			<@aButton href='javascript:window.history.go(-1);' buttonIcon='arrow-left' title='#i18n{appointment.labelCancel}' color='light' />
 		</@formGroup>
 		</@tform>
     </@pageColumn>
