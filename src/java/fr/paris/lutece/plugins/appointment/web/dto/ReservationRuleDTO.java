@@ -63,7 +63,7 @@ public class ReservationRuleDTO implements Serializable
     private int _nIdReservationRule;
 
     @NotBlank( message = "#i18n{appointment.validation.week.name.notEmpty}" )
-    @Size( max = 255, message = "#i18n{appointment.validation.week.Title.size}" )
+    @Size( max = 255, message = "#i18n{appointment.validation.week.name.size}" )
     private String _strName;
 
     @NotBlank( message = "#i18n{appointment.validation.week.description.notEmpty}" )

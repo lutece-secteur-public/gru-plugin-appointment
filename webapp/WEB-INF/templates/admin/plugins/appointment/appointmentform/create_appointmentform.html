@@ -4,18 +4,19 @@
 <#assign hasSuggestPOI = true />
 <#recover>
 </#attempt>
+<#assign hasMap = hasSuggestPOI && (isLeafletInstalled!false) />
 <@commonsAppJS />
 <@pageContainer>
 	<@pageColumn>
 		<@tform id='formid' method='post' action='jsp/admin/plugins/appointment/ManageAppointmentForms.jsp' enctype='multipart/form-data'>
 		<@pageHeader title='#i18n{appointment.createAppointmentForm.title}' >
 			<@button type='submit' buttonIcon='check' title='#i18n{portal.util.labelCreate}' />
-			<@aButton href='jsp/admin/plugins/appointment/ManageAppointmentForms.jsp' buttonIcon='times' title='#i18n{portal.util.labelCancel}' color='default' />
+			<@aButton href='jsp/admin/plugins/appointment/ManageAppointmentForms.jsp' buttonIcon='times' title='#i18n{portal.util.labelCancel}' color='light' />
 		</@pageHeader>
 		<@input type='hidden' id='id_form' name='id_form' />
 		<@messages errors=errors />
 		<@row>
-			<@columns xs=12 md=4>
+			<@columns xs=12 md=6>
 				<@box>
 					<@boxHeader title='#i18n{appointment.manageAppointments.columnFormTitle}' />
 					<@boxBody>
@@ -46,10 +47,10 @@
 									<@input type='date' name='date_start_validity' id='date_start_validity' value='${appointmentform.dateStartValidity!\'\'}' />
 								</@formGroup>
 								<@formGroup labelFor='bo_overbooking' labelKey='#i18n{appointment.label.BoOverbooking}' helpKey='#i18n{appointment.label.BoOverbooking.help}' hideLabel=['all']>
-									<@checkBox orientation='switch' labelFor='bo_overbooking' labelKey='#i18n{appointment.label.BoOverbooking}' name='bo_overbooking' id='bo_overbooking' value='true' checked=appointmentform.boOverbooking!false />
+									<@checkBox orientation='switch' labelKey='#i18n{appointment.label.BoOverbooking}' name='bo_overbooking' id='bo_overbooking' value='true' checked=appointmentform.boOverbooking!false />
 								</@formGroup>
-								<@formGroup labelFor='nb_consecutive_slots' labelKey='#i18n{appointment.label.nbConsecutiveSlots}' helpKey='#i18n{appointment.label.nbConsecutiveSlots.help}' mandatory=true hideLabel=['all']	>
-									<@input type='number' name='nb_consecutive_slots' labelKey='#i18n{appointment.label.nbConsecutiveSlots}'  id='nb_consecutive_slots' value=appointmentform.nb_consecutive_slots!'1' params='onkeypress="return validateQty(event);"' maxlength=2 />
+								<@formGroup labelFor='nb_consecutive_slots' labelKey='#i18n{appointment.label.nbConsecutiveSlots}' helpKey='#i18n{appointment.label.nbConsecutiveSlots.help}' mandatory=true	>
+									<@input type='number' name='nb_consecutive_slots' id='nb_consecutive_slots' value=appointmentform.nb_consecutive_slots!'1' params='onkeypress="return validateQty(event);"' maxlength=2 />
 								</@formGroup>
 								<@formGroup labelFor='nb_weeks_to_display' labelKey='#i18n{appointment.label.nbWeeksToDisplay}' helpKey='#i18n{appointment.label.nbWeeksToDisplay.help}' mandatory=true>
 									<@input type='number' name='nb_weeks_to_display' id='nb_weeks_to_display' value=appointmentform.nbWeeksToDisplay!'' params='onkeypress="return validateQty(event);"' maxlength=2 />
@@ -85,7 +86,7 @@
 					</@boxBody>
 				</@box>
 			</@columns>
-			<@columns xs=12 md=4>
+			<@columns xs=12 md=6>
 				<@box>
 					<@boxHeader title='#i18n{appointment.createAppointmentForm.labelWeekType}' />
 					<@boxBody>
@@ -96,27 +97,27 @@
 							<@input type='textarea' name='description_rule' id='description_rule' maxlength=255 >${appointmentform.descriptionRule!}</@input>
 						</@formGroup>
 						<@row>
-							<@columns xs=12 md=4>
+							<@columns xs=12 md=6>
 								<@formGroup labelFor='color' labelKey='#i18n{appointment.createAppointmentForm.labelColor}'>
 									<@input type='color' name='color' class='p-2' id='color' value='${appointmentform.color!"#1AF355"}' params='style="width:50px; height:50px;	"' />
 								</@formGroup>
 							</@columns>
-							<@columns xs=12 md=4>
+							<@columns xs=12 md=6>
 								<@formGroup labelFor='max_people_per_appointment' labelKey='#i18n{appointment.createAppointmentForm.labelMaxPeoplePerAppointment}' helpKey='#i18n{appointment.createAppointmentForm.labelMaxPeoplePerAppointment.help}' mandatory=true>
 									<@input type='number' name='max_people_per_appointment' id='max_people_per_appointment' value=appointmentform.maxPeoplePerAppointment!'' params='onkeypress="return validateQty(event);"' maxlength=3 />
 								</@formGroup>
 							</@columns>
-							<@columns xs=12 md=4>
+							<@columns xs=12 md=6>
 								<@formGroup labelFor='duration_appointments' labelKey='#i18n{appointment.createAppointmentForm.labelDurationAppointments}' helpKey='#i18n{appointment.createAppointmentForm.labelDurationAppointments.help}' mandatory=true>
 									<@input type='number' name='duration_appointments' id='duration_appointments' value=appointmentform.durationAppointments!'' params='onkeypress="return validateQty(event);"' maxlength=3 min=0 max=60 step=5 />
 								</@formGroup>
 							</@columns>
-							<@columns xs=12 md=4>
+							<@columns xs=12 md=6>
 								<@formGroup labelFor='max_capacity_per_slot' labelKey='#i18n{appointment.createAppointmentForm.labelMaxCapacityPerSlot}' helpKey='#i18n{appointment.createAppointmentForm.labelMaxCapacityPerSlot.help}' mandatory=true>
 									<@input type='number' name='max_capacity_per_slot' id='max_capacity_per_slot' value=appointmentform.maxCapacityPerSlot!'' params='onkeypress="return validateQty(event);"' maxlength=3 />
 								</@formGroup>
 							</@columns>
-							<@columns xs=12 md=4>
+							<@columns xs=12 md=6>
 								<@formGroup labelFor='time_start' labelKey='#i18n{appointment.createAppointmentForm.labelTimeStart}' helpKey='#i18n{appointment.createAppointmentForm.labelTimeStart.help}' mandatory=true>
 									<@inputGroup>
 										<@input type='time' name='time_start' id='time_start' value=appointmentform.timeStart!'' />
@@ -124,7 +125,7 @@
 									</@inputGroup>
 								</@formGroup>
 							</@columns>
-							<@columns xs=12 md=4>
+							<@columns xs=12 md=6>
 								<@formGroup labelFor='time_end' labelKey='#i18n{appointment.createAppointmentForm.labelTimeEnd}' helpKey='#i18n{appointment.createAppointmentForm.labelTimeEnd.help}' mandatory=true>
 									<@inputGroup>
 										<@input type='time' name='time_end' id='time_end' value=appointmentform.timeEnd!'' />
@@ -135,8 +136,6 @@
 						</@row>
 					</@boxBody>
 				</@box>
-			</@columns>
-			<@columns xs=12 md=4>
 				<@box>
 					<@boxHeader title='#i18n{appointment.modifyAppointmentForm.titleAlterablesParameters}' />
 					<@boxBody>
@@ -191,11 +190,15 @@
 							<@checkBox orientation='switch' name='activeAuthentication' id='activeAuthentication' value='true' checked=appointmentform.activeAuthentication!false labelKey='#i18n{appointment.createAppointmentForm.labelActiveAuthentication}' />
 						</@formGroup>
 						<@formGroup>
-							<@checkBox orientation='switch' labelFor='anonymizable' labelKey='#i18n{appointment.createAppointmentForm.labelAnonymizable}' name='anonymizable' id='anonymizable' value='true' checked=appointmentform.anonymizable!false params='onchange="javascript:changeVisilityAnonymizePattern();"'/>
+							<@checkBox orientation='switch' labelKey='#i18n{appointment.createAppointmentForm.labelAnonymizable}' name='anonymizable' id='anonymizable' value='true' checked=appointmentform.anonymizable!false params='onchange="javascript:changeVisilityAnonymizePattern();"'/>
 						</@formGroup>
 						<@div id="anonymization_pattern_group">
 							<@formGroup labelFor='anonymization_pattern' labelKey='#i18n{appointment.createAppointmentForm.labelAnonymizePattern}' helpKey='#i18n{appointment.createAppointmentForm.labelAnonymizePattern.help}' >
-								<@input type='text' name='anonymization_pattern' id='anonymization_pattern' value=appointmentform.anonymizationPattern!'' maxlength=255 />
+								<#assign pattern = appointmentform.anonymizationPattern!'' />
+								<@select name='anonymization_pattern' id='anonymization_pattern'>
+									<#list [['%f','formId'],['%g','guid'],['%n','number']] as p><@option value=p[0] label='#i18n{appointment.createAppointmentForm.anonymizePattern.'+p[1]+'}' selected=(pattern == p[0]) /></#list>
+									<#if pattern?has_content && !['%f','%g','%n']?seq_contains(pattern)><@option value=pattern label=pattern selected=true /></#if>
+								</@select>
 							</@formGroup>
 						</@div>
 						<@formGroup labelFor='role' labelKey='#i18n{appointment.createAppointmentForm.labelRole}'>
@@ -204,21 +207,18 @@
 						<@formGroup labelFor='icon' labelKey='#i18n{appointment.createAppointmentForm.labelIconForm}' helpKey='#i18n{appointment.modifyAppointmentForm.helpFormatIcon}'>
 							<@inputGroup>
 								<@input type='file' id='image_resource' name='image_resource' params='accept="image/*"' />
-								<@button color='danger' params='onclick="document.getElementById(\'image_resource\').value=\'\'"' buttonIcon='times' title='#i18n{portal.util.labelDelete}' size='' hideTitle=['xs','sm','md'] />
+								<@button color='light' params='onclick="document.getElementById(\'image_resource\').value=\'\'"' buttonIcon='x' title='#i18n{appointment.label.clearFile}' size='' hideTitle=['xs','sm','md'] />
 							</@inputGroup>
 						</@formGroup>
-						<@formGroup labelFor='address_address-input' labelKey='#i18n{appointment.label.formAddress}' helpKey='#i18n{appointment.label.addressDescription}'>
-							<@input type='hidden' name='geoloc_address' id='geoloc_address' value='${(appointmentform.address?html)!}' />
+						<@formGroup labelFor='address_address-input' labelKey='#i18n{appointment.label.formAddress}' helpKey='#i18n{appointment.help.formAddress}'>
 							<@input type='hidden' name='geoloc_longitude' id='geoloc_longitude' value='${(appointmentform.longitude?c)!}' />
 							<@input type='hidden' name='geoloc_latitude' id='geoloc_latitude' value='${(appointmentform.latitude?c)!}' />
 							<@input type='hidden' name='hidden_address' id='hidden_address' />
+							<@input type=hasSuggestPOI?then('hidden','text') name='geoloc_address' id='geoloc_address' value='${(appointmentform.address?html)!}' />
 							<#if hasSuggestPOI>
 								<@suggestPOIInput id="address_address" name="address_address" currentValue="${(appointmentform.address?html)!}" />
-							<#else>
-								<@input type='text' name='address_address' id='address_address' value='${(appointmentform.address?html)!}' />
 							</#if>
-							<@p class='form-text' id='help_address'>#i18n{appointment.help.formAddress}</@p>
-							<@div id='map_address' class='mt-3 position-relative w-100' params='style="min-height: 300px;"' />
+							<#if hasMap><@div id='map_address' class='mt-3 position-relative w-100' params='style="min-height: 300px;"' /></#if>
 						</@formGroup>
 					</@boxBody>
 				</@box>
@@ -228,14 +228,16 @@
 			<@columns class='d-flex justify-content-end'>
 				<@input type='hidden' name='action_createAppointmentForm' value='' />
 				<@button type='submit' buttonIcon='check' title='#i18n{portal.util.labelCreate}' />
-				<@aButton href='jsp/admin/plugins/appointment/ManageAppointmentForms.jsp' buttonIcon='times' title='#i18n{portal.util.labelCancel}' color='default' />
+				<@aButton href='jsp/admin/plugins/appointment/ManageAppointmentForms.jsp' buttonIcon='times' title='#i18n{portal.util.labelCancel}' color='light' />
 			</@columns>
 		</@row>
 		</@tform>
 	</@pageColumn>
 </@pageContainer>
+<#if hasMap>
 <link rel="stylesheet" href="js/plugins/leaflet/leaflet/leaflet.css" />
 <script src="js/plugins/leaflet/leaflet/leaflet.js"></script>
+</#if>
 <#if hasSuggestPOI><@setupSuggestPOI /></#if>
 <script>
 function validateQty(event) {
@@ -293,6 +295,7 @@ function changeVisilityAnonymizePattern()
 	}
 }
 
+<#if hasMap>
 document.addEventListener('DOMContentLoaded', function() {
 	var map = L.map('map_address').setView([48.85632, 2.33272], 12);
 	var markersLayer = L.featureGroup().addTo(map);
@@ -368,11 +371,11 @@ document.addEventListener('DOMContentLoaded', function() {
 		map.fitBounds(markersLayer.getBounds());
 	}
 
-	document.getElementById('formid').addEventListener('keydown', function(e) {
-		if (e.key === 'Enter') {
-			e.preventDefault();
-		}
-	});
-
+});
+</#if>
+document.getElementById('formid').addEventListener('keydown', function(e) {
+	if (e.key === 'Enter') {
+		e.preventDefault();
+	}
 });
 </script>
