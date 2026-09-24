@@ -7,3 +7,4 @@
 /bin/
 webapp/WEB-INF/conf/db.properties
 logs/
+java.io.tmpdir/
