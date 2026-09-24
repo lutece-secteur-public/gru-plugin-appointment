@@ -1,5 +1,5 @@
 <#assign field = getFieldByCode( entry, "default_date_value" ) >
-<#if field.valueTypeDate?exists><#assign value = field.valueTypeDate /><#else><#assign value = '' /></#if>
+<#if field.valueTypeDate?exists><#assign value = field.valueTypeDate?long?number_to_datetime /><#else><#assign value = '' /></#if>
 <#if list_responses??>
 <#list list_responses as response>
 <#if response.entry.idEntry == entry.idEntry>

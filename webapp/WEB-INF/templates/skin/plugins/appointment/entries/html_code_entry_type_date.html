@@ -24,7 +24,7 @@
 	</#list>
 <#else>
 	<#if field.valueTypeDate??>
-		<#assign dateValue = field.valueTypeDate>
+		<#assign dateValue = field.valueTypeDate?string("yyyy-MM-dd")>
 	</#if>
 </#if>
 <@cField label='${entry.title}' required=entry.mandatory>
