@@ -33,6 +33,8 @@
  */
 package fr.paris.lutece.plugins.appointment.business.portlet;
 
+import java.util.Map;
+
 import jakarta.servlet.http.HttpServletRequest;
 
 import org.apache.commons.lang3.StringUtils;
@@ -51,6 +53,7 @@ public final class AppointmentPortlet extends PortletHtmlContent
 {
     // ///////////////////////////////////////////////////////////////////////////////
     // Constants
+    private static final String TEMPLATE_PORTLET_DEFAULT = "skin/plugins/appointment/portlet/appointment_portlet.html";
 
     /**
      * Sets the identifier of the portlet type to value specified
@@ -61,7 +64,8 @@ public final class AppointmentPortlet extends PortletHtmlContent
     }
 
     /**
-     * Returns the HTML code of the AppointmentPortlet portlet
+     * Returns the HTML code of the AppointmentPortlet portlet, rendered with the template chosen for the portlet among the templates registered in the core
+     * for its portlet type. Nothing is rendered when the authentication is disabled or the user has not signed in
      *
      * @param request
      *            The HTTP servlet request
@@ -75,23 +79,21 @@ public final class AppointmentPortlet extends PortletHtmlContent
             return StringUtils.EMPTY;
         }
 
-        String strContent;
+        Map<String, Object> model = createPortletModel( );
 
         try
         {
-            strContent = AppointmentApp.getMyAppointmentsHtml( request, request.getLocale( ), null );
-
-            if ( strContent == null )
+            if ( !AppointmentApp.fillMyAppointmentsModel( request, model ) )
             {
-                strContent = StringUtils.EMPTY;
+                return StringUtils.EMPTY;
             }
         }
         catch( UserNotSignedException e )
         {
-            strContent = StringUtils.EMPTY;
+            return StringUtils.EMPTY;
         }
 
-        return strContent;
+        return renderTemplate( request, TEMPLATE_PORTLET_DEFAULT, model );
     }
 
     /**
