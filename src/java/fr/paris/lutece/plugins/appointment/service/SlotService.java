@@ -33,19 +33,25 @@
  */
 package fr.paris.lutece.plugins.appointment.service;
 
+import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import org.apache.commons.collections.CollectionUtils;
 
+import fr.paris.lutece.plugins.appointment.business.display.Display;
+import fr.paris.lutece.plugins.appointment.business.form.Form;
 import fr.paris.lutece.plugins.appointment.business.planning.TimeSlot;
 import fr.paris.lutece.plugins.appointment.business.planning.WeekDefinition;
 import fr.paris.lutece.plugins.appointment.business.planning.WorkingDay;
+import fr.paris.lutece.plugins.appointment.business.rule.FormRule;
 import fr.paris.lutece.plugins.appointment.business.rule.ReservationRule;
 import fr.paris.lutece.plugins.appointment.business.slot.Period;
 import fr.paris.lutece.plugins.appointment.business.slot.Slot;
@@ -329,6 +335,46 @@ public final class SlotService
         slot.setIsSpecific( bIsSpecific );
         addDateAndTimeToSlot( slot );
         return slot;
+    }
+
+    /**
+     * Find the first slot of a form a user can book from now: inside the weeks the form displays and its validity,
+     * after the minimum time before an appointment, open and with a place left.
+     * 
+     * @param nIdForm
+     *            the id of the form
+     * @return the first bookable slot, or empty when the form has none
+     */
+    public static Optional<Slot> findFirstAvailableSlot( int nIdForm )
+    {
+        Form form = FormService.findFormLightByPrimaryKey( nIdForm );
+        Display display = DisplayService.findDisplayWithFormId( nIdForm );
+        FormRule formRule = FormRuleService.findFormRuleWithFormId( nIdForm );
+        if ( form == null || display == null || formRule == null || !form.getIsActive( ) )
+        {
+            return Optional.empty( );
+        }
+        LocalDate startingDate = LocalDate.now( );
+        if ( form.getStartingValidityDate( ) != null && form.getStartingValidityDate( ).isAfter( startingDate ) )
+        {
+            startingDate = form.getStartingValidityDate( );
+        }
+        LocalDate endingDate = startingDate.with( DayOfWeek.SUNDAY ).plusWeeks( display.getNbWeeksToDisplay( ) - 1L );
+        if ( form.getEndingValidityDate( ) != null && endingDate.isAfter( form.getEndingValidityDate( ) ) )
+        {
+            endingDate = form.getEndingValidityDate( );
+        }
+        if ( startingDate.isAfter( endingDate ) )
+        {
+            return Optional.empty( );
+        }
+        List<WeekDefinition> listWeekDefinition = WeekDefinitionService.findWeekDefinitionByDateOfApply( nIdForm, startingDate, endingDate );
+        Map<WeekDefinition, ReservationRule> mapReservationRule = ReservationRuleService.findAllReservationRule( nIdForm, listWeekDefinition );
+        LocalDateTime notBefore = LocalDateTime.now( ).plusHours( formRule.getMinTimeBeforeAppointment( ) );
+        return buildListSlot( nIdForm, mapReservationRule, startingDate, endingDate ).stream( )
+                .filter( slot -> slot.getStartingDateTime( ).isAfter( notBefore ) && Boolean.TRUE.equals( slot.getIsOpen( ) )
+                        && slot.getNbPotentialRemainingPlaces( ) > 0 )
+                .min( Comparator.comparing( Slot::getStartingDateTime ) );
     }
 
     /**

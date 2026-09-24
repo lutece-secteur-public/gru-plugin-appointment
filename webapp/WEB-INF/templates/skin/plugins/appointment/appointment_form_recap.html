@@ -12,9 +12,9 @@
 </@cStepDone>
 <@cStepDone step='3' title='#i18n{appointment.appointmentApp.enteringInformation}' idx=3 actionHref='javascript:history.back()' actionLabel='#i18n{portal.util.labelModify}'>
 	<@chList>
-		<@chItem>${formMessages.fieldLastNameTitle!} : ${appointment.lastName}</@chItem>
-		<@chItem>${formMessages.fieldFirstNameTitle!} : ${appointment.firstName}</@chItem>
-		<@chItem>${formMessages.fieldEmailTitle!} : ${appointment.email}</@chItem>
+		<@chItem>${formMessages.fieldLastNameTitle!} : ${appointment.lastName?html}</@chItem>
+		<@chItem>${formMessages.fieldFirstNameTitle!} : ${appointment.firstName?html}</@chItem>
+		<@chItem>${formMessages.fieldEmailTitle!} : ${appointment.email?html}</@chItem>
 		<#if form.maxPeoplePerAppointment gt 1><@chItem>#i18n{appointment.createAppointmentForm.labelNumberOfBookedseatsPerAppointment} : ${appointment.nbBookedSeats}</@chItem></#if>
 		<#list listResponseRecapDTO as response>
 			<#if response.recapValue?? && response.recapValue?has_content>
@@ -30,7 +30,6 @@
 		<@cForm id='form-validate' action='jsp/site/Portal.jsp' method='post' enctype='multipart/form-data'>
 			<@cInput name='page' value='appointment' type='hidden' class='' />
 			<@cInput name='action' value='doMakeAppointment' type='hidden' class='' />
-			<@cInput name='anchor' value='step3' type='hidden' class='' />
 			<@cInput name='is_modification' value='is_modification' type='hidden' class='' />
 			<@cInput type='hidden' name='token' value='${token}' class='' />
 			<@cBtn label='' name='back' class='primary btn-sm' value='back'>
@@ -44,10 +43,9 @@
 	<@cForm id='form-validate' action='jsp/site/Portal.jsp' method='post' enctype='multipart/form-data'>
 		<@cInput name='page' value='appointment' type='hidden' class='' />
 		<@cInput name='action' value='doMakeAppointment' type='hidden' class='' />
-		<@cInput name='lastname' value='${appointment.lastName}' type='hidden' class='' />
-		<@cInput name='firstname' value='${appointment.firstName}' type='hidden' class='' />
-		<@cInput name='email' value='${appointment.email}' type='hidden' class='' />
-		<@cInput name='anchor' value='step5' type='hidden' class='' />
+		<@cInput name='lastname' value='${appointment.lastName?html}' type='hidden' class='' />
+		<@cInput name='firstname' value='${appointment.firstName?html}' type='hidden' class='' />
+		<@cInput name='email' value='${appointment.email?html}' type='hidden' class='' />
 		<@cInput type='hidden' name='token' value='${token}' class='' />
 		<#if form.maxPeoplePerAppointment gt 1><@cInput name='nbSeat' value='${appointment.nbBookedSeats}' type='hidden' class='' /></#if>
 		<@cText>#i18n{appointment.appointmentApp.validationText}</@cText>
@@ -55,7 +53,7 @@
 		<#if captcha??>${captcha!}</#if>
 		<@cRow class='my-3'>
 			<@cCol class='d-flex justify-content-center'>
-				<@cBtn label='' name='validate' class='primary' value='validate'><@cIcon name='check' /> #i18n{portal.util.labelValidate}</@cBtn>
+				<@cBtn label='' class='primary' params='name="validate" value="validate"'><@cIcon name='check' /> #i18n{portal.util.labelValidate}</@cBtn>
 			</@cCol>
 		</@cRow>
 	</@cForm>

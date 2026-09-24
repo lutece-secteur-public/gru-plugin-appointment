@@ -33,11 +33,16 @@
  */
 package fr.paris.lutece.plugins.appointment.business.portlet;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import jakarta.servlet.http.HttpServletRequest;
 
 import org.apache.commons.lang3.StringUtils;
 
+import fr.paris.lutece.plugins.appointment.web.AppointmentApp;
 import fr.paris.lutece.portal.business.portlet.PortletHtmlContent;
+import fr.paris.lutece.portal.web.l10n.LocaleService;
 
 /**
  * This class represents business objects AppointmentPortlet
@@ -59,16 +64,18 @@ public final class AppointmentFormPortlet extends PortletHtmlContent
     }
 
     /**
-     * Returns the HTML code of the AppointmentPortlet portlet
+     * Returns the HTML code of the portlet: the chosen form, empty when it is not active
      * 
      * @param request
      *            The HTTP servlet request
-     * @return The HTML code of the AppointmentPortlet portlet
+     * @return The HTML code of the portlet
      */
     @Override
     public String getHtmlContent( HttpServletRequest request )
     {
-        return StringUtils.EMPTY;
+        Map<String, Object> model = new HashMap<>( );
+        model.put( AppointmentFormListPortlet.MARK_PORTLET_NAME, ( getDisplayPortletTitle( ) == 0 ) ? getName( ) : StringUtils.EMPTY );
+        return AppointmentApp.getFormHtml( LocaleService.getContextUserLocale( request ), model, _nIdAppointmentForm );
     }
 
     /**

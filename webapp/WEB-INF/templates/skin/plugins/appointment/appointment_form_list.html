@@ -1,23 +1,27 @@
 <@cTpl>
 <@cContainer>
- 	<@cRow>
-        <@cCol>
-            <@cBreadCrumb home='#i18n{portal.util.labelHome}'>
-                <@chItem class='breadcrumb-item active' params='aria-current="page"'><#if portlet_name??><#if portlet_name?has_content>${portlet_name}</#if><#else>#i18n{appointment.xpage.formList.labelFormList}</#if></@chItem>
-            </@cBreadCrumb>
-         </@cCol>
-    </@cRow>   
+<#if !portlet_name??>
+	<@cRow>
+		<@cCol>
+			<@cBreadCrumb home='#i18n{portal.util.labelHome}'>
+				<@chItem class='breadcrumb-item active' params='aria-current="page"'>#i18n{appointment.xpage.formList.labelFormList}</@chItem>
+			</@cBreadCrumb>
+		</@cCol>
+	</@cRow>
+</#if>
 	<@cRow id='app-form-list'>
 		<@cCol>
-			<@messages infos=infos errors=errors />
-			<@cTitle level=3 class='mt-l'><#if portlet_name??><#if portlet_name?has_content>${portlet_name}</#if><#else>#i18n{appointment.xpage.formList.labelFormList}</#if></@cTitle>
+			<#if infos?? && infos?size gt 0><#list infos as info><@cAlert type='info' title=info.message! /></#list></#if>
+			<#if errors?? && errors?size gt 0><#list errors as error><@cAlert type='danger' title=error.message! /></#list></#if>
+			<#assign listTitle><#if portlet_name??>${portlet_name}<#else>#i18n{appointment.xpage.formList.labelFormList}</#if></#assign>
+			<#if listTitle?has_content><@cTitle level=3 class='mt-l'>${listTitle}</@cTitle></#if>
 			<#if form_list?has_content>
 				<@chList class='packs px-0'>
 				<#assign cpt=form_list?size - 1>
 				<#list 0..cpt as item>
 					<@chItem class='card pack'>
 						<#if icons?? && icons[item]?? && icons[item]!='NULL'>
-							<@cImg src='${icons[item]}' class='icon icon-l' title='icon_form'  />
+							<@cImg src='${icons[item]}' class='icon icon-l' alt='' />
 						<#else>
 							<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-tabler icons-tabler-outline icon-tabler-calendar-clock me-m">
 								<path stroke="none" d="M0 0h24v24H0z" fill="none"/>
@@ -36,7 +40,7 @@
 				</#list>
 				</@chList>
 			<#else>
-				<@cEmpty title='#i18n{appointment.xpage.formList.noForm}' />
+				<@cEmpty title='#i18n{appointment.xpage.formList.noForm}' subtitle='' />
 			</#if>
 		</@cCol>
 	</@cRow>

@@ -146,6 +146,7 @@ public class AppointmentFormJspBean extends AbstractAppointmentFormAndSlotJspBea
     private static final String MARK_APPOINTMENTFORM_LIST = "appointmentform_list";
     private static final String MARK_PAGINATOR = "paginator";
     private static final String MARK_NB_ITEMS_PER_PAGE = "nb_items_per_page";
+    private static final String MARK_FORM = "form";
     private static final String MARK_FORM_MESSAGE = "formMessage";
     private static final String MARK_NULL = "NULL";
     private static final String MARK_FALSE = "false";
@@ -623,6 +624,7 @@ public class AppointmentFormJspBean extends AbstractAppointmentFormAndSlotJspBea
         FormMessage formMessage = FormMessageService.findFormMessageByIdForm( nIdForm );
         Map<String, Object> model = new HashMap<>( );
         model.put( MARK_FORM_MESSAGE, formMessage );
+        model.put( MARK_FORM, FormService.findFormLightByPrimaryKey( nIdForm ) );
         model.put( MARK_WEBAPP_URL, AppPathService.getBaseUrl( request ) );
         model.put( MARK_LOCALE, getLocale( ) );
         model.put( MARK_LOCALE_TINY, getLocale( ) );

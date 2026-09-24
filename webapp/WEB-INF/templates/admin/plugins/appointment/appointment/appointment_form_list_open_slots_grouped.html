@@ -43,6 +43,9 @@
 
     document.addEventListener('DOMContentLoaded', function() {
         var calendarEl = document.getElementById('calendar');
+        if ( !calendarEl ) {
+            return;
+        }
         var calendar = new FullCalendar.Calendar(calendarEl, {
             initialView: window.innerWidth < 1050 ? 'timeGridDay' : 'dayGridWeek',
             initialDate: defaultDate,

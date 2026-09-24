@@ -27,7 +27,7 @@
 			</#list>
 		</#if>
 		<@formGroup class='${formGroupClass!}' labelFor='lastname' labelKey='${formMessages.fieldLastNameTitle!}' helpKey='${formGroupHelpKey!}' mandatory=true>
-			<@input type='text' name='lastname' id='lastname' value='${appointment.lastName!}' maxlength=255 />
+			<@input type='text' name='lastname' id='lastname' value='${(appointment.lastName!)?html}' maxlength=255 />
 		</@formGroup>
 		<#assign formGroupHelpKey = '' />
 		<#assign formGroupClass='' />
@@ -43,7 +43,7 @@
 			</#list>
 		</#if>
 		<@formGroup class='${formGroupClass!}' labelFor='firstname' labelKey='${formMessages.fieldFirstNameTitle!}' helpKey='${formGroupHelpKey!}' mandatory=true>
-			<@input type='text' name='firstname' id='firstname' value='${appointment.firstName!}' maxlength=255 />
+			<@input type='text' name='firstname' id='firstname' value='${(appointment.firstName!)?html}' maxlength=255 />
 		</@formGroup>
 		<#assign formGroupHelpKey = '' />
 		<#assign formGroupClass='' />
@@ -59,7 +59,7 @@
 			</#list>
 		</#if>
 		<@formGroup class='${formGroupClass!}' labelFor='email' labelKey='${formMessages.fieldEmailTitle!}' helpKey='${formGroupHelpKey!}' mandatory=form.enableMandatoryEmail!>
-			<@input type='email' name='email' id='email' value='${appointment.email!}' maxlength=255 />
+			<@input type='email' name='email' id='email' value='${(appointment.email!)?html}' maxlength=255 />
 		</@formGroup>
 		<#assign formGroupHelpKey = '' />
 		<#assign formGroupClass='' />
@@ -104,9 +104,9 @@
 		<@formGroup>
 			<@button type='submit' name='save' id='save' buttonIcon='check' title='#i18n{appointment.displayAppointmentForm.labelValidate}' />
 			<#if appointment.idAppointment gt 0>
-				<@aButton href='jsp/admin/plugins/appointment/ManageAppointments.jsp?view=manageAppointments&id_form=${form.idForm}' buttonIcon='arrow-left' title='#i18n{portal.util.labelBack}' color='secondary' />
+				<@aButton href='jsp/admin/plugins/appointment/ManageAppointments.jsp?view=manageAppointments&id_form=${form.idForm}' buttonIcon='arrow-left' title='#i18n{portal.util.labelBack}' color='light' />
 			<#else>
-				<@aButton href='jsp/admin/plugins/appointment/ManageAppointments.jsp?view=viewCalendarManageAppointment&id_form=${form.idForm}&date_of_display=${date_of_display}' buttonIcon='arrow-left' title='#i18n{portal.util.labelBack}' color='secondary' />
+				<@aButton href='jsp/admin/plugins/appointment/ManageAppointments.jsp?view=viewCalendarManageAppointment&id_form=${form.idForm}&date_of_display=${date_of_display}' buttonIcon='arrow-left' title='#i18n{portal.util.labelBack}' color='light' />
 			</#if>
 		</@formGroup>
 		</@tform>

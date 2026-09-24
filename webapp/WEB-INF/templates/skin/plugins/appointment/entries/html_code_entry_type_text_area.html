@@ -17,9 +17,9 @@
 <#assign field_richtext=getFieldValueByCode( entry, "richtext") />
 <#assign richtext = false />
 <#if field_richtext == 'true'><#assign richtext = true /></#if>
-<@cTextArea name='attribute${entry.idEntry}' id='attribute${entry.idEntry}' cols='${field_width.value}' rows='${field_height.value}' maxlength='${field_max_size.value}' class='form-control ${entry.CSSClass!}<#if richtext> richtext</#if>' errorMsg=errorMsg helpMsg=helpMsg>${responseContent}</@cTextArea>
+<@cTextArea name='attribute${entry.idEntry}' id='attribute${entry.idEntry}' rows='${field_height.value}' maxlength='${field_max_size.value}' class='form-control ${entry.CSSClass!}${richtext?then(" richtext", "")}' errorMsg=errorMsg helpMsg=helpMsg>${responseContent}</@cTextArea>
 </#macro>
-<@cField class='<#if hasError??> has-error</#if>'>
+<@cField class=(hasError??)?then('has-error', '')>
 <@cLabel for='attribute${entry.idEntry}' label=entry.title! required=entry.mandatory />
 <#if list_responses??>
 	<#list list_responses as response>

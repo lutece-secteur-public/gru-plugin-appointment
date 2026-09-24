@@ -33,7 +33,6 @@
  */
 package fr.paris.lutece.plugins.appointment.web.portlet;
 
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -51,7 +50,6 @@ import fr.paris.lutece.portal.business.portlet.PortletHome;
 import fr.paris.lutece.portal.service.message.AdminMessage;
 import fr.paris.lutece.portal.service.message.AdminMessageService;
 import fr.paris.lutece.util.ReferenceList;
-import fr.paris.lutece.util.html.HtmlTemplate;
 
 /**
  * This class provides the user interface to manage AppointmentPortlet features
@@ -81,16 +79,11 @@ public class AppointmentFormPortletJspBean extends AbstractPortletJspBean
      * {@inheritDoc}
      */
     @Override
-    public String getCreate( HttpServletRequest request )
+    protected Map<String, Object> getPortletModel( )
     {
-        String strPageId = request.getParameter( PARAMETER_PAGE_ID );
-        String strPortletTypeId = request.getParameter( PARAMETER_PORTLET_TYPE_ID );
-
-        Collection<Form> listIsActiveAndIsDisplayedOnPortletAppointmentForm = FormService.findAllActiveAndDisplayedOnPortletForms( );
-
         ReferenceList refListAppointmentForm = new ReferenceList( );
 
-        for ( Form form : listIsActiveAndIsDisplayedOnPortletAppointmentForm )
+        for ( Form form : FormService.findAllActiveAndDisplayedOnPortletForms( ) )
         {
             refListAppointmentForm.addItem( form.getIdForm( ), form.getTitle( ) );
         }
@@ -98,36 +91,7 @@ public class AppointmentFormPortletJspBean extends AbstractPortletJspBean
         Map<String, Object> model = new HashMap<>( );
         model.put( MARK_LIST_APPOINTMENT_FORM, refListAppointmentForm );
 
-        HtmlTemplate template = getCreateTemplate( strPageId, strPortletTypeId, model );
-
-        return template.getHtml( );
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public String getModify( HttpServletRequest request )
-    {
-        String strPortletId = request.getParameter( PARAMETER_PORTLET_ID );
-        int nPortletId = Integer.parseInt( strPortletId );
-        AppointmentFormPortlet portlet = (AppointmentFormPortlet) PortletHome.findByPrimaryKey( nPortletId );
-
-        Collection<Form> listIsActiveAndIsDisplayedOnPortletAppointmentForm = FormService.findAllActiveAndDisplayedOnPortletForms( );
-
-        ReferenceList refListAppointmentForm = new ReferenceList( );
-
-        for ( Form form : listIsActiveAndIsDisplayedOnPortletAppointmentForm )
-        {
-            refListAppointmentForm.addItem( form.getIdForm( ), form.getTitle( ) );
-        }
-
-        Map<String, Object> model = new HashMap<>( );
-        model.put( MARK_LIST_APPOINTMENT_FORM, refListAppointmentForm );
-
-        HtmlTemplate template = getModifyTemplate( portlet, model );
-
-        return template.getHtml( );
+        return model;
     }
 
     /**

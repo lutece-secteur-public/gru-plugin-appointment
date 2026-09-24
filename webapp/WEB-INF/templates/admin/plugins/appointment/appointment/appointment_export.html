@@ -6,19 +6,19 @@
 			<@formGroup>
 				<#assign cpt=1>
 				<#list defaultFieldList as defaultField>
-					<@checkBox name='selectedDefaultFieldList' id="defaultField_${cpt}" value=defaultField.code labelKey=defaultField.name checked=true /> 
+					<@checkBox name='selectedDefaultFieldList' id="defaultField_${cpt}" value=defaultField.code labelKey=defaultField.name checked=true orientation='switch' /> 
 					<#assign cpt=cpt+1>
 				</#list>
 				<hr />
 				<#assign cpt=1>
 				<#list customFieldList as customField>
-					<@checkBox name='selectedCustomFieldList' id="customField_${cpt}" value=customField.code labelKey=customField.name checked=true /> 
+					<@checkBox name='selectedCustomFieldList' id="customField_${cpt}" value=customField.code labelKey=customField.name checked=true orientation='switch' /> 
 					<#assign cpt=cpt+1>
 				</#list>
 			</@formGroup>
 		</@modalBody>
 		<@modalFooter>
-	        <@button type='cancel' title='#i18n{appointment.export.modal.button.ko}' params='data-dismiss="modal"'  />
+	        <@button type='button' title='#i18n{appointment.export.modal.button.ko}' buttonIcon='x' color='light' params='data-bs-dismiss="modal"' />
 	        <@button type='submit' id='action_doExportResponses' name='action_doExportAppointments' title='#i18n{appointment.export.modal.button.ok}' />
 	    </@modalFooter>
     </@tform>

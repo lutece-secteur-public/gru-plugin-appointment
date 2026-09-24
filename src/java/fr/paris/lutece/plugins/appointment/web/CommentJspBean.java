@@ -35,6 +35,7 @@ package fr.paris.lutece.plugins.appointment.web;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.time.format.DateTimeParseException;
 import java.time.ZoneId;
 import java.util.List;
 import java.util.Map;
@@ -43,6 +44,7 @@ import jakarta.servlet.http.HttpServletRequest;
 
 import fr.paris.lutece.plugins.appointment.service.comment.IRedirectComment;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.math.NumberUtils;
 
 import fr.paris.lutece.api.user.User;
 import fr.paris.lutece.plugins.appointment.business.comment.Comment;
@@ -52,6 +54,7 @@ import fr.paris.lutece.plugins.appointment.service.CommentService;
 import fr.paris.lutece.plugins.appointment.web.dto.AppointmentFormDTO;
 import fr.paris.lutece.plugins.appointment.web.dto.CommentDTO;
 import fr.paris.lutece.portal.service.admin.AccessDeniedException;
+import fr.paris.lutece.portal.service.util.AppPathService;
 import fr.paris.lutece.portal.service.mailinglist.AdminMailingListService;
 import fr.paris.lutece.portal.service.message.AdminMessage;
 import fr.paris.lutece.portal.service.message.AdminMessageService;
@@ -98,7 +101,7 @@ public class CommentJspBean extends AbstractAppointmentFormAndSlotJspBean
     public static final String TEMPLATE_COMMENT_INFO = "/admin/plugins/appointment/comment/comment_infos.html";
 
     // Messages
-    private static final String MESSAGE_COMMENT_PAGE_TITLE = "appointment.comment.pageTitle";
+    private static final String MESSAGE_COMMENT_PAGE_TITLE = "appointment.comment.name";
     private static final String VALIDATION_ATTRIBUTES_PREFIX = "appointment.model.entity.appointmentform.attribute";
 
     // Parameters
@@ -116,6 +119,7 @@ public class CommentJspBean extends AbstractAppointmentFormAndSlotJspBean
 
     // Marks
     private static final String MARK_COMMENT = "comment";
+    private static final String MARK_WEBAPP_URL = "webapp_url";
     private static final String MARK_COMMENT_LIST = "comment_list";
     private static final String MARK_LOCALE = "locale";
     private static final String MARK_MAILING_LIST = "mailing_list";
@@ -193,6 +197,7 @@ public class CommentJspBean extends AbstractAppointmentFormAndSlotJspBean
         _models.put( PARAMETER_ID_FORM, nIdForm );
         _models.put( MARK_MAILING_LIST, AdminMailingListService.getMailingLists( getUser( ) ) );
 
+        _models.put( MARK_WEBAPP_URL, AppPathService.getBaseUrl( request ) );
         return getPage( MESSAGE_COMMENT_PAGE_TITLE, TEMPLATE_CREATE_COMMENT );
 
     }
@@ -210,51 +215,33 @@ public class CommentJspBean extends AbstractAppointmentFormAndSlotJspBean
     {
         User user = getUser( );
         String strIdForm = request.getParameter( PARAMETER_ID_FORM );
-        int nIdForm = Integer.parseInt( strIdForm );
-        String strReferer = makeStringBackUrl( request );
-        int nIdMailingList = Integer.parseInt( request.getParameter( PARAMETER_ID_MAILING_LIST ) );
-
+        int nIdForm = NumberUtils.toInt( strIdForm, -1 );
+        if ( nIdForm < 0 )
+        {
+            return redirectView( request, VIEW_MANAGE_COMMENT );
+        }
         if ( !RBACService.isAuthorized( AppointmentFormDTO.RESOURCE_TYPE, strIdForm, AppointmentResourceIdService.PERMISSION_ADD_COMMENT_FORM,
                 (User) getUser( ) ) )
         {
             throw new AccessDeniedException( AppointmentResourceIdService.PERMISSION_ADD_COMMENT_FORM );
         }
-        _comment = ( _comment == null ) ? new Comment( ) : _comment;
-
+        _comment = new Comment( );
         _comment.setIdForm( nIdForm );
         _comment.setCreationDate( LocalDate.now( ) );
         _comment.setCreatorUserName( user.getAccessCode( ) );
         _comment.setComment( request.getParameter( PARAMETER_COMMENT ) );
-        _comment.setStartingValidityDate( LocalDate.parse( request.getParameter( PARAMETER_STARTING_VALIDITY_DATE ).substring( 0, 10 ) ) );
-        _comment.setEndingValidityDate( LocalDate.parse( request.getParameter( PARAMETER_ENDING_VALIDITY_DATE ).substring( 0, 10 ) ) );
-        if ( !request.getParameter( PARAMETER_STARTING_VALIDITY_TIME ).isEmpty( ) )
-        {
-            _comment.setStartingValidityTime( LocalTime.parse( request.getParameter( PARAMETER_STARTING_VALIDITY_TIME ) ) );
-        }
 
-        if ( !request.getParameter( PARAMETER_ENDING_VALIDITY_TIME ).isEmpty( ) )
-        {
-            _comment.setEndingValidityTime( LocalTime.parse( request.getParameter( PARAMETER_ENDING_VALIDITY_TIME ) ) );
-        }
-
-        // Check constraints
-        if ( !validateBean( _comment, VALIDATION_ATTRIBUTES_PREFIX ) || !validateDateStartEndValidity( _comment ) )
+        if ( !fillPeriod( _comment, request ) || !validateBean( _comment, VALIDATION_ATTRIBUTES_PREFIX ) || !validateDateStartEndValidity( _comment ) )
         {
             addError( INFO_COMMENT_ERROR, getLocale( ) );
-
         }
         else
         {
-            CommentService.createAndNotifyMailingList( _comment, nIdMailingList, getLocale( ) );
+            CommentService.createAndNotifyMailingList( _comment, NumberUtils.toInt( request.getParameter( PARAMETER_ID_MAILING_LIST ), -1 ), getLocale( ) );
             addInfo( INFO_COMMENT_CREATED, getLocale( ) );
         }
 
-        if ( StringUtils.isNotBlank( strReferer ) )
-        {
-            return redirect( request, strReferer );
-        }
-
-        return redirect( request, VIEW_MANAGE_COMMENT );
+        return redirectBack( request );
     }
 
     /**
@@ -268,23 +255,18 @@ public class CommentJspBean extends AbstractAppointmentFormAndSlotJspBean
     @View( VIEW_MODIFY_COMMENT )
     public String getViewModifyComment( HttpServletRequest request ) throws AccessDeniedException
     {
-        User user = getUser( );
-        int nIdComment = Integer.parseInt( request.getParameter( PARAMETER_ID_COMMENT ) );
-        _comment = CommentHome.findByPrimaryKey( nIdComment );
-        if ( !RBACService.isAuthorized( AppointmentFormDTO.RESOURCE_TYPE, Integer.toString( _comment.getIdForm( ) ),
-                AppointmentResourceIdService.PERMISSION_MODERATE_COMMENT_FORM, (User) getUser( ) )
-                && !_comment.getCreatorUserName( ).equals( user.getAccessCode( ) ) )
+        _comment = findAuthorizedComment( request );
+        if ( _comment == null )
         {
-            throw new AccessDeniedException( AppointmentResourceIdService.PERMISSION_MODERATE_COMMENT_FORM );
-
+            return redirectView( request, VIEW_MANAGE_COMMENT );
         }
         _models.put( MARK_COMMENT, _comment );
         _models.put( MARK_LOCALE, getLocale( ) );
         _models.put( PARAMETER_ID_FORM, _comment.getIdForm( ) );
         _models.put( MARK_MAILING_LIST, AdminMailingListService.getMailingLists( getUser( ) ) );
+        _models.put( MARK_WEBAPP_URL, AppPathService.getBaseUrl( request ) );
 
         return getPage( MESSAGE_COMMENT_PAGE_TITLE, TEMPLATE_MODIFY_COMMENT );
-
     }
 
     /**
@@ -298,52 +280,24 @@ public class CommentJspBean extends AbstractAppointmentFormAndSlotJspBean
     @Action( ACTION_DO_MODIFY_COMMENT )
     public String doModifyComment( HttpServletRequest request ) throws AccessDeniedException
     {
-        User user = getUser( );
-        int nIdComment = Integer.parseInt( request.getParameter( PARAMETER_ID_COMMENT ) );
-        String backUrl = makeStringBackUrl( request );
-        int nIdMailingList = Integer.parseInt( request.getParameter( PARAMETER_ID_MAILING_LIST ) );
-
-        if ( _comment == null || _comment.getId( ) != nIdComment )
+        _comment = findAuthorizedComment( request );
+        if ( _comment == null )
         {
-            _comment = CommentHome.findByPrimaryKey( nIdComment );
-        }
-        if ( !RBACService.isAuthorized( AppointmentFormDTO.RESOURCE_TYPE, Integer.toString( _comment.getIdForm( ) ),
-                AppointmentResourceIdService.PERMISSION_MODERATE_COMMENT_FORM, (User) getUser( ) )
-                && !_comment.getCreatorUserName( ).equals( user.getAccessCode( ) ) )
-        {
-            throw new AccessDeniedException( AppointmentResourceIdService.PERMISSION_MODERATE_COMMENT_FORM );
+            return redirectView( request, VIEW_MANAGE_COMMENT );
         }
         _comment.setComment( request.getParameter( PARAMETER_COMMENT ) );
-        _comment.setStartingValidityDate( LocalDate.parse( request.getParameter( PARAMETER_STARTING_VALIDITY_DATE ).substring( 0, 10 ) ) );
-        _comment.setEndingValidityDate( LocalDate.parse( request.getParameter( PARAMETER_ENDING_VALIDITY_DATE ).substring( 0, 10 ) ) );
-        if ( !request.getParameter( PARAMETER_STARTING_VALIDITY_TIME ).isEmpty( ) )
-        {
-            _comment.setStartingValidityTime( LocalTime.parse( request.getParameter( PARAMETER_STARTING_VALIDITY_TIME ) ) );
-        }
 
-        if ( !request.getParameter( PARAMETER_ENDING_VALIDITY_TIME ).isEmpty( ) )
-        {
-            _comment.setEndingValidityTime( LocalTime.parse( request.getParameter( PARAMETER_ENDING_VALIDITY_TIME ) ) );
-        }
-
-        // Check constraints
-        if ( !validateBean( _comment, VALIDATION_ATTRIBUTES_PREFIX ) || !validateDateStartEndValidity( _comment ) )
+        if ( !fillPeriod( _comment, request ) || !validateBean( _comment, VALIDATION_ATTRIBUTES_PREFIX ) || !validateDateStartEndValidity( _comment ) )
         {
             addError( INFO_COMMENT_ERROR, getLocale( ) );
         }
         else
         {
-            CommentService.updateAndNotifyMailingList( _comment, nIdMailingList, getLocale( ) );
+            CommentService.updateAndNotifyMailingList( _comment, NumberUtils.toInt( request.getParameter( PARAMETER_ID_MAILING_LIST ), -1 ), getLocale( ) );
             addInfo( INFO_COMMENT_UPDATED, getLocale( ) );
         }
 
-        if ( StringUtils.isNotBlank( backUrl ) )
-        {
-            return redirect( request, backUrl );
-        }
-
-        return redirect( request, VIEW_MANAGE_COMMENT );
-
+        return redirectBack( request );
     }
 
     /**
@@ -357,21 +311,17 @@ public class CommentJspBean extends AbstractAppointmentFormAndSlotJspBean
     @Action( ACTION_CONFIRM_REMOVE_COMMENT )
     public String getConfirmRemoveComment( HttpServletRequest request ) throws AccessDeniedException
     {
-        User user = getUser( );
-        int nId = Integer.parseInt( request.getParameter( PARAMETER_ID_COMMENT ) );
-        _comment = CommentHome.findByPrimaryKey( nId );
-        if ( !RBACService.isAuthorized( AppointmentFormDTO.RESOURCE_TYPE, Integer.toString( _comment.getIdForm( ) ),
-                AppointmentResourceIdService.PERMISSION_MODERATE_COMMENT_FORM, (User) getUser( ) )
-                && !_comment.getCreatorUserName( ).equals( user.getAccessCode( ) ) )
+        _comment = findAuthorizedComment( request );
+        if ( _comment == null )
         {
-            throw new AccessDeniedException( AppointmentResourceIdService.PERMISSION_MODERATE_COMMENT_FORM );
+            return redirectView( request, VIEW_MANAGE_COMMENT );
         }
         UrlItem url = new UrlItem( getActionUrl( ACTION_DO_REMOVE_COMMENT ) );
-        url.addParameter( PARAMETER_ID_COMMENT, nId );
+        url.addParameter( PARAMETER_ID_COMMENT, _comment.getId( ) );
         url.addParameter( PARAMETER_ID_MAILING_LIST, request.getParameter( PARAMETER_ID_MAILING_LIST ) );
         url.addParameter( PARAMETER_FROM, request.getParameter( PARAMETER_FROM ) );
         url.addParameter( PARAMETER_ADDITIONAL_PARAMETERS, request.getParameter( PARAMETER_ADDITIONAL_PARAMETERS ) );
-        url.addParameter( PARAMETER_ID_FORM, _comment.getIdForm() );
+        url.addParameter( PARAMETER_ID_FORM, _comment.getIdForm( ) );
         url.addParameter( REFERER, request.getHeader( REFERER ) );
 
         String strMessageUrl = AdminMessageService.getMessageUrl( request, MESSAGE_CONFIRM_REMOVE_COMMENT, url.getUrl( ), AdminMessage.TYPE_CONFIRMATION );
@@ -390,27 +340,15 @@ public class CommentJspBean extends AbstractAppointmentFormAndSlotJspBean
     @Action( ACTION_DO_REMOVE_COMMENT )
     public String doRemoveComment( HttpServletRequest request ) throws AccessDeniedException
     {
-        User user = getUser( );
-        int nIdComment = Integer.parseInt( request.getParameter( PARAMETER_ID_COMMENT ) );
-        String backUrl = makeStringBackUrl( request );
-        int nIdMailingList = Integer.parseInt( request.getParameter( PARAMETER_ID_MAILING_LIST ) );
-
-        _comment = CommentHome.findByPrimaryKey( nIdComment );
-        if ( !RBACService.isAuthorized( AppointmentFormDTO.RESOURCE_TYPE, Integer.toString( _comment.getIdForm( ) ),
-                AppointmentResourceIdService.PERMISSION_MODERATE_COMMENT_FORM, (User) getUser( ) )
-                && !_comment.getCreatorUserName( ).equals( user.getAccessCode( ) ) )
+        Comment comment = findAuthorizedComment( request );
+        if ( comment == null )
         {
-            throw new AccessDeniedException( AppointmentResourceIdService.PERMISSION_MODERATE_COMMENT_FORM );
+            return redirectView( request, VIEW_MANAGE_COMMENT );
         }
-
-        CommentService.removeAndNotifyMailingList( nIdComment, nIdMailingList, getLocale( ) );
+        CommentService.removeAndNotifyMailingList( comment.getId( ), NumberUtils.toInt( request.getParameter( PARAMETER_ID_MAILING_LIST ), -1 ), getLocale( ) );
         addInfo( INFO_COMMENT_REMOVED, getLocale( ) );
-        if ( StringUtils.isNotBlank( backUrl ) )
-        {
-            return redirect( request, backUrl );
-        }
 
-        return redirect( request, VIEW_MANAGE_COMMENT );
+        return redirectBack( request );
     }
 
     /**
@@ -442,26 +380,106 @@ public class CommentJspBean extends AbstractAppointmentFormAndSlotJspBean
     }
 
     /**
-     * build the back url
+     * Builds the back url: the page named by the `from` parameter, else the referer when it is a page of this site
+     * outside the comment screens
      *
      * @param request the HttpServletRequest
-     * @return the back url
+     * @return the back url, or null
      */
     private String makeStringBackUrl( HttpServletRequest request )
     {
-        List<IRedirectComment> redirectAppointments = _redirectComments.stream( ).collect( java.util.stream.Collectors.toList( ) );
         String from = request.getParameter( PARAMETER_FROM );
-        String strReferer = request.getHeader( REFERER );
 
-        if( StringUtils.isNotBlank( from ) )
+        if ( StringUtils.isNotBlank( from ) )
         {
-            IRedirectComment redirect = redirectAppointments.stream().filter( ra -> from.equals(ra.getCodeFrom()) ).findFirst().orElse( null );
-            if ( redirect !=null )
+            IRedirectComment redirect = _redirectComments.stream( ).filter( ra -> from.equals( ra.getCodeFrom( ) ) ).findFirst( ).orElse( null );
+            if ( redirect != null )
             {
                 return redirect.makeBackUrl( request );
             }
         }
 
-        return strReferer;
+        String strReferer = request.getHeader( REFERER );
+
+        return ( strReferer != null && strReferer.startsWith( AppPathService.getBaseUrl( request ) ) && !strReferer.contains( getControllerJsp( ) ) ) ? strReferer : null;
     }
+
+    /**
+     * Redirects to the page the comment was managed from, or to the list of comments
+     *
+     * @param request
+     *            The request
+     * @return The URL to redirect to
+     */
+    private String redirectBack( HttpServletRequest request )
+    {
+        String strBackUrl = makeStringBackUrl( request );
+
+        return StringUtils.isNotBlank( strBackUrl ) ? redirect( request, strBackUrl ) : redirectView( request, VIEW_MANAGE_COMMENT );
+    }
+
+    /**
+     * Loads the comment named by the request, checking that the user may moderate it or wrote it
+     *
+     * @param request
+     *            The request
+     * @return The comment, or null when the request names none that exists
+     * @throws AccessDeniedException
+     *             If the user may neither moderate the comments of its form nor is its author
+     */
+    private Comment findAuthorizedComment( HttpServletRequest request ) throws AccessDeniedException
+    {
+        Comment comment = CommentHome.findByPrimaryKey( NumberUtils.toInt( request.getParameter( PARAMETER_ID_COMMENT ), -1 ) );
+        if ( comment == null )
+        {
+            return null;
+        }
+        if ( !RBACService.isAuthorized( AppointmentFormDTO.RESOURCE_TYPE, Integer.toString( comment.getIdForm( ) ),
+                AppointmentResourceIdService.PERMISSION_MODERATE_COMMENT_FORM, (User) getUser( ) )
+                && !StringUtils.equals( comment.getCreatorUserName( ), getUser( ).getAccessCode( ) ) )
+        {
+            throw new AccessDeniedException( AppointmentResourceIdService.PERMISSION_MODERATE_COMMENT_FORM );
+        }
+        return comment;
+    }
+
+    /**
+     * Sets the validity period of a comment from the request
+     *
+     * @param comment
+     *            The comment
+     * @param request
+     *            The request
+     * @return false when a date is missing or a date or time cannot be read
+     */
+    private static boolean fillPeriod( Comment comment, HttpServletRequest request )
+    {
+        String strStartDate = StringUtils.left( request.getParameter( PARAMETER_STARTING_VALIDITY_DATE ), 10 );
+        String strEndDate = StringUtils.left( request.getParameter( PARAMETER_ENDING_VALIDITY_DATE ), 10 );
+        String strStartTime = request.getParameter( PARAMETER_STARTING_VALIDITY_TIME );
+        String strEndTime = request.getParameter( PARAMETER_ENDING_VALIDITY_TIME );
+        if ( StringUtils.isAnyBlank( strStartDate, strEndDate ) )
+        {
+            return false;
+        }
+        try
+        {
+            comment.setStartingValidityDate( LocalDate.parse( strStartDate ) );
+            comment.setEndingValidityDate( LocalDate.parse( strEndDate ) );
+            if ( StringUtils.isNotBlank( strStartTime ) )
+            {
+                comment.setStartingValidityTime( LocalTime.parse( strStartTime ) );
+            }
+            if ( StringUtils.isNotBlank( strEndTime ) )
+            {
+                comment.setEndingValidityTime( LocalTime.parse( strEndTime ) );
+            }
+        }
+        catch( DateTimeParseException e )
+        {
+            return false;
+        }
+        return true;
+    }
+
 }

@@ -17,7 +17,7 @@ const slots = [
 	start: '${event.startingDateTime}',
 	end: '${event.endingDateTime}',
 	id: '${event.idSlot}',
-	url: eventUrl + '&id_form=${event.idForm}&starting_date_time=${event.startingDateTime}&modif_date=${modifDateAppointment?c}&anchor=step3',
+	url: eventUrl + '&id_form=${event.idForm}&starting_date_time=${event.startingDateTime}&modif_date=${modifDateAppointment?c}',
 	open: <#if event.isOpen>true<#else>false</#if>,
 	available: <#if event.isOpen && (event.nbRemainingPlaces > 0) && (event.nbRemainingPlaces == event.nbPotentialRemainingPlaces)>true<#elseif event.isOpen && (event.nbRemainingPlaces > 0) && (event.nbPotentialRemainingPlaces > 0)>true<#else>false</#if>,
 	remaining: ${event.nbRemainingPlaces},

@@ -2,6 +2,7 @@
 <!--  CSS/JS admin -->
 <link rel="stylesheet" href="themes/shared/plugins/appointment/css/admin/fullcalendar-appointment-admin.css" />
 <script src="themes/shared/plugins/appointment/js/fullcalendar.min.js"></script>
+<script src="themes/shared/plugins/appointment/js/fullcalendar-locales-all.min.js"></script>
 <script src="themes/shared/plugins/appointment/js/admin/appointment.js" ></script>
 </#macro>
 <#macro headerTitle form=form >
@@ -10,8 +11,7 @@ document.addEventListener('DOMContentLoaded', function() {
 	/* Add Form title */
 	const pageTitle = document.querySelector('#feature-title + .page-title');
 	if (pageTitle) {
-		const title = '${form.title!?js_string}';	
-		<#noparse>pageTitle.setHTML( `${pageTitle.textContent} : ${title}`);</#noparse>
+		pageTitle.textContent = pageTitle.textContent.trim( ) + ' : ' + '${form.title!?js_string}';
 	}
 });
 </#if>
@@ -95,7 +95,7 @@ document.addEventListener('DOMContentLoaded', function() {
 <#function getFieldByCode entry fieldCode>
 <#if entry.fields?? && entry.fields?has_content><#list entry.fields as field><#if field?? && field.code?? && field.code == fieldCode><#return field></#if></#list></#if>
 </#function>
-<#macro getCommentModal modalId modalTitle idComment idStartingDate idEndingDate idStartingTime idEndingTime action idForm mailingList locale=locale from="" additionalParameters="">
+<#macro getCommentModal modalId modalTitle idComment idStartingDate idEndingDate idStartingTime idEndingTime action idForm mailingList locale=locale from="" additionalParameters="" inline=false current={}>
 <#switch modalId>
 <#case 'modify-comment'>
 	<#assign startDateLabel='#i18n{appointment.modify_comment.labelStartingValidityDate}'>
@@ -111,30 +111,29 @@ document.addEventListener('DOMContentLoaded', function() {
 	<#assign endDateHelp='#i18n{appointment.create_comment.labelEndingValidityDate}'>
 	<#assign endTimeLabel='#i18n{appointment.create_comment.labelEndingValidityTime}'>
 </#switch>
-<@offcanvas id=modalId position='end' title=modalTitle btnTitle=modalTitle btnIcon='message-plus' btnColor='primary visually-hidden' size='sm' >
-	<@tform action='jsp/admin/plugins/appointment/Comments.jsp' id='commentUpdate'>
+<#local commentFields>
 		<@input type='hidden' name='id_form' value='${idForm!}' />
-		<@input type='hidden' name='id_comment' id='id_comment' />
+		<@input type='hidden' name='id_comment' id='id_comment' value='${(current.id)!}' />
 		<@input type='hidden' name='from' value='${from!}' />
 		<@input type='hidden' name='additional_parameters' value='${additionalParameters!}' />
 		<@formGroup labelFor='comment' labelKey='#i18n{appointment.comment.name}' helpKey='#i18n{appointment.comment.name}' mandatory=true rows=2>
-			<@input type='textarea' name='comment' id=idComment richtext=true mandatory=true />
+			<@input type='textarea' name='comment' id=idComment richtext=true mandatory=true>${((current.comment)!)?html}</@input>
 			<@span id=idComment+'_errorEmpty' class='text-danger labelErrorComment'>#i18n{appointment.message.comment.error.commentEmpty}</@span>
 		</@formGroup>
 		<@formGroup labelFor='startingValidityDate' labelKey=startDateLabel mandatory=true rows=2>
-			<@input type='date' name='startingValidityDate' id=idStartingDate />
+			<@input type='date' name='startingValidityDate' id=idStartingDate value=((current.startingValidityDate?string)?date.xs)!'' />
 		</@formGroup>
 		<@formGroup labelFor='startingValidityTime' labelKey=startTimeLabel rows=2>
-			<@input type='time' name='startingValidityTime' id=idStartingTime />
+			<@input type='time' name='startingValidityTime' id=idStartingTime value='${(current.startingValidityTime)!}' />
 		</@formGroup>
 		<@formGroup labelFor=idEndingDate labelKey=endDateLabel mandatory=true rows=2>
-			<@input type='date' name='endingValidityDate' id=idEndingDate />
+			<@input type='date' name='endingValidityDate' id=idEndingDate value=((current.endingValidityDate?string)?date.xs)!'' />
 			<@span id=idEndingDate+'_errorEndDateBeforeStartDate' class='text-danger labelErrorComment'>
 				#i18n{appointment.message.comment.error.endDateBeforeStartDate}
 			</@span>
 		</@formGroup>
 		<@formGroup labelFor='endingValidityTime' labelKey=endTimeLabel rows=2>
-			<@input type='time' name='endingValidityTime' id=idEndingTime />
+			<@input type='time' name='endingValidityTime' id=idEndingTime value='${(current.endingValidityTime)!}' />
 			<@span id=idEndingTime+'_errorEndTimeEqualStartTime' class='text-danger labelErrorComment'>
 				#i18n{appointment.message.comment.error.endTimeEqualStartTime}
 			</@span>
@@ -153,12 +152,39 @@ document.addEventListener('DOMContentLoaded', function() {
 				</#list>
 			</@select>
 		</@formGroup>
-		<@button type='submit' id='commentDelete' name='action_confirmRemoveComment' buttonIcon='trash' title='#i18n{portal.util.labelDelete}' color='danger' params='formnovalidate' /> 
-		<@button type='submit' id='action_${action}' name='action_${action}' buttonIcon='check' title='#i18n{portal.util.labelValidate}' params='formnovalidate'/> 
-		<@button type='button' params='data-bs-dismiss="offcanvas"' title='#i18n{portal.util.labelCancel}' buttonIcon='times' color='default' />
+</#local>
+<#local commentActions>
+			<#if action == 'doModifyComment'><@button type='submit' id='commentDelete' name='action_confirmRemoveComment' buttonIcon='trash' title='#i18n{portal.util.labelDelete}' color='danger' params='formnovalidate' /></#if>
+			<@button type='submit' id='action_${action}' name='action_${action}' buttonIcon='check' title='#i18n{portal.util.labelValidate}' params='formnovalidate' />
+</#local>
+<#if inline>
+<@box>
+	<@tform action='jsp/admin/plugins/appointment/Comments.jsp' id='${modalId}-form'>
+		<@boxBody>
+${commentFields}		</@boxBody>
+		<@boxFooter>
+			<@aButton href='jsp/admin/plugins/appointment/Comments.jsp?view=manageComment' title='#i18n{portal.util.labelCancel}' buttonIcon='times' color='light' />
+${commentActions}		</@boxFooter>
 	</@tform>
-</@offcanvas>
+</@box>
+<#else>
+<@modal id=modalId size='lg'>
+	<@tform action='jsp/admin/plugins/appointment/Comments.jsp' id='${modalId}-form'>
+		<@modalHeader modalTitle=modalTitle />
+		<@modalBody>
+${commentFields}		</@modalBody>
+		<@modalFooter>
+			<@button type='button' params='data-bs-dismiss="modal"' title='#i18n{portal.util.labelCancel}' buttonIcon='times' color='light' />
+${commentActions}		</@modalFooter>
+	</@tform>
+</@modal>
+</#if>
 <script>
+document.addEventListener('focusin', function(e) {
+	if (e.target.closest('.tox-tinymce, .tox-tinymce-aux, .moxman-window, .tam-assetmanager-root') !== null) {
+		e.stopImmediatePropagation();
+	}
+});
 document.addEventListener('DOMContentLoaded', function() {
 	document.querySelectorAll('.labelErrorComment').forEach(function(el) {
 		el.style.display = 'none';
@@ -173,8 +199,9 @@ document.addEventListener('DOMContentLoaded', function() {
 
 	// Helper: set Flatpickr date/time via its API
 	function fpSet(el, value) {
-		if (el && el._flatpickr) { el._flatpickr.setDate(value, true); }
-		else if (el) { el.value = value; }
+		if (!el || el.value) { return; }
+		if (el._flatpickr) { el._flatpickr.setDate(value, true); }
+		else { el.value = value; }
 	}
 
 	fpSet(startDateEl, today);
@@ -192,9 +219,9 @@ document.addEventListener('DOMContentLoaded', function() {
 		});
 	}
 
-	<#if action !='doModifyComment'>
+	<#if action != 'doModifyComment' && !inline>
 	/* Set default dates to first open day with appointments in displayed week */
-	document.getElementById('${modalId}').addEventListener('shown.bs.offcanvas', function() {
+	document.getElementById('${modalId}').addEventListener('shown.bs.modal', function() {
 		// Reset date constraints
 		if (startDateEl && startDateEl._flatpickr) { startDateEl._flatpickr.set('minDate', null); startDateEl._flatpickr.set('maxDate', null); }
 		if (endDateEl && endDateEl._flatpickr) { endDateEl._flatpickr.set('minDate', null); endDateEl._flatpickr.set('maxDate', null); }
@@ -224,10 +251,6 @@ document.addEventListener('DOMContentLoaded', function() {
 		localStorage.setItem('commentContext', firstDay);
 	});
 	</#if>
-	if( '${action!}' === 'doAddComment' ){
-		var commentDeleteEl = document.getElementById('commentDelete');
-		if (commentDeleteEl) commentDeleteEl.remove();
-	}
 	// Click on validation button events
 	document.querySelector( '[name="action_${action}"]' ).addEventListener( 'click', function(e){
 		document.querySelectorAll('.labelErrorComment').forEach(function(el) {
@@ -256,7 +279,9 @@ document.addEventListener('DOMContentLoaded', function() {
 			}
 			e.preventDefault();
 		}
-		if( tinyMCE.activeEditor.getContent().trim().length === 0 ){
+		var commentEditor = window.tinymce ? tinymce.get( '${idComment}' ) : null;
+		var commentText = commentEditor ? commentEditor.getContent( ) : document.getElementById( '${idComment}' ).value;
+		if( commentText.trim().length === 0 ){
 			document.getElementById( '${idComment}_errorEmpty' ).style.display = 'block';
 			e.preventDefault();
 		} 
@@ -265,7 +290,7 @@ document.addEventListener('DOMContentLoaded', function() {
 </script>
 </#macro>
 <#macro btnComment >
-<#if permission_add_comment?boolean><@button id='toggle-add-comment' buttonIcon='message-plus' title='#i18n{appointment.create_comment.pageTitle}' hideTitle=['xs','sm'] size='sm' color='action' params='data-bs-toggle="offcanvas" data-bs-target="#commentModal"' /></#if>
+<#if permission_add_comment?boolean><@button id='toggle-add-comment' buttonIcon='message-plus' title='#i18n{appointment.create_comment.pageTitle}' hideTitle=['xs','sm'] size='sm' color='action' params='data-bs-toggle="modal" data-bs-target="#commentModal"' /></#if>
 </#macro>
 <#macro tabsComment tab>
 <@tabList id='${tab}-tab'>
@@ -358,16 +383,14 @@ localStorage.setItem( 'appointmentContext', '${context}' );
 </script>
 </#macro>
 <#macro commentModal update=false >
-let commentOffcanvas = bootstrap.Offcanvas.getOrCreateInstance('#modify-comment');
-var modifyOffcanvasEl = document.getElementById('modify-comment');
-modifyOffcanvasEl.addEventListener('show.bs.offcanvas', function() {
+let commentModal = bootstrap.Modal.getOrCreateInstance('#modify-comment');
+var modifyModalEl = document.getElementById('modify-comment');
+modifyModalEl.addEventListener('show.bs.modal', function() {
 <#if update>
 	var formValues = JSON.parse( info.el.getAttribute( 'data-json' ) );
 	var csDate = new Date(formValues.comment_start);
 	localStorage.setItem( 'commentContext', fcFormatDate(csDate, 'YYYY-MM-DD') );
-	// Store text in textarea before offcanvas opens (TinyMCE will pick it up on init)
-	tinyMCE.activeEditor.setContent(formValues.comment_text );
-	// document.querySelector( '#modify-comment input[name="comment"]' ).value = formValues.comment_text; 
+	tinymce.get( modifyModalEl.querySelector( 'textarea[name="comment"]' ).id ).setContent( formValues.comment_text );
 	document.querySelector( '#modify-comment input[name="id_comment"]' ).value = formValues.id_comment.slice(1);
 	document.querySelectorAll('.labelErrorComment').forEach(function(el) { el.style.display = 'none'; });
 	// Set dates/times via Flatpickr API
@@ -381,7 +404,7 @@ modifyOffcanvasEl.addEventListener('show.bs.offcanvas', function() {
 	if (modEndTime && modEndTime._flatpickr) { modEndTime._flatpickr.setDate(formValues.comment_end_time, true); } else if (modEndTime) { modEndTime.value = formValues.comment_end_time; }
 </#if>
 }, { once: true });
-commentOffcanvas.show();
+commentModal.show();
 </#macro> 
 <#macro getComments comments_list>
 <#list comments_list as comment_event>
@@ -506,7 +529,8 @@ function initMiniCalendar(fcInstance) {
 	var miniCal = new FullCalendar.Calendar(container, {
 		initialView: 'dayGridMonth',
 		initialDate: fcInstance.getDate(),
-		headerToolbar: { left: 'prev', center: 'title', right: 'next today' },
+		headerToolbar: { left: 'prev', center: 'title', right: 'next' },
+		footerToolbar: { center: 'today' },
 		height: '${height!}',
 		contentHeight: 'auto',
 		fixedWeekCount: false,
@@ -540,6 +564,9 @@ function initMiniCalendar(fcInstance) {
 
 function initAppointmentCalendar() {
     var calendarEl = document.getElementById('calendar');
+	if ( !calendarEl ) {
+		return;
+	}
 	var miniCalInstance = null;
 	var isDragging = false, selectedEls = [];
 	window.appointmentCalendar = null;
@@ -564,7 +591,7 @@ function initAppointmentCalendar() {
 		locale: '${locale}',
 		editable: false,
 		headerToolbar: <#if isTypical>false<#else>{ left: 'prev', center: 'title', right: 'next today' }</#if>,
-		<#if isTypical>dayHeaderFormat: { weekday: 'long' },<#else>dayHeaderContent: function(arg) { var d = arg.date; return { html: d.toLocaleDateString('fr-FR', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' }) }; },</#if>
+		<#if isTypical>dayHeaderFormat: { weekday: 'long' },<#else>dayHeaderContent: function(arg) { var d = arg.date; return { html: d.toLocaleDateString('${locale}', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' }) }; },</#if>
 		slotLabelFormat: { hour: 'numeric', minute: '2-digit',  hour12: false },
 		slotLabelInterval: slotDuration,
 		slotDuration: slotDuration,
@@ -663,6 +690,11 @@ function initAppointmentCalendar() {
 				var dtDate = new Date(addBookLink.dataset.starting_date_time);
 				document.getElementById('starting_date_time_span').value = fcFormatDate(dtDate, 'DD/MM/YYYY') + ' ' + fcFormatTime(dtDate);
 				bootstrap.Modal.getOrCreateInstance('#addBookModalDialog').show();
+				return;
+			}
+			/* A link written inside the event (count of the slot, add an appointment) opens its own page */
+			var innerLink = jsEvent.target.closest('a[href]');
+			if (innerLink && innerLink !== info.el && info.el.contains(innerLink)) {
 				return;
 			}
 		<#if showComments>

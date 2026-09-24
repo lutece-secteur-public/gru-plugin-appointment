@@ -33,8 +33,6 @@
  */
 package fr.paris.lutece.plugins.appointment.web;
 
-import java.io.IOException;
-import java.io.OutputStream;
 import java.sql.Date;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -51,7 +49,6 @@ import java.util.StringJoiner;
 import java.util.stream.Collectors;
 
 import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 
 import org.apache.commons.collections.CollectionUtils;
@@ -169,6 +166,8 @@ public class AppointmentJspBean extends MVCAdminJspBean
     @Inject
     private AppointmentAsynchronousUploadHandler _uploadHandler;
     @Inject
+    private GenericAttributeFileService _fileService;
+    @Inject
     private TemporaryFileGeneratorService _temporaryFileGeneratorService;
 
     @Inject
@@ -241,6 +240,7 @@ public class AppointmentJspBean extends MVCAdminJspBean
 
     // Markers
     private static final String MARK_TASKS_FORM = "tasks_form";
+    private static final String MARK_WEBAPP_URL = "webapp_url";
     private static final String MARK_APPOINTMENT_LIST = "appointment_list";
     private static final String MARK_APPOINTMENT = "appointment";
     private static final String MARK_FORM_MESSAGES = "formMessages";
@@ -277,6 +277,7 @@ public class AppointmentJspBean extends MVCAdminJspBean
 
     // Messages
     private static final String MESSAGE_CONFIRM_REMOVE_APPOINTMENT = "appointment.message.confirmRemoveAppointment";
+    private static final String MESSAGE_CONFIRM_WORKFLOW_ACTION = "appointment.message.confirmWorkflowAction";
     private static final String MESSAGE_CONFIRM_REMOVE_MASSAPPOINTMENT = "appointment.message.confirmRemoveMassAppointment";
     private static final String ERROR_MESSAGE_NB_MAX_APPOINTMENTS_ON_A_CATEGORY = "appointment.validation.appointment.NbMaxAppointmentsOnCategory.error";
     private static final String ERROR_MESSAGE_NB_MIN_DAYS_BETWEEN_TWO_APPOINTMENTS = "appointment.validation.appointment.NbMinDaysBetweenTwoAppointments.error";
@@ -295,6 +296,8 @@ public class AppointmentJspBean extends MVCAdminJspBean
     private static final String VIEW_CALENDAR_MANAGE_APPOINTMENTS = "viewCalendarManageAppointment";
     private static final String VIEW_WORKFLOW_ACTION_FORM = "viewWorkflowActionForm";
     private static final String VIEW_CHANGE_DATE_APPOINTMENT = "viewChangeDateAppointment";
+    private static final String VIEW_DOWNLOAD_FILE = "downloadFile";
+    private static final String VIEW_DOWNLOAD_FILE_FROM_SESSION = "downloadFileFromSession";
 
     // Actions
     private static final String ACTION_DO_VALIDATE_FORM = "doValidateForm";
@@ -316,7 +319,7 @@ public class AppointmentJspBean extends MVCAdminJspBean
     private static final String ERROR_MESSAGE_FORM_NOT_ACTIVE = "appointment.validation.appointment.formNotActive";
     private static final String ERROR_MESSAGE_NO_STARTING_VALIDITY_DATE = "appointment.validation.appointment.noStartingValidityDate";
     private static final String ERROR_MESSAGE_FORM_NO_MORE_VALID = "appointment.validation.appointment.formNoMoreValid";
-    private static final String MESSAGE_UNVAILABLE_SLOT = "appointment.slot.unvailable";
+    private static final String MESSAGE_UNVAILABLE_SLOT = "appointment.message.error.slotFull";
     private static final String ERROR_MESSAGE_REPORT_APPOINTMENT = "appointment.message.error.report.appointment";
     private static final String ERROR_MESSAGE_EMPTY_RESERVATIONS_RULES = "appointment.message.error.empty.reservationsRules";
 
@@ -347,6 +350,10 @@ public class AppointmentJspBean extends MVCAdminJspBean
     public synchronized String getViewCalendarManageAppointments( HttpServletRequest request ) throws AccessDeniedException
     {
         String strIdForm = request.getParameter( PARAMETER_ID_FORM );
+        if ( !StringUtils.isNumeric( strIdForm ) )
+        {
+            return redirect( request, AppointmentFormJspBean.getURLManageAppointmentForms( request ) );
+        }
 
         if ( !RBACService.isAuthorized( AppointmentFormDTO.RESOURCE_TYPE, strIdForm, AppointmentResourceIdService.PERMISSION_VIEW_FORM, (User) getUser( ) ) )
         {
@@ -502,6 +509,7 @@ public class AppointmentJspBean extends MVCAdminJspBean
         _models.put( AppointmentUtilities.MARK_PERMISSION_ACCESS_CODE, getUser( ).getAccessCode( ) );
         _models.put( MARK_APPOINTMENT_DESK_ENABLED, ( _moduleAppointmentDesk != null && _moduleAppointmentDesk.isInstalled( ) ) );
 
+        _models.put( MARK_WEBAPP_URL, AppPathService.getBaseUrl( request ) );
         if ( appointmentForm.getIsMultislotAppointment( ) && _nNbPlacesToTake <= 0 )
         {
 
@@ -534,6 +542,10 @@ public class AppointmentJspBean extends MVCAdminJspBean
     public synchronized String getManageAppointments( HttpServletRequest request ) throws AccessDeniedException
     {
         String strIdForm = request.getParameter( PARAMETER_ID_FORM );
+        if ( !StringUtils.isNumeric( strIdForm ) )
+        {
+            return redirect( request, AppointmentFormJspBean.getURLManageAppointmentForms( request ) );
+        }
 
         if ( !RBACService.isAuthorized( AppointmentFormDTO.RESOURCE_TYPE, strIdForm, AppointmentResourceIdService.PERMISSION_VIEW_FORM, (User) getUser( ) ) )
         {
@@ -803,7 +815,7 @@ public class AppointmentJspBean extends MVCAdminJspBean
             if ( response.getFile( ) != null )
             {
             	// load from default generic attribute file service
-            	File file = GenericAttributeFileService.getInstance().load( response.getFile( ).getFileKey( ), null);
+            	File file = _fileService.load( response.getFile( ).getFileKey( ), null);
 
 
                 response.setFile( file );
@@ -950,8 +962,7 @@ public class AppointmentJspBean extends MVCAdminJspBean
             if ( listSlot == null || listSlot.stream( ).noneMatch( slot -> slot.getStartingDateTime( ).isEqual( startingDateTime ) )
                     || ( _nNbPlacesToTake > 0 && _nNbPlacesToTake != listSlot.size( ) ) || !AppointmentUtilities.isConsecutiveSlots( listSlot ) )
             {
-                addError( ERROR_MESSAGE_SLOT_FULL, locale );
-                return redirect( request, VIEW_CALENDAR_MANAGE_APPOINTMENTS, PARAMETER_ID_FORM, nIdForm );
+                return redirect( request, AdminMessageService.getMessageUrl( request, ERROR_MESSAGE_SLOT_FULL, AdminMessage.TYPE_STOP ) );
             }
         }
 
@@ -1008,8 +1019,7 @@ public class AppointmentJspBean extends MVCAdminJspBean
                         strIdForm, AppointmentResourceIdService.PERMISSION_OVERBOOKING_FORM, (User) getUser( ) ) )
                 {
                     _notValidatedAppointment = null;
-                    addError( ERROR_MESSAGE_SLOT_FULL, locale );
-                    return redirect( request, VIEW_CALENDAR_MANAGE_APPOINTMENTS, PARAMETER_ID_FORM, nIdForm );
+                    return redirect( request, AdminMessageService.getMessageUrl( request, ERROR_MESSAGE_SLOT_FULL, AdminMessage.TYPE_STOP ) );
                 }
 
                 _notValidatedAppointment.addSlot( slot );
@@ -1033,8 +1043,7 @@ public class AppointmentJspBean extends MVCAdminJspBean
                     .isAuthorized( AppointmentFormDTO.RESOURCE_TYPE, strIdForm, AppointmentResourceIdService.PERMISSION_OVERBOOKING_FORM, (User) getUser( ) ) )
 
             {
-                addError( ERROR_MESSAGE_SLOT_FULL, locale );
-                return redirect( request, VIEW_CALENDAR_MANAGE_APPOINTMENTS, PARAMETER_ID_FORM, nIdForm );
+                return redirect( request, AdminMessageService.getMessageUrl( request, ERROR_MESSAGE_SLOT_FULL, AdminMessage.TYPE_STOP ) );
             }
         }
 
@@ -1172,10 +1181,14 @@ public class AppointmentJspBean extends MVCAdminJspBean
     public synchronized String getViewChangeDateAppointment( HttpServletRequest request )
     {
         String strIdForm = request.getParameter( PARAMETER_ID_FORM );
-        Locale locale = getLocale( );
+        if ( _validatedAppointment == null || !StringUtils.isNumeric( strIdForm ) )
+        {
+            return redirect( request, AppointmentFormJspBean.getURLManageAppointmentForms( request ) );
+        }
         int nIdForm = Integer.parseInt( strIdForm );
         LocalDateTime startingDateTime = LocalDateTime.parse( request.getParameter( PARAMETER_STARTING_DATE_TIME ) );
         LocalDateTime endingDateTime = LocalDateTime.parse( request.getParameter( PARAMETER_ENDING_DATE_TIME ) );
+        LocalDateTime now = LocalDateTime.now( );
         // Get all the week definitions
         List<WeekDefinition> listWeekDefinition = WeekDefinitionService.findListWeekDefinition( nIdForm );
         Map<WeekDefinition, ReservationRule> mapReservationRule = ReservationRuleService.findAllReservationRule( nIdForm, listWeekDefinition );
@@ -1188,7 +1201,8 @@ public class AppointmentJspBean extends MVCAdminJspBean
         {
 
             listSlot = listSlot.stream( ).filter( s -> ( ( startingDateTime.compareTo( s.getStartingDateTime( ) ) <= 0 )
-                    && ( endingDateTime.compareTo( s.getEndingDateTime( ) ) >= 0 ) && ( s.getIsOpen( ) ) ) ).collect( Collectors.toList( ) );
+                    && ( endingDateTime.compareTo( s.getEndingDateTime( ) ) >= 0 ) && ( s.getIsOpen( ) ) && s.getStartingDateTime( ).isAfter( now ) ) )
+                    .collect( Collectors.toList( ) );
 
         }
         else
@@ -1196,7 +1210,8 @@ public class AppointmentJspBean extends MVCAdminJspBean
 
             listSlot = listSlot.stream( )
                     .filter( s -> ( ( startingDateTime.compareTo( s.getStartingDateTime( ) ) <= 0 )
-                            && ( endingDateTime.compareTo( s.getEndingDateTime( ) ) >= 0 ) && ( s.getNbRemainingPlaces( ) > 0 ) && ( s.getIsOpen( ) ) ) )
+                            && ( endingDateTime.compareTo( s.getEndingDateTime( ) ) >= 0 ) && ( s.getNbRemainingPlaces( ) > 0 ) && ( s.getIsOpen( ) )
+                            && s.getStartingDateTime( ).isAfter( now ) ) )
                     .collect( Collectors.toList( ) );
         }
         boolean bool = true;
@@ -1232,8 +1247,7 @@ public class AppointmentJspBean extends MVCAdminJspBean
             {
                 _validatedAppointment.setSlot( listPreviousSlot );
                 _validatedAppointment.setNbMaxPotentialBookedSeats( nPreviousNbMaxPotentialBookedSeats );
-                addError( ERROR_MESSAGE_SLOT_FULL, locale );
-                return redirect( request, VIEW_CALENDAR_MANAGE_APPOINTMENTS, PARAMETER_ID_FORM, nIdForm );
+                return redirect( request, AdminMessageService.getMessageUrl( request, ERROR_MESSAGE_SLOT_FULL, AdminMessage.TYPE_STOP ) );
             }
 
             _validatedAppointment.addSlot( slot );
@@ -1246,8 +1260,7 @@ public class AppointmentJspBean extends MVCAdminJspBean
         {
             _validatedAppointment.setSlot( listPreviousSlot );
             _validatedAppointment.setNbMaxPotentialBookedSeats( nPreviousNbMaxPotentialBookedSeats );
-            addError( ERROR_MESSAGE_SLOT_FULL, locale );
-            return redirect( request, VIEW_CALENDAR_MANAGE_APPOINTMENTS, PARAMETER_ID_FORM, nIdForm );
+            return redirect( request, AdminMessageService.getMessageUrl( request, ERROR_MESSAGE_SLOT_FULL, AdminMessage.TYPE_STOP ) );
         }
 
         for ( Response response : _validatedAppointment.getListResponse( ) )
@@ -1255,7 +1268,7 @@ public class AppointmentJspBean extends MVCAdminJspBean
             if ( response.getFile( ) != null )
             {
             	// load from default generic attribute file service
-            	File file = GenericAttributeFileService.getInstance().load( response.getFile( ).getFileKey( ), null);
+            	File file = _fileService.load( response.getFile( ).getFileKey( ), null);
 
                 response.setFile( file );
             }
@@ -1376,13 +1389,10 @@ public class AppointmentJspBean extends MVCAdminJspBean
      *
      * @param request
      *            The request
-     * @param httpResponse
-     *            The response
-     * @return nothing.
-     * @throws AccessDeniedException
-     *             If the user is not authorized to access this feature
+     * @return null once the download is sent, or the URL of the forms list when the file is not found
      */
-    public synchronized String getDownloadFileFromSession( HttpServletRequest request, HttpServletResponse httpResponse ) throws AccessDeniedException
+    @View( VIEW_DOWNLOAD_FILE_FROM_SESSION )
+    public synchronized String getDownloadFileFromSession( HttpServletRequest request )
     {
         String strIdResponse = request.getParameter( PARAMETER_ID_RESPONSE );
         File respfile = null;
@@ -1392,7 +1402,7 @@ public class AppointmentJspBean extends MVCAdminJspBean
         }
 
         int nIdResponse = Integer.parseInt( strIdResponse );
-        List<Response> lResponse = _validatedAppointment.getListResponse( );
+        List<Response> lResponse = ( _validatedAppointment != null ) ? _validatedAppointment.getListResponse( ) : List.of( );
 
         for ( Response response : lResponse )
         {
@@ -1403,33 +1413,14 @@ public class AppointmentJspBean extends MVCAdminJspBean
             }
         }
 
-        if ( respfile == null )
+        if ( respfile == null || respfile.getPhysicalFile( ) == null )
         {
             return redirect( request, AppointmentFormJspBean.getURLManageAppointmentForms( request ) );
         }
 
-        httpResponse.setHeader( "Content-Disposition", "attachment; filename=\"" + respfile.getTitle( ) + "\";" );
-        httpResponse.setHeader( "Content-type", respfile.getMimeType( ) );
-        httpResponse.addHeader( "Content-Encoding", "UTF-8" );
-        httpResponse.addHeader( "Pragma", "public" );
-        httpResponse.addHeader( "Expires", "0" );
-        httpResponse.addHeader( "Cache-Control", "must-revalidate,post-check=0,pre-check=0" );
+        download( respfile.getPhysicalFile( ).getValue( ), respfile.getTitle( ), respfile.getMimeType( ) );
 
-        try
-        {
-            OutputStream os = httpResponse.getOutputStream( );
-            os.write( respfile.getPhysicalFile( ).getValue( ) );
-            // We do not close the output stream in finally clause because it is
-            // the response stream,
-            // and an error message needs to be displayed if an exception occurs
-            os.close( );
-        }
-        catch( IOException e )
-        {
-            AppLogService.error( e.getStackTrace( ), e );
-        }
-
-        return StringUtils.EMPTY;
+        return null;
     }
 
     /**
@@ -1437,15 +1428,10 @@ public class AppointmentJspBean extends MVCAdminJspBean
      *
      * @param request
      *            The request
-     * @param httpResponse
-     *            The response
-     * @return nothing.
-     * @throws AccessDeniedException
-     *             If the user is not authorized to access this feature
-     * @throws FileServiceException
-     *             If there is an error with the file service
+     * @return null once the download is sent, or the URL of the forms list when the file is not found
      */
-    public synchronized String getDownloadFile( HttpServletRequest request, HttpServletResponse httpResponse ) throws AccessDeniedException
+    @View( VIEW_DOWNLOAD_FILE )
+    public synchronized String getDownloadFile( HttpServletRequest request )
     {
         String strIdResponse = request.getParameter( PARAMETER_ID_RESPONSE );
 
@@ -1456,32 +1442,16 @@ public class AppointmentJspBean extends MVCAdminJspBean
 
         int nIdResponse = Integer.parseInt( strIdResponse );
         Response response = ResponseHome.findByPrimaryKey( nIdResponse );
-        
-        // load from default generic attribute file service
-    	File file = GenericAttributeFileService.getInstance().load( response.getFile( ).getFileKey( ), null);
+        File file = ( response != null && response.getFile( ) != null ) ? _fileService.load( response.getFile( ).getFileKey( ), null ) : null;
 
-        httpResponse.setHeader( "Content-Disposition", "attachment; filename=\"" + file.getTitle( ) + "\";" );
-        httpResponse.setHeader( "Content-type", file.getMimeType( ) );
-        httpResponse.addHeader( "Content-Encoding", "UTF-8" );
-        httpResponse.addHeader( "Pragma", "public" );
-        httpResponse.addHeader( "Expires", "0" );
-        httpResponse.addHeader( "Cache-Control", "must-revalidate,post-check=0,pre-check=0" );
-
-        try
+        if ( file == null || file.getPhysicalFile( ) == null )
         {
-            OutputStream os = httpResponse.getOutputStream( );
-            os.write( file.getPhysicalFile( ).getValue( ) );
-            // We do not close the output stream in finnaly clause because it is
-            // the response stream,
-            // and an error message needs to be displayed if an exception occurs
-            os.close( );
-        }
-        catch( IOException e )
-        {
-            AppLogService.error( e.getStackTrace( ), e );
+            return redirect( request, AppointmentFormJspBean.getURLManageAppointmentForms( request ) );
         }
 
-        return StringUtils.EMPTY;
+        download( file.getPhysicalFile( ).getValue( ), file.getTitle( ), file.getMimeType( ) );
+
+        return null;
     }
 
     private void cleanSession( HttpSession session )
@@ -1529,8 +1499,8 @@ public class AppointmentJspBean extends MVCAdminJspBean
     }
 
     /**
-     * Get the workflow action form before processing the action. If the action does not need to display any form, then redirect the user to the workflow action
-     * processing page.
+     * Get the workflow action form before processing the action. An action without form is not processed here: the request
+     * asks for a confirmation whose form posts the processing action.
      *
      * @param request
      *            The request
@@ -1571,7 +1541,10 @@ public class AppointmentJspBean extends MVCAdminJspBean
                 model.put( PARAMETER_ID_APPOINTMENT, nIdAppointment );
                 return getPage( PROPERTY_PAGE_TITLE_TASKS_FORM_WORKFLOW, TEMPLATE_TASKS_FORM_WORKFLOW, model );
             }
-            return doProcessWorkflowAction( request );
+            UrlItem url = new UrlItem( getActionUrl( ACTION_DO_PROCESS_WORKFLOW_ACTION ) );
+            url.addParameter( PARAMETER_ID_ACTION, nIdAction );
+            url.addParameter( PARAMETER_ID_APPOINTMENT, nIdAppointment );
+            return redirect( request, AdminMessageService.getMessageUrl( request, MESSAGE_CONFIRM_WORKFLOW_ACTION, url.getUrl( ), AdminMessage.TYPE_CONFIRMATION ) );
         }
         return redirect( request, AppointmentFormJspBean.getURLManageAppointmentForms( request ) );
     }
@@ -1685,7 +1658,7 @@ public class AppointmentJspBean extends MVCAdminJspBean
                 for ( AppointmentSlot apptSlot : appointment.getListAppointmentSlot( ) )
                 {
 
-                    slot = SlotService.findSlotById( idSlot );
+                    slot = SlotService.findSlotById( apptSlot.getIdSlot( ) );
 
                     if ( ( apptSlot.getNbPlaces( ) > slot.getNbRemainingPlaces( ) ) )
                     {

@@ -2,8 +2,3 @@
 <@appointmentTabs tab="params" appointmentform=appointmentform>
 <@modifyAppointmentFormLeftColumn appointmentform=appointmentform />
 </@appointmentTabs>
-<script>
-/* Add Form title */
-var featureSmall = document.querySelector('#feature-title > small');
-if (featureSmall) { featureSmall.innerHTML = '${appointmentform.title}'; }
-</script>

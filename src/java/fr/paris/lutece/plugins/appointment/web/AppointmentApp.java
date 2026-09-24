@@ -37,6 +37,7 @@ import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.time.format.DateTimeParseException;
 import java.time.temporal.TemporalField;
 import java.time.temporal.WeekFields;
 import java.util.ArrayList;
@@ -108,7 +109,9 @@ import fr.paris.lutece.portal.service.captcha.ICaptchaService;
 import fr.paris.lutece.portal.service.util.BeanUtils;
 import fr.paris.lutece.portal.service.i18n.I18nService;
 import fr.paris.lutece.portal.service.image.ImageResource;
+import fr.paris.lutece.portal.service.message.SiteMessage;
 import fr.paris.lutece.portal.service.message.SiteMessageException;
+import fr.paris.lutece.portal.service.message.SiteMessageService;
 import fr.paris.lutece.portal.service.security.LuteceUser;
 import fr.paris.lutece.portal.service.security.SecurityService;
 import fr.paris.lutece.portal.service.security.UserNotSignedException;
@@ -215,7 +218,6 @@ public class AppointmentApp extends MVCApplication
     private static final String PARAMETER_REFERER = "referer";
     private static final String PARAMETER_WEEK_VIEW = "week_view";
     private static final String PARAMETER_DAY_VIEW = "day_view";
-    private static final String PARAMETER_ANCHOR = "anchor";
     private static final String PARAMETER_MODIFICATION_FORM = "mod";
     private static final String PARAMETER_MIN_DATE_OF_OPEN_DAY = "min_date_of_open_day";
     private static final String PARAMETER_MAX_DATE_OF_OPEN_DAY = "max_date_of_open_day";
@@ -261,7 +263,6 @@ public class AppointmentApp extends MVCApplication
     private static final String MARK_COLON = ":";
     private static final String MARK_ICONS = "icons";
     private static final String MARK_ICON_NULL = "NULL";
-    private static final String MARK_ANCHOR = "#";
     private static final String MARK_APPOINTMENT_ALREADY_CANCELLED = "alreadyCancelled";
     private static final String MARK_NO_APPOINTMENT_WITH_THIS_REFERENCE = "noAppointmentWithThisReference";
     private static final String MARK_APPOINTMENT_PASSED = "appointmentPassed";
@@ -288,6 +289,7 @@ public class AppointmentApp extends MVCApplication
 
     // Messages
     private static final String MESSAGE_CANCEL_APPOINTMENT_PAGE_TITLE = "appointment.cancelAppointment.pageTitle";
+    private static final String MESSAGE_CONFIRM_WORKFLOW_ACTION = "appointment.message.confirmWorkflowAction";
     private static final String MESSAGE_MY_APPOINTMENTS_PAGE_TITLE = "appointment.myAppointments.name";
     private static final String MESSAGE_WF_ACTION_SUCESS = "appointment.wf.action.success";
 
@@ -300,7 +302,6 @@ public class AppointmentApp extends MVCApplication
     private static final String BASIC_WEEK = "basicWeek";
     private static final String AGENDA_DAY = "agendaDay";
     private static final String BASIC_DAY = "basicDay";
-    private static final String STEP_3 = "step3";
 
     // Injected services
     @Inject
@@ -311,6 +312,8 @@ public class AppointmentApp extends MVCApplication
     private Instance<ITaskService> _taskService;
     @Inject
     private ISecurityTokenService _securityTokenService;
+    @Inject
+    private GenericAttributeFileService _fileService;
     @Inject
     private Models _models;
     @Inject
@@ -657,7 +660,11 @@ public class AppointmentApp extends MVCApplication
         {
             return getViewChangeDateAppointment( request );
         }
-        if ( strNbPlacesToTake != null )
+        if ( !StringUtils.isNumeric( strIdForm ) )
+        {
+            return redirectView( request, VIEW_APPOINTMENT_FORM_LIST );
+        }
+        if ( StringUtils.isNumeric( strNbPlacesToTake ) )
         {
             _nNbPlacesToTake = Integer.parseInt( strNbPlacesToTake );
         }
@@ -666,6 +673,10 @@ public class AppointmentApp extends MVCApplication
         if ( _appointmentForm == null || _appointmentForm.getIdForm( ) != nIdForm )
         {
             _appointmentForm = FormService.buildAppointmentFormWithoutReservationRule( nIdForm );
+        }
+        if ( _appointmentForm == null )
+        {
+            return redirectView( request, VIEW_APPOINTMENT_FORM_LIST );
         }
         if ( !_appointmentForm.getIsActive( ) )
         {
@@ -684,19 +695,6 @@ public class AppointmentApp extends MVCApplication
         {
             bTestSecondAttempt = Boolean.TRUE;
         }
-        // Need to manage the anchor
-        String anchor = request.getParameter( PARAMETER_ANCHOR );
-        if ( StringUtils.isNotEmpty( anchor ) )
-        {
-            LinkedHashMap<String, String> additionalParameters = new LinkedHashMap<>( );
-            additionalParameters.put( PARAMETER_ID_FORM, strIdForm );
-            additionalParameters.put( PARAMETER_STARTING_DATE_TIME, request.getParameter( PARAMETER_STARTING_DATE_TIME ) );
-            additionalParameters.put( PARAMETER_NB_PLACE_TO_TAKE, Integer.toString( _nNbPlacesToTake ) );
-            additionalParameters.put( PARAMETER_ANCHOR, MARK_ANCHOR + anchor );
-            return redirect( request, VIEW_APPOINTMENT_FORM, additionalParameters );
-
-        }
-
         String isModification = request.getParameter( PARAMETER_IS_MODIFICATION );
         boolean bModificationForm = false;
         List<Slot> listSlot = null;
@@ -710,7 +708,11 @@ public class AppointmentApp extends MVCApplication
         {
 
             int nNbConsecutiveSlot = ( _nNbPlacesToTake == 0 ) ? 1 : _nNbPlacesToTake;
-            LocalDateTime startingDateTime = LocalDateTime.parse( request.getParameter( PARAMETER_STARTING_DATE_TIME ) );
+            LocalDateTime startingDateTime = parseStartingDateTime( request );
+            if ( startingDateTime == null )
+            {
+                return redirect( request, VIEW_APPOINTMENT_CALENDAR, PARAMETER_ID_FORM, nIdForm, PARAMETER_NB_PLACE_TO_TAKE, _nNbPlacesToTake );
+            }
             if ( !isAuthorizedDate( startingDateTime, getLocale( request ) ) )
             {
 
@@ -804,15 +806,14 @@ public class AppointmentApp extends MVCApplication
         }
         else
         {
-            // Modification of the Form only, Need to redirect for the anchor
+            // Modification of the form only: reload it in modification mode
             if ( StringUtils.isEmpty( request.getParameter( PARAMETER_MODIFICATION_FORM ) ) )
             {
                 LinkedHashMap<String, String> additionalParameters = new LinkedHashMap<>( );
                 additionalParameters.put( PARAMETER_ID_FORM, strIdForm );
                 additionalParameters.put( PARAMETER_MODIFICATION_FORM, String.valueOf( Boolean.TRUE ) );
                 additionalParameters.put( PARAMETER_IS_MODIFICATION, String.valueOf( Boolean.TRUE ) );
-                additionalParameters.put( PARAMETER_ANCHOR, MARK_ANCHOR + STEP_3 );
-                return redirect( request, VIEW_APPOINTMENT_FORM, additionalParameters );
+                    return redirect( request, VIEW_APPOINTMENT_FORM, additionalParameters );
             }
         }
 
@@ -982,23 +983,11 @@ public class AppointmentApp extends MVCApplication
             additionalParameters.put( PARAMETER_ID_FORM, strIdForm );
             additionalParameters.put( PARAMETER_MODIFICATION_FORM, String.valueOf( Boolean.TRUE ) );
             additionalParameters.put( PARAMETER_IS_MODIFICATION, String.valueOf( Boolean.TRUE ) );
-            additionalParameters.put( PARAMETER_ANCHOR, MARK_ANCHOR + STEP_3 );
             return redirect( request, VIEW_APPOINTMENT_FORM, additionalParameters );
         }
         _validatedAppointment = _notValidatedAppointment;
         _notValidatedAppointment = null;
-        String anchor = request.getParameter( PARAMETER_ANCHOR );
-        if ( StringUtils.isNotEmpty( anchor ) )
-        {
-            Map<String, String> additionalParameters = new HashMap<>( );
-            additionalParameters.put( PARAMETER_ANCHOR, MARK_ANCHOR + anchor );
-
-            return redirect( request, VIEW_DISPLAY_RECAP_APPOINTMENT, additionalParameters );
-        }
-        else
-        {
-            return redirectView( request, VIEW_DISPLAY_RECAP_APPOINTMENT );
-        }
+        return redirectView( request, VIEW_DISPLAY_RECAP_APPOINTMENT );
     }
 
     /**
@@ -1014,15 +1003,7 @@ public class AppointmentApp extends MVCApplication
     public synchronized XPage displayRecapAppointment( HttpServletRequest request ) throws UserNotSignedException, AccessDeniedException
     {
         checkMyLuteceAuthentication( _appointmentForm, request );
-        String anchor = request.getParameter( PARAMETER_ANCHOR );
         String strModifDateAppointment = request.getParameter( PARAMETER_MODIF_DATE );
-
-        if ( StringUtils.isNotEmpty( anchor ) )
-        {
-            Map<String, String> additionalParameters = new HashMap<>( );
-            additionalParameters.put( PARAMETER_ANCHOR, MARK_ANCHOR + anchor );
-            return redirect( request, VIEW_DISPLAY_RECAP_APPOINTMENT, additionalParameters );
-        }
 
         if ( _validatedAppointment == null || _appointmentForm == null || _validatedAppointment.getIdForm( ) != _appointmentForm.getIdForm( ) )
         {
@@ -1140,18 +1121,7 @@ public class AppointmentApp extends MVCApplication
         // Remove the session data of this form
         _accessControlService.cleanSessionData( request, nIdForm, Form.RESOURCE_TYPE );
 
-        String anchor = request.getParameter( PARAMETER_ANCHOR );
-        if ( StringUtils.isNotEmpty( anchor ) )
-        {
-            LinkedHashMap<String, String> additionalParameters = new LinkedHashMap<>( );
-            additionalParameters.put( PARAMETER_ID_FORM, String.valueOf( nIdForm ) );
-            additionalParameters.put( PARAMETER_ANCHOR, MARK_ANCHOR + anchor );
-            return redirect( request, VIEW_GET_APPOINTMENT_CREATED, additionalParameters );
-        }
-        else
-        {
-            return redirect( request, VIEW_GET_APPOINTMENT_CREATED, PARAMETER_ID_FORM, nIdForm );
-        }
+        return redirect( request, VIEW_GET_APPOINTMENT_CREATED, PARAMETER_ID_FORM, nIdForm );
     }
 
     /**
@@ -1210,10 +1180,19 @@ public class AppointmentApp extends MVCApplication
     public synchronized XPage getViewChangeDateAppointment( HttpServletRequest request )
     {
         String strIdForm = request.getParameter( PARAMETER_ID_FORM );
-        LocalDateTime startingDateTime = LocalDateTime.parse( request.getParameter( PARAMETER_STARTING_DATE_TIME ) );
+        String strStartingDateTime = request.getParameter( PARAMETER_STARTING_DATE_TIME );
+        if ( !StringUtils.isNumeric( strIdForm ) || StringUtils.isEmpty( strStartingDateTime ) || _validatedAppointment == null )
+        {
+            return redirectView( request, VIEW_APPOINTMENT_FORM_LIST );
+        }
+        LocalDateTime startingDateTime = LocalDateTime.parse( strStartingDateTime );
         Locale locale = getLocale( request );
         int nIdForm = Integer.parseInt( strIdForm );
         Form form = FormService.findFormLightByPrimaryKey( nIdForm );
+        if ( form == null )
+        {
+            return redirectView( request, VIEW_APPOINTMENT_FORM_LIST );
+        }
 
         if ( !form.getIsActive( ) || _validatedAppointment.getStartingDateTime( ).isBefore( LocalDateTime.now( ) )
                 || !isAuthorizedDate( startingDateTime, locale ) )
@@ -1285,7 +1264,7 @@ public class AppointmentApp extends MVCApplication
             if ( response.getFile( ) != null )
             {
             	// load from default generic attribute file service
-            	File file = GenericAttributeFileService.getInstance().load( response.getFile( ).getFileKey( ), null);
+            	File file = _fileService.load( response.getFile( ).getFileKey( ), null);
 
                 response.setFile( file );
             }
@@ -1587,8 +1566,44 @@ public class AppointmentApp extends MVCApplication
      */
     public static String getFormListHtml( Locale locale, Map<String, Object> model )
     {
+        return getFormListHtml( locale, model, FormService.buildAllActiveAndDisplayedOnPortletAppointmentForm( ) );
+    }
+
+    /**
+     * Get the html content of one form, rendered as a list of forms holding only it
+     *
+     * @param locale
+     *            The locale
+     * @param model
+     *            The model
+     * @param nIdForm
+     *            The id of the form
+     * @return The HTML content to display, empty when the form does not exist or is not active
+     */
+    public static String getFormHtml( Locale locale, Map<String, Object> model, int nIdForm )
+    {
+        AppointmentFormDTO form = FormService.buildAppointmentForm( nIdForm, 0 );
+        if ( form == null || !form.getIsActive( ) )
+        {
+            return StringUtils.EMPTY;
+        }
+        return getFormListHtml( locale, model, List.of( form ) );
+    }
+
+    /**
+     * Get the html content of a list of forms, keeping the forms already open
+     *
+     * @param locale
+     *            The locale
+     * @param model
+     *            The model
+     * @param listAppointmentForm
+     *            The forms to display
+     * @return The HTML content to display
+     */
+    private static String getFormListHtml( Locale locale, Map<String, Object> model, List<AppointmentFormDTO> listAppointmentForm )
+    {
         model = ( model == null ) ? new HashMap<>( ) : model;
-        List<AppointmentFormDTO> listAppointmentForm = FormService.buildAllActiveAndDisplayedOnPortletAppointmentForm( );
         // We keep only the active
         if ( CollectionUtils.isNotEmpty( listAppointmentForm ) )
         {
@@ -1622,15 +1637,19 @@ public class AppointmentApp extends MVCApplication
     }
 
     /**
-     * Get the workflow action form before processing the action. If the action does not need to display any form, then redirect the user to the workflow action
-     * processing page.
+     * Get the workflow action form before processing the action. An action without form is not processed here: the request
+     * asks for a confirmation whose form posts the processing action.
      *
      * @param request
      *            The request
      * @return The HTML content to display, or the next URL to redirect the user to
+     * @throws UserNotSignedException
+     *             if the user is not signed in
+     * @throws SiteMessageException
+     *             to display the confirmation of an action without form
      */
     @View( VIEW_WORKFLOW_ACTION_FORM )
-    public synchronized XPage getWorkflowActionForm( HttpServletRequest request ) throws UserNotSignedException
+    public synchronized XPage getWorkflowActionForm( HttpServletRequest request ) throws UserNotSignedException, SiteMessageException
     {
         String strIdAction = request.getParameter( PARAMETER_ID_ACTION );
         String refAppointment = request.getParameter( PARAMETER_REF_APPOINTMENT );
@@ -1665,8 +1684,12 @@ public class AppointmentApp extends MVCApplication
 
                 return getXPage( TEMPLATE_TASKS_FORM_WORKFLOW, getLocale( request ), _models );
             }
-
-            return doProcessWorkflowAction( request );
+            UrlItem url = new UrlItem( AppPathService.getPortalUrl( ) );
+            url.addParameter( MVCUtils.PARAMETER_PAGE, XPAGE_NAME );
+            url.addParameter( MVCUtils.PARAMETER_ACTION, ACTION_DO_PROCESS_WORKFLOW_ACTION );
+            url.addParameter( PARAMETER_ID_ACTION, nIdAction );
+            url.addParameter( PARAMETER_REF_APPOINTMENT, refAppointment );
+            SiteMessageService.setMessage( request, MESSAGE_CONFIRM_WORKFLOW_ACTION, SiteMessage.TYPE_CONFIRMATION, url.getUrl( ) );
         }
         return getMyAppointments( request );
     }
@@ -1677,9 +1700,13 @@ public class AppointmentApp extends MVCApplication
      * @param request
      *            The request
      * @return The next URL to redirect to
+     * @throws UserNotSignedException
+     *             if the user is not signed in
+     * @throws SiteMessageException
+     *             when the task form, displayed again on an error, asks for a confirmation
      */
     @Action( ACTION_DO_PROCESS_WORKFLOW_ACTION )
-    public synchronized XPage doProcessWorkflowAction( HttpServletRequest request ) throws UserNotSignedException
+    public synchronized XPage doProcessWorkflowAction( HttpServletRequest request ) throws UserNotSignedException, SiteMessageException
     {
         LuteceUser luteceUser = SecurityService.getInstance( ).getRegisteredUser( request );
         String strIdAction = request.getParameter( PARAMETER_ID_ACTION );
@@ -1927,5 +1954,42 @@ public class AppointmentApp extends MVCApplication
                 .plusWeeks( (long) _appointmentForm.getNbWeeksToDisplay( ) - 1 );
         return !( date.toLocalDate( ).isAfter( endingDateOfDisplay ) || date.isBefore( startingDateOfDisplay ) );
 
+    }
+
+    /**
+     * Fill the booking form of a form in advance, with the information another service knows of the user: the next
+     * opening of the form of that form in this session shows it filled in.
+     *
+     * @param appointment
+     *            the appointment being prepared, its form id set
+     */
+    public void prefillAppointment( AppointmentDTO appointment )
+    {
+        _notValidatedAppointment = appointment;
+        _validatedAppointment = null;
+    }
+
+    /**
+     * The slot start the booking form is asked for.
+     *
+     * @param request
+     *            the request
+     * @return the starting date time, null when the request carries none or a malformed one
+     */
+    private static LocalDateTime parseStartingDateTime( HttpServletRequest request )
+    {
+        String strStartingDateTime = request.getParameter( PARAMETER_STARTING_DATE_TIME );
+        if ( StringUtils.isBlank( strStartingDateTime ) )
+        {
+            return null;
+        }
+        try
+        {
+            return LocalDateTime.parse( strStartingDateTime );
+        }
+        catch( DateTimeParseException e )
+        {
+            return null;
+        }
     }
 }

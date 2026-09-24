@@ -26,7 +26,7 @@
 				<#assign isSelected = true />
 			</#if>
 		</#if>
-		<@option value='${field.idField}' selected=isSelected label='${field.title}' title='${field.comment!}' />
+		<@option value='${field.idField}' selected=isSelected label='${field.title}' params='title="${field.comment!}"' />
 	</#if>
 	</#list>
 </@select>

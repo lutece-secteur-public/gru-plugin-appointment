@@ -5,16 +5,16 @@
 		<@tform id='form-validate' action='jsp/admin/plugins/appointment/ManageAppointments.jsp' enctype='multipart/form-data' boxed=true>
 			<@input type='hidden' name='action' value='doMakeAppointment' />
 			<@formGroup labelFor='lastname' labelKey='${formMessages.fieldLastNameTitle!}'>
-				<@input type='hidden' name='lastname' value='${appointment.lastName}' />
-				<@staticText>${appointment.lastName}</@staticText>
+				<@input type='hidden' name='lastname' value='${appointment.lastName?html}' />
+				<@staticText>${appointment.lastName?html}</@staticText>
 			</@formGroup>
 			<@formGroup labelFor='firstname' labelKey='${formMessages.fieldFirstNameTitle!}'>
-				<@input type='hidden' name='firstname' value='${appointment.firstName}' />
-				<@staticText>${appointment.firstName}</@staticText>
+				<@input type='hidden' name='firstname' value='${appointment.firstName?html}' />
+				<@staticText>${appointment.firstName?html}</@staticText>
 			</@formGroup>
 			<@formGroup labelFor='email' labelKey='${formMessages.fieldEmailTitle!}'>
-				<@input type='hidden' name='email' value='${appointment.email}' />
-				<@staticText>${appointment.email}</@staticText>
+				<@input type='hidden' name='email' value='${appointment.email?html}' />
+				<@staticText>${appointment.email?html}</@staticText>
 			</@formGroup>
 			<#if form.maxPeoplePerAppointment gt 1>
 				<@formGroup labelFor='nbSeat' labelKey='#i18n{appointment.createAppointmentForm.labelNumberOfBookedseatsPerAppointment}'>
@@ -30,7 +30,7 @@
 					</#if>
 					<@formGroup labelKey='${formGroupLabelKey!}'>
 						<#if response.file??>
-							<@link href='jsp/admin/plugins/appointment/DoDownloadAppointmentsFileFromSession.jsp?idResponse=${response.entry.idEntry}'>
+							<@link href='jsp/admin/plugins/appointment/DoDownloadAppointmentsFileFromSession.jsp?view=downloadFileFromSession&idResponse=${response.entry.idEntry}'>
 								<@staticText>${response.recapValue}</@staticText>
 							</@link>
 						<#else>
@@ -47,7 +47,7 @@
 			<@formGroup>
 				<@button type='submit' name='validate' id='validate' value='validate' buttonIcon='check' title='#i18n{portal.util.labelValidate}' />
 				<#if comeFromCalendar??>
-					<@aButton href='jsp/admin/plugins/appointment/ManageAppointments.jsp?view=viewCalendarManageAppointment&id_form=${form.idForm}&date_of_display=${date_of_display}&id_appointment=${appointment.idAppointment}' buttonIcon='times' title='#i18n{portal.util.labelBack}' color='default' />
+					<@aButton href='jsp/admin/plugins/appointment/ManageAppointments.jsp?view=viewCalendarManageAppointment&id_form=${form.idForm}&date_of_display=${date_of_display}&id_appointment=${appointment.idAppointment}' buttonIcon='times' title='#i18n{portal.util.labelBack}' color='light' />
 				</#if>
 			</@formGroup>
 		</@tform>
