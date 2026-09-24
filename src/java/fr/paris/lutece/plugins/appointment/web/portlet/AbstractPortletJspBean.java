@@ -35,7 +35,7 @@ package fr.paris.lutece.plugins.appointment.web.portlet;
 
 import jakarta.servlet.http.HttpServletRequest;
 
-import fr.paris.lutece.plugins.appointment.business.portlet.AppointmentFormListPortlet;
+import fr.paris.lutece.portal.business.portlet.Portlet;
 import fr.paris.lutece.portal.business.portlet.PortletHome;
 import fr.paris.lutece.portal.web.portlet.PortletJspBean;
 import fr.paris.lutece.util.html.HtmlTemplate;
@@ -69,7 +69,7 @@ public abstract class AbstractPortletJspBean extends PortletJspBean
     {
         String strPortletId = request.getParameter( PARAMETER_PORTLET_ID );
         int nPortletId = Integer.parseInt( strPortletId );
-        AppointmentFormListPortlet portlet = (AppointmentFormListPortlet) PortletHome.findByPrimaryKey( nPortletId );
+        Portlet portlet = PortletHome.findByPrimaryKey( nPortletId );
         HtmlTemplate template = getModifyTemplate( portlet );
 
         return template.getHtml( );

@@ -1,0 +1,16 @@
+<@cTpl>
+<@cSection class='portlet portlet-appointment-form ${device_class!}' id='portlet_${portlet_id?c}'>
+<#if portlet_name??>
+	<@cTitle level=2 class='portlet-header'>${portlet_name}</@cTitle>
+</#if>
+	<@cBlock class='portlet-content'>
+	<#if form??>
+		<@cTitle level=3>${form.title}</@cTitle>
+		<#if form.description?has_content>
+		<@cText>${form.description}</@cText>
+		</#if>
+		<@cBtn label='#i18n{appointment.portlet.appointmentFormPortlet.labelTakeAppointment}' href='jsp/site/Portal.jsp?page=appointment&view=getViewAppointmentCalendar&id_form=${form.idForm?c}' type='button' />
+	</#if>
+	</@cBlock>
+</@cSection>
+</@cTpl>

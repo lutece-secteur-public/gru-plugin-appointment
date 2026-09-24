@@ -33,10 +33,12 @@
  */
 package fr.paris.lutece.plugins.appointment.business.portlet;
 
+import java.util.Map;
+
 import jakarta.servlet.http.HttpServletRequest;
 
-import org.apache.commons.lang3.StringUtils;
-
+import fr.paris.lutece.plugins.appointment.business.form.Form;
+import fr.paris.lutece.plugins.appointment.service.FormService;
 import fr.paris.lutece.portal.business.portlet.PortletHtmlContent;
 
 /**
@@ -47,6 +49,11 @@ import fr.paris.lutece.portal.business.portlet.PortletHtmlContent;
  */
 public final class AppointmentFormPortlet extends PortletHtmlContent
 {
+    // CONSTANTS
+    private static final String TEMPLATE_PORTLET_DEFAULT = "skin/plugins/appointment/portlet/appointment_form_portlet.html";
+
+    // MARKS
+    private static final String MARK_FORM = "form";
 
     private int _nIdAppointmentForm;
 
@@ -59,16 +66,25 @@ public final class AppointmentFormPortlet extends PortletHtmlContent
     }
 
     /**
-     * Returns the HTML code of the AppointmentPortlet portlet
+     * Returns the HTML code of the AppointmentFormPortlet portlet, rendered with the template chosen for the portlet among the templates registered in the
+     * core for its portlet type. The form is put in the model only when it exists and is active
      * 
      * @param request
      *            The HTTP servlet request
-     * @return The HTML code of the AppointmentPortlet portlet
+     * @return The HTML code of the AppointmentFormPortlet portlet
      */
     @Override
     public String getHtmlContent( HttpServletRequest request )
     {
-        return StringUtils.EMPTY;
+        Map<String, Object> model = createPortletModel( );
+        Form form = FormService.findFormLightByPrimaryKey( _nIdAppointmentForm );
+
+        if ( form != null && form.getIsActive( ) )
+        {
+            model.put( MARK_FORM, form );
+        }
+
+        return renderTemplate( request, TEMPLATE_PORTLET_DEFAULT, model );
     }
 
     /**
