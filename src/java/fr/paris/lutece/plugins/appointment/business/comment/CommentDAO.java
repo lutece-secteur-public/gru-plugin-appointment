@@ -181,9 +181,9 @@ public class CommentDAO implements ICommentDAO
             daoUtil.setInt( nIndex++, comment.getId( ) );
             daoUtil.setInt( nIndex++, comment.getIdForm( ) );
             daoUtil.setDate( nIndex++, Date.valueOf( comment.getStartingValidityDate( ) ) );
-            daoUtil.setTime( nIndex++, Time.valueOf( comment.getStartingValidityTime( ) ) );
+            daoUtil.setTime( nIndex++, comment.getStartingValidityTime( ) != null ? Time.valueOf( comment.getStartingValidityTime( ) ) : null );
             daoUtil.setDate( nIndex++, Date.valueOf( comment.getEndingValidityDate( ) ) );
-            daoUtil.setTime( nIndex++, Time.valueOf( comment.getEndingValidityTime( ) ) );
+            daoUtil.setTime( nIndex++, comment.getEndingValidityTime( ) != null ? Time.valueOf( comment.getEndingValidityTime( ) ) : null );
             daoUtil.setString( nIndex++, comment.getComment( ) );
             daoUtil.setDate( nIndex++, Date.valueOf( comment.getCreationDate( ) ) );
             daoUtil.setString( nIndex++, comment.getCreatorUserName( ) );
