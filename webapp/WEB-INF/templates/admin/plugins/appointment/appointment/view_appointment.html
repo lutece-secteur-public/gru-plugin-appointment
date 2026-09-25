@@ -32,8 +32,15 @@
 					<@listGroupItem>${formMessages.fieldFirstNameTitle!} : <strong>${appointment.firstName?html}</strong></@listGroupItem>
 					<@listGroupItem>${formMessages.fieldEmailTitle!} : <strong>${appointment.email?html}</strong></@listGroupItem>
 					<@listGroupItem>#i18n{appointment.createAppointmentForm.labelNumberOfBookedseatsPerAppointment} : <strong>${appointment.nbBookedSeats}</strong></@listGroupItem>
+					<#assign shownEntries = [] />
 					<#list listResponseRecapDTO as response>
-						<#if response.recapValue?has_content>
+						<#assign readOnlyHtml = (readOnlyEntries[response.entry.idEntry?c])!'' />
+						<#if readOnlyHtml?has_content>
+							<#if !shownEntries?seq_contains(response.entry.idEntry)>
+								<#assign shownEntries = shownEntries + [response.entry.idEntry] />
+								<@listGroupItem>${readOnlyHtml}</@listGroupItem>
+							</#if>
+						<#elseif response.recapValue?has_content>
 							<#if !entrySave?exists||entrySave.idEntry!=response.entry.idEntry><#assign responseLabelKey = response.entry.title /><#assign entrySave=response.entry /></#if>
 							<@listGroupItem>
 								${responseLabelKey!} : <#if response.file?? && response.file.idFile gt 0><@link href='jsp/admin/plugins/appointment/DoDownloadAppointmentsFile.jsp?view=downloadFile&idResponse=${response.idResponse}'><strong>${response.recapValue}</strong></@link><#else><strong>${response.recapValue}</strong></#if>

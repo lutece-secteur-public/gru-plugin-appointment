@@ -95,6 +95,15 @@ document.addEventListener('DOMContentLoaded', function() {
 <#function getFieldByCode entry fieldCode>
 <#if entry.fields?? && entry.fields?has_content><#list entry.fields as field><#if field?? && field.code?? && field.code == fieldCode><#return field></#if></#list></#if>
 </#function>
+<#function getResponseContainingTheFieldWithCode responses fieldCode>
+<#if responses??>
+<#list responses as response>
+<#if response.field?? && response.field.code?? && response.field.code == fieldCode >
+<#return response />
+</#if>
+</#list>
+</#if>
+</#function>
 <#macro getCommentModal modalId modalTitle idComment idStartingDate idEndingDate idStartingTime idEndingTime action idForm mailingList locale=locale from="" additionalParameters="" inline=false current={}>
 <#switch modalId>
 <#case 'modify-comment'>

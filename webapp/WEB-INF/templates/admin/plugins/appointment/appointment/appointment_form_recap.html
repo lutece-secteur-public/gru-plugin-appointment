@@ -22,8 +22,15 @@
 					<@staticText>${appointment.nbBookedSeats}</@staticText>
 				</@formGroup>
 			</#if>
+			<#assign shownEntries = [] />
 			<#list listResponseRecapDTO as response>
-				<#if response.recapValue?has_content>
+				<#assign readOnlyHtml = (readOnlyEntries[response.entry.idEntry?c])!'' />
+				<#if readOnlyHtml?has_content>
+					<#if !shownEntries?seq_contains(response.entry.idEntry)>
+						<#assign shownEntries = shownEntries + [response.entry.idEntry] />
+						${readOnlyHtml}
+					</#if>
+				<#elseif response.recapValue?has_content>
 					<#if !(entrySave??) || entrySave.idEntry != response.entry.idEntry>
 						<#assign formGroupLabelKey = response.entry.title />
 						<#assign entrySave = response.entry />

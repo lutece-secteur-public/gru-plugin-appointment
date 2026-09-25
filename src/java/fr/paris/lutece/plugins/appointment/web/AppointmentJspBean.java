@@ -98,6 +98,7 @@ import fr.paris.lutece.plugins.genericattributes.business.EntryHome;
 import fr.paris.lutece.plugins.genericattributes.business.GenericAttributeError;
 import fr.paris.lutece.plugins.genericattributes.business.Response;
 import fr.paris.lutece.plugins.genericattributes.business.ResponseHome;
+import fr.paris.lutece.plugins.genericattributes.service.entrytype.EntryTypeServiceManager;
 import fr.paris.lutece.plugins.genericattributes.service.file.GenericAttributeFileService;
 import fr.paris.lutece.plugins.workflowcore.business.state.State;
 import fr.paris.lutece.plugins.workflowcore.business.state.StateFilter;
@@ -262,6 +263,11 @@ public class AppointmentJspBean extends MVCAdminJspBean
     private static final String MARK_RESOURCE_HISTORY = "resource_history";
     private static final String MARK_ADDON = "addon";
     private static final String MARK_LIST_RESPONSE_RECAP_DTO = "listResponseRecapDTO";
+    private static final String MARK_READ_ONLY_ENTRIES = "readOnlyEntries";
+    private static final String MARK_READ_ONLY_ENTRY = "entry";
+    private static final String MARK_READ_ONLY_LIST_RESPONSES = "list_responses";
+    private static final String MARK_REGEX_URL = "regex_url";
+    private static final String REGEX_URL = "((http|https)://)[a-zA-Z0-9@:\\-%.\\+~#?&//=]{2,256}\\.[a-z]{2,6}\\b([-a-zA-Z0-9@:%.\\+~#?&;//=]*)";
     private static final String MARK_LANGUAGE = "language";
     private static final String MARK_ACTIVATE_WORKFLOW = "activateWorkflow";
     private static final String MARK_FORM_OVERBOOKING_ALLOWED = "overbookingAllowed";
@@ -827,6 +833,7 @@ public class AppointmentJspBean extends MVCAdminJspBean
         }
         appointmentDTO.setListResponse( listResponse );
         _models.put( MARK_LIST_RESPONSE_RECAP_DTO, AppointmentUtilities.buildListResponse( appointmentDTO, request, locale ) );
+        _models.put( MARK_READ_ONLY_ENTRIES, buildReadOnlyEntries( listResponse, locale ) );
         _models.put( MARK_ADDON, AppointmentAddOnManager.getAppointmentAddOn( appointmentDTO.getIdAppointment( ), getLocale( ) ) );
         User user = getUser( );
         _models.put( MARK_RIGHT_CREATE,
@@ -1307,6 +1314,7 @@ public class AppointmentJspBean extends MVCAdminJspBean
         Locale locale = getLocale( );
         _models.put( MARK_ADDON, AppointmentAddOnManager.getAppointmentAddOn( _validatedAppointment.getIdAppointment( ), getLocale( ) ) );
         _models.put( MARK_LIST_RESPONSE_RECAP_DTO, AppointmentUtilities.buildListResponse( _validatedAppointment, request, locale ) );
+        _models.put( MARK_READ_ONLY_ENTRIES, buildReadOnlyEntries( _validatedAppointment.getListResponse( ), locale ) );
         _models.put( MARK_FORM, _appointmentForm );
         _models.put( MARK_LOCALE, getLocale( ) );
         return getPage( PROPERTY_PAGE_TITLE_RECAP_APPOINTMENT, TEMPLATE_APPOINTMENT_FORM_RECAP, _models );
@@ -1736,4 +1744,44 @@ public class AppointmentJspBean extends MVCAdminJspBean
         return listDTOs;
     }
 
+
+    /**
+     * Renders the back office read-only template of each question whose entry type provides one.
+     *
+     * @param listResponse
+     *            the responses of the appointment
+     * @param locale
+     *            the locale
+     * @return the rendered HTML by question id, only for the questions whose entry type has a read-only template
+     */
+    private Map<String, String> buildReadOnlyEntries( List<Response> listResponse, Locale locale )
+    {
+        Map<String, String> mapHtml = new HashMap<>( );
+        if ( CollectionUtils.isEmpty( listResponse ) )
+        {
+            return mapHtml;
+        }
+        Map<Integer, List<Response>> mapResponses = new LinkedHashMap<>( );
+        for ( Response response : listResponse )
+        {
+            if ( response.getEntry( ) != null )
+            {
+                mapResponses.computeIfAbsent( response.getEntry( ).getIdEntry( ), k -> new ArrayList<>( ) ).add( response );
+            }
+        }
+        for ( Map.Entry<Integer, List<Response>> entryResponses : mapResponses.entrySet( ) )
+        {
+            Entry entry = EntryHome.findByPrimaryKey( entryResponses.getKey( ) );
+            String strTemplate = ( entry != null ) ? EntryTypeServiceManager.getEntryTypeService( entry ).getTemplateEntryReadOnly( false ) : null;
+            if ( StringUtils.isNotEmpty( strTemplate ) )
+            {
+                Map<String, Object> model = new HashMap<>( );
+                model.put( MARK_READ_ONLY_ENTRY, entry );
+                model.put( MARK_READ_ONLY_LIST_RESPONSES, entryResponses.getValue( ) );
+                model.put( MARK_REGEX_URL, REGEX_URL );
+                mapHtml.put( String.valueOf( entry.getIdEntry( ) ), AppTemplateService.getTemplate( strTemplate, locale, model ).getHtml( ) );
+            }
+        }
+        return mapHtml;
+    }
 }
