@@ -77,7 +77,6 @@ public abstract class AbstractAppointmentFormAndSlotJspBean extends MVCAdminJspB
      * 
      */
     private static final long serialVersionUID = 7709182167218092169L;
-    protected static final String PARAMETER_ERROR_MODIFICATION = "error_modification";
     protected static final String ERROR_MESSAGE_TIME_START_AFTER_TIME_END = "appointment.message.error.timeStartAfterTimeEnd";
     protected static final String ERROR_MESSAGE_TIME_START_AFTER_DATE_END = "appointment.message.error.dateStartAfterTimeEnd";
     protected static final String ERROR_MESSAGE_NO_WORKING_DAY_CHECKED = "appointment.message.error.noWorkingDayChecked";
@@ -107,6 +106,8 @@ public abstract class AbstractAppointmentFormAndSlotJspBean extends MVCAdminJspB
     private static final String MARK_USER_WORKGROUP_REF_LIST = "user_workgroup_list";
     private static final String MARK_APPOINTMENT_RESOURCE_ENABLED = "isResourceInstalled";
     private static final String MARK_APPOINTMENT_DESK_ENABLED = "isDeskInstalled";
+    private static final String MARK_LEAFLET_ENABLED = "isLeafletInstalled";
+    private static final String PLUGIN_LEAFLET_NAME = "leaflet";
     private static final String MARK_MAILING_LIST = "mailing_list";
     private static final String MARK_APPOINTMENT_FORM = "appointmentform";
     private static final String MARK_LIST_WORKFLOWS = "listWorkflows";
@@ -363,6 +364,8 @@ public abstract class AbstractAppointmentFormAndSlotJspBean extends MVCAdminJspB
         models.put( MARK_USER_WORKGROUP_REF_LIST, AdminWorkgroupService.getUserWorkgroups( user, locale ) );
         models.put( MARK_APPOINTMENT_RESOURCE_ENABLED, ( pluginAppointmentResource != null ) && pluginAppointmentResource.isInstalled( ) );
         models.put( MARK_APPOINTMENT_DESK_ENABLED, ( moduleAppointmentDesk != null ) && moduleAppointmentDesk.isInstalled( ) );
+        Plugin pluginLeaflet = PluginService.getPlugin( PLUGIN_LEAFLET_NAME );
+        models.put( MARK_LEAFLET_ENABLED, ( pluginLeaflet != null ) && pluginLeaflet.isInstalled( ) );
         models.put( MARK_REF_LIST_ROLES, listRoles );
         models.put( MARK_MAILING_LIST, AdminMailingListService.getMailingLists( user ) );
         models.put( AppointmentUtilities.MARK_PERMISSION_ADD_COMMENT, String.valueOf( RBACService.isAuthorized( AppointmentFormDTO.RESOURCE_TYPE,

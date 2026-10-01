@@ -1,133 +1,109 @@
 <#include "/admin/plugins/appointment/appointment/appointment_export.html" />
 <@appointmentTabs tab='filter' form=form context='app' >
-	<@tform name='form' id='form' action='jsp/admin/plugins/appointment/ManageAppointments.jsp'>
-	<@input type='hidden' name='view' value='manageAppointments' />
-	<@input type='hidden' name='id_form' value='${form.idForm}' />
-	<@row class='d-flex justify-content-between align-items-center mb-3'>
-		<@columns md=2> 
-			<@formGroup labelFor='lastName' labelKey='#i18n{appointment.manageAppointments.columnLastName}' rows=2 formStyle='inline'>
-				<@input type='text' id='lastName' name='lastName' value='${filter.lastName!}' />
-			</@formGroup>
+	<@messages infos=infos![] errors=errors![] warnings=warnings![] />
+	<@row class='mb-3 align-items-end'>
+		<@columns md=6>
+			<@tform id='quick-search-form' action='jsp/admin/plugins/appointment/ManageAppointments.jsp'>
+				<@input type='hidden' name='view' value='manageAppointments' />
+				<@input type='hidden' name='id_form' value='${form.idForm}' />
+				<@input type='hidden' name='firstName' id='quick_firstName' value='${(filter.firstName!)?html}' />
+				<@input type='hidden' name='email' id='quick_email' value='${(filter.email!)?html}' />
+				<@input type='hidden' name='phoneNumber' id='quick_phoneNumber' value='${filter.phoneNumber!}' />
+				<@input type='hidden' name='status' id='quick_status' value='${filter.status!}' />
+				<@input type='hidden' name='startingDateOfSearch' id='quick_startingDateOfSearch' value='${filter.startingDateOfSearch!}' />
+				<@input type='hidden' name='startingTimeOfSearch' id='quick_startingTimeOfSearch' value='${filter.startingTimeOfSearch!}' />
+				<@input type='hidden' name='endingDateOfSearch' id='quick_endingDateOfSearch' value='${filter.endingDateOfSearch!}' />
+				<@input type='hidden' name='endingTimeOfSearch' id='quick_endingTimeOfSearch' value='${filter.endingTimeOfSearch!}' />
+				<@formGroup labelFor='quickLastName' labelKey='#i18n{appointment.manageAppointments.columnLastName}' rows=2>
+					<@inputGroup>
+						<@input type='text' id='quickLastName' name='lastName' value='${(filter.lastName!)?html}' />
+						<@button name='Search' type='submit' title='#i18n{appointment.manageAppointments.labelSearch}' buttonIcon='search' hideTitle=['xs','sm'] />
+					</@inputGroup>
+				</@formGroup>
+			</@tform>
 		</@columns>
-		<@columns md=2>
-			<@formGroup labelFor='email' labelKey='#i18n{appointment.manageAppointments.columnEmail}' rows=2 formStyle='inline'>
-				<@input type='text' id='email' name='email' value='${filter.email!}' />
-			</@formGroup>
-		</@columns>
-		<@columns md=2>
-			<@formGroup labelFor='startingDateOfSearch' labelKey='#i18n{appointment.manageAppointments.startingDateOfSearch}' rows=2 formStyle='inline'>
-				<@inputGroup>
-					<@inputGroupItem><@icon style='calendar' /></@inputGroupItem>
-					<@input type='date' name='startingDateOfSearch' id='startingDateOfSearch' value='${filter.startingDateOfSearch!}' />
-				</@inputGroup>
-			</@formGroup>
-		</@columns>
-		<@columns md=1>
-			<@formGroup labelFor='status' labelKey='#i18n{appointment.manageAppointments.columnState}' rows=2 formStyle='inline'>
-				<@select name='status' id='status' items=listStatus default_value='${filter.status!}' />
-			</@formGroup>
-		</@columns>
-		<@columns md=3>
-			<@formGroup labelFor='status' labelKey='#i18n{appointment.manageAppointments.labelSearch}' hideLabel=['all'] rows=2 formStyle='inline' params='style="margin-block-start: 1.75rem;"'>
-				<@inputGroup>
-					<@button name='Search' type='submit' title='#i18n{appointment.manageAppointments.labelSearch}' buttonIcon='search' hideTitle=['xs','sm'] />
-					<@offcanvas id='offcanvasSearch' title='#i18n{appointment.manageAppointments.labelAdvancedSearch}' btnTitle='#i18n{appointment.manageAppointments.labelAdvancedSearch}' btnIcon='list-search' btnClass='rounded-end' hideTitle=['xs','sm','md','lg','xl','xxl'] position='end' size='sm'>
-						<@fieldSet legend='#i18n{appointment.manageAppointments.labelSearch}'>
-							<@row>
-								<@columns md=6>
-									<@formGroup labelFor='lastName' labelKey='#i18n{appointment.manageAppointments.columnLastName}' rows=2 >
-										<@input type='text' id='lastNameAdv' name='lastName' value='${filter.lastName!}' />
-									</@formGroup>
-								</@columns>
-								<@columns md=6>
-									<@formGroup labelFor='firstName' labelKey='#i18n{appointment.manageAppointments.columnFirstName}' rows=2>
-										<@input type='text' id='firstName' name='firstName' value='${filter.firstName!}' />
-									</@formGroup>
-								</@columns>
-							</@row>
-							<@row>
-								<@columns md=6>
-									<@formGroup labelFor='email' labelKey='#i18n{appointment.manageAppointments.columnEmail}' rows=2>
-										<@input type='text' id='emailAdv' name='email' value='${filter.email!}' />
-									</@formGroup>
-								</@columns>
-								<@columns md=6>
-									<@formGroup labelFor='phoneNumber' labelKey='#i18n{appointment.manageAppointments.columnPhoneNumber}' rows=2>
-										<@input type='text' id='phoneNumberAdv' name='phoneNumber' value='${filter.phoneNumber!}' />
-									</@formGroup>
-								</@columns>
-							</@row>
-							<@formGroup labelFor='status' labelKey='#i18n{appointment.manageAppointments.columnState}' rows=2>
-								<@select name='status' id='statusAdv' items=listStatus default_value='${filter.status!}' />
-							</@formGroup>
-							<@row id='datesAdv'>
-								<@columns md=6>
-									<@formGroup labelFor='startingDateOfSearch' labelKey='#i18n{appointment.manageAppointments.startingDateOfSearch}' rows=2>
-										<@inputGroup>
-											<@input type='date' name='startingDateOfSearch' id='startingDateOfSearchAdv' value='${filter.startingDateOfSearch!}' />
-											<@inputGroupItem type='text'>
-												<@icon style='calendar' />
-											</@inputGroupItem>
-										</@inputGroup>
-									</@formGroup>
-								</@columns>
-								<@columns md=6>
-									<@formGroup labelFor='startingTimeOfSearch' labelKey='#i18n{appointment.labelTo}' rows=2>
-										<@inputGroup>
-											<@input type='text' name='startingTimeOfSearch' id='startingTimeOfSearchAdv' value='${filter.startingTimeOfSearch!\'\'}' />
-											<@inputGroupItem type='text'>
-												<@icon style='clock' />
-											</@inputGroupItem>
-										</@inputGroup>
-									</@formGroup>
-								</@columns>
-							</@row>
-							<@row>
-								<@columns md=6>
-									<@formGroup labelFor='endingDateOfSearch' labelKey='#i18n{appointment.manageAppointments.endingDateOfSearch}' rows=2>
-										<@inputGroup>
-											<@input type='date' name='endingDateOfSearch' id='endingDateOfSearchAdv' value='${filter.endingDateOfSearch!}' />
-											<@inputGroupItem type='text'>
-												<@icon style='calendar' />
-											</@inputGroupItem>
-										</@inputGroup>
-									</@formGroup>
-								</@columns>
-								<@columns md=6>
-									<@formGroup labelFor='endingTimeOfSearch' labelKey='#i18n{appointment.labelTo}' rows=2>
-										<@inputGroup>
-											<@input type='text' name='endingTimeOfSearch' id='endingTimeOfSearchAdv' value='${filter.endingTimeOfSearch!\'\'}' />
-											<@inputGroupItem type='text'>
-												<@icon style='clock' />
-											</@inputGroupItem>
-										</@inputGroup>
-									</@formGroup>
-								</@columns>
-							</@row>
-							<@row id='error_messages_container' params='style="display:none;"'>
-								<@alert color='danger' id='error_message'></@alert>
-							</@row>
-							<@formGroup rows=2>
-								<@button name='Search' type='submit' title='#i18n{appointment.manageAppointments.labelSearch}' buttonIcon='search' />
-								<@aButton href='jsp/admin/plugins/appointment/ManageAppointments.jsp?view=manageAppointments&id_form=${form.idForm}&reset=\'true\'' title='#i18n{appointment.displayAppointmentForm.labelReset}' name='Reset' buttonIcon='undo' color='secondary'  />
-							</@formGroup>
-						</@fieldSet>
-					</@offcanvas>
-				</@inputGroup>
-			</@formGroup>
-		</@columns>
-		<@columns>
-			<@div class='pt-4 d-flex'>
-				<#if rightDelete?? && rightDelete><@button type='submit' class='ms-auto' id='eraseAll' name='eraseAll' value='eraseAll' disabled=true buttonIcon='trash' title='#i18n{appointment.permission.label.deleteMassAppointment}' color='danger' hideTitle=['xs','sm','md','lg','xl','xxl'] /></#if>
-				<@aButton class='ms-1' params='data-bs-toggle="modal" data-bs-target="#export_modal"' buttonIcon='download' title='#i18n{appointment.permission.label.exportMassAppointment}' hideTitle=['xs','sm','md','lg','xl','xxl'] />
+		<@columns md=6>
+			<@div class='d-flex flex-wrap gap-2 justify-content-md-end mb-3'>
+				<@button type='button' title='#i18n{appointment.manageAppointments.labelAdvancedSearch}' buttonIcon='list-search' color='light' params='data-bs-toggle="modal" data-bs-target="#advanced-search-modal"' />
+				<@aButton href='jsp/admin/plugins/appointment/ManageAppointments.jsp?view=manageAppointments&id_form=${form.idForm}&reset=true' title='#i18n{appointment.displayAppointmentForm.labelReset}' buttonIcon='restore' color='light' />
+				<@aButton params='data-bs-toggle="modal" data-bs-target="#export_modal"' buttonIcon='download' title='#i18n{appointment.permission.label.exportMassAppointment}' color='light' />
+				<#if appointment_list?has_content && rightDelete?? && rightDelete><@button type='submit' id='eraseAll' name='eraseAll' value='eraseAll' disabled=true buttonIcon='trash' title='#i18n{appointment.permission.label.deleteMassAppointment}' color='danger' params='form="appointments-form"' /></#if>
 			</@div>
 		</@columns>
 	</@row>
+	<@modal id='advanced-search-modal' size='lg'>
+		<@tform id='advanced-search-form' action='jsp/admin/plugins/appointment/ManageAppointments.jsp'>
+			<@input type='hidden' name='view' value='manageAppointments' />
+			<@input type='hidden' name='id_form' value='${form.idForm}' />
+			<@modalHeader modalTitle='#i18n{appointment.manageAppointments.labelAdvancedSearch}' />
+			<@modalBody>
+				<@row>
+					<@columns md=6>
+						<@formGroup labelFor='lastName' labelKey='#i18n{appointment.manageAppointments.columnLastName}' rows=2>
+							<@input type='text' id='lastName' name='lastName' value='${(filter.lastName!)?html}' />
+						</@formGroup>
+					</@columns>
+					<@columns md=6>
+						<@formGroup labelFor='firstName' labelKey='#i18n{appointment.manageAppointments.columnFirstName}' rows=2>
+							<@input type='text' id='firstName' name='firstName' value='${(filter.firstName!)?html}' />
+						</@formGroup>
+					</@columns>
+				</@row>
+				<@row>
+					<@columns md=6>
+						<@formGroup labelFor='email' labelKey='#i18n{appointment.manageAppointments.columnEmail}' rows=2>
+							<@input type='text' id='email' name='email' value='${(filter.email!)?html}' />
+						</@formGroup>
+					</@columns>
+					<@columns md=6>
+						<@formGroup labelFor='phoneNumber' labelKey='#i18n{appointment.manageAppointments.columnPhoneNumber}' rows=2>
+							<@input type='text' id='phoneNumber' name='phoneNumber' value='${filter.phoneNumber!}' />
+						</@formGroup>
+					</@columns>
+				</@row>
+				<@formGroup labelFor='status' labelKey='#i18n{appointment.manageAppointments.columnState}' rows=2>
+					<@select name='status' id='status' items=listStatus default_value='${filter.status!}' />
+				</@formGroup>
+				<@row>
+					<@columns md=6>
+						<@formGroup labelFor='startingDateOfSearch' labelKey='#i18n{appointment.manageAppointments.startingDateOfSearch}' rows=2>
+							<@input type='date' name='startingDateOfSearch' id='startingDateOfSearch' value='${filter.startingDateOfSearch!}' />
+						</@formGroup>
+					</@columns>
+					<@columns md=6>
+						<@formGroup labelFor='startingTimeOfSearch' labelKey='#i18n{appointment.labelTo}' rows=2>
+							<@input type='time' name='startingTimeOfSearch' id='startingTimeOfSearch' value='${filter.startingTimeOfSearch!}' />
+						</@formGroup>
+					</@columns>
+				</@row>
+				<@row>
+					<@columns md=6>
+						<@formGroup labelFor='endingDateOfSearch' labelKey='#i18n{appointment.manageAppointments.endingDateOfSearch}' rows=2>
+							<@input type='date' name='endingDateOfSearch' id='endingDateOfSearch' value='${filter.endingDateOfSearch!}' />
+						</@formGroup>
+					</@columns>
+					<@columns md=6>
+						<@formGroup labelFor='endingTimeOfSearch' labelKey='#i18n{appointment.labelTo}' rows=2>
+							<@input type='time' name='endingTimeOfSearch' id='endingTimeOfSearch' value='${filter.endingTimeOfSearch!}' />
+						</@formGroup>
+					</@columns>
+				</@row>
+				<@alert color='danger' id='search-dates-error' class='d-none'>#i18n{appointment.message.comment.error.endDateBeforeStartDate}</@alert>
+			</@modalBody>
+			<@modalFooter>
+				<@button type='button' title='#i18n{portal.util.labelCancel}' buttonIcon='x' color='light' params='data-bs-dismiss="modal"' />
+				<@button name='Search' type='submit' title='#i18n{appointment.manageAppointments.labelSearch}' buttonIcon='search' />
+			</@modalFooter>
+		</@tform>
+	</@modal>
+	<@tform id='appointments-form' action='jsp/admin/plugins/appointment/ManageAppointments.jsp'>
+	<@input type='hidden' name='view' value='manageAppointments' />
+	<@input type='hidden' name='id_form' value='${form.idForm}' />
 	<#if appointment_list?has_content>
 		<@table headBody=true class='table-auto-expand table-nowrap'>
 			<@tr>
 				<@th>
-					<@checkBox name='allcheck' id='allCheck' orientation='switch' wrapperClass='mb-0' title='#i18n{appointment.appointmentApp.infos}' />
+					<@checkBox name='allcheck' id='allCheck' orientation='switch' value='1' wrapperClass='mb-0' title='#i18n{appointment.appointmentApp.infos}' />
 				</@th>
 				<@th>
 					<@span class='fs-6'>#i18n{appointment.manageAppointments.columnLastName}</@span>
@@ -175,9 +151,9 @@
 			<#list appointment_list as appointment>
 				<@tr>
 					<@td><@checkBox name='apmt' id='apmt'+appointment?index value='${appointment.idAppointment}' orientation='switch' wrapperClass='mb-0'/></@td>
-					<@td class='fs-5'>${appointment.lastName}</@td>
-					<@td class='fs-5'>${appointment.firstName}</@td>
-					<@td class='fs-5'>${appointment.email}</@td>
+					<@td class='fs-5'>${appointment.lastName?html}</@td>
+					<@td class='fs-5'>${appointment.firstName?html}</@td>
+					<@td class='fs-5'>${appointment.email?html}</@td>
 					<@td class='fs-5'>${appointment.phoneNumber!}</@td>
 					<@td class='fs-5'>${appointment.nbBookedSeats}</@td>
 					<@td class='fs-5'>${appointment.dateOfTheAppointment} #i18n{appointment.labelFrom} ${appointment.startingTime} #i18n{appointment.labelTo} ${appointment.endingTime}</@td>
@@ -198,17 +174,17 @@
 							<#list appointment.listWorkflowActions as action>
 								<@aButton href='jsp/admin/plugins/appointment/ManageAppointments.jsp?view=viewWorkflowActionForm&id_action=${action.id}&amp;id_appointment=${appointment.idAppointment}' size='sm'>
 									<#assign imgParams><#if action.icon.width!=-1> width="${action.icon.width}" </#if><#if action.icon.height!=-1> height="${action.icon.height}"</#if></#assign>
-									<@img src='image?resource_type=workflow_icon_img&id=${action.icon.id}' params=imgParams title=action.name alt=action.name />
+									<@img url='image?resource_type=workflow_icon_img&id=${action.icon.id}' params=imgParams title=action.name alt=action.name />
 								</@aButton>
 							</#list>
 						</#if>
 						<#if activateWorkflow == "true">
 							<#if rightChangeStatus>
 								<#if appointment.isCancelled>
-									<@aButton href='jsp/admin/plugins/appointment/ManageAppointments.jsp?action=doChangeAppointmentStatus&id_appointment=${appointment.idAppointment}&status_cancelled=true' title='#i18n{appointment.manageAppointments.labelValidateAppointment}' hideTitle=['all'] buttonIcon='check' size='sm' />
+									<@aButton href='jsp/admin/plugins/appointment/ManageAppointments.jsp?action=doChangeAppointmentStatus&id_appointment=${appointment.idAppointment}&status_cancelled=false' title='#i18n{appointment.manageAppointments.labelValidateAppointment}' hideTitle=['all'] buttonIcon='check' size='sm' />
 								</#if>
 								<#if !appointment.isCancelled>
-									<@aButton href='jsp/admin/plugins/appointment/ManageAppointments.jsp?action=doChangeAppointmentStatus&id_appointment=${appointment.idAppointment}&status_cancelled=true' title='#i18n{appointment.labelCancelAppointment}' hideTitle=['all'] buttonIcon='x' size='sm' />
+									<@aButton href='jsp/admin/plugins/appointment/ManageAppointments.jsp?action=doChangeAppointmentStatus&id_appointment=${appointment.idAppointment}&status_cancelled=true' title='#i18n{appointment.labelCancelAppointment}' hideTitle=['all'] buttonIcon='x' size='sm' color='light' />
 								</#if>
 							</#if>
 						</#if>
@@ -216,7 +192,7 @@
 							<@aButton href='jsp/admin/plugins/appointment/ManageAppointments.jsp?action=confirmRemoveAppointment&id_form=${form.idForm}&id_appointment=${appointment.idAppointment}' title='#i18n{portal.util.labelDelete}' hideTitle=['all'] buttonIcon='trash' size='sm' color='danger' />
 						</#if>
 					</@td>
-					<@td>${appointment.formattedDateAppointmentTaken}</@td>
+					<@td class='fs-5'>${appointment.formattedDateAppointmentTaken}</@td>
 				</@tr>
 			</#list>
 		</@table>
@@ -229,38 +205,36 @@
 </@tform>
 </@appointmentTabs>
 <script>
-document.getElementById('allCheck').addEventListener('click', function() {
-	var etat = this.checked;
-	document.querySelectorAll("input[name='apmt']").forEach(function(cb) {
-		cb.checked = etat;
-	});
-	document.getElementById('eraseAll').disabled = !etat;
-});
-document.querySelectorAll("input[name='apmt']").forEach(function(cb) {
-	cb.addEventListener('change', function() {
-		var anyChecked = false;
-		document.querySelectorAll("input[name='apmt']").forEach(function(c) {
-			if (c.checked) { anyChecked = true; }
+document.addEventListener('DOMContentLoaded', function() {
+	const allCheck = document.getElementById('allCheck');
+	const eraseAll = document.getElementById('eraseAll');
+	const boxes = document.querySelectorAll("input[name='apmt']");
+	const refresh = function() {
+		if (eraseAll) {
+			eraseAll.disabled = !Array.from(boxes).some(function(cb) { return cb.checked; });
+		}
+	};
+	if (allCheck) {
+		allCheck.addEventListener('change', function() {
+			boxes.forEach(function(cb) { cb.checked = allCheck.checked; });
+			refresh();
 		});
-		document.getElementById('eraseAll').disabled = !anyChecked;
-	});
-});
-document.querySelector('[name="Search"]').addEventListener('click', function(e){
-	var dStart = document.getElementById('startingDateOfSearch').value;
-	var dEnd = document.getElementById('endingDateOfSearch').value;
-	var tStart = document.getElementById('startingTimeOfSearch').value || '00:00';
-	var tEnd = document.getElementById('endingTimeOfSearch').value || '00:00';
-	var startDateAndTime = new Date(dStart + 'T' + tStart);
-	var endDateAndTime = new Date(dEnd + 'T' + tEnd);
-
-	if(endDateAndTime < startDateAndTime) {
-		document.getElementById('error_message').innerHTML = 'La date de fin ne peut etre anterieure a la date de debut !';
-		document.getElementById('error_messages_container').style.display = 'block';
-		e.preventDefault();
 	}
+	boxes.forEach(function(cb) { cb.addEventListener('change', refresh); });
+	document.getElementById('advanced-search-form').addEventListener('submit', function(e) {
+		const dStart = document.getElementById('startingDateOfSearch').value;
+		const dEnd = document.getElementById('endingDateOfSearch').value;
+		const error = document.getElementById('search-dates-error');
+		if (dStart && dEnd) {
+			const tStart = document.getElementById('startingTimeOfSearch').value || '00:00';
+			const tEnd = document.getElementById('endingTimeOfSearch').value || '00:00';
+			if (new Date(dEnd + 'T' + tEnd) < new Date(dStart + 'T' + tStart)) {
+				error.classList.remove('d-none');
+				e.preventDefault();
+				return;
+			}
+		}
+		error.classList.add('d-none');
+	});
 });
 </script>
-<@getTime idField='startingTimeOfSearch' language=language />
-<@getTime idField='endingTimeOfSearch' language=language />
-<@getDate idField='startingDateOfSearch' language=language />
-<@getDate idField='endingDateOfSearch' language=language />

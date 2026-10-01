@@ -112,6 +112,7 @@ public class AppointmentFormEntryJspBean extends MVCAdminJspBean
 
     // Messages
     private static final String MESSAGE_CONFIRM_REMOVE_ENTRY = "appointment.message.confirmRemoveEntry";
+    private static final String MESSAGE_CONFIRM_CREATE_ENTRY = "appointment.message.confirmCreateEntry";
     private static final String MESSAGE_CANT_REMOVE_ENTRY = "advert.message.cantRemoveEntry";
     private static final String MESSAGE_CANT_REMOVE_ENTRY_RESOURCES_ATTACHED = "appointment.message.cantRemoveEntry.resourceAttached";
     private static final String PROPERTY_CREATE_ENTRY_TITLE = "appointment.createEntry.titleQuestion";
@@ -189,7 +190,8 @@ public class AppointmentFormEntryJspBean extends MVCAdminJspBean
     }
 
     /**
-     * Get the HTML code to create an entry
+     * Get the HTML code to create an entry. A type without a creation screen is not created here: the request asks for
+     * a confirmation whose form posts the creation action.
      * 
      * @param request
      *            The request
@@ -234,7 +236,17 @@ public class AppointmentFormEntryJspBean extends MVCAdminJspBean
         String strTemplate = EntryTypeServiceManager.getEntryTypeService( entry ).getTemplateCreate( entry, false );
         if ( strTemplate == null )
         {
-            return doCreateEntry( request );
+            UrlItem url = new UrlItem( getActionUrl( ACTION_DO_CREATE_ENTRY ) );
+            url.addParameter( PARAMETER_ID_FORM, nIdForm );
+            url.addParameter( PARAMETER_ID_ENTRY_TYPE, nIdType );
+            if ( nIdField > 0 )
+            {
+                url.addParameter( PARAMETER_ID_FIELD, nIdField );
+            }
+            Object [ ] args = {
+                    entry.getEntryType( ).getTitle( )
+            };
+            return redirect( request, AdminMessageService.getMessageUrl( request, MESSAGE_CONFIRM_CREATE_ENTRY, args, url.getUrl( ), AdminMessage.TYPE_CONFIRMATION ) );
         }
         return getPage( PROPERTY_CREATE_ENTRY_TITLE, strTemplate );
     }

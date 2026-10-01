@@ -33,20 +33,26 @@
  */
 package fr.paris.lutece.plugins.appointment.web.portlet;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import jakarta.servlet.http.HttpServletRequest;
 
 import fr.paris.lutece.portal.business.portlet.Portlet;
 import fr.paris.lutece.portal.business.portlet.PortletHome;
+import fr.paris.lutece.portal.business.portlet.PortletTypeHome;
+import fr.paris.lutece.portal.service.i18n.I18nService;
 import fr.paris.lutece.portal.web.portlet.PortletJspBean;
-import fr.paris.lutece.util.html.HtmlTemplate;
 
+/**
+ * Create and modify screens shared by the appointment portlets.
+ */
 public abstract class AbstractPortletJspBean extends PortletJspBean
 {
 
-    /**
-     * 
-     */
     private static final long serialVersionUID = 8507575062494354655L;
+    private static final String MESSAGE_PORTLET_TYPE_NOT_FOUND = "appointment.message.portletTypeNotFound";
+    private static final String MESSAGE_PORTLET_NOT_FOUND = "appointment.message.portletNotFound";
 
     /**
      * {@inheritDoc}
@@ -56,9 +62,13 @@ public abstract class AbstractPortletJspBean extends PortletJspBean
     {
         String strPageId = request.getParameter( PARAMETER_PAGE_ID );
         String strPortletTypeId = request.getParameter( PARAMETER_PORTLET_TYPE_ID );
-        HtmlTemplate template = getCreateTemplate( strPageId, strPortletTypeId );
 
-        return template.getHtml( );
+        if ( !StringUtils.isNumeric( strPageId ) || StringUtils.isEmpty( strPortletTypeId ) || PortletTypeHome.findByPrimaryKey( strPortletTypeId ) == null )
+        {
+            return I18nService.getLocalizedString( MESSAGE_PORTLET_TYPE_NOT_FOUND, getLocale( ) );
+        }
+
+        return getCreateTemplate( strPageId, strPortletTypeId, getPortletModel( ) ).getHtml( );
     }
 
     /**
@@ -72,6 +82,21 @@ public abstract class AbstractPortletJspBean extends PortletJspBean
         Portlet portlet = PortletHome.findByPrimaryKey( nPortletId );
         HtmlTemplate template = getModifyTemplate( portlet );
 
-        return template.getHtml( );
+        if ( portlet == null )
+        {
+            return I18nService.getLocalizedString( MESSAGE_PORTLET_NOT_FOUND, getLocale( ) );
+        }
+
+        return getModifyTemplate( portlet, getPortletModel( ) ).getHtml( );
+    }
+
+    /**
+     * Returns the model the create and modify forms of the portlet need beyond the common portlet fields.
+     *
+     * @return the model, empty by default
+     */
+    protected Map<String, Object> getPortletModel( )
+    {
+        return new HashMap<>( );
     }
 }

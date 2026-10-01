@@ -25,7 +25,8 @@
 			<#assign radioButtonLabelKey = '' />
 			<#if !field.noDisplayTitle><#assign radioButtonLabelKey = field.title /></#if>
 			<#assign helpMsg><#if field.comment?? && field.comment != ''>${field.comment}</#if></#assign>
-			<@radioButton labelFor='attribute${entry.idEntry}_${field.idField}' labelKey='${radioButtonLabelKey}' labelClass='${entry.CSSClass!}' name='attribute${entry.idEntry}' id='attribute${entry.idEntry}_${field.idField}' value='${field.idField}' checked=checked orientation=orientation helpMsg=helpMsg params=params />
+			<@radioButton labelFor='attribute${entry.idEntry}_${field.idField}' labelKey='${radioButtonLabelKey}' labelClass='${entry.CSSClass!}' name='attribute${entry.idEntry}' id='attribute${entry.idEntry}_${field.idField}' value='${field.idField}' checked=checked orientation=orientation params=params />
+			<#if helpMsg?has_content><@p class='form-text'>${helpMsg}</@p></#if>
 		</#if>
 	</#list>
 </@formGroup>

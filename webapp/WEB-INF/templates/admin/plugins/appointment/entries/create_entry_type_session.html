@@ -1,6 +1,6 @@
 <#assign headerBreadcrumbs>
 <@breadcrumbs class='mt-2'>
-	<@breadcrumbItem><@link href='jsp/admin/plugins/appointment/ManageAppointmentFormEntries.jsp?view=modifyAppointmentFormEntries&id_form=${form.idForm}' label='#i18n{appointment.manageAppointments.pageTitle}' /></@breadcrumbItem>
+	<@breadcrumbItem><@link href='jsp/admin/plugins/appointment/ManageAppointmentFormEntries.jsp?view=modifyAppointmentFormEntries&id_form=${form.idForm}' label='#i18n{appointment.modifyAppointmentFormEntries.pageTitle}' /></@breadcrumbItem>
 	<@breadcrumbItem>#i18n{appointment.createEntry.titleQuestion} : ${form.title}</@breadcrumbItem>
 </@breadcrumbs>
 </#assign>
@@ -16,8 +16,8 @@
         <@formGroup labelFor='title' labelKey='#i18n{appointment.labelTitle}' mandatory=true helpKey='#i18n{appointment.createEntry.labelTitleComment}'>
             <@input type='text' name='title' id='title' value='' maxlength=255 />
         </@formGroup>
-        <@formGroup>
-            <@checkBox orientation='switch' labelKey='#i18n{appointment.createEntry.labelMandatory}' name='mandatory' id='mandatory' value='1' helpKey='#i18n{appointment.createEntry.labelMandatoryCommentForEntryTypeSession}' />
+        <@formGroup helpKey='#i18n{appointment.createEntry.labelMandatoryCommentForEntryTypeSession}'>
+            <@checkBox orientation='switch' labelKey='#i18n{appointment.createEntry.labelMandatory}' name='mandatory' id='mandatory' value='1' />
         </@formGroup>
         <@formGroup labelFor='value' labelKey='#i18n{appointment.createEntry.labelAttributeName}' mandatory=true helpKey='#i18n{appointment.createEntry.labelAttributeNameComment}'>
             <@input type='text' name='value' id='value' value='' maxlength=255 />
@@ -25,7 +25,7 @@
         <@formGroup>
             <@button type='submit' name='save' buttonIcon='check' title='#i18n{appointment.labelSave}' class='form-validation' />
             <@button type='submit' name='apply' buttonIcon='check' title='#i18n{appointment.createEntry.buttonApplyAndManageVerification}' class='form-validation' />
-            <@button type='submit' name='cancel' value='cancel' buttonIcon='arrow-left' color='secondary' title='#i18n{appointment.labelCancel}' class='form-validation' cancel=true />
+            <@button type='submit' name='cancel' value='cancel' buttonIcon='arrow-left' color='light' title='#i18n{appointment.labelCancel}' class='form-validation' cancel=true />
         </@formGroup>
         </@tform>
     </@pageColumn>

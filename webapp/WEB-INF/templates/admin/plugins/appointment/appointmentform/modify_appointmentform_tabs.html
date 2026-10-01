@@ -4,6 +4,7 @@
 <#assign hasSuggestPOI = true />
 <#recover>
 </#attempt>
+<#assign hasMap = hasSuggestPOI && (isLeafletInstalled!false) />
 <#macro appointmentTabs tab appointmentform>
 <@tabs id='${tab}'>
 	<@tabList>
@@ -28,7 +29,7 @@
 <@box>
 	<@boxHeader title='#i18n{appointment.modifyAppointmentForm.titleAlterablesParameters}' boxTools=true>
 		<@button type='submit' name='action_modifyAppointmentForm' title='#i18n{portal.util.labelModify}' buttonIcon='check' size='' />
-		<@button type='submit' name='view_manageAppointmentForms' title='#i18n{portal.util.labelCancel}' buttonIcon='times' size='' color='secondary' cancel=true />
+		<@button type='submit' name='view_manageAppointmentForms' title='#i18n{portal.util.labelCancel}' buttonIcon='times' size='' color='light' cancel=true />
 	</@boxHeader>
 	<@boxBody>
 		<@row>
@@ -48,22 +49,12 @@
 						<@row>
 							<@columns xs=12 md=6>
 								<@formGroup labelFor='date_start_validity' labelKey='#i18n{appointment.createAppointmentForm.labelDateStartValidity}' helpKey='#i18n{appointment.createAppointmentForm.labelDateStartValidity.help}'>
-									<@inputGroup>
-										<input type="date" class="form-control" name="date_start_validity" id="date_start_validity" value="${appointmentform.dateStartValidity!''}" />
-										<@inputGroupItem type='text'>
-											<@icon style='calendar' />
-										</@inputGroupItem>
-									</@inputGroup>
+									<@input type='date' name='date_start_validity' id='date_start_validity' value=appointmentform.dateStartValidity!'' />
 								</@formGroup>
 							</@columns>
 							<@columns xs=12 md=6>
 								<@formGroup labelFor='date_end_validity' labelKey='#i18n{appointment.createAppointmentForm.labelDateEndValidity}' helpKey='#i18n{appointment.createAppointmentForm.labelDateEndValidity.help}'>
-									<@inputGroup>
-										<input type="date" class="form-control" name="date_end_validity" id="date_end_validity" value="${appointmentform.dateEndValidity!''}" />
-										<@inputGroupItem type='text'>
-											<@icon style='calendar' />
-										</@inputGroupItem>
-									</@inputGroup>
+									<@input type='date' name='date_end_validity' id='date_end_validity' value=appointmentform.dateEndValidity!'' />
 								</@formGroup>
 							</@columns>
 						</@row>
@@ -139,7 +130,11 @@
 						</@formGroup>
 						<@div id="anonymization_pattern_group">
 							<@formGroup labelFor='anonymization_pattern' labelKey='#i18n{appointment.createAppointmentForm.labelAnonymizePattern}' helpKey='#i18n{appointment.createAppointmentForm.labelAnonymizePattern.help}' >
-								<@input type='text' name='anonymization_pattern' id='anonymization_pattern' value=appointmentform.anonymizationPattern!'' maxlength=255 />
+								<#assign pattern = appointmentform.anonymizationPattern!'' />
+								<@select name='anonymization_pattern' id='anonymization_pattern'>
+									<#list [['%f','formId'],['%g','guid'],['%n','number']] as p><@option value=p[0] label='#i18n{appointment.createAppointmentForm.anonymizePattern.'+p[1]+'}' selected=(pattern == p[0]) /></#list>
+									<#if pattern?has_content && !['%f','%g','%n']?seq_contains(pattern)><@option value=pattern label=pattern selected=true /></#if>
+								</@select>
 							</@formGroup>
 						</@div>
 						<@formGroup labelFor='role' labelKey='#i18n{appointment.createAppointmentForm.labelRole}'>
@@ -169,27 +164,24 @@
 						<@formGroup labelFor='image_resource' labelKey='#i18n{appointment.createAppointmentForm.labelIconForm}' helpKey='#i18n{appointment.modifyAppointmentForm.helpFormatIcon}'>
 							<@inputGroup>
 								<@input type='file' name='image_resource' id='image_resource' params='accept="image/*"' />
-								<@button type='button' name='remove_img' id='remove_img' title='#i18n{portal.util.labelDelete}' size='' color='danger' params='onclick="document.getElementById(\'image_resource\').value=\'\'"' buttonIcon='times' hideTitle=['all'] />
+								<@button type='button' name='remove_img' id='remove_img' title='#i18n{appointment.label.clearFile}' size='' color='light' params='onclick="document.getElementById(\'image_resource\').value=\'\'"' buttonIcon='x' hideTitle=['all'] />
 							</@inputGroup>
 						</@formGroup>
 						<@formGroup labelFor='fileHolidays' labelKey='#i18n{appointment.manageHolidays.labelImport}' helpKey='#i18n{appointment.manageHolidays.labelClosinglabelFormatFile}'>
 							<@inputGroup>
 								<@input type='file' name='fileClosingDays' id='fileClosingDays' params='accept=".csv, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel"' />
-								<@button type='button' name='remove_file' id='remove_file' title='#i18n{portal.util.labelDelete}' size='' color='danger' params='onclick="document.getElementById(\'fileClosingDays\').value=\'\'"' buttonIcon='times' hideTitle=['all'] />
+								<@button type='button' name='remove_file' id='remove_file' title='#i18n{appointment.label.clearFile}' size='' color='light' params='onclick="document.getElementById(\'fileClosingDays\').value=\'\'"' buttonIcon='x' hideTitle=['all'] />
 							</@inputGroup>
 						</@formGroup>
 						<@formGroup labelFor='address_address-input' labelKey='#i18n{appointment.label.formAddress}' helpKey='#i18n{appointment.help.formAddress}'>
-							<@input type='hidden' name='geoloc_address' id='geoloc_address' value='${(appointmentform.address?html)!}' />
 							<@input type='hidden' name='geoloc_longitude' id='geoloc_longitude' value='${(appointmentform.longitude?c)!}' />
 							<@input type='hidden' name='geoloc_latitude' id='geoloc_latitude' value='${(appointmentform.latitude?c)!}' />
 							<@input type='hidden' name='hidden_address' id='hidden_address' />
+							<@input type=hasSuggestPOI?then('hidden','text') name='geoloc_address' id='geoloc_address' value='${(appointmentform.address?html)!}' />
 							<#if hasSuggestPOI>
 								<@suggestPOIInput id="address_address" name="address_address" currentValue="${(appointmentform.address?html)!}" />
-							<#else>
-								<@input name='address_address' id='address_address-input' value=(appointmentform.address?html)! />
 							</#if>
-							<@p class='text-muted'>#i18n{appointment.label.addressDescription}</@p>
-							<@div id='map_address' class='w-100 position-relative mt-3' params='style="min-height: 300px;"'></@div>
+							<#if hasMap><@div id='map_address' class='w-100 position-relative mt-3' params='style="min-height: 300px;"'></@div></#if>
 						</@formGroup>
 					</@boxBody>
 				</@box>     
@@ -198,20 +190,21 @@
 		<@row class='my-3'>
 			<@columns>
 				<@button type='submit' name='action_modifyAppointmentForm' title='#i18n{portal.util.labelModify}' buttonIcon='check' size='' />
-				<@button type='submit' name='view_manageAppointmentForms' title='#i18n{portal.util.labelCancel}' buttonIcon='times' size='' color='secondary' cancel=true />
+				<@button type='submit' name='view_manageAppointmentForms' title='#i18n{portal.util.labelCancel}' buttonIcon='times' size='' color='light' cancel=true />
 			</@columns>
 		</@row>
 		</@boxBody>
 	</@box>
 </@tform>
-<@getDatePickerBootstrap idField="date_start_validity" language=language  />
-<@getDatePickerBootstrap idField="date_end_validity" language=language />
+<#if hasMap>
 <link rel="stylesheet" href="js/plugins/leaflet/leaflet/leaflet.css" />
 <script src="js/plugins/leaflet/leaflet/leaflet.js"></script>
+</#if>
 <#if hasSuggestPOI><@setupSuggestPOI /></#if>
 <script>
+<#if hasMap>
 document.addEventListener('DOMContentLoaded', function() {
-	var map = L.map('map_address').setView([39.290736, -76.610838], 12);
+	var map = L.map('map_address').setView([48.85632, 2.33272], 12);
 	var markersLayer = L.featureGroup().addTo(map);
 	var osmUrl = 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png';
 	var osmAttrib = 'Map data &copy; <a href="https://openstreetmap.org">OpenStreetMap</a> contributors';
@@ -284,6 +277,7 @@ document.addEventListener('DOMContentLoaded', function() {
 		map.fitBounds(markersLayer.getBounds());
 	}
 });
+</#if>
 
 document.getElementById('formid').addEventListener('keydown', function(e) {
 	if (e.key === 'Enter') {

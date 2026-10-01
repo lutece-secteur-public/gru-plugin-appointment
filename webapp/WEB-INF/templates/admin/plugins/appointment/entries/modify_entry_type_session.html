@@ -1,12 +1,12 @@
 <#assign headerBreadcrumbs>
 <@breadcrumbs class='mt-2'>
-	<@breadcrumbItem><@link href='jsp/admin/plugins/appointment/ManageAppointmentFormEntries.jsp?view=modifyAppointmentFormEntries&id_form=${form.idForm}' label='#i18n{appointment.manageAppointments.pageTitle}' /></@breadcrumbItem>
+	<@breadcrumbItem><@link href='jsp/admin/plugins/appointment/ManageAppointmentFormEntries.jsp?view=modifyAppointmentFormEntries&id_form=${form.idForm}' label='#i18n{appointment.modifyAppointmentFormEntries.pageTitle}' /></@breadcrumbItem>
 	<@breadcrumbItem>#i18n{appointment.modifyEntry.titleQuestion} : ${form.title}</@breadcrumbItem>
 </@breadcrumbs>
 </#assign>
 <@pageContainer>
 	<@pageColumn>
-		<@pageHeader title='#i18n{appointment.modifyEntry.titleQuestion} : "${form.title}"' class='col-md-8' breadcrumb=headerBreadcrumbs />
+		<@pageHeader title='#i18n{appointment.modifyEntry.titleQuestion} : ${form.title}' class='col-md-8' breadcrumb=headerBreadcrumbs />
 		<@tform action='jsp/admin/plugins/appointment/ManageAppointmentFormEntries.jsp' boxed=true>
 		<@input type='hidden' name='id_entry' value='${entry.idEntry}' />
 		<@input type='hidden' name='action' value='doModifyEntry' />
@@ -14,8 +14,8 @@
 		<@formGroup labelFor='title' labelKey='#i18n{appointment.labelTitle}' mandatory=true>
 			<@input type='text' name='title' id='title' value='${entry.title}' maxlength=255 />
 		</@formGroup>
-		<@formGroup>
-			<@checkBox orientation='switch' labelKey='#i18n{appointment.createEntry.labelMandatory}' helpKey='#i18n{appointment.createEntry.labelMandatoryCommentForEntryTypeSession}' name='mandatory' id='mandatory' value='1' checked=entry.checked />
+		<@formGroup helpKey='#i18n{appointment.createEntry.labelMandatoryCommentForEntryTypeSession}'>
+			<@checkBox orientation='switch' labelKey='#i18n{appointment.createEntry.labelMandatory}' name='mandatory' id='mandatory' value='1' checked=entry.checked />
 		</@formGroup>
 		<@formGroup labelFor='value' labelKey='#i18n{appointment.createEntry.labelAttributeName}' helpKey='#i18n{appointment.createEntry.labelAttributeNameComment}' mandatory=true>
 			<#assign field=getFieldByCode( entry, "attribute_name")>
@@ -24,7 +24,7 @@
 		<@formGroup>
 			<@button type='submit' name='save' id='save' buttonIcon='check' title='#i18n{appointment.labelSave}' hideTitle=['xs'] class='form-validation' />
 			<@button type='submit' name='apply' id='apply' buttonIcon='check' title='#i18n{appointment.modifyEntry.buttonApply}' hideTitle=['xs'] class='form-validation' />
-			<@button type='submit' name='cancel' id='cancel' value='cancel' buttonIcon='arrow-left' color='secondary' title='#i18n{appointment.labelCancel}' cancel=true hideTitle=['xs'] class='form-validation' />
+			<@button type='submit' name='cancel' id='cancel' value='cancel' buttonIcon='arrow-left' color='light' title='#i18n{appointment.labelCancel}' cancel=true hideTitle=['xs'] class='form-validation' />
 		</@formGroup>
 		</@tform>
 	</@pageColumn>

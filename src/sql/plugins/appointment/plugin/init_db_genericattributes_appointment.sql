@@ -1,6 +1,8 @@
 -- liquibase formatted sql
 -- lutece runAfter:genericattributes
 -- changeset appointment:init_db_genericattributes_appointment.sql
+-- validCheckSum: 8:40d53100533f6cb0ee9a3539c7690475
+-- validCheckSum: 9:75f76bb4a7680308078b5132cdfdba82
 -- preconditions onFail:MARK_RAN onError:WARN
 -- LUT-33258 : explicit ids 123-138 (122 + display_order), the range used by update_db_generic_attributes_appointment_3.0.6-3.0.7.sql
 -- for existing sites, so that new and upgraded sites share the same ids and never collide with forms (1-24) whatever the execution order
@@ -21,7 +23,7 @@ INSERT INTO genatt_entry_type (id_type,title,is_group,is_comment,is_mylutece_use
 INSERT INTO genatt_entry_type (id_type,title,is_group,is_comment,is_mylutece_user,class_name,icon_name,plugin,display_order,inactive) VALUES
 (130,'Numérotation',0,0,0,'appointment.entryTypeNumbering','hashtag','appointment',8,0);
 INSERT INTO genatt_entry_type (id_type,title,is_group,is_comment,is_mylutece_user,class_name,icon_name,plugin,display_order,inactive) VALUES 
-(131,'Regroupement',1,0,0,'appointment.entryTypeGroup','indent','appointment',9,0);
+(131,'Regroupement',1,0,0,'appointment.entryTypeGroup','indent-increase','appointment',9,0);
 INSERT INTO genatt_entry_type (id_type,title,is_group,is_comment,is_mylutece_user,class_name,icon_name,plugin,display_order,inactive) VALUES
 (132,'Liste déroulante SQL',0,0,0,'appointment.entryTypeSelectSQL','list-alt','appointment',10,0);
 INSERT INTO genatt_entry_type (id_type,title,is_group,is_comment,is_mylutece_user,class_name,icon_name,plugin,display_order,inactive) VALUES

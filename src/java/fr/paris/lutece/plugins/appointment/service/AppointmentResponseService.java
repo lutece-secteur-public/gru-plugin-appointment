@@ -144,7 +144,7 @@ public final class AppointmentResponseService
             if ( response.getFile( ) != null )
             {
                 // load from default generic attribute file service
-                 File file = GenericAttributeFileService.getInstance().load( response.getFile( ).getFileKey( ), null);
+                 File file = CDI.current( ).select( GenericAttributeFileService.class ).get( ).load( response.getFile( ).getFileKey( ), null);
 
                 response.setFile( file );
                 String strIdEntry = Integer.toString( response.getEntry( ).getIdEntry( ) );
@@ -152,7 +152,7 @@ public final class AppointmentResponseService
                 if ( file != null )
                 {
                     fileItem = new GenAttFileItem( file.getPhysicalFile( ).getValue( ), file.getTitle( ), IEntryTypeService.PREFIX_ATTRIBUTE + strIdEntry,
-                            response.getIdResponse( ), GenericAttributeFileService.getInstance().getFileStoreProviderName()  );
+                            response.getIdResponse( ), CDI.current( ).select( GenericAttributeFileService.class ).get( ).getFileStoreProviderName()  );
                 }
                 CDI.current( ).select( AppointmentAsynchronousUploadHandler.class ).get( ).addFileItemToUploadedFilesList( fileItem, IEntryTypeService.PREFIX_ATTRIBUTE + strIdEntry,
                         request );

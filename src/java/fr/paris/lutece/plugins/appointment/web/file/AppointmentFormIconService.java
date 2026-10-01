@@ -33,8 +33,11 @@
  */
 package fr.paris.lutece.plugins.appointment.web.file;
 
-import jakarta.annotation.PostConstruct;
 import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.enterprise.context.Initialized;
+import jakarta.enterprise.event.Observes;
+import jakarta.servlet.ServletContext;
+
 
 import fr.paris.lutece.plugins.appointment.business.display.Display;
 import fr.paris.lutece.plugins.appointment.service.DisplayService;
@@ -52,10 +55,12 @@ public class AppointmentFormIconService implements ImageResourceProvider
     private static final String IMAGE_RESOURCE_TYPE_ID = "appointmentForm_icon";
 
     /**
-     * Registers this provider with the ImageResourceManager
+     * Registers the provider of the form icons once the application starts
+     *
+     * @param context
+     *            the servlet context, observed to run at startup
      */
-    @PostConstruct
-    public void register( )
+    public void register( @Observes @Initialized( ApplicationScoped.class ) ServletContext context )
     {
         ImageResourceManager.registerProvider( this );
     }

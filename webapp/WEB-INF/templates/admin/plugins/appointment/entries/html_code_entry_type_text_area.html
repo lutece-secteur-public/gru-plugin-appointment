@@ -5,7 +5,7 @@
 <#assign field_richtext=getFieldValueByCode( entry, "richtext") />
 <#assign richtext = false />
 <#if field_richtext == 'true'><#assign richtext = true /></#if>
-<@input type='textarea' name='attribute${entry.idEntry}' id='attribute${entry.idEntry}' size='${field_width.value}' rows='${field_height.value!}' maxlength='${field_max_size.value}' class='${entry.CSSClass!}<#if richtext> richtext</#if>'>${responseContent}</@input>
+<@input type='textarea' name='attribute${entry.idEntry}' id='attribute${entry.idEntry}' size='${field_width.value}' rows='${field_height.value!}' maxlength=field_max_size.value?number class='${entry.CSSClass!}${richtext?then(" richtext", "")}'>${responseContent}</@input>
 </#macro>
 <@formGroup labelFor='attribute${entry.idEntry}' labelKey='${entry.title}' helpKey='${entry.helpMessage!}' mandatory=entry.mandatory>
 <#if list_responses??>

@@ -31,7 +31,6 @@
 		<@cInput type='hidden' name='date_of_display' value='${date_of_display}' class='' />
 		<@cInput type='hidden' name='token' value='${token}' class='' />
 		<@cInput type='hidden' name='session' value='session' class='' />
-		<@cInput type='hidden' name='anchor' value='step4' class='' />
 		<#if infos?? && infos?size gt 0><#assign infoMsg><#list infos as info>${info.message}</#list></#assign><@cAlert type='info' dismissible=true id='messages_infos_div' title=infoMsg /></#if>
 		<#if errors?? && errors?size gt 0><#assign errMsg><#list errors as error>${error.message}</#list></#assign><@cAlert type='danger' dismissible=true id='messages_errors_div' title=errMsg /></#if>
 		<#if form_errors??><#assign hasDisplayableError = false><#list form_errors as form_error><#if form_error.isDisplayableError><#assign hasDisplayableError = true><#break></#if></#list><#if hasDisplayableError><#list form_errors as form_error><#if form_error.isDisplayableError && form_error.errorMessage==listAllErrors[8]><@cAlert type='danger' title=form_error.errorMessage ! /></#if></#list></#if></#if>
@@ -39,7 +38,7 @@
 			<#assign formGroupError = ''>
 			<#if form_errors??><#assign hasDisplayableError = false><#list form_errors as form_error><#if form_error.isDisplayableError><#assign hasDisplayableError = true><#break></#if></#list><#if hasDisplayableError><#list form_errors as form_error><#if form_error.isDisplayableError && form_error.errorMessage==listAllErrors[0]><#assign formGroupError = form_error.errorMessage /></#if></#list></#if></#if>
 			<@cCol cols='12 col-sm-6'>
-				<#assign lastnameValue><#if appointment??>${appointment.lastName!}</#if></#assign>
+				<#assign lastnameValue><#if appointment??>${(appointment.lastName!)?html}</#if></#assign>
 				<#assign lastnameReadonly = user?? && (user.lastName?has_content || preferred_user_name?has_content)>
 				<@cField label='${formMessages.fieldLastNameTitle!}' required=true>
 					<@cInput value=lastnameValue maxlength=255 id='lastname' name='lastname' readonly=lastnameReadonly errorMsg=formGroupError helpMsg=(formGroupError != '')?then('', formMessages.fieldLastNameHelp!) />
@@ -63,7 +62,7 @@
 				</#if>
 			</#if>
 			<@cCol cols='12 col-sm-6'>
-				<#assign firstnameValue><#if appointment??>${appointment.firstName!}</#if></#assign>
+				<#assign firstnameValue><#if appointment??>${(appointment.firstName!)?html}</#if></#assign>
 				<#assign firstnameReadonly = user?? && user.firstName?has_content>
 				<@cField label='${formMessages.fieldFirstNameTitle!}' required=true>
 					<@cInput value=firstnameValue maxlength=255 id='firstname' name='firstname' readonly=firstnameReadonly errorMsg=formGroupError helpMsg=(formGroupError != '')?then('', formMessages.fieldFirstNameHelp!) />
@@ -89,7 +88,7 @@
 				</#if>
 			</#if>
 			<@cCol cols='12 col-sm-6'>
-				<#assign emailValue><#if appointment??>${appointment.email!}</#if></#assign>
+				<#assign emailValue><#if appointment??>${(appointment.email!)?html}</#if></#assign>
 				<#assign emailReadonly = user?? && user.email?has_content>
 				<@cField label='${formMessages.fieldEmailTitle!}' required=form.enableMandatoryEmail>
 					<@cInput type='email' value=emailValue maxlength=255 id='email' name='email' readonly=emailReadonly errorMsg=formGroupError helpMsg=(formGroupError != '')?then('', formMessages.fieldEmailHelp!) />
@@ -114,11 +113,11 @@
 			</#if>
 			<@cCol cols='12 col-sm-6'>
 				<#if user?? && user.email?has_content>
-					<#assign emailConfirmValue><#if appointment??>${appointment.email!}</#if></#assign>
+					<#assign emailConfirmValue><#if appointment??>${(appointment.email!)?html}</#if></#assign>
 					<@cInput type='hidden' value=emailConfirmValue maxlength=255 id='emailConfirm' name='emailConfirm' class='' readonly=true />
 				<#else>
 					<@cField label='${formMessages.fieldConfirmationEmail!}' required=form.enableMandatoryEmail>
-						<#assign emailConfirmInputValue><#if appointment??>${appointment.emailConfirm!}</#if></#assign>
+						<#assign emailConfirmInputValue><#if appointment??>${(appointment.emailConfirm!)?html}</#if></#assign>
 						<@cInput type='email' value=emailConfirmInputValue maxlength=255 id='emailConfirm' name='emailConfirm' errorMsg=formGroupError helpMsg=(formGroupError != '')?then('', formMessages.fieldConfirmationEmailHelp!) />
 					</@cField>
 				</#if>

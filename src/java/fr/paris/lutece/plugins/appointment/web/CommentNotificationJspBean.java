@@ -37,6 +37,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import fr.paris.lutece.plugins.appointment.business.comment.CommentNotificationConfig;
 import fr.paris.lutece.plugins.appointment.business.comment.CommentNotificationHome;
 import fr.paris.lutece.portal.service.admin.AccessDeniedException;
+import fr.paris.lutece.portal.service.util.AppPathService;
 import fr.paris.lutece.portal.util.mvc.admin.MVCAdminJspBean;
 import fr.paris.lutece.portal.util.mvc.admin.annotations.Controller;
 import fr.paris.lutece.portal.util.mvc.commons.annotations.Action;
@@ -78,6 +79,7 @@ public class CommentNotificationJspBean extends MVCAdminJspBean
 
     // Marks
     private static final String MARK_CONFIG = "config";
+    private static final String MARK_WEBAPP_URL = "webapp_url";
     private static final String MARK_LIST_CONFIG = "list_config";
 
     // Parameters
@@ -86,7 +88,7 @@ public class CommentNotificationJspBean extends MVCAdminJspBean
     // Messages
     private static final String INFO_COMMENT_UPDATED = "appointment.info.comment.updated";
     // Properties
-    private static final String PROPERTY_PAGE_TITLE_MANAGE_COMMENTS = "task_notify_appointment_comment_config.title";
+    private static final String PROPERTY_PAGE_TITLE_MANAGE_COMMENTS = "appointment.task_notify_appointment_comment_config.title";
     // View
     private static final String VIEW_NOTIFIACTION_CONFIG = "notificationConfig";
     private static final String VIEW_MODIFY_NOTIFIACTION_CONFIG = "modifyNotificationCommentConfig";
@@ -128,6 +130,7 @@ public class CommentNotificationJspBean extends MVCAdminJspBean
         String type = request.getParameter( PARAMETER_TYPE );
         _commentNotificationConfig = CommentNotificationHome.loadCommentNotificationConfigByType( type );
         _models.put( MARK_CONFIG, _commentNotificationConfig );
+        _models.put( MARK_WEBAPP_URL, AppPathService.getBaseUrl( request ) );
         return getPage( PROPERTY_PAGE_TITLE_MANAGE_COMMENTS, TEMPLATE_NOTIFICATION_CONFIG );
 
     }

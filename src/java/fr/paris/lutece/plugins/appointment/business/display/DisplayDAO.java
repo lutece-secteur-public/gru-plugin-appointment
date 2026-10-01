@@ -57,6 +57,7 @@ public class DisplayDAO implements IDisplayDAO
     private static final String SQL_QUERY_SELECT_COLUMNS = "SELECT id_display, display_title_fo, icon_form_content, icon_form_mime_type, nb_weeks_to_display, is_displayed_on_portlet, id_calendar_template, id_form FROM appointment_display";
     private static final String SQL_QUERY_SELECT = SQL_QUERY_SELECT_COLUMNS + " WHERE id_display = ?";
     private static final String SQL_QUERY_SELECT_BY_ID_FORM = SQL_QUERY_SELECT_COLUMNS + " WHERE id_form = ?";
+    private static final String SQL_QUERY_COUNT_BY_ID_CALENDAR_TEMPLATE = "SELECT COUNT(*) FROM appointment_display WHERE id_calendar_template = ?";
 
     @Override
     public void insert( Display display, Plugin plugin )
@@ -130,6 +131,17 @@ public class DisplayDAO implements IDisplayDAO
             }
         }
         return display;
+    }
+
+    @Override
+    public int countByIdCalendarTemplate( int nIdCalendarTemplate, Plugin plugin )
+    {
+        try ( DAOUtil daoUtil = new DAOUtil( SQL_QUERY_COUNT_BY_ID_CALENDAR_TEMPLATE, plugin ) )
+        {
+            daoUtil.setInt( 1, nIdCalendarTemplate );
+            daoUtil.executeQuery( );
+            return daoUtil.next( ) ? daoUtil.getInt( 1 ) : 0;
+        }
     }
 
     /**

@@ -1,5 +1,7 @@
 -- liquibase formatted sql
 -- changeset appointment:create_db_appointment.sql
+-- validCheckSum: 8:29bcb6c1cff1ece72f5cbc2435bbde2c
+-- validCheckSum: 9:605de32fab49ef350dbd4c7bf60e3159
 -- preconditions onFail:MARK_RAN onError:WARN
 DROP TABLE IF EXISTS appointment_reservation_rule ;
 DROP TABLE IF EXISTS appointment_appointment_response ;
@@ -307,8 +309,8 @@ CREATE UNIQUE INDEX appointment_time_slot_unique_ending ON appointment_time_slot
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS appointment_localization (
   id_localization INT AUTO_INCREMENT,
-  longitude FLOAT NULL,
-  latitude FLOAT NULL,
+  longitude DOUBLE NULL,
+  latitude DOUBLE NULL,
   address VARCHAR(255) NULL,
   id_form INT NOT NULL,
   PRIMARY KEY (id_localization),

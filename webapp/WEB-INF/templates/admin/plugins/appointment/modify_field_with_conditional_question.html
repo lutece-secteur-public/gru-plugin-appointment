@@ -1,6 +1,12 @@
+<#assign headerBreadcrumbs>
+<@breadcrumbs class='mt-2'>
+	<@breadcrumbItem><@link href='jsp/admin/plugins/appointment/ManageAppointmentFormEntries.jsp?view=getModifyEntry&id_entry=${field.parentEntry.idEntry}' label='${field.parentEntry.title}' /></@breadcrumbItem>
+	<@breadcrumbItem>#i18n{appointment.modifyField.title}</@breadcrumbItem>
+</@breadcrumbs>
+</#assign>
 <@pageContainer>
 	<@pageColumn>
-		<@pageHeader title='#i18n{appointment.modifyField.title} : "${field.parentEntry.title}"' class='col-md-8'/>
+		<@pageHeader title='#i18n{appointment.modifyField.title} : ${field.parentEntry.title}' class='col-md-8' breadcrumb=headerBreadcrumbs />
 		<@tform id='modify-field' action='jsp/admin/plugins/appointment/ManageAppointmentFormFields.jsp' boxed=true>
 		<@input type='hidden' name='action' value='doModifyFieldCC' />
 		<@input type='hidden' name='id_field' value='${field.idField}' />
@@ -8,7 +14,7 @@
 			<@input type='text' name='title' id='title' value='${field.title}' />
 		</@formGroup>
 		<@formGroup labelFor='value' labelKey='#i18n{appointment.value.name}' mandatory=true>
-			<@input type='text' name='value' id='value' inputSize=80 value='${field.value}' />
+			<@input type='text' name='value' id='value' value='${field.value}' />
 		</@formGroup>
 		<@formGroup labelFor='comment' labelKey='#i18n{appointment.comment.name}'>
 			<@input type='textarea' name='comment' id='comment'>${field.comment!}</@input>
@@ -22,7 +28,7 @@
 		<@formGroup>
 			<@button type='submit' name='save' buttonIcon='check' title='#i18n{appointment.labelSave}' />
 			<@button type='submit' name='apply' buttonIcon='check' title='#i18n{appointment.modifyEntry.buttonApply}' />
-			<@button type='submit' name='cancel' buttonIcon='arrow-left' title='#i18n{appointment.labelCancel}' color='secondary' cancel=true />
+			<@button type='submit' name='cancel' buttonIcon='arrow-left' title='#i18n{appointment.labelCancel}' color='light' cancel=true />
 		</@formGroup>
 		</@tform>
 		<@box>

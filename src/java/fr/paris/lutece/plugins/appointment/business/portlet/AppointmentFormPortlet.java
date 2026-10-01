@@ -40,6 +40,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import fr.paris.lutece.plugins.appointment.business.form.Form;
 import fr.paris.lutece.plugins.appointment.service.FormService;
 import fr.paris.lutece.portal.business.portlet.PortletHtmlContent;
+import fr.paris.lutece.portal.web.l10n.LocaleService;
 
 /**
  * This class represents business objects AppointmentPortlet

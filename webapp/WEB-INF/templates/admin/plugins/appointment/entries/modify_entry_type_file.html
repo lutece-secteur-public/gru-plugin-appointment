@@ -1,14 +1,13 @@
 <#include "all_entry_commons.html" />
-<#include "/admin/util/editor/editor.html" />
 <#assign headerBreadcrumbs>
 <@breadcrumbs class='mt-2'>
-	<@breadcrumbItem><@link href='jsp/admin/plugins/appointment/ManageAppointmentFormEntries.jsp?view=modifyAppointmentFormEntries&id_form=${form.idForm}' label='#i18n{appointment.manageAppointments.pageTitle}' /></@breadcrumbItem>
+	<@breadcrumbItem><@link href='jsp/admin/plugins/appointment/ManageAppointmentFormEntries.jsp?view=modifyAppointmentFormEntries&id_form=${form.idForm}' label='#i18n{appointment.modifyAppointmentFormEntries.pageTitle}' /></@breadcrumbItem>
 	<@breadcrumbItem>#i18n{appointment.modifyEntry.titleQuestion} : ${form.title}</@breadcrumbItem>
 </@breadcrumbs>
 </#assign>
 <@pageContainer>
 	<@pageColumn>
-		<@pageHeader title='#i18n{appointment.modifyEntry.titleQuestion} : "${form.title}"' class='col-md-8' breadcrumb=headerBreadcrumbs />
+		<@pageHeader title='#i18n{appointment.modifyEntry.titleQuestion} : ${form.title}' class='col-md-8' breadcrumb=headerBreadcrumbs />
 		<@tform action='jsp/admin/plugins/appointment/ManageAppointmentFormEntries.jsp' boxed=true>
 		<@input type='hidden' name='id_entry' value='${entry.idEntry}' />
 		<@input type='hidden' name='action' value='doModifyEntry' />
@@ -54,15 +53,18 @@
 		<@formGroup>
 			<@button type='submit' name='save' id='save' buttonIcon='check' title='#i18n{appointment.labelSave}' class='form-validation' />
 			<@button type='submit' name='apply' id='apply' buttonIcon='check' title='#i18n{appointment.modifyEntry.buttonApply}' class='form-validation' />
-			<@button name='cancel' id='cancel' cancel=true buttonIcon='arrow-left' color='secondary' params='onclick="javascript:window.history.back();"' title='#i18n{appointment.labelCancel}' class='form-validation' />
+			<@button name='cancel' id='cancel' cancel=true buttonIcon='arrow-left' color='light' params='onclick="javascript:window.history.back();"' title='#i18n{appointment.labelCancel}' class='form-validation' />
 		</@formGroup>
 	</@tform>
 	<#if regular_expression_list?exists>
 	<@box>
 		<@boxHeader title='#i18n{appointment.createEntry.manageRegularExpression.title}' />
 		<@boxBody>
+			<#assign field = (getFieldByCode( entry, "file_config" ))!>
+			<#if !field?has_content>
+			<@alert color='info' title='#i18n{appointment.createEntry.manageRegularExpression.saveFirst}' />
+			<#else>
 			<@tform action='jsp/admin/plugins/appointment/ManageAppointmentFormEntries.jsp#list'>
-				<#assign field=getFieldByCode( entry, "file_config")>
 				<@input type='hidden' name='id_field' value='${field.idField!}' />
 				<@input type='hidden' name='action' value='doInsertRegularExpression' />
 				<@formGroup labelFor='id_expression' labelKey='#i18n{appointment.regularExpression.label}' helpKey='#i18n{appointment.createEntry.manageRegularExpression.labelInsertComment}'>
@@ -99,12 +101,12 @@
 						</#list>
 					</@table>
 				<#else>
-					<@empty title='#i18n{appointment.createEntry.manageRegularExpression.title}' iconName='regex' />
+					<@empty title='#i18n{appointment.createEntry.manageRegularExpression.empty}' subtitle='#i18n{appointment.createEntry.manageRegularExpression.emptySubtitle}' iconName='regex' />
 				</#if>
 			</@tform>
+			</#if>
 		</@boxBody>
 	</@box>
 	</#if>
 	</@pageColumn>
 </@pageContainer>
-<@initEditor />

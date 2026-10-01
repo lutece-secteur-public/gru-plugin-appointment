@@ -1,7 +1,7 @@
 <@messages errors=errors infos=infos/>
 <@appointmentTabs tab='specificWeek' form=appointmentform context='slot'>
     <@getCommentModal modalId='commentModal' modalTitle='#i18n{appointment.create_comment.pageTitle}' idComment="comment" idStartingDate="startingValidityDate" idEndingDate="endingValidityDate" idStartingTime="idStartingTime" idEndingTime="idEndingTime" action="doAddComment" idForm=id_form mailingList=mailing_list locale=locale from="specificweek" />
-    <@getCommentModal modalId='modify-comment' modalTitle='#i18n{appointment.modify_comment.pageTitle}' idComment="comment" idStartingDate="modifyStartingValidityDate" idEndingDate="modifyEndingValidityDate" idStartingTime="idModifyStartingTime" idEndingTime="idModifyEndingTime" action="doModifyComment" idForm=id_form mailingList=mailing_list locale=locale from="specificweek" />
+    <@getCommentModal modalId='modify-comment' modalTitle='#i18n{appointment.modify_comment.pageTitle}' idComment="modifyComment" idStartingDate="modifyStartingValidityDate" idEndingDate="modifyEndingValidityDate" idStartingTime="idModifyStartingTime" idEndingTime="idModifyEndingTime" action="doModifyComment" idForm=id_form mailingList=mailing_list locale=locale from="specificweek" />
 </@appointmentTabs>    
 
 <@modal id='updatePlanningSlot' params='data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"'>
@@ -16,8 +16,8 @@
         <@formGroup labelKey='#i18n{appointment.modifySlot.labelDate}' rows=2>
             <@p id='dtSlot'></@p>
         </@formGroup>
-        <@formGroup labelFor='is_open' labelKey='' rows=2>
-            <@checkBox orientation='switch' name='is_open' id='is_open' value='true' checked=true labelKey='#i18n{appointment.modifySlot.labelOpen}' helpKey='#i18n{appointment.modifySlot.labelOpenHelp}'  />
+        <@formGroup labelFor='is_open' labelKey='' helpKey='#i18n{appointment.modifySlot.labelOpenHelp}' rows=2>
+            <@checkBox orientation='switch' name='is_open' id='is_open' value='true' checked=true labelKey='#i18n{appointment.modifySlot.labelOpen}' />
         </@formGroup>
         <@formGroup labelFor='maxCapacity' labelKey='#i18n{appointment.modifySlot.labelMaxCapacityForThisSlot}' mandatory=true rows=2>
             <@input type='number' id='maxCapacity' name='max_capacity' value='' min=0 max=99 maxlength=3 />	
@@ -39,7 +39,7 @@
         </@formGroup>
         <@formGroup rows=2>
             <@button type='submit' buttonIcon='check' params='name="modify"' id='modify' title='#i18n{portal.util.labelModify}' />
-            <@button color='secondary' title='#i18n{portal.util.labelCancel}' params=' data-bs-dismiss="modal" aria-label="#i18n{portal.util.labelCancel}"' />
+            <@button color='light' title='#i18n{portal.util.labelCancel}' params=' data-bs-dismiss="modal" aria-label="#i18n{portal.util.labelCancel}"' />
         </@formGroup>
         </@tform>
     </@modalBody>
@@ -59,12 +59,12 @@
             </@formGroup>
             <@formGroup labelFor='shift_slot' rows=2>
                 <@radioButton labelFor='var_cap' labelKey='#i18n{appointment.modifySlot.labelCapacityChange}' name='capacity' id='var_cap' checked=true value='var_cap' />
-                <@radioButton labelFor='new_cap' labelKey='Nouvelle capacité' name='capacity' id='new_cap' value='new_cap' />
+                <@radioButton labelFor='new_cap' labelKey='#i18n{appointment.modifySlot.labelNewCapacity}' name='capacity' id='new_cap' value='new_cap' />
                 <@input type='number' id='newCapacity' name='max_capacity' value='0' min=-99 max=99 />
             </@formGroup>
             <@formGroup rows=2>
                 <@button type='submit' color='primary' title='#i18n{portal.util.labelValidate}' />
-                <@button color='secondary' title='#i18n{portal.util.labelCancel}' params=' data-bs-dismiss="modal" aria-label="#i18n{portal.util.labelCancel}"' />
+                <@button color='light' title='#i18n{portal.util.labelCancel}' params=' data-bs-dismiss="modal" aria-label="#i18n{portal.util.labelCancel}"' />
             </@formGroup>
         </@tform>
     </@modalBody>

@@ -4,7 +4,7 @@
 		<@pageHeader title=pageTitle />
 		<@div id='form-create-modify-calendar-template' >
 		<@messages infos=infos errors=errors />
-		<@tform action='jsp/admin/plugins/appointment/ManageCalendarTemplates.jsp'>
+		<@tform action='jsp/admin/plugins/appointment/ManageCalendarTemplates.jsp' boxed=true>
 		<#if (template.idCalendarTemplate)?? && template.idCalendarTemplate gt 0><@input type='hidden' name='idCalendarTemplate' value='${template.idCalendarTemplate}' /></#if>
 		<@formGroup labelKey='#i18n{appointment.labelTitle}'>
 			<@input type='text' name='title' id='title' value='${(template.title)!}' maxlength=255 />
@@ -15,12 +15,12 @@
 		<@formGroup labelKey='#i18n{appointment.createModifyCalendarTemplate.labelTemplatePath}'>
 			<@inputGroup>
 				<@select items=refListTemplates default_value=(template.templatePath)!'' name='templatePath' />
-				<@button type='submit' name='action' value='doDownloadTemplate' title='#i18n{portal.util.labelDownload}' buttonIcon='download' />
+				<@button type='submit' name='action' value='doDownloadTemplate' title='#i18n{portal.util.labelDownload}' buttonIcon='download' color='light' params='formaction="jsp/admin/plugins/appointment/DoDownloadCalendarTemplate.jsp"' />
 			</@inputGroup>
 		</@formGroup>
 		<@formGroup>
-			<@button type='submit' name='action' id='action' value='doCreateModifyTemplate' buttonIcon='check' title='#i18n{portal.util.labelOk}' />
-			<@aButton href='jsp/admin/plugins/appointment/ManageCalendarTemplates.jsp' buttonIcon='x' title='#i18n{portal.util.labelBack}' color='secondary' target='_top' />
+			<@button type='submit' name='action' id='action' value='doCreateModifyTemplate' buttonIcon='check' title='#i18n{appointment.labelSave}' />
+			<@aButton href='jsp/admin/plugins/appointment/ManageCalendarTemplates.jsp' buttonIcon='arrow-left' title='#i18n{portal.util.labelCancel}' color='light' />
 		</@formGroup>
 		</@tform>
 		</@div>

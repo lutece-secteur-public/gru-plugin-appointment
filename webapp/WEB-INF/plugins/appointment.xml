@@ -26,6 +26,7 @@
             <feature-description>appointment.adminFeature.ManageAppointmentForm.description</feature-description>
             <feature-level>2</feature-level>
             <feature-url>jsp/admin/plugins/appointment/ManageAppointmentForms.jsp</feature-url>
+            <feature-group>APPLICATIONS</feature-group>
             <feature-icon-url/>
 		</admin-feature>
 		<admin-feature>
@@ -34,6 +35,7 @@
             <feature-description>appointment.adminFeature.manageCalendarTemplates.name</feature-description>
             <feature-level>0</feature-level>
             <feature-url>jsp/admin/plugins/appointment/ManageCalendarTemplates.jsp</feature-url>
+            <feature-group>APPLICATIONS</feature-group>
             <feature-icon-url/>
 		</admin-feature>
 		<admin-feature>
@@ -42,14 +44,16 @@
             <feature-description>appointment.adminFeature.manageCategories.name</feature-description>
             <feature-level>2</feature-level>
             <feature-url>jsp/admin/plugins/appointment/ManageAppointmentCategory.jsp</feature-url>
+            <feature-group>SYSTEM</feature-group>
             <feature-icon-url/>
 		</admin-feature>
 		<admin-feature>
             <feature-id>APPOINTMENT_COMMENT_MANAGEMENT</feature-id>
             <feature-title>appointment.adminFeature.manageComment.name</feature-title>
-            <feature-description>appointment.adminFeature.manageComment.name</feature-description>
+            <feature-description>appointment.adminFeature.manageComment.description</feature-description>
             <feature-level>2</feature-level>
             <feature-url>jsp/admin/plugins/appointment/Comments.jsp</feature-url>
+            <feature-group>APPLICATIONS</feature-group>
             <feature-icon-url/>
 		</admin-feature>
     </admin-features>
@@ -88,7 +92,7 @@
      <portlet>
        <portlet-class>fr.paris.lutece.plugins.appointment.business.portlet.AppointmentPortletHome</portlet-class>
 	   <portlet-type-id>APPOINTMENT_PORTLET</portlet-type-id>
-	   <portlet-type-name>appointment.portlet.appointmentAppointmentPortlet.name</portlet-type-name>
+	   <portlet-type-name>appointment.myAppointments.name</portlet-type-name>
 	   <portlet-creation-url>plugins/appointment/CreatePortletAppointment.jsp</portlet-creation-url>
 	   <portlet-update-url>plugins/appointment/ModifyPortletAppointment.jsp</portlet-update-url>
 	   <portlet-create-action-url>plugins/appointment/DoCreatePortletAppointment.jsp</portlet-create-action-url>
@@ -98,6 +102,38 @@
         <portlet-modify-script-template>/admin/portlet/script_modify_portlet.html</portlet-modify-script-template>
         <portlet-create-specific-template>/admin/plugins/appointment/portlet/create_portletappointment.html</portlet-create-specific-template>
         <portlet-modify-specific-template>/admin/plugins/appointment/portlet/modify_portletappointment.html</portlet-modify-specific-template>
+        <portlet-create-specific-form-template/>
+        <portlet-modify-specific-form-template/> 
+     </portlet>
+     <portlet>
+       <portlet-class>fr.paris.lutece.plugins.appointment.business.portlet.AppointmentFormPortletHome</portlet-class>
+	   <portlet-type-id>APPOINTMENT_FORM_PORTLET</portlet-type-id>
+	   <portlet-type-name>appointment.appointmentForm.name</portlet-type-name>
+	   <portlet-creation-url>plugins/appointment/CreatePortletAppointmentForm.jsp</portlet-creation-url>
+	   <portlet-update-url>plugins/appointment/ModifyPortletAppointmentForm.jsp</portlet-update-url>
+	   <portlet-create-action-url>plugins/appointment/DoCreatePortletAppointmentForm.jsp</portlet-create-action-url>
+      <portlet-modify-action-url>plugins/appointment/DoModifyPortletAppointmentForm.jsp</portlet-modify-action-url>
+	    <!-- optional entries -->
+        <portlet-create-script-template>/admin/portlet/script_create_portlet.html</portlet-create-script-template>
+        <portlet-modify-script-template>/admin/portlet/script_modify_portlet.html</portlet-modify-script-template>
+        <portlet-create-specific-template>/admin/plugins/appointment/portlet/create_portletappointmentform.html</portlet-create-specific-template>
+        <portlet-modify-specific-template>/admin/plugins/appointment/portlet/modify_portletappointmentform.html</portlet-modify-specific-template>
+        <portlet-create-specific-form-template/>
+        <portlet-modify-specific-form-template/> 
+     </portlet>
+     <portlet>
+       <portlet-class>fr.paris.lutece.plugins.appointment.business.portlet.AppointmentFormListPortletHome</portlet-class>
+	   <portlet-type-id>APPOINTMENT_FORM_LIST_PORTLET</portlet-type-id>
+	   <portlet-type-name>appointment.portlet.appointmentFormListPortlet.name</portlet-type-name>
+	   <portlet-creation-url>plugins/appointment/CreatePortletAppointmentFormList.jsp</portlet-creation-url>
+	   <portlet-update-url>plugins/appointment/ModifyPortletAppointmentFormList.jsp</portlet-update-url>
+	   <portlet-create-action-url>plugins/appointment/DoCreatePortletAppointmentFormList.jsp</portlet-create-action-url>
+      <portlet-modify-action-url>plugins/appointment/DoModifyPortletAppointmentFormList.jsp</portlet-modify-action-url>
+	    <!-- optional entries -->
+        <portlet-create-script-template>/admin/portlet/script_create_portlet.html</portlet-create-script-template>
+        <portlet-modify-script-template>/admin/portlet/script_modify_portlet.html</portlet-modify-script-template>
+        <portlet-create-specific-template>/admin/plugins/appointment/portlet/create_portletappointmentformlist.html</portlet-create-specific-template>
+        <portlet-modify-specific-template>/admin/plugins/appointment/portlet/modify_portletappointmentformlist.html</portlet-modify-specific-template>
         <portlet-create-specific-form-template/>
         <portlet-modify-specific-form-template/> 
      </portlet>

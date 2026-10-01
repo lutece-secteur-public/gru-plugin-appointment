@@ -84,6 +84,7 @@ import fr.paris.lutece.portal.service.admin.AccessDeniedException;
 import fr.paris.lutece.portal.service.i18n.I18nService;
 import fr.paris.lutece.portal.service.rbac.RBACService;
 import fr.paris.lutece.portal.service.util.AppLogService;
+import fr.paris.lutece.portal.service.util.AppPathService;
 import fr.paris.lutece.portal.service.util.AppPropertiesService;
 import fr.paris.lutece.portal.util.mvc.admin.annotations.Controller;
 import fr.paris.lutece.portal.util.mvc.commons.annotations.Action;
@@ -155,6 +156,7 @@ public class SpecificWeekJspBean extends AbstractAppointmentFormAndSlotJspBean
 
     // Marks
     private static final String MARK_SLOT = "slot";
+    private static final String MARK_WEBAPP_URL = "webapp_url";
     private static final String MARK_LOCALE_TINY = "locale";
     // Views
     private static final String VIEW_MANAGE_SPECIFIC_WEEK = "manageSpecificWeek";
@@ -191,6 +193,10 @@ public class SpecificWeekJspBean extends AbstractAppointmentFormAndSlotJspBean
     {
         _slot = null;
         String strIdForm = request.getParameter( PARAMETER_ID_FORM );
+        if ( StringUtils.isEmpty( strIdForm ) || !StringUtils.isNumeric( strIdForm ) )
+        {
+            return redirect( request, AppointmentFormJspBean.getURLManageAppointmentForms( request ) );
+        }
         int nIdForm = Integer.parseInt( strIdForm );
         if ( !RBACService.isAuthorized( AppointmentFormDTO.RESOURCE_TYPE, strIdForm, AppointmentResourceIdService.PERMISSION_MODIFY_ADVANCED_SETTING_FORM,
                 (User) getUser( ) ) )
@@ -198,6 +204,10 @@ public class SpecificWeekJspBean extends AbstractAppointmentFormAndSlotJspBean
             throw new AccessDeniedException( AppointmentResourceIdService.PERMISSION_MODIFY_ADVANCED_SETTING_FORM );
         }
         Form form = FormService.findFormLightByPrimaryKey( nIdForm );
+        if ( form == null )
+        {
+            return redirect( request, AppointmentFormJspBean.getURLManageAppointmentForms( request ) );
+        }
         // Get the nb weeks to display
         Display display = DisplayService.findDisplayWithFormId( nIdForm );
         int nNbWeeksToDisplay = AppPropertiesService.getPropertyInt( PROPERTY_NB_WEEKS_TO_DISPLAY_IN_BO, display.getNbWeeksToDisplay( ) );
@@ -248,6 +258,7 @@ public class SpecificWeekJspBean extends AbstractAppointmentFormAndSlotJspBean
                 .buildCommentDTO( CommentService.finListComments( Date.valueOf( dateOfDisplay ), Date.valueOf( endingDateOfDisplay ), nIdForm ) ) );
         addElementsToModel( _appointmentForm, getUser( ), getLocale( ), _models );
         _models.put( MARK_LOCALE_TINY, getLocale( ) );
+        _models.put( MARK_WEBAPP_URL, AppPathService.getBaseUrl( request ) );
         return getPage( MESSAGE_SPECIFIC_WEEK_PAGE_TITLE, TEMPLATE_MANAGE_SPECIFIC_WEEK, _models );
     }
 

@@ -35,9 +35,9 @@
 <@cField label='${entry.title}' required=entry.mandatory>
 	<#if list_responses??>
 		<#if useAddressAutocomplete>
-			<@suggestPOIInput id="${entry.idEntry}_address" name="${entry.idEntry}_address" currentValue="${addressValue!}" required=entry.mandatory cssClass="<#if hasError>is-invalid<#else>${entry.CSSClass!}</#if>" />
+			<@suggestPOIInput id="${entry.idEntry}_address" name="${entry.idEntry}_address" currentValue="${addressValue!}" required=entry.mandatory cssClass=hasError?then('is-invalid', entry.CSSClass!) />
 		<#else>
-			<@cInput type='text' name='${entry.idEntry}_address' id='${entry.idEntry}_address' class='form-control <#if hasError>is-invalid<#else>${entry.CSSClass!}</#if>' value='${addressValue!}' errorMsg=errorMsg helpMsg=helpMsg />
+			<@cInput type='text' name='${entry.idEntry}_address' id='${entry.idEntry}_address' class='form-control ${hasError?then("is-invalid", entry.CSSClass!)}' value='${addressValue!}' errorMsg=errorMsg helpMsg=helpMsg />
 		</#if>
 		<@cInput type='hidden' name='${entry.idEntry}_x' id='${entry.idEntry}_x' class='' value='${xVal!}' />
 		<@cInput type='hidden' name='${entry.idEntry}_y' id='${entry.idEntry}_y' class='' value='${yVal!}' />

@@ -1,6 +1,12 @@
+<#assign headerBreadcrumbs>
+<@breadcrumbs class='mt-2'>
+	<@breadcrumbItem><@link href='jsp/admin/plugins/appointment/ManageAppointmentFormEntries.jsp?view=getModifyEntry&id_entry=${field.parentEntry.idEntry}' label='${field.parentEntry.title}' /></@breadcrumbItem>
+	<@breadcrumbItem>#i18n{appointment.createField.title}</@breadcrumbItem>
+</@breadcrumbs>
+</#assign>
 <@pageContainer>
 	<@pageColumn>
-		<@pageHeader title='#i18n{appointment.createField.title} : "${field.parentEntry.title}"' class='col-md-8' />
+		<@pageHeader title='#i18n{appointment.createField.title} : ${field.parentEntry.title}' class='col-md-8' breadcrumb=headerBreadcrumbs />
 		<@tform id='create-field' action='jsp/admin/plugins/appointment/ManageAppointmentFormFields.jsp' boxed=true>
 		<@input type='hidden' name='action' value='doCreateField' />
 		<@input type='hidden' name='id_entry' value='${field.parentEntry.idEntry}' />
@@ -21,7 +27,7 @@
 		</@formGroup>
 		<@formGroup>
 			<@button type='submit' buttonIcon='check' title='#i18n{appointment.labelSave}' />
-			<@button type='submit' name='cancel' buttonIcon='arrow-left' title='#i18n{appointment.labelCancel}' color='secondary' cancel=true />
+			<@button type='submit' name='cancel' buttonIcon='arrow-left' title='#i18n{appointment.labelCancel}' color='light' cancel=true />
 		</@formGroup>
 		</@tform>
 	</@pageColumn>

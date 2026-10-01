@@ -10,10 +10,10 @@
 </@cStepDone>
 <@cStepDone step='3' title='#i18n{appointment.appointmentApp.enteringInformation}' idx=3 actionName=''>
 	<@chList>
-		<@chItem>${formMessages.fieldLastNameTitle!} : ${user.lastName}</@chItem>
-		<@chItem>${formMessages.fieldFirstNameTitle!} : ${user.firstName}</@chItem>
+		<@chItem>${formMessages.fieldLastNameTitle!} : ${user.lastName?html}</@chItem>
+		<@chItem>${formMessages.fieldFirstNameTitle!} : ${user.firstName?html}</@chItem>
 		<#if user.email?has_content>
-			<@chItem>${formMessages.fieldEmailTitle!} : ${user.email}</@chItem>
+			<@chItem>${formMessages.fieldEmailTitle!} : ${user.email?html}</@chItem>
 		</#if>
 		<#if nbplaces gt 1>
 			<@chItem>#i18n{appointment.createAppointmentForm.labelNumberOfBookedseatsPerAppointment} : ${nbplaces}</@chItem>

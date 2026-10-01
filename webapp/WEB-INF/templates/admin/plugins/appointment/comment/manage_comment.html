@@ -19,13 +19,13 @@
 						<#list comment_list as comment>
 						<@manageFeatureItem class='comment-item'>
 							<@manageFeatureItemColumn auto=true>
-								<@span class='searchable'><strong class="me-1">${comment.formTitle!}</strong> : ${comment.comment}</@span>
+								<@div class='searchable'><strong class='d-block'>${comment.formTitle!}</strong>${comment.comment}</@div>
 							</@manageFeatureItemColumn>
 							<@manageFeatureItemColumn auto=true>
-								<@p class='mb-0 searchable'>#i18n{appointment.manage_comments.columnStartingValidityDate} : <@span class='text-muted'>${comment.startingValidityDate} ${comment.startingValidityTime!}</@span></@p>
+								<@p class='mb-0 searchable'>#i18n{appointment.manage_comments.columnStartingValidityDate} : <@span class='text-muted'>${(comment.startingValidityDate?string?date.xs?string.short)!} ${comment.startingValidityTime!}</@span></@p>
 							</@manageFeatureItemColumn>
 							<@manageFeatureItemColumn auto=true>
-								<@p class='mb-0 searchable'>#i18n{appointment.manage_comments.columnEndingValidityDate} : <@span class='text-muted'>${comment.endingValidityDate} ${comment.endingValidityTime!}</@span></@p>
+								<@p class='mb-0 searchable'>#i18n{appointment.manage_comments.columnEndingValidityDate} : <@span class='text-muted'>${(comment.endingValidityDate?string?date.xs?string.short)!} ${comment.endingValidityTime!}</@span></@p>
 							</@manageFeatureItemColumn>
 							<@manageFeatureItemColumn auto=true>
 								<@p class='mb-0 searchable'>#i18n{appointment.manage_comments.columnUserCreator} : <@span class='text-muted'>${comment.userFirstName!} ${comment.userLastName!}</@span></@p>
@@ -41,7 +41,7 @@
 					</#if>
 				<#else>
 					<@card>
-						<@empty title='#i18n{appointment.manage_comments.empty}' iconName='message-off' />
+						<@empty title='#i18n{appointment.manage_comments.empty}' subtitle='#i18n{appointment.manage_comments.emptySubtitle}' iconName='message-off' />
 					</@card>
 				</#if>
 			</@tabContent>

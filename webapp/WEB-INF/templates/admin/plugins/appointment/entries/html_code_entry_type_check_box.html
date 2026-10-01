@@ -16,7 +16,8 @@
 	<#if field.conditionalQuestions?exists&&field.conditionalQuestions?size!=0><#assign params='onclick="doCheckboxEffect(this.checked,${field.idField});"' /></#if>
 	<#assign helpMsg = '' />
 	<#if field.comment?? && field.comment != ''><#assign helpMsg=field.comment /></#if>
-	<@checkBox labelKey='${field.title!}' wrapperClass=entry.CSSClass! name='attribute${entry.idEntry}' id='attribute${entry.idEntry}_${field.idField}' value='${field.idField}' checked=checked orientation=orientation helpMsg=helpMsg params=params />
+	<@checkBox labelKey='${field.title!}' wrapperClass=entry.CSSClass! name='attribute${entry.idEntry}' id='attribute${entry.idEntry}_${field.idField}' value='${field.idField}' checked=checked orientation=orientation params=params />
+	<#if helpMsg?has_content><@p class='form-text'>${helpMsg}</@p></#if>
 </#if>
 </#list>
 <#if list_responses??>

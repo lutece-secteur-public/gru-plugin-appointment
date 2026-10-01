@@ -280,6 +280,7 @@ public final class AppointmentFormDTO extends ReservationRule implements RBACRes
     /**
      * Anonymization Pattern
      */
+    @Size( max = 2, message = "#i18n{appointment.validation.appointmentform.AnonymizationPattern.size}" )
     private String _strAnonymizationPattern;
 
     /**

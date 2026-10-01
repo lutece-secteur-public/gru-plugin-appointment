@@ -42,7 +42,7 @@
 			<@formGroup rows=2>
 				<@button type='submit' name='save' id='save' buttonIcon='check' title='#i18n{appointment.labelSave}' />
 				<@button type='submit' name='delete' id='delete' title='#i18n{portal.util.labelDelete}' buttonIcon='trash' color='danger' />
-				<@button type='button' params='data-bs-dismiss="modal"' title='#i18n{portal.util.labelCancel}' buttonIcon='times' color='default' />
+				<@button type='button' params='data-bs-dismiss="modal"' title='#i18n{portal.util.labelCancel}' buttonIcon='times' color='light' />
 			</@formGroup>
 		</@tform>
 	</@modalBody>
@@ -100,10 +100,6 @@ function editEvent(eventData) {
 	eventModal.toggle();
 }
 
-function deleteEvent(eventData) {
-	location.href='jsp/admin/plugins/appointment/ManageAnnualCalendar.jsp?action=doRemoveWeekFromCalendar&id_week_definition=' + eventData.idweekdef + '&id_form=${id_form}';
-}
-
 const specDates=[<#list specificSlotDates as sDate>'${sDate}',</#list>];
 let activePopover=null;
 
@@ -137,6 +133,8 @@ document.addEventListener('DOMContentLoaded', function() {
 
 	calendarInst = new FullCalendar.Calendar(calendarEl, {
 		initialView: 'multiMonthYear',
+		height: 'auto',
+		displayEventTime: false,
 		initialDate: currentDate,
 		multiMonthMaxColumns: 3,
 		multiMonthMinWidth: 150,
@@ -155,10 +153,8 @@ document.addEventListener('DOMContentLoaded', function() {
 
 			if ( overlapping.length > 0 ) {
 				const ep = overlapping[0].extendedProps;
-				// editEvent({ startDate: info.start, endDate: info.end, weekDef: ep.idweekdef });
 				editEvent({ startDate: info.start, endDate: new Date(info.end.getTime() - 86400000)  , weekDef: ep.idweekdef });
 			} else {
-				// editEvent({ startDate: info.start, info.end });
 				editEvent({ startDate: info.start, endDate: new Date(info.end.getTime() - 86400000)  });
 			}
 			

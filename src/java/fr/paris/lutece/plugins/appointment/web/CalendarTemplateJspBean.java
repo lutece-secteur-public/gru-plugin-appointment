@@ -35,6 +35,7 @@ package fr.paris.lutece.plugins.appointment.web;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.util.Set;
 
 import jakarta.servlet.http.HttpServletRequest;
@@ -47,6 +48,8 @@ import org.apache.commons.lang3.StringUtils;
 
 import fr.paris.lutece.plugins.appointment.business.calendar.CalendarTemplate;
 import fr.paris.lutece.plugins.appointment.business.calendar.CalendarTemplateHome;
+import fr.paris.lutece.plugins.appointment.business.display.DisplayHome;
+import fr.paris.lutece.portal.service.i18n.I18nService;
 import fr.paris.lutece.portal.service.message.AdminMessage;
 import fr.paris.lutece.portal.service.message.AdminMessageService;
 import fr.paris.lutece.portal.service.util.AppLogService;
@@ -126,6 +129,7 @@ public class CalendarTemplateJspBean extends MVCAdminJspBean
     private static final String MESSAGE_INFO_TEMPLATE_UPDATED = "appointment.createModifyCalendarTemplate.infoTemplateUpdated";
     private static final String MESSAGE_INFO_TEMPLATE_REMOVED = "appointment.removeCalendarTemplate.infoTemplateRemoved";
     private static final String MESSAGE_CONFIRM_REMOVE_TEMPLATE = "appointment.removeCalendarTemplate.confirmRemoveTemplate";
+    private static final String MESSAGE_ERROR_TEMPLATE_USED = "appointment.removeCalendarTemplate.errorTemplateUsed";
 
     // Properties
     private static final String PROPERTY_DEFAULT_LIST_APPOINTMENT_PER_PAGE = "appointment.listAppointments.itemsPerPage";
@@ -312,6 +316,14 @@ public class CalendarTemplateJspBean extends MVCAdminJspBean
             return redirectView( request, VIEW_MANAGE_CALENDAR_TEMPLATES );
         }
 
+        int nUses = DisplayHome.countByIdCalendarTemplate( Integer.parseInt( strIdTemplate ) );
+        if ( nUses > 0 )
+        {
+            return redirect( request, AdminMessageService.getMessageUrl( request, MESSAGE_ERROR_TEMPLATE_USED, new Object [ ] {
+                    nUses
+            }, AdminMessage.TYPE_STOP ) );
+        }
+
         UrlItem urlItem = new UrlItem( AppPathService.getBaseUrl( request ) + getActionUrl( ACTION_REMOVE_TEMPLATE ) );
         urlItem.addParameter( PARAMETER_ID_TEMPLATE, strIdTemplate );
 
@@ -336,7 +348,17 @@ public class CalendarTemplateJspBean extends MVCAdminJspBean
             return redirectView( request, VIEW_MANAGE_CALENDAR_TEMPLATES );
         }
 
-        CalendarTemplateHome.delete( Integer.parseInt( strIdTemplate ) );
+        int nIdTemplate = Integer.parseInt( strIdTemplate );
+        int nUses = DisplayHome.countByIdCalendarTemplate( nIdTemplate );
+        if ( nUses > 0 )
+        {
+            addError( I18nService.getLocalizedString( MESSAGE_ERROR_TEMPLATE_USED, new Object [ ] {
+                    nUses
+            }, getLocale( ) ) );
+            return redirectView( request, VIEW_MANAGE_CALENDAR_TEMPLATES );
+        }
+
+        CalendarTemplateHome.delete( nIdTemplate );
 
         addInfo( MESSAGE_INFO_TEMPLATE_REMOVED, getLocale( ) );
 
@@ -360,11 +382,11 @@ public class CalendarTemplateJspBean extends MVCAdminJspBean
         if ( StringUtils.isNotEmpty( strTemplate ) && strTemplate.startsWith( strCalendarTemplatesFolder ) && !strTemplate.contains( CONSTANT_FOLDER_UP ) )
         {
             File file = new File( AppPathService.getWebAppPath( ) + CONSTANT_TEMPLATE_FOLDER + strTemplate );
-            byte [ ] fileContent;
+            String strContent;
 
             try
             {
-                fileContent = FileUtils.readFileToByteArray( file );
+                strContent = FileUtils.readFileToString( file, StandardCharsets.UTF_8 );
             }
             catch( IOException e )
             {
@@ -373,7 +395,7 @@ public class CalendarTemplateJspBean extends MVCAdminJspBean
                 return redirectView( request, VIEW_MANAGE_CALENDAR_TEMPLATES );
             }
 
-            download( fileContent, file.getName( ), "text/plain" );
+            download( strContent, file.getName( ), "text/plain;charset=UTF-8" );
 
             return null;
         }
