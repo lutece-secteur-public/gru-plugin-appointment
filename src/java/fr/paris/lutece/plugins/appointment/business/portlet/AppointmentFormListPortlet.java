@@ -33,16 +33,12 @@
  */
 package fr.paris.lutece.plugins.appointment.business.portlet;
 
-import java.util.HashMap;
-import java.util.Locale;
+import java.util.Map;
 
 import jakarta.servlet.http.HttpServletRequest;
 
-import org.apache.commons.lang3.StringUtils;
-
 import fr.paris.lutece.plugins.appointment.web.AppointmentApp;
 import fr.paris.lutece.portal.business.portlet.PortletHtmlContent;
-import fr.paris.lutece.portal.web.l10n.LocaleService;
 
 /**
  * This class represents business objects AppointmentPortlet
@@ -52,8 +48,8 @@ import fr.paris.lutece.portal.web.l10n.LocaleService;
  */
 public final class AppointmentFormListPortlet extends PortletHtmlContent
 {
-    // MARKERS
-    public static final String MARK_PORTLET_NAME = "portlet_name";
+    // CONSTANTS
+    private static final String TEMPLATE_PORTLET_DEFAULT = "skin/plugins/appointment/portlet/appointment_form_list_portlet.html";
 
     /**
      * Sets the identifier of the portlet type to value specified
@@ -64,26 +60,20 @@ public final class AppointmentFormListPortlet extends PortletHtmlContent
     }
 
     /**
-     * {@inheritDoc}
+     * Returns the HTML code of the list of the appointment forms, rendered with the template chosen for the portlet among the templates registered in the
+     * core for its portlet type
+     *
+     * @param request
+     *            The HTTP servlet request
+     * @return the HTML code of the portlet
      */
     @Override
     public String getHtmlContent( HttpServletRequest request )
     {
-        Locale locale = LocaleService.getContextUserLocale( request );
-        HashMap<String, Object> model = new HashMap<>( );
+        Map<String, Object> model = createPortletModel( );
+        AppointmentApp.fillFormListModel( model );
 
-        // Get the portlet's custom title if it has to be displayed
-        if ( this.getDisplayPortletTitle( ) == 0 )
-        {
-            model.put( MARK_PORTLET_NAME, this.getName( ) );
-        }
-        // If the portlet's title should not be displayed, then set an empty value for it
-        else
-        {
-            model.put( MARK_PORTLET_NAME, StringUtils.EMPTY );
-        }
-
-        return AppointmentApp.getFormListHtml( locale, model );
+        return renderTemplate( request, TEMPLATE_PORTLET_DEFAULT, model );
     }
 
     /**

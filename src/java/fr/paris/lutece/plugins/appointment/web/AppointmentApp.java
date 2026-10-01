@@ -1524,9 +1524,31 @@ public class AppointmentApp extends MVCApplication
      */
     public static String getMyAppointmentsHtml( HttpServletRequest request, Locale locale, Map<String, Object> model ) throws UserNotSignedException
     {
-        if ( !SecurityService.isAuthenticationEnable( ) )
+        Map<String, Object> modelMyAppointments = ( model == null ) ? new HashMap<>( ) : model;
+        if ( !fillMyAppointmentsModel( request, modelMyAppointments ) )
         {
             return null;
+        }
+        HtmlTemplate template = AppTemplateService.getTemplate( TEMPLATE_MY_APPOINTMENTS, locale, modelMyAppointments );
+        return template.getHtml( );
+    }
+
+    /**
+     * Fill a model with the appointments of the signed in user, their workflow actions, the list of forms and the current date time
+     *
+     * @param request
+     *            The request
+     * @param model
+     *            The model to fill
+     * @return false if the authentication is disabled (the model is left unchanged), true otherwise
+     * @throws UserNotSignedException
+     *             If the authentication is enabled and the user has not signed in
+     */
+    public static boolean fillMyAppointmentsModel( HttpServletRequest request, Map<String, Object> model ) throws UserNotSignedException
+    {
+        if ( !SecurityService.isAuthenticationEnable( ) )
+        {
+            return false;
         }
         LuteceUser luteceUser = SecurityService.getInstance( ).getRegisteredUser( request );
         if ( luteceUser == null )
@@ -1547,12 +1569,10 @@ public class AppointmentApp extends MVCApplication
             }
         }
 
-        model = ( model == null ) ? new HashMap<>( ) : model;
         model.put( MARK_LIST_APPOINTMENTS, listAppointmentDTO );
         model.put( MARK_FORM_LIST, FormService.findAllInReferenceList( ) );
         model.put( MARK_LOCALE_DATE_TIME, LocalDateTime.now( ) );
-        HtmlTemplate template = AppTemplateService.getTemplate( TEMPLATE_MY_APPOINTMENTS, locale, model );
-        return template.getHtml( );
+        return true;
     }
 
     /**
@@ -1566,44 +1586,21 @@ public class AppointmentApp extends MVCApplication
      */
     public static String getFormListHtml( Locale locale, Map<String, Object> model )
     {
-        return getFormListHtml( locale, model, FormService.buildAllActiveAndDisplayedOnPortletAppointmentForm( ) );
+        Map<String, Object> modelFormList = ( model == null ) ? new HashMap<>( ) : model;
+        fillFormListModel( modelFormList );
+        HtmlTemplate template = AppTemplateService.getTemplate( TEMPLATE_APPOINTMENT_FORM_LIST, locale, modelFormList );
+        return template.getHtml( );
     }
 
     /**
-     * Get the html content of one form, rendered as a list of forms holding only it
+     * Fill a model with the active forms displayed on portlet, sorted by title, and their icons
      *
-     * @param locale
-     *            The locale
      * @param model
-     *            The model
-     * @param nIdForm
-     *            The id of the form
-     * @return The HTML content to display, empty when the form does not exist or is not active
+     *            The model to fill
      */
-    public static String getFormHtml( Locale locale, Map<String, Object> model, int nIdForm )
+    public static void fillFormListModel( Map<String, Object> model )
     {
-        AppointmentFormDTO form = FormService.buildAppointmentForm( nIdForm, 0 );
-        if ( form == null || !form.getIsActive( ) )
-        {
-            return StringUtils.EMPTY;
-        }
-        return getFormListHtml( locale, model, List.of( form ) );
-    }
-
-    /**
-     * Get the html content of a list of forms, keeping the forms already open
-     *
-     * @param locale
-     *            The locale
-     * @param model
-     *            The model
-     * @param listAppointmentForm
-     *            The forms to display
-     * @return The HTML content to display
-     */
-    private static String getFormListHtml( Locale locale, Map<String, Object> model, List<AppointmentFormDTO> listAppointmentForm )
-    {
-        model = ( model == null ) ? new HashMap<>( ) : model;
+        List<AppointmentFormDTO> listAppointmentForm = FormService.buildAllActiveAndDisplayedOnPortletAppointmentForm( );
         // We keep only the active
         if ( CollectionUtils.isNotEmpty( listAppointmentForm ) )
         {
@@ -1632,8 +1629,6 @@ public class AppointmentApp extends MVCApplication
         }
         model.put( MARK_ICONS, icons );
         model.put( MARK_FORM_LIST, listAppointmentForm );
-        HtmlTemplate template = AppTemplateService.getTemplate( TEMPLATE_APPOINTMENT_FORM_LIST, locale, model );
-        return template.getHtml( );
     }
 
     /**

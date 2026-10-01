@@ -1,0 +1,10 @@
+<@cTpl>
+<@cSection class='portlet portlet-appointment ${device_class!}' id='portlet_${portlet_id?c}'>
+<#if portlet_name??>
+	<@cTitle level=2 class='portlet-header'>${portlet_name}</@cTitle>
+</#if>
+	<@cBlock class='portlet-content'>
+		<#include "/skin/plugins/appointment/my_appointments_list.html" />
+	</@cBlock>
+</@cSection>
+</@cTpl>
