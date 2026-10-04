@@ -49,7 +49,7 @@ INSERT INTO core_user_right (id_right,id_user) VALUES ('APPOINTMENT_CATEGORY_MAN
 --
 -- DEFAULT MULTISLOTS VALUE
 --
-INSERT INTO core_datastore VALUES('appointment.site_property.nbplaces', 5);
+INSERT INTO core_datastore (entity_key, entity_value) VALUES ('appointment.site_property.nbplaces', '5');
 
 --
 -- FreeMarker templates available for the appointment portlets, registered in the core (Section Template Management feature)
