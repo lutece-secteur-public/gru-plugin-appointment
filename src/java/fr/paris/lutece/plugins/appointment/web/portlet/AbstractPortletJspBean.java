@@ -44,6 +44,7 @@ import fr.paris.lutece.portal.business.portlet.Portlet;
 import fr.paris.lutece.portal.business.portlet.PortletHome;
 import fr.paris.lutece.portal.business.portlet.PortletTypeHome;
 import fr.paris.lutece.portal.service.i18n.I18nService;
+import fr.paris.lutece.portal.service.security.SecurityTokenService;
 import fr.paris.lutece.portal.web.portlet.PortletJspBean;
 
 /**
@@ -55,6 +56,15 @@ public abstract class AbstractPortletJspBean extends PortletJspBean
     private static final long serialVersionUID = 8507575062494354655L;
     private static final String MESSAGE_PORTLET_TYPE_NOT_FOUND = "appointment.message.portletTypeNotFound";
     private static final String MESSAGE_PORTLET_NOT_FOUND = "appointment.message.portletNotFound";
+
+    /** Security token action of the portlet creation. */
+    protected static final String ACTION_CREATE_PORTLET = "appointment.createPortlet";
+
+    /** Security token action of the portlet modification. */
+    protected static final String ACTION_MODIFY_PORTLET = "appointment.modifyPortlet";
+
+    /** Message shown when the security token of a portlet form is missing or invalid. */
+    protected static final String MESSAGE_INVALID_TOKEN = "appointment.message.error.invalidToken";
 
     /**
      * {@inheritDoc}
@@ -70,7 +80,10 @@ public abstract class AbstractPortletJspBean extends PortletJspBean
             return I18nService.getLocalizedString( MESSAGE_PORTLET_TYPE_NOT_FOUND, getLocale( ) );
         }
 
-        return getCreateTemplate( strPageId, strPortletTypeId, getPortletModel( ) ).getHtml( );
+        Map<String, Object> model = getPortletModel( );
+        model.put( SecurityTokenService.MARK_TOKEN, getSecurityTokenService( ).getToken( request, ACTION_CREATE_PORTLET ) );
+
+        return getCreateTemplate( strPageId, strPortletTypeId, model ).getHtml( );
     }
 
     /**
@@ -87,7 +100,10 @@ public abstract class AbstractPortletJspBean extends PortletJspBean
             return I18nService.getLocalizedString( MESSAGE_PORTLET_NOT_FOUND, getLocale( ) );
         }
 
-        return getModifyTemplate( portlet, getPortletModel( ) ).getHtml( );
+        Map<String, Object> model = getPortletModel( );
+        model.put( SecurityTokenService.MARK_TOKEN, getSecurityTokenService( ).getToken( request, ACTION_MODIFY_PORTLET ) );
+
+        return getModifyTemplate( portlet, model ).getHtml( );
     }
 
     /**
