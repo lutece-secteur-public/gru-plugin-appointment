@@ -8,6 +8,8 @@
 <!--  JS admin -->
 <#-- <script src="themes/admin/shared/js/lib/bootstrap/bootstrap.bundle.min.js"></script> -->
 <script src="js/admin/plugins/appointment/jquery.min.js"></script>
+<#-- The core loads jquery-migrate 3.x after this jQuery 1.11 and wraps jQuery.unique with jQuery.uniqueSort, which must exist -->
+<script>jQuery.uniqueSort = jQuery.unique;</script>
 <script src="js/admin/plugins/appointment/moment.min.js" ></script>
 <script src="js/admin/plugins/appointment/fullcalendar.min.js"></script>
 <script src="js/admin/plugins/appointment/locale-all.js"></script>
@@ -463,6 +465,7 @@ commentModal.toggle();
 <#macro fullCalendarScript selectable=true isSpecific=false isTypical=false showComments=true locale=locale>
 $( function(){
     var calendar = $('#calendar');
+	<#if !isTypical>var strHoursOfView = minTime + '-' + maxTime;</#if>
 	calendar.fullCalendar({
 		<#if !showComments>allDaySlot: false,</#if>
 		displayEventTime: false, 
@@ -583,6 +586,17 @@ $( function(){
 		events: events,
 		<#if !isTypical>
 		viewRender: function(view, element) {
+			var listSlotOfView = events.filter( function( event ) {
+				return event.type === 'appointment' && moment( event.start ).isBefore( view.end ) && moment( event.end ).isAfter( view.start );
+			});
+			var minTimeOfView = listSlotOfView.length ? listSlotOfView.map( function( event ) { return moment( event.start ).format( 'HH:mm' ); } ).sort( )[0] : minTime;
+			var maxTimeOfView = listSlotOfView.length ? listSlotOfView.map( function( event ) { return moment( event.end ).format( 'HH:mm' ); } ).sort( ).pop( ) : maxTime;
+			if ( minTimeOfView + '-' + maxTimeOfView !== strHoursOfView ) {
+				strHoursOfView = minTimeOfView + '-' + maxTimeOfView;
+				setTimeout( function( ) {
+					calendar.fullCalendar( 'option', { minTime: minTimeOfView, maxTime: maxTimeOfView } );
+				});
+			}
 			var minDate = moment(startingDateOfDisplay);
 			var maxDate = moment(endingDateOfDisplay);
 			// Past 

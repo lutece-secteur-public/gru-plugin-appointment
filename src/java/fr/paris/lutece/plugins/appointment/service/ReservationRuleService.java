@@ -40,6 +40,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 
 import org.apache.commons.collections.CollectionUtils;
@@ -52,7 +53,9 @@ import fr.paris.lutece.plugins.appointment.business.planning.WorkingDayHome;
 import fr.paris.lutece.plugins.appointment.business.rule.ReservationRule;
 import fr.paris.lutece.plugins.appointment.business.rule.ReservationRuleHome;
 import fr.paris.lutece.plugins.appointment.service.listeners.WeekDefinitionManagerListener;
+import fr.paris.lutece.portal.service.i18n.I18nService;
 import fr.paris.lutece.plugins.appointment.web.dto.AppointmentFormDTO;
+import fr.paris.lutece.portal.service.util.AppException;
 import fr.paris.lutece.portal.service.util.AppLogService;
 import fr.paris.lutece.util.ReferenceList;
 import fr.paris.lutece.util.sql.TransactionManager;
@@ -66,6 +69,7 @@ import fr.paris.lutece.util.sql.TransactionManager;
 public final class ReservationRuleService
 {
     private static final String CONST_COPY_OF_WEEK = "Copy ";
+    private static final String MESSAGE_OLD_WEEK = "appointment.typicalWeek.oldName";
 
     /**
      * Private constructor - this class does not need to be instantiated
@@ -197,6 +201,33 @@ public final class ReservationRuleService
 
             WeekDefinitionManagerListener.notifyListenersListWeekDefinitionChanged( appointmentForm.getIdForm( ), listWeek );
         }
+    }
+
+    /**
+     * Keep the current settings of a typical week on its past periods. The typical week is copied into a hidden typical week (disabled) and the periods
+     * before today are moved to this copy, so a later modification of the typical week only applies from today
+     *
+     * @param nIdForm
+     *            the form id
+     * @param nIdReservationRule
+     *            the id of the typical week
+     * @param locale
+     *            the locale used to name the copy
+     */
+    public static void archivePastPeriods( int nIdForm, int nIdReservationRule, Locale locale )
+    {
+        String strName = ReservationRuleHome.findByPrimaryKey( nIdReservationRule ).getName( );
+        int nIdCopy = copyReservationRule( nIdReservationRule );
+        if ( nIdCopy == 0 )
+        {
+            throw new AppException( "Error copy typical week " + nIdReservationRule );
+        }
+        ReservationRule copy = ReservationRuleHome.findByPrimaryKey( nIdCopy );
+        copy.setName( I18nService.getLocalizedString( MESSAGE_OLD_WEEK, new Object[] { strName }, locale ) );
+        copy.setEnable( false );
+        ReservationRuleHome.update( copy );
+
+        WeekDefinitionService.reassignWeekDefinitionsBefore( nIdForm, nIdReservationRule, nIdCopy, LocalDate.now( ) );
     }
 
     /**

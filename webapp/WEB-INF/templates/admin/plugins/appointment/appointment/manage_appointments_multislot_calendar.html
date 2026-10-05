@@ -58,6 +58,7 @@ var events = [
         <#if maxCap = 0><#assign maxCap = 1></#if>
         <#assign nbFull = nbAppointments / maxCap * 100 >
         <#assign eventTitle='${nbAppointments} / ${maxCap}'>
+        <#assign isOutOfOpeningHours = slots_out_of_opening_hours?? && slots_out_of_opening_hours?seq_contains( event.idSlot )>
         <#assign strEventClass><#if event.isOpen & !event.isPassed & (nbAppointments > event.maxCapacity)>overbooked ${typeClass}<#elseif event.isOpen & !event.isPassed & (event.nbRemainingPlaces > 0) & (event.nbPotentialRemainingPlaces = 0)>filled ${typeClass}<#elseif event.isOpen & !event.isPassed & (event.nbRemainingPlaces = 0)>filled ${typeClass}</#if></#assign>
         <#assign strCustomColor><#if event.isOpen & !event.isPassed & (nbAppointments > event.maxCapacity)>rgba(255,165,0,1)<#elseif event.isOpen & !event.isPassed & (event.nbRemainingPlaces > 0) & (event.nbPotentialRemainingPlaces = 0)>rgba(255,0,0,1)<#elseif event.isOpen & !event.isPassed & (event.nbRemainingPlaces = 0)>rgba(255,0,0,1)<#else>rgba(204,235,255,1)</#if></#assign>
         {
@@ -83,13 +84,13 @@ var events = [
                         "<a href=" + eventUrl + "manageAppointments&id_form=${event.idForm}&starting_date_time=${event.startingDateTime}&ending_date_time=${event.endingDateTime}>${nbAppointments} / ${event.maxCapacity}</a>"
                         <#elseif !event.isOpen & ((event.maxCapacity - event.nbRemainingPlaces) > 0)>"<a href=" + eventUrl + "manageAppointments&id_form=${event.idForm}&starting_date_time=${event.startingDateTime}&ending_date_time=${event.endingDateTime}>${nbAppointments} / ${event.maxCapacity}</a>"
                         <#else>"<a href=" + eventUrl + "manageAppointments&id_form=${event.idForm}&starting_date_time=${event.startingDateTime}&ending_date_time=${event.endingDateTime}></a>"
-                        </#if>,
+                        </#if><#if isOutOfOpeningHours> + "&nbsp;<i class=\"ti ti-clock-exclamation fc-out-of-opening-hours-icon\" title=\"#i18n{appointment.manageAppointmentCalendar.labelOutOfOpeningHours}\" aria-label=\"#i18n{appointment.manageAppointmentCalendar.labelOutOfOpeningHours}\"></i>"</#if>,
             "start" :   "${event.startingDateTime}",
             "end" :     "${event.endingDateTime}",
             "id" :      "${event.idSlot}",
             "url" :     eventUrl + "manageAppointments&id_form=${event.idForm}&id_slot=${event.idSlot}&starting_date_time=${event.startingDateTime}&ending_date_time=${event.endingDateTime}&is_open=${event.isOpen?c}&is_specific=${event.isSpecific?c}&max_capacity=${event.maxCapacity}&modif_date=${modifDateAppointment?c}",                                                      
             "textColor" :   <#if event.isOpen & !event.isPassed & (nbAppointments > maxCap)>'#000'<#else>'#2c2c2d'</#if>,
-            "customClass" : 'fc-custom ${strEventClass!}',
+            "customClass" : 'fc-custom ${strEventClass!}<#if isOutOfOpeningHours> fc-out-of-opening-hours</#if>',
             "customStyle" : '<#if event.isOpen & !event.isPassed>linear-gradient( 90deg, ${strCustomColor} 0%, ${strCustomColor} ${nbFull?floor}%, rgba(255,255,255,1) ${nbFull?floor}% )<#else></#if>',
             "backgroundColor": <#if event.isOpen & !event.isPassed & (nbAppointments > maxCap)>bgOpenColor
                                 <#elseif event.isOpen & !event.isPassed & (event.nbRemainingPlaces > 0) & (event.nbRemainingPlaces = event.nbPotentialRemainingPlaces)>bgOpenColor
