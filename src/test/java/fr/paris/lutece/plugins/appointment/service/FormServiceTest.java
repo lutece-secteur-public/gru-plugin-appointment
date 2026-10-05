@@ -48,7 +48,6 @@ import fr.paris.lutece.plugins.appointment.business.localization.LocalizationHom
 import fr.paris.lutece.plugins.appointment.business.message.FormMessage;
 import fr.paris.lutece.plugins.appointment.business.message.FormMessageHome;
 import fr.paris.lutece.plugins.appointment.business.planning.TimeSlotHome;
-import fr.paris.lutece.plugins.appointment.business.planning.WeekDefinition;
 import fr.paris.lutece.plugins.appointment.business.planning.WeekDefinitionHome;
 import fr.paris.lutece.plugins.appointment.business.planning.WorkingDay;
 import fr.paris.lutece.plugins.appointment.business.planning.WorkingDayHome;
@@ -237,16 +236,10 @@ public class FormServiceTest extends LuteceTestCase
 
             for ( ReservationRule rr : ReservationRuleHome.findByIdForm( nIdForm ) )
             {
-                for ( WeekDefinition wd : WeekDefinitionHome.findByIdForm( nIdForm ) )
+                for ( WorkingDay wda : WorkingDayHome.findByIdReservationRule( rr.getIdReservationRule( ) ) )
                 {
-                    for ( WorkingDay wda : WorkingDayHome.findByIdReservationRule( rr.getIdReservationRule( ) ) )
-                    {
-                        TimeSlotHome.deleteByIdWorkingDay( wda.getIdWorkingDay( ) );
-
-                    }
-
+                    TimeSlotHome.deleteByIdWorkingDay( wda.getIdWorkingDay( ) );
                 }
-
                 WeekDefinitionHome.deleteByIdReservationRule( rr.getIdReservationRule( ) );
                 WorkingDayHome.deleteByIdReservationRule( rr.getIdReservationRule( ) );
                 ReservationRuleHome.delete( rr.getIdReservationRule( ) );

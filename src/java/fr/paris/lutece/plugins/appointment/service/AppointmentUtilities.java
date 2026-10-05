@@ -937,6 +937,31 @@ public final class AppointmentUtilities
     }
 
     /**
+     * Check that the booked slots stay on the grid of the new opening hours. The calendar only finds a slot in the database when it starts exactly on the
+     * grid: a booked slot that overlaps the new opening hours without starting on the grid would be hidden by the slots built over it, offered with their
+     * full capacity. The grid only moves when the starting time changes
+     *
+     * @param listSlotWithAppointment
+     *            the slots with appointments
+     * @param oldTimeStart
+     *            the current starting time of the opening hours
+     * @param timeStart
+     *            the new starting time of the opening hours
+     * @param timeEnd
+     *            the new ending time of the opening hours
+     * @param nDuration
+     *            the duration of the slots, in minutes
+     * @return true if no booked slot overlaps the new opening hours out of the grid
+     */
+    public static boolean checkBookedSlotsOnGrid( List<Slot> listSlotWithAppointment, LocalTime oldTimeStart, LocalTime timeStart, LocalTime timeEnd,
+            int nDuration )
+    {
+        return timeStart.equals( oldTimeStart ) || listSlotWithAppointment.stream( ).filter( slot -> slot.getNbPlacesTaken( ) > 0 )
+                .filter( slot -> slot.getStartingDateTime( ).toLocalTime( ).isBefore( timeEnd ) && slot.getEndingDateTime( ).toLocalTime( ).isAfter( timeStart ) )
+                .allMatch( slot -> Math.floorMod( ChronoUnit.MINUTES.between( timeStart, slot.getStartingDateTime( ).toLocalTime( ) ), nDuration ) == 0 );
+    }
+
+    /**
      * Check if there are appointments impacted by the new week definition
      *
      * @param listSlotsImpacted
