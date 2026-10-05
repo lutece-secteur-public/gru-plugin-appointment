@@ -38,6 +38,8 @@ import java.util.Map;
 
 import jakarta.servlet.http.HttpServletRequest;
 
+import org.apache.commons.lang3.StringUtils;
+
 import fr.paris.lutece.portal.business.portlet.Portlet;
 import fr.paris.lutece.portal.business.portlet.PortletHome;
 import fr.paris.lutece.portal.business.portlet.PortletTypeHome;
@@ -78,9 +80,7 @@ public abstract class AbstractPortletJspBean extends PortletJspBean
     public String getModify( HttpServletRequest request )
     {
         String strPortletId = request.getParameter( PARAMETER_PORTLET_ID );
-        int nPortletId = Integer.parseInt( strPortletId );
-        Portlet portlet = PortletHome.findByPrimaryKey( nPortletId );
-        HtmlTemplate template = getModifyTemplate( portlet );
+        Portlet portlet = StringUtils.isNumeric( strPortletId ) ? PortletHome.findByPrimaryKey( Integer.parseInt( strPortletId ) ) : null;
 
         if ( portlet == null )
         {
