@@ -40,6 +40,8 @@ import jakarta.servlet.http.HttpServletRequest;
 import fr.paris.lutece.plugins.appointment.business.portlet.AppointmentPortlet;
 import fr.paris.lutece.plugins.appointment.business.portlet.AppointmentPortletHome;
 import fr.paris.lutece.portal.business.portlet.PortletHome;
+import fr.paris.lutece.portal.service.message.AdminMessage;
+import fr.paris.lutece.portal.service.message.AdminMessageService;
 
 /**
  * This class provides the user interface to manage AppointmentPortlet features
@@ -62,6 +64,11 @@ public class AppointmentPortletJspBean extends AbstractPortletJspBean
     @Override
     public String doCreate( HttpServletRequest request )
     {
+        if ( !getSecurityTokenService( ).validate( request, ACTION_CREATE_PORTLET ) )
+        {
+            return AdminMessageService.getMessageUrl( request, MESSAGE_INVALID_TOKEN, AdminMessage.TYPE_STOP );
+        }
+
         AppointmentPortlet portlet = new AppointmentPortlet( );
 
         // recovers portlet specific attributes
@@ -91,6 +98,11 @@ public class AppointmentPortletJspBean extends AbstractPortletJspBean
     @Override
     public String doModify( HttpServletRequest request )
     {
+        if ( !getSecurityTokenService( ).validate( request, ACTION_MODIFY_PORTLET ) )
+        {
+            return AdminMessageService.getMessageUrl( request, MESSAGE_INVALID_TOKEN, AdminMessage.TYPE_STOP );
+        }
+
         // fetches portlet attributes
         String strPortletId = request.getParameter( PARAMETER_PORTLET_ID );
         int nPortletId = Integer.parseInt( strPortletId );

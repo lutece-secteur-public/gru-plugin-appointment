@@ -100,6 +100,11 @@ public class AppointmentFormPortletJspBean extends AbstractPortletJspBean
     @Override
     public String doCreate( HttpServletRequest request )
     {
+        if ( !getSecurityTokenService( ).validate( request, ACTION_CREATE_PORTLET ) )
+        {
+            return AdminMessageService.getMessageUrl( request, MESSAGE_INVALID_TOKEN, AdminMessage.TYPE_STOP );
+        }
+
         AppointmentFormPortlet portlet = new AppointmentFormPortlet( );
 
         // recovers portlet specific attributes
@@ -141,6 +146,11 @@ public class AppointmentFormPortletJspBean extends AbstractPortletJspBean
     @Override
     public String doModify( HttpServletRequest request )
     {
+        if ( !getSecurityTokenService( ).validate( request, ACTION_MODIFY_PORTLET ) )
+        {
+            return AdminMessageService.getMessageUrl( request, MESSAGE_INVALID_TOKEN, AdminMessage.TYPE_STOP );
+        }
+
         // fetches portlet attributes
         String strPortletId = request.getParameter( PARAMETER_PORTLET_ID );
         int nPortletId = Integer.parseInt( strPortletId );
