@@ -821,4 +821,40 @@ public class AppointmentUtilitiesTest extends LuteceTestCase
         }
         FormServiceTest.cleanForm( nIdForm );
     }
+
+    /**
+     * A booked slot must stay on the grid of the new opening hours of a typical week already applied (30 min slots, appointment on 09:30-10:00)
+     */
+    @Test
+    public void testCheckBookedSlotsOnGrid( )
+    {
+        LocalDate dateTomorrow = LocalDate.now( ).plusDays( 1 );
+        Slot slotBooked = new Slot( );
+        slotBooked.setStartingDateTime( dateTomorrow.atTime( 9, 30 ) );
+        slotBooked.setEndingDateTime( dateTomorrow.atTime( 10, 0 ) );
+        slotBooked.setNbPlacestaken( 1 );
+        List<Slot> listSlot = Arrays.asList( slotBooked );
+        LocalTime timeStart = LocalTime.of( 9, 0 );
+
+        // 09:00 -> 09:15: the grid 09:15, 09:45... overlaps the booked slot
+        assertFalse( AppointmentUtilities.checkBookedSlotsOnGrid( listSlot, timeStart, LocalTime.of( 9, 15 ), LocalTime.of( 12, 15 ), 30 ) );
+        // 09:00 -> 08:30 or 09:30: shifted by a multiple of the duration, the booked slot is on the grid
+        assertTrue( AppointmentUtilities.checkBookedSlotsOnGrid( listSlot, timeStart, LocalTime.of( 8, 30 ), LocalTime.of( 12, 0 ), 30 ) );
+        assertTrue( AppointmentUtilities.checkBookedSlotsOnGrid( listSlot, timeStart, LocalTime.of( 9, 30 ), LocalTime.of( 12, 0 ), 30 ) );
+        // the opening starts inside the booked slot: overlap out of the grid
+        assertFalse( AppointmentUtilities.checkBookedSlotsOnGrid( listSlot, timeStart, LocalTime.of( 9, 45 ), LocalTime.of( 12, 15 ), 30 ) );
+        // the booked slot is out of the new opening hours, without overlap: it is kept out of the opening hours
+        assertTrue( AppointmentUtilities.checkBookedSlotsOnGrid( listSlot, timeStart, LocalTime.of( 10, 15 ), LocalTime.of( 12, 15 ), 30 ) );
+        assertTrue( AppointmentUtilities.checkBookedSlotsOnGrid( listSlot, timeStart, LocalTime.of( 7, 15 ), LocalTime.of( 9, 15 ), 30 ) );
+
+        // the starting time does not change: the grid does not move, a booked slot out of the grid (a shifted specific slot) does not block
+        slotBooked.setStartingDateTime( dateTomorrow.atTime( 9, 40 ) );
+        slotBooked.setEndingDateTime( dateTomorrow.atTime( 10, 10 ) );
+        assertTrue( AppointmentUtilities.checkBookedSlotsOnGrid( listSlot, timeStart, timeStart, LocalTime.of( 11, 0 ), 30 ) );
+        assertFalse( AppointmentUtilities.checkBookedSlotsOnGrid( listSlot, timeStart, LocalTime.of( 8, 30 ), LocalTime.of( 11, 0 ), 30 ) );
+
+        // a slot without appointment does not block
+        slotBooked.setNbPlacestaken( 0 );
+        assertTrue( AppointmentUtilities.checkBookedSlotsOnGrid( listSlot, timeStart, LocalTime.of( 9, 15 ), LocalTime.of( 12, 15 ), 30 ) );
+    }
 }
