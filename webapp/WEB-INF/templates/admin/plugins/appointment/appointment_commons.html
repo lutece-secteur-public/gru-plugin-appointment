@@ -8,6 +8,8 @@
 <!--  JS admin -->
 <#-- <script src="themes/admin/shared/js/lib/bootstrap/bootstrap.bundle.min.js"></script> -->
 <script src="js/admin/plugins/appointment/jquery.min.js"></script>
+<#-- The core loads jquery-migrate 3.x after this jQuery 1.11 and wraps jQuery.unique with jQuery.uniqueSort, which must exist -->
+<script>jQuery.uniqueSort = jQuery.unique;</script>
 <script src="js/admin/plugins/appointment/moment.min.js" ></script>
 <script src="js/admin/plugins/appointment/fullcalendar.min.js"></script>
 <script src="js/admin/plugins/appointment/locale-all.js"></script>
