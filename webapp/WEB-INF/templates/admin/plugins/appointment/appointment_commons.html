@@ -579,6 +579,7 @@ function initAppointmentCalendar() {
 	var miniCalInstance = null;
 	var isDragging = false, selectedEls = [];
 	window.appointmentCalendar = null;
+	<#if !isTypical>var strHoursOfView = minTime + '-' + maxTime;</#if>
 	var calendarInst = new FullCalendar.Calendar(calendarEl, {
 		<#if !showComments>allDaySlot: false,</#if>
 		displayEventTime: false,
@@ -758,6 +759,22 @@ function initAppointmentCalendar() {
 		events: events,
 		<#if !isTypical>
 		datesSet: function(info) {
+			var listSlotOfView = events.filter( function( event ) {
+				return event.type === 'appointment' && new Date( event.start ) < info.end && new Date( event.end ) > info.start;
+			});
+			var minTimeOfView = listSlotOfView.length ? listSlotOfView.map( function( event ) { return event.start.slice( 11, 16 ); } ).sort( )[0] : minTime;
+			var maxTimeOfView = listSlotOfView.length ? listSlotOfView.map( function( event ) { return event.end.slice( 11, 16 ); } ).sort( ).pop( ) : maxTime;
+			if ( minTimeOfView + '-' + maxTimeOfView !== strHoursOfView ) {
+				strHoursOfView = minTimeOfView + '-' + maxTimeOfView;
+				setTimeout( function( ) {
+					calendarInst.batchRendering( function( ) {
+						calendarInst.setOption( 'slotMinTime', minTimeOfView );
+						calendarInst.setOption( 'slotMaxTime', maxTimeOfView );
+						calendarInst.removeAllEventSources( );
+						calendarInst.addEventSource( events );
+					});
+				});
+			}
 			var d = info.start;
 			sessionStorage.setItem( 'appCurrentDate', d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0') );
 			if (miniCalInstance) {

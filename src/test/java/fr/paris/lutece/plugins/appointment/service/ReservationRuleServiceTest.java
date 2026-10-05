@@ -35,8 +35,11 @@ package fr.paris.lutece.plugins.appointment.service;
 
 import java.sql.Date;
 import java.time.LocalDate;
+import java.util.List;
+import java.util.Locale;
 
 import fr.paris.lutece.plugins.appointment.business.planning.WeekDefinition;
+import fr.paris.lutece.plugins.appointment.business.rule.ReservationRule;
 import fr.paris.lutece.plugins.appointment.business.rule.ReservationRuleHome;
 import fr.paris.lutece.plugins.appointment.web.dto.AppointmentFormDTO;
 import fr.paris.lutece.test.LuteceTestCase;
@@ -86,6 +89,25 @@ public class ReservationRuleServiceTest extends LuteceTestCase
         assertEquals( appointmentForm2.getIdReservationRule( ), ReservationRuleService
                 .findReservationRuleByIdFormAndClosestToDateOfApply( nIdForm, weekDefinition2.getDateOfApply( ) ).getIdReservationRule( ) );
 
+        FormServiceTest.cleanForm( nIdForm );
+    }
+
+    @Test
+    public void testArchivePastPeriods( )
+    {
+        int nIdForm = FormService.createAppointmentForm( FormServiceTest.buildAppointmentForm( ) );
+        int nIdReservationRule = WeekDefinitionServiceTest.createPeriodsAroundToday( nIdForm );
+        LocalDate today = LocalDate.now( );
+
+        ReservationRuleService.archivePastPeriods( nIdForm, nIdReservationRule, Locale.FRENCH );
+
+        List<ReservationRule> listArchive = ReservationRuleHome.findByIdForm( nIdForm ).stream( ).filter( rule -> !rule.getEnable( ) ).toList( );
+        assertEquals( 1, listArchive.size( ) );
+        assertEquals( List.of( today.minusDays( 20 ) + "/" + today.minusDays( 10 ), today.minusDays( 5 ) + "/" + today.minusDays( 1 ) ),
+                WeekDefinitionServiceTest.periods( listArchive.get( 0 ).getIdReservationRule( ) ) );
+        assertEquals( List.of( today + "/" + today.plusDays( 5 ), today.plusDays( 10 ) + "/" + today.plusDays( 20 ) ),
+                WeekDefinitionServiceTest.periods( nIdReservationRule ) );
+        assertTrue( ReservationRuleService.findReservationRuleById( nIdReservationRule ).getEnable( ) );
         FormServiceTest.cleanForm( nIdForm );
     }
 

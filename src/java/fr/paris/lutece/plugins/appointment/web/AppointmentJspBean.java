@@ -45,6 +45,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Set;
 import java.util.StringJoiner;
 import java.util.stream.Collectors;
 
@@ -211,6 +212,7 @@ public class AppointmentJspBean extends MVCAdminJspBean
     private static final String PARAMETER_DATE_OF_DISPLAY = "date_of_display";
     private static final String PARAMETER_DAY_OF_WEEK = "dow";
     private static final String PARAMETER_EVENTS = "events";
+    private static final String MARK_SLOTS_OUT_OF_OPENING_HOURS = "slots_out_of_opening_hours";
     private static final String PARAMETER_EVENTS_COMMENTS = "comment_events";
     private static final String PARAMETER_MIN_DURATION = "min_duration";
     private static final String PARAMETER_MIN_TIME = "min_time";
@@ -442,6 +444,7 @@ public class AppointmentJspBean extends MVCAdminJspBean
         }
 
         List<String> listDayOfWeek = new ArrayList<>( WeekDefinitionService.getSetDaysOfWeekOfAListOfWeekDefinitionForFullCalendar( listReservationRules ) );
+        List<Slot> listSlotOutOfOpeningHours = new ArrayList<>( );
         if ( !bError )
         {
 
@@ -461,6 +464,10 @@ public class AppointmentJspBean extends MVCAdminJspBean
                 _nNbPlacesToTake = 0;
                 listSlot = SlotService.buildListSlot( nIdForm, mapReservationRule, startingDateOfDisplay, endingDateOfDisplay );
             }
+
+            listSlotOutOfOpeningHours = findSlotsOutOfOpeningHours( nIdForm, listSlot, startingDateOfDisplay, endingDateOfDisplay );
+            listSlotOutOfOpeningHours.forEach( slot -> slot.setIsOpen( Boolean.FALSE ) );
+            listSlot.addAll( listSlotOutOfOpeningHours );
 
             // Tag as passed the slots passed
             List<Slot> listSlotsPassed = listSlot.stream( ).filter( s -> s.getEndingDateTime( ).isBefore( LocalDateTime.now( ) ) )
@@ -498,6 +505,7 @@ public class AppointmentJspBean extends MVCAdminJspBean
         _models.put( PARAMETER_DATE_OF_DISPLAY, dateOfDisplay );
         _models.put( PARAMETER_DAY_OF_WEEK, listDayOfWeek );
         _models.put( PARAMETER_EVENTS, listSlot );
+        _models.put( MARK_SLOTS_OUT_OF_OPENING_HOURS, listSlotOutOfOpeningHours.stream( ).map( Slot::getIdSlot ).collect( Collectors.toList( ) ) );
         _models.put( PARAMETER_EVENTS_COMMENTS, CommentService
                 .buildCommentDTO( CommentService.finListComments( Date.valueOf( startingDateOfDisplay ), Date.valueOf( endingDateOfDisplay ), nIdForm ) ) );
         _models.put( PARAMETER_MIN_TIME, minStartingTime );
@@ -534,6 +542,27 @@ public class AppointmentJspBean extends MVCAdminJspBean
 
                 return getPage( PROPERTY_PAGE_TITLE_MANAGE_APPOINTMENTS_CALENDAR, TEMPLATE_MANAGE_APPOINTMENTS_CALENDAR, _models );
             }
+    }
+
+    /**
+     * Find the slots with appointments that are not in the list of slots built from the typical weeks, because they are out of the opening hours
+     *
+     * @param nIdForm
+     *            the form id
+     * @param listSlot
+     *            the list of slots built from the typical weeks
+     * @param startingDate
+     *            the starting date of the period
+     * @param endingDate
+     *            the ending date of the period
+     * @return the slots with appointments out of the opening hours
+     */
+    private List<Slot> findSlotsOutOfOpeningHours( int nIdForm, List<Slot> listSlot, LocalDate startingDate, LocalDate endingDate )
+    {
+        Set<Integer> setIdSlotBuilt = listSlot.stream( ).map( Slot::getIdSlot ).collect( Collectors.toSet( ) );
+
+        return SlotService.findSlotWithAppointmentByDateRange( nIdForm, startingDate.atStartOfDay( ), endingDate.atTime( LocalTime.MAX ) ).stream( )
+                .filter( slot -> slot.getNbPlacesTaken( ) > 0 && !setIdSlotBuilt.contains( slot.getIdSlot( ) ) ).collect( Collectors.toList( ) );
     }
 
     /**
