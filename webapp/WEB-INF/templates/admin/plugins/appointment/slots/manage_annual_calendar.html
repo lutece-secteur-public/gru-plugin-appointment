@@ -8,7 +8,7 @@
 				<@span class='d-inline-block align-middle rounded-circle bg-secondary' params='style="width:20px;height:20px"'></@span> #i18n{appointment.annual.label.daySpecifity}
 			</@p>
 			<@ul class='list-unstyled'>
-				<#list listReservationRule as rule>
+				<#list listReservationRule?filter( rule -> rule.enable ) as rule>
 					<@li class='py-2'>
 						<@aButton color='outline-primary justify-content-start px-2 w-100 text-wrap' href='jsp/admin/plugins/appointment/ManageAppointmentSlots.jsp?view=manageTypicalWeek&id_form=${id_form}&id_reservation_rule=${rule.idReservationRule}' params='style="border-color:${rule.color!};"'>
                             <@icon style='circle-filled me-2 fs-4' params='style="color:${rule.color!};"' /> ${rule.name}
@@ -34,7 +34,7 @@
 			</@formGroup>
 			<@formGroup labelFor='id_reservation_rule' labelKey='#i18n{appointment.week.toApplay}' rows=2>
 				<@select name='id_reservation_rule' id='id_reservation_rule'>
-					<#list listReservationRule as rule>
+					<#list listReservationRule?filter( rule -> rule.enable ) as rule>
 						<@option value=rule.idReservationRule label=rule.name />
 					</#list>
 				</@select>
