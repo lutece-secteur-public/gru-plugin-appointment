@@ -255,6 +255,16 @@ ${mark_nb_places_to_take_form!}
                 });
             },
 			viewRender: function(view, element) {
+				var hiddenDaysOfView = hiddenDays.filter( function( day ) {
+					return !events.some( function( event ) {
+						return event.className !== 'slot-closed' && moment( event.start ).day( ) === day && moment( event.start ).isBefore( view.intervalEnd ) && moment( event.end ).isAfter( view.intervalStart );
+					});
+				});
+				if ( hiddenDaysOfView.join( ) !== $( '#calendar' ).fullCalendar( 'option', 'hiddenDays' ).join( ) ) {
+					setTimeout( function( ) {
+						$( '#calendar' ).fullCalendar( 'option', 'hiddenDays', hiddenDaysOfView );
+					});
+				}
 				var minDate = moment.utc(minDateOfOpenDay);
 				var maxDate = moment.utc(maxDateOfOpenDay);
 				// Past
