@@ -115,7 +115,7 @@ public class FormServiceTest extends LuteceTestCase
 
         appointmentForm.setMinTimeBeforeAppointment( 30 );
         appointmentForm.setDateStartValidity( Date.valueOf( LocalDate.now( ) ) );
-        appointmentForm.setDateEndValidity( Date.valueOf( LocalDate.parse( "2025-12-25" ) ) );
+        appointmentForm.setDateEndValidity( Date.valueOf( LocalDate.now( ).plusYears( 1 ) ) );
 
         appointmentForm.setDisplayTitleFo( Boolean.TRUE );
         appointmentForm.setIsDisplayedOnPortlet( Boolean.TRUE );
