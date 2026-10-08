@@ -112,7 +112,7 @@ const slots = [
 			const dayKey = toDateKey(dayDate);
 			const dayOfWeek = dayDate.getDay();
 
-			if (hiddenDays.indexOf(dayOfWeek) !== -1) continue;
+			if (hiddenDays.indexOf(dayOfWeek) !== -1 && !(slotsByDate[dayKey] || []).some(function(s) { return s.open; })) continue;
 
 			const daySlots = slotsByDate[dayKey] || [];
 			let availableCount = 0;
