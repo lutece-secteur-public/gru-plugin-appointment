@@ -1,0 +1,51 @@
+<#macro confirmAdvancedParameters formId slots>
+<@modal id='confirmAdvancedParameters' params='tabindex="-1"'>
+	<@modalHeader modalTitle='#i18n{appointment.manageTypicalWeek.confirmAdvancedParameters.title}' />
+	<@modalBody>
+		<div id="confirmOutOfOpeningHours">
+			<p>#i18n{appointment.manageTypicalWeek.confirmAdvancedParameters.messageOutOfOpeningHours}</p>
+			<p>#i18n{appointment.manageTypicalWeek.confirmAdvancedParameters.labelSlots} <strong id="confirmOutOfOpeningHoursCount"></strong></p>
+		</div>
+		<div id="confirmOverbooking">
+			<p>#i18n{appointment.manageTypicalWeek.confirmAdvancedParameters.messageOverbooking}</p>
+			<p>#i18n{appointment.manageTypicalWeek.confirmAdvancedParameters.labelSlots} <strong id="confirmOverbookingCount"></strong></p>
+		</div>
+	</@modalBody>
+	<@modalFooter>
+		<@button id='confirmAdvancedParametersButton' title='#i18n{portal.util.labelValidate}' buttonIcon='check' />
+		<@button color='secondary' title='#i18n{portal.util.labelCancel}' params='data-bs-dismiss="modal"' />
+	</@modalFooter>
+</@modal>
+<script>
+( function( ) {
+	var slots = [<#list slots as slot>[ '${slot[0]?js_string}', '${slot[1]?js_string}', ${slot[2]?js_string} ],</#list>];
+	var form = document.getElementById( '${formId?js_string}' );
+	function showWarning( id, nbSlots ) {
+		document.getElementById( id ).hidden = nbSlots === 0;
+		document.getElementById( id + 'Count' ).textContent = nbSlots;
+	}
+	form.addEventListener( 'submit', function( e ) {
+		var timeStart = form.elements[ 'time_start' ].value;
+		var timeEnd = form.elements[ 'time_end' ].value;
+		var maxCapacity = parseInt( form.elements[ 'max_capacity_per_slot' ].value, 10 );
+		var nbSlotsOutOfOpeningHours = slots.filter( function( slot ) {
+			return slot[0] < timeStart || slot[1] > timeEnd;
+		}).length;
+		var nbSlotsOverbooked = slots.filter( function( slot ) {
+			return slot[2] > maxCapacity;
+		}).length;
+		if ( nbSlotsOutOfOpeningHours === 0 && nbSlotsOverbooked === 0 ) {
+			return;
+		}
+		e.preventDefault( );
+		showWarning( 'confirmOutOfOpeningHours', nbSlotsOutOfOpeningHours );
+		showWarning( 'confirmOverbooking', nbSlotsOverbooked );
+		bootstrap.Modal.getOrCreateInstance( '#confirmAdvancedParameters' ).show( );
+	});
+	document.getElementById( 'confirmAdvancedParametersButton' ).addEventListener( 'click', function( ) {
+		this.disabled = true;
+		form.submit( );
+	});
+} )( );
+</script>
+</#macro>

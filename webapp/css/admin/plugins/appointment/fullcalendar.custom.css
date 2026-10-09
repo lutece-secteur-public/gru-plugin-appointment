@@ -255,6 +255,17 @@ th.fc-day-header {
     display: inline-block;
 }
 
+/*** OUT OF OPENING HOURS ***/
+.fc-out-of-opening-hours{
+    background: repeating-linear-gradient( 45deg, #fff3cd, #fff3cd 6px, #ffe69c 6px, #ffe69c 12px ) !important;
+    border: 2px dashed #f59f00 !important;
+}
+
+.fc-out-of-opening-hours-icon{
+    color: #b35c00;
+    font-weight: 700;
+}
+
 /* SELECTABLE */
 .ui-selectable-helper{
     border: 4px dotted rgba( 0, 248, 41, 1);
