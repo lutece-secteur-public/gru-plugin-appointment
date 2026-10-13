@@ -37,6 +37,7 @@ import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.time.format.DateTimeParseException;
 import java.time.temporal.TemporalField;
 import java.time.temporal.WeekFields;
 import java.util.ArrayList;
@@ -272,6 +273,7 @@ public class AppointmentApp extends MVCApplication
     private static final String ERROR_MESSAGE_FORM_NO_MORE_VALID = "appointment.validation.appointment.formNoMoreValid";
     private static final String ERROR_MESSAGE_REPORT_APPOINTMENT = "appointment.message.error.report.appointment";
     private static final String ERROR_MESSAGE_NO_AVAILABLE_SLOT = "appointment.validation.appointment.noAvailableSlot";
+    private static final String ERROR_MESSAGE_STARTING_DATE_TIME_MISSING = "appointment.message.error.startingDateTimeMissing";
 
     private static final String ERROR_MESSAGE_NB_PLACE_TO_TAKE_TO_BIG = "appointment.message.error.nbplacestotake.toobig";
 
@@ -654,7 +656,11 @@ public class AppointmentApp extends MVCApplication
         {
             LinkedHashMap<String, String> additionalParameters = new LinkedHashMap<>( );
             additionalParameters.put( PARAMETER_ID_FORM, strIdForm );
-            additionalParameters.put( PARAMETER_STARTING_DATE_TIME, request.getParameter( PARAMETER_STARTING_DATE_TIME ) );
+            String strStartingDateTimeAnchor = request.getParameter( PARAMETER_STARTING_DATE_TIME );
+            if ( StringUtils.isNotEmpty( strStartingDateTimeAnchor ) )
+            {
+                additionalParameters.put( PARAMETER_STARTING_DATE_TIME, strStartingDateTimeAnchor );
+            }
             additionalParameters.put( PARAMETER_NB_PLACE_TO_TAKE, Integer.toString( _nNbPlacesToTake ) );
             additionalParameters.put( PARAMETER_ANCHOR, MARK_ANCHOR + anchor );
             return redirect( request, VIEW_APPOINTMENT_FORM, additionalParameters );
@@ -674,7 +680,13 @@ public class AppointmentApp extends MVCApplication
         {
 
             int nNbConsecutiveSlot = ( _nNbPlacesToTake == 0 ) ? 1 : _nNbPlacesToTake;
-            LocalDateTime startingDateTime = LocalDateTime.parse( request.getParameter( PARAMETER_STARTING_DATE_TIME ) );
+            LocalDateTime startingDateTime = parseStartingDateTime(
+                    request.getParameter( PARAMETER_STARTING_DATE_TIME ), nIdForm );
+            if ( startingDateTime == null )
+            {
+                addError( ERROR_MESSAGE_STARTING_DATE_TIME_MISSING, getLocale( request ) );
+                return redirect( request, VIEW_APPOINTMENT_CALENDAR, PARAMETER_ID_FORM, nIdForm, PARAMETER_NB_PLACE_TO_TAKE, _nNbPlacesToTake );
+            }
             if ( !isAuthorizedDate( startingDateTime, getLocale( request ) ) )
             {
 
@@ -1174,7 +1186,13 @@ public class AppointmentApp extends MVCApplication
     public synchronized XPage getViewChangeDateAppointment( HttpServletRequest request )
     {
         String strIdForm = request.getParameter( PARAMETER_ID_FORM );
-        LocalDateTime startingDateTime = LocalDateTime.parse( request.getParameter( PARAMETER_STARTING_DATE_TIME ) );
+        LocalDateTime startingDateTime = parseStartingDateTime(
+                request.getParameter( PARAMETER_STARTING_DATE_TIME ), strIdForm );
+        if ( startingDateTime == null )
+        {
+            addError( ERROR_MESSAGE_STARTING_DATE_TIME_MISSING, getLocale( request ) );
+            return redirect( request, VIEW_APPOINTMENT_CALENDAR, PARAMETER_ID_FORM, Integer.parseInt( strIdForm ), PARAMETER_NB_PLACE_TO_TAKE, _nNbPlacesToTake );
+        }
         Locale locale = getLocale( request );
         int nIdForm = Integer.parseInt( strIdForm );
         Form form = FormService.findFormLightByPrimaryKey( nIdForm );
@@ -1877,6 +1895,33 @@ public class AppointmentApp extends MVCApplication
                 // Authentication is required to access to the portal
                 throw new UserNotSignedException( );
             }
+        }
+    }
+
+
+
+    /**
+     * Parses a parameter value as a {@link LocalDateTime}.
+     *
+     * @param strValue the raw parameter value
+     * @param idFormForLog the form id, used in error log messages
+     * @return the parsed value, or {@code null} if absent or invalid
+     */
+    private LocalDateTime parseStartingDateTime( String strValue, Object idFormForLog )
+    {
+        if ( StringUtils.isEmpty( strValue ) )
+        {
+            AppLogService.error( "Missing starting_date_time parameter for id_form={}", idFormForLog );
+            return null;
+        }
+        try
+        {
+            return LocalDateTime.parse( strValue );
+        }
+        catch ( DateTimeParseException e )
+        {
+            AppLogService.error( "Invalid starting_date_time parameter '{}' for id_form={}", strValue, idFormForLog );
+            return null;
         }
     }
 
