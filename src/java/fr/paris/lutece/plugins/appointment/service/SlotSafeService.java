@@ -81,8 +81,10 @@ import fr.paris.lutece.plugins.appointment.service.lock.SlotEditTask;
 import fr.paris.lutece.plugins.appointment.web.dto.AppointmentDTO;
 import fr.paris.lutece.plugins.genericattributes.business.Response;
 import fr.paris.lutece.plugins.genericattributes.business.ResponseHome;
+import fr.paris.lutece.plugins.workflowcore.exception.ResourceWorkflowLockedException;
 import fr.paris.lutece.portal.business.user.AdminUser;
 import fr.paris.lutece.portal.service.admin.AdminUserService;
+import fr.paris.lutece.portal.service.util.AppException;
 import fr.paris.lutece.portal.service.util.AppLogService;
 import fr.paris.lutece.portal.service.workflow.WorkflowService;
 import fr.paris.lutece.portal.web.l10n.LocaleService;
@@ -473,8 +475,21 @@ public final class SlotSafeService
             if ( isReport && appointment.getIdActionReported( ) != 0 )
             {
                 AdminUser adminUser = ( request != null ) ? AdminUserService.getAdminUser( request ) : null;
-                workflowService.doProcessAction( appointment.getIdAppointment( ), Appointment.APPOINTMENT_RESOURCE_TYPE,
-                        appointment.getIdActionReported( ), form.getIdForm( ), request, locale, adminUser == null, adminUser );
+                try
+                {
+                    workflowService.doProcessAction( appointment.getIdAppointment( ), Appointment.APPOINTMENT_RESOURCE_TYPE,
+                            appointment.getIdActionReported( ), form.getIdForm( ), request, locale, adminUser == null, adminUser );
+                }
+                catch( AppException e )
+                {
+                    if ( !( e.getCause( ) instanceof ResourceWorkflowLockedException ) )
+                    {
+                        throw e;
+                    }
+
+                    // Another action is in progress on the appointment: the postponement is saved, the action is not processed twice
+                    AppLogService.info( "Postponement action skipped for the appointment {}: {}", appointment.getIdAppointment( ), e.getCause( ).getMessage( ) );
+                }
 
             }
         }

@@ -105,6 +105,7 @@ import fr.paris.lutece.plugins.workflowcore.business.state.StateFilter;
 import fr.paris.lutece.plugins.workflowcore.service.state.StateService;
 import fr.paris.lutece.plugins.workflowcore.service.task.ITask;
 import fr.paris.lutece.plugins.workflowcore.service.task.ITaskService;
+import fr.paris.lutece.plugins.workflowcore.exception.ResourceWorkflowLockedException;
 import fr.paris.lutece.portal.business.file.File;
 import fr.paris.lutece.portal.business.user.AdminUser;
 import fr.paris.lutece.portal.business.user.AdminUserHome;
@@ -326,6 +327,7 @@ public class AppointmentJspBean extends MVCAdminJspBean
     private static final String ERROR_MESSAGE_NO_STARTING_VALIDITY_DATE = "appointment.validation.appointment.noStartingValidityDate";
     private static final String ERROR_MESSAGE_FORM_NO_MORE_VALID = "appointment.validation.appointment.formNoMoreValid";
     private static final String MESSAGE_UNVAILABLE_SLOT = "appointment.message.error.slotFull";
+    private static final String MESSAGE_ACTION_LOCKED = "appointment.message.error.actionLocked";
     private static final String ERROR_MESSAGE_REPORT_APPOINTMENT = "appointment.message.error.report.appointment";
     private static final String ERROR_MESSAGE_EMPTY_RESERVATIONS_RULES = "appointment.message.error.empty.reservationsRules";
 
@@ -1623,7 +1625,15 @@ public class AppointmentJspBean extends MVCAdminJspBean
                 }
                 catch( Exception e )
                 {
-                    AppLogService.error( "Error Workflow", e );
+                    // Another action is in progress on this appointment (other agent or instance) or its state has changed
+                    if ( e.getCause( ) instanceof ResourceWorkflowLockedException )
+                    {
+                        addError( MESSAGE_ACTION_LOCKED, getLocale( ) );
+                    }
+                    else
+                    {
+                        AppLogService.error( "Error Workflow", e );
+                    }
                 }
                 Map<String, String> mapParams = new HashMap<>( );
                 mapParams.put( PARAMETER_ID_FORM, Integer.toString( slot.getIdForm( ) ) );

@@ -103,6 +103,7 @@ import fr.paris.lutece.plugins.genericattributes.business.Response;
 import fr.paris.lutece.plugins.genericattributes.service.file.GenericAttributeFileService;
 import fr.paris.lutece.plugins.workflowcore.service.task.ITask;
 import fr.paris.lutece.plugins.workflowcore.service.task.ITaskService;
+import fr.paris.lutece.plugins.workflowcore.exception.ResourceWorkflowLockedException;
 import fr.paris.lutece.portal.service.accesscontrol.AccessControlService;
 import fr.paris.lutece.portal.service.admin.AccessDeniedException;
 import fr.paris.lutece.portal.service.captcha.ICaptchaService;
@@ -292,6 +293,7 @@ public class AppointmentApp extends MVCApplication
     private static final String MESSAGE_CONFIRM_WORKFLOW_ACTION = "appointment.message.confirmWorkflowAction";
     private static final String MESSAGE_MY_APPOINTMENTS_PAGE_TITLE = "appointment.myAppointments.name";
     private static final String MESSAGE_WF_ACTION_SUCESS = "appointment.wf.action.success";
+    private static final String MESSAGE_ACTION_LOCKED = "appointment.message.error.actionLocked";
 
     // Properties
     private static final String PROPERTY_USER_ATTRIBUTE_FIRST_NAME = "appointment.userAttribute.firstName";
@@ -1388,7 +1390,15 @@ public class AppointmentApp extends MVCApplication
                     }
                     catch( Exception e )
                     {
-                        AppLogService.error( "Error Workflow", e );
+                        if ( e.getCause( ) instanceof ResourceWorkflowLockedException )
+                        {
+                            // Another action is in progress on this appointment (double click, agent, other instance) or its state has changed
+                            addError( MESSAGE_ACTION_LOCKED, getLocale( request ) );
+                        }
+                        else
+                        {
+                            AppLogService.error( "Error Workflow", e );
+                        }
                     }
                 }
                 else
@@ -1780,7 +1790,14 @@ public class AppointmentApp extends MVCApplication
                 }
                 catch( Exception e )
                 {
-                    AppLogService.error( "Error Workflow", e );
+                    if ( e.getCause( ) instanceof ResourceWorkflowLockedException )
+                    {
+                        addError( MESSAGE_ACTION_LOCKED, getLocale( request ) );
+                    }
+                    else
+                    {
+                        AppLogService.error( "Error Workflow", e );
+                    }
                 }
 
             }
