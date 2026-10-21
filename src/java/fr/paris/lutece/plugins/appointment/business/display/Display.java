@@ -90,6 +90,11 @@ public final class Display implements Serializable
     private int _nIdForm;
 
     /**
+     * Options of the "add to calendar" button, as JSON
+     */
+    private String _strCalendarButtonConfig;
+
+    /**
      * Get the Display Id
      * 
      * @return the Display Id
@@ -235,4 +240,25 @@ public final class Display implements Serializable
         this._nIdForm = nIdForm;
     }
 
+
+    /**
+     * Get the options of the "add to calendar" button
+     * 
+     * @return the options as JSON, null when they were never set
+     */
+    public String getCalendarButtonConfig( )
+    {
+        return _strCalendarButtonConfig;
+    }
+
+    /**
+     * Set the options of the "add to calendar" button
+     * 
+     * @param strCalendarButtonConfig
+     *            the options as JSON
+     */
+    public void setCalendarButtonConfig( String strCalendarButtonConfig )
+    {
+        _strCalendarButtonConfig = strCalendarButtonConfig;
+    }
 }

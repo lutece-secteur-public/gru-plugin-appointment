@@ -37,6 +37,7 @@ import java.io.IOException;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -48,9 +49,11 @@ import org.apache.commons.collections.CollectionUtils;
 import fr.paris.lutece.portal.service.upload.MultipartItem;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.math.NumberUtils;
+import org.apache.commons.text.StringEscapeUtils;
 
 import fr.paris.lutece.api.user.User;
 import fr.paris.lutece.plugins.appointment.business.appointment.Appointment;
+import fr.paris.lutece.plugins.appointment.business.display.CalendarButtonConfig;
 import fr.paris.lutece.plugins.appointment.business.form.Form;
 import fr.paris.lutece.plugins.appointment.business.form.FormHome;
 import fr.paris.lutece.plugins.appointment.business.message.FormMessage;
@@ -60,6 +63,7 @@ import fr.paris.lutece.plugins.appointment.log.LogUtilities;
 import fr.paris.lutece.plugins.appointment.service.AppointmentResourceIdService;
 import fr.paris.lutece.plugins.appointment.service.AppointmentService;
 import fr.paris.lutece.plugins.appointment.service.AppointmentUtilities;
+import fr.paris.lutece.plugins.appointment.service.CalendarButtonService;
 import fr.paris.lutece.plugins.appointment.service.ClosingDayService;
 import fr.paris.lutece.plugins.appointment.service.FormMessageService;
 import fr.paris.lutece.plugins.appointment.service.FormService;
@@ -156,6 +160,7 @@ public class AppointmentFormJspBean extends AbstractAppointmentFormAndSlotJspBea
     private static final String MARK_BASE_URL = "baseUrl";
     private static final String MARK_ACCESSCONTROL_REF_LIST = "accesscontrol_list";
     private static final String MARK_ACCESSCONTROL_ID = "accesscontrol_id";
+    private static final String MARK_CALENDAR_BUTTON_CHOICES = "calendarButtonChoices";
 
     // Jsp
     private static final String JSP_MANAGE_APPOINTMENTFORMS = "jsp/admin/plugins/appointment/ManageAppointmentForms.jsp";
@@ -171,6 +176,9 @@ public class AppointmentFormJspBean extends AbstractAppointmentFormAndSlotJspBea
     private static final String MESSAGE_INFO_IMPORTED_CLOSING_DAYS = "appointment.info.appointmentform.closingDayImport";
     private static final String MESSAGE_ERROR_CANT_REMOVE_FORM = "appointment.message.cantRemove.form";
     private static final String MESSAGE_ERROR_CANT_REMOVE_ACTIVE_FORM = "appointment.message.cantRemove.activate.form";
+
+    /** Prefix of the parameters of the "add to calendar" button options, all named calendar_button_<option> */
+    private static final String PARAMETER_CALENDAR_BUTTON_PREFIX = "calendar_button_";
 
     // Views
     private static final String VIEW_MANAGE_APPOINTMENTFORMS = "manageAppointmentForms";
@@ -440,6 +448,11 @@ public class AppointmentFormJspBean extends AbstractAppointmentFormAndSlotJspBea
         }
 
         addElementsToModel( _appointmentFormDTO, getUser( ), getLocale( ), _models );
+        if ( RBACService.isAuthorized( AppointmentFormDTO.RESOURCE_TYPE, strIdForm, AppointmentResourceIdService.PERMISSION_MODIFY_CALENDAR_BUTTON_FORM,
+                (User) AdminUserService.getAdminUser( request ) ) )
+        {
+            _models.put( MARK_CALENDAR_BUTTON_CHOICES, CalendarButtonService.getChoices( ) );
+        }
         return getPage( PROPERTY_PAGE_TITLE_GENERAL_SETTINGS, TEMPLATE_MODIFY_APPOINTMENTFORM, _models );
     }
 
@@ -469,6 +482,21 @@ public class AppointmentFormJspBean extends AbstractAppointmentFormAndSlotJspBea
         populate( _appointmentFormDTO, request );
         populateAddress( _appointmentFormDTO, request );
         AppointmentFormDTO appointmentFormDb = FormService.buildAppointmentForm( nIdForm, 0 );
+        if ( _appointmentFormDTO.getIcon( ) == null )
+        {
+            _appointmentFormDTO.setIcon( appointmentFormDb.getIcon( ) );
+        }
+        if ( RBACService.isAuthorized( AppointmentFormDTO.RESOURCE_TYPE, strIdForm, AppointmentResourceIdService.PERMISSION_MODIFY_CALENDAR_BUTTON_FORM,
+                (User) AdminUserService.getAdminUser( request ) ) )
+        {
+            _appointmentFormDTO.setCalendarButtonConfig( populateCalendarButtonConfig( request ) );
+        }
+        else
+        {
+            _appointmentFormDTO.setCalendarButtonConfig( appointmentFormDb.getCalendarButtonConfig( ) );
+        }
+        // Showing the button is a general setting of the form, the other options need their own permission
+        _appointmentFormDTO.getCalendarButtonConfig( ).setEnabled( isCalendarButtonChecked( request, "enabled" ) );
         String strDeleteIcon = ( request.getParameter( PARAMETER_DELETE_ICON ) == null ) ? MARK_FALSE : request.getParameter( PARAMETER_DELETE_ICON );
         MultipartHttpServletRequest mRequest = (MultipartHttpServletRequest) request;
         if ( Boolean.parseBoolean( strDeleteIcon ) && ( _appointmentFormDTO.getIcon( ).getImage( ) != null ) )
@@ -799,6 +827,61 @@ public class AppointmentFormJspBean extends AbstractAppointmentFormAndSlotJspBea
             ClosingDayService.saveListClosingDay( nIdForm, listDateToSave );
             addInfo( MESSAGE_INFO_IMPORTED_CLOSING_DAYS, getLocale( ) );
         }
+    }
+
+    /**
+     * Build the options of the "add to calendar" button from the request, then bring them back to allowed values
+     * 
+     * @param request
+     *            the request
+     * @return the options
+     */
+    private CalendarButtonConfig populateCalendarButtonConfig( HttpServletRequest request )
+    {
+        CalendarButtonConfig config = new CalendarButtonConfig( );
+        String [ ] tabOptions = request.getParameterValues( PARAMETER_CALENDAR_BUTTON_PREFIX + "options" );
+        config.setOptions( ( tabOptions == null ) ? new ArrayList<>( ) : new ArrayList<>( Arrays.asList( tabOptions ) ) );
+        config.setLabel( getCalendarButtonParameter( request, "label" ) );
+        config.setColor( getCalendarButtonParameter( request, "color" ) );
+        config.setDisplayMode( getCalendarButtonParameter( request, "displayMode" ) );
+        config.setTrigger( getCalendarButtonParameter( request, "trigger" ) );
+        config.setShowButtonIcon( isCalendarButtonChecked( request, "showButtonIcon" ) );
+        config.setShowLinkIcons( isCalendarButtonChecked( request, "showLinkIcons" ) );
+        config.setButtonsLayout( getCalendarButtonParameter( request, "buttonsLayout" ) );
+        config.setButtonStyle( getCalendarButtonParameter( request, "buttonStyle" ) );
+        config.setLocation( getCalendarButtonParameter( request, "location" ) );
+        config.setAvailability( getCalendarButtonParameter( request, "availability" ) );
+        CalendarButtonService.sanitize( config );
+        return config;
+    }
+
+    /**
+     * Read a text option of the "add to calendar" button. The core sanitizer turns the characters of the request into
+     * entities; they are decoded so that the template escapes the text once.
+     * 
+     * @param request
+     *            the request
+     * @param strName
+     *            the name of the option
+     * @return the value, trimmed, empty when absent
+     */
+    private static String getCalendarButtonParameter( HttpServletRequest request, String strName )
+    {
+        return StringUtils.trimToEmpty( StringEscapeUtils.unescapeHtml4( request.getParameter( PARAMETER_CALENDAR_BUTTON_PREFIX + strName ) ) );
+    }
+
+    /**
+     * Read a switch option of the "add to calendar" button
+     * 
+     * @param request
+     *            the request
+     * @param strName
+     *            the name of the option
+     * @return true if the switch is checked
+     */
+    private static boolean isCalendarButtonChecked( HttpServletRequest request, String strName )
+    {
+        return Boolean.parseBoolean( request.getParameter( PARAMETER_CALENDAR_BUTTON_PREFIX + strName ) );
     }
 
     private void populateAddress( AppointmentFormDTO appointmentForm, HttpServletRequest request )

@@ -14,3 +14,9 @@ UPDATE appointment_calendar_template SET title = 'Liste des créneaux disponible
 UPDATE appointment_calendar_template SET title = 'Liste des créneaux disponibles regroupés', description = 'Liste des créneaux disponibles regroupés' WHERE id_calendar_template = 5 AND title = 'Liste des creneaux disponible regroupés';
 -- The comment management feature showed its name as its description.
 UPDATE core_admin_right SET description = 'appointment.adminFeature.manageComment.description' WHERE id_right = 'APPOINTMENT_COMMENT_MANAGEMENT' AND description = 'appointment.adminFeature.manageComment.name';
+
+-- changeset appointment:update_db_appointment_3.0.13-4.0.0-calendar-button.sql
+-- preconditions onFail:MARK_RAN onError:WARN
+-- precondition-sql-check expectedResult:0 SELECT COUNT(*) FROM information_schema.columns WHERE table_schema=database() AND table_name='appointment_display' AND column_name='calendar_button_config'
+-- Options of the "add to calendar" button of the confirmation page, as JSON; NULL keeps the defaults.
+    ALTER TABLE appointment_display ADD COLUMN calendar_button_config LONG VARCHAR NULL;

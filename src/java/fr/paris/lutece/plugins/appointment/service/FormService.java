@@ -598,6 +598,7 @@ public final class FormService
         appointmentForm.setNbWeeksToDisplay( display.getNbWeeksToDisplay( ) );
         appointmentForm.setIsDisplayedOnPortlet( display.isDisplayedOnPortlet( ) );
         appointmentForm.setCalendarTemplateId( display.getIdCalendarTemplate( ) );
+        appointmentForm.setCalendarButtonConfig( CalendarButtonService.fromJson( display.getCalendarButtonConfig( ) ) );
     }
 
     /**
