@@ -38,6 +38,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.format.DateTimeParseException;
+import java.time.format.TextStyle;
 import java.time.temporal.TemporalField;
 import java.time.temporal.WeekFields;
 import java.util.ArrayList;
@@ -68,6 +69,7 @@ import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 
 import fr.paris.lutece.plugins.appointment.business.appointment.Appointment;
+import fr.paris.lutece.plugins.appointment.business.display.CalendarButtonConfig;
 import fr.paris.lutece.plugins.appointment.business.appointment.AppointmentSlot;
 import fr.paris.lutece.plugins.appointment.business.calendar.CalendarTemplate;
 import fr.paris.lutece.plugins.appointment.business.calendar.CalendarTemplateHome;
@@ -83,6 +85,7 @@ import fr.paris.lutece.plugins.appointment.log.LogUtilities;
 import fr.paris.lutece.plugins.appointment.service.AppointmentResponseService;
 import fr.paris.lutece.plugins.appointment.service.AppointmentService;
 import fr.paris.lutece.plugins.appointment.service.AppointmentUtilities;
+import fr.paris.lutece.plugins.appointment.service.CalendarButtonService;
 import fr.paris.lutece.plugins.appointment.service.EntryService;
 import fr.paris.lutece.plugins.appointment.service.FormMessageService;
 import fr.paris.lutece.plugins.appointment.service.FormService;
@@ -184,6 +187,7 @@ public class AppointmentApp extends MVCApplication
     private static final String VIEW_APPOINTMENT_FORM_LIST = "getViewFormList";
     private static final String VIEW_DISPLAY_RECAP_APPOINTMENT = "displayRecapAppointment";
     private static final String VIEW_GET_APPOINTMENT_CREATED = "getAppointmentCreated";
+    private static final String VIEW_GET_APPOINTMENT_ICS = "getAppointmentIcs";
     private static final String VIEW_APPOINTMENT_CANCELED = "getAppointmentCanceled";
     private static final String VIEW_GET_MY_APPOINTMENTS = "getMyAppointments";
     private static final String VIEW_GET_VIEW_CANCEL_APPOINTMENT = "getViewCancelAppointment";
@@ -243,6 +247,9 @@ public class AppointmentApp extends MVCApplication
     private static final String MARK_DATE_APPOINTMENT = "dateAppointment";
     private static final String MARK_STARTING_TIME_APPOINTMENT = "startingTimeAppointment";
     private static final String MARK_ENDING_TIME_APPOINTMENT = "endingTimeAppointment";
+    private static final String MARK_CALENDAR_BUTTON = "calendarButton";
+    private static final String MARK_CALENDAR_LINKS = "calendarLinks";
+    private static final String MARK_CALENDAR_EVENT = "calendarEvent";
     private static final String MARK_FORM_LIST = "form_list";
     private static final String MARK_FORM_HTML = "form_html";
     private static final String MARK_FORM_NB_PLACES_TO_TAKE_HTML = "mark_nb_places_to_take_form";
@@ -1149,11 +1156,8 @@ public class AppointmentApp extends MVCApplication
         {
                     lastSlot = _validatedAppointment.getSlot().get(_validatedAppointment.getSlot().size( ) -1 );
         }
-        String strTimeBegin = firstSlot.getStartingDateTime( ).toLocalTime( ).toString( );
-        String strTimeEnd = lastSlot.getEndingDateTime( ).toLocalTime( ).toString( );
-        formMessages.setTextAppointmentCreated( formMessages.getTextAppointmentCreated( ).replace( MARK_REF, _validatedAppointment.getReference( ) )
-                .replace( MARK_DATE_APP, firstSlot.getStartingDateTime().format( Utilities.getFormatter( ) ) )
-                .replace( MARK_TIME_BEGIN, strTimeBegin ).replace( MARK_TIME_END, strTimeEnd) );
+        formMessages.setTextAppointmentCreated( buildTextAppointmentCreated( formMessages.getTextAppointmentCreated( ), _validatedAppointment.getReference( ),
+                firstSlot.getStartingDateTime( ), lastSlot.getEndingDateTime( ) ) );
         Map<String, Object> model = new HashMap<>( );
         model.put( MARK_LIST_RESPONSE_RECAP_DTO, AppointmentUtilities.buildListResponse( _validatedAppointment, request, getLocale( request ) ) );
         model.put( MARK_DATE_APPOINTMENT, firstSlot.getDate().format( Utilities.getFormatter( ) ) );
@@ -1163,9 +1167,81 @@ public class AppointmentApp extends MVCApplication
         model.put( MARK_PLACES, _validatedAppointment.getNbPlaces( ) );
         model.put( MARK_FORM, form );
         model.put( MARK_FORM_MESSAGES, formMessages );
+        CalendarButtonConfig calendarButtonConfig = form.getCalendarButtonConfig( );
+        if ( calendarButtonConfig.isEnabled( ) && !calendarButtonConfig.getOptions( ).isEmpty( ) )
+        {
+            UrlItem urlIcs = new UrlItem( AppPathService.getPortalUrl( ) );
+            urlIcs.addParameter( MVCUtils.PARAMETER_PAGE, XPAGE_NAME );
+            urlIcs.addParameter( MVCUtils.PARAMETER_VIEW, VIEW_GET_APPOINTMENT_ICS );
+            urlIcs.addParameter( PARAMETER_REF_APPOINTMENT, _validatedAppointment.getReference( ) );
+            String strLocation = CalendarButtonService.getLocation( calendarButtonConfig, form.getAddress( ) );
+            model.put( MARK_CALENDAR_BUTTON, calendarButtonConfig );
+            model.put( MARK_CALENDAR_LINKS, CalendarButtonService.buildLinks( calendarButtonConfig, form.getTitle( ), firstSlot.getStartingDateTime( ),
+                    lastSlot.getEndingDateTime( ), strLocation, CalendarButtonService.toPlainText( formMessages.getTextAppointmentCreated( ) ),
+                    urlIcs.getUrl( ) ) );
+            Map<String, String> mapCalendarEvent = new HashMap<>( );
+            mapCalendarEvent.put( "day", String.valueOf( firstSlot.getStartingDateTime( ).getDayOfMonth( ) ) );
+            mapCalendarEvent.put( "month", firstSlot.getStartingDateTime( ).getMonth( ).getDisplayName( TextStyle.SHORT, getLocale( request ) ) );
+            mapCalendarEvent.put( "location", strLocation );
+            model.put( MARK_CALENDAR_EVENT, mapCalendarEvent );
+        }
         _appointmentForm = null;
         _validatedAppointment = null;
         return getXPage( TEMPLATE_APPOINTMENT_CREATED, getLocale( request ), model );
+    }
+
+    /**
+     * Fill the text shown once an appointment is created: reference, date, starting and ending time
+     *
+     * @param strText
+     *            the text of the form messages, with its %%REF%%, %%DATE%%, %%HEURE_DEBUT%% and %%HEURE_FIN%% marks
+     * @param strReference
+     *            the reference of the appointment
+     * @param dateStart
+     *            the start of the appointment
+     * @param dateEnd
+     *            the end of the appointment
+     * @return the text with its marks replaced, empty when there is no text
+     */
+    private static String buildTextAppointmentCreated( String strText, String strReference, LocalDateTime dateStart, LocalDateTime dateEnd )
+    {
+        return StringUtils.defaultString( strText ).replace( MARK_REF, StringUtils.defaultString( strReference ) )
+                .replace( MARK_DATE_APP, dateStart.format( Utilities.getFormatter( ) ) ).replace( MARK_TIME_BEGIN, dateStart.toLocalTime( ).toString( ) )
+                .replace( MARK_TIME_END, dateEnd.toLocalTime( ).toString( ) );
+    }
+
+    /**
+     * Download the iCalendar file of an appointment, offered by the "add to calendar" button of the confirmation page.
+     * The file holds the title of the form, the dates, the location and the text shown once the appointment is created.
+     *
+     * @param request
+     *            The request
+     * @return The iCalendar file, or the list of forms when the appointment or the option does not exist
+     */
+    @View( VIEW_GET_APPOINTMENT_ICS )
+    public XPage getAppointmentIcs( HttpServletRequest request )
+    {
+        String strRefAppointment = request.getParameter( PARAMETER_REF_APPOINTMENT );
+        AppointmentDTO appointment = StringUtils.isEmpty( strRefAppointment ) ? null
+                : AppointmentService.buildAppointmentDTOFromRefAppointment( strRefAppointment );
+        if ( appointment == null || appointment.getIsCancelled( ) )
+        {
+            return redirectView( request, VIEW_APPOINTMENT_FORM_LIST );
+        }
+        AppointmentFormDTO form = FormService.buildAppointmentForm( appointment.getIdForm( ), 0 );
+        CalendarButtonConfig calendarButtonConfig = form.getCalendarButtonConfig( );
+        if ( !calendarButtonConfig.isEnabled( ) || calendarButtonConfig.getOptions( ).stream( ).noneMatch( CalendarButtonConfig.VALUES_OPTIONS_ICS::contains ) )
+        {
+            return redirectView( request, VIEW_APPOINTMENT_FORM_LIST );
+        }
+        FormMessage formMessages = FormMessageService.findFormMessageByIdForm( appointment.getIdForm( ) );
+        String strDescription = ( formMessages == null ) ? StringUtils.EMPTY
+                : CalendarButtonService.toPlainText( buildTextAppointmentCreated( formMessages.getTextAppointmentCreated( ), appointment.getReference( ),
+                        appointment.getStartingDateTime( ), appointment.getEndingDateTime( ) ) );
+        String strIcs = CalendarButtonService.buildIcs( "appointment-" + appointment.getReference( ), form.getTitle( ), appointment.getStartingDateTime( ),
+                appointment.getEndingDateTime( ), CalendarButtonService.getLocation( calendarButtonConfig, form.getAddress( ) ), strDescription,
+                calendarButtonConfig.getAvailability( ) );
+        return download( strIcs, "appointment-" + appointment.getReference( ) + ".ics", "text/calendar; charset=utf-8" );
     }
 
     /**

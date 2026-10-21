@@ -40,6 +40,7 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 
+import fr.paris.lutece.plugins.appointment.business.display.CalendarButtonConfig;
 import fr.paris.lutece.plugins.appointment.business.rule.ReservationRule;
 import fr.paris.lutece.portal.service.image.ImageResource;
 import fr.paris.lutece.portal.service.rbac.RBACResource;
@@ -162,6 +163,11 @@ public final class AppointmentFormDTO extends ReservationRule implements RBACRes
      * True if the form has to be displayed on the front office portlet
      */
     private boolean _bIsDisplayOnPortlet = true;
+
+    /**
+     * Options of the "add to calendar" button of the confirmation page
+     */
+    private CalendarButtonConfig _calendarButtonConfig = new CalendarButtonConfig( );
 
     /**
      * Number of weeks to display the form to the user
@@ -738,6 +744,27 @@ public final class AppointmentFormDTO extends ReservationRule implements RBACRes
     public void setDisplayTitleFo( boolean bDisplayTitleFo )
     {
         _bDisplayTitleFo = bDisplayTitleFo;
+    }
+
+    /**
+     * Returns the options of the "add to calendar" button of the confirmation page
+     * 
+     * @return the options
+     */
+    public CalendarButtonConfig getCalendarButtonConfig( )
+    {
+        return _calendarButtonConfig;
+    }
+
+    /**
+     * Sets the options of the "add to calendar" button of the confirmation page
+     * 
+     * @param calendarButtonConfig
+     *            the options
+     */
+    public void setCalendarButtonConfig( CalendarButtonConfig calendarButtonConfig )
+    {
+        _calendarButtonConfig = calendarButtonConfig;
     }
 
     /**

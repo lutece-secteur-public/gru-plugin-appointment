@@ -1,0 +1,58 @@
+<#-- Options of the "add to calendar" button shown on the confirmation page -->
+<#macro calendarButtonText name value>
+	<#local escapedValue><#outputformat "HTML">${value!}</#outputformat></#local>
+	<@formGroup labelFor='calendar_button_${name}' labelKey='#i18n{appointment.calendarButton.${name}}' helpKey='#i18n{appointment.calendarButton.${name}.help}'>
+		<@input type='text' name='calendar_button_${name}' id='calendar_button_${name}' value=escapedValue maxlength=255 />
+	</@formGroup>
+</#macro>
+<#macro calendarButtonRadio name value choices hasHelp=false>
+	<@formGroup labelKey='#i18n{appointment.calendarButton.${name}}' helpKey=hasHelp?then('#i18n{appointment.calendarButton.${name}.help}','')>
+		<#list choices as choice>
+			<@radioButton orientation='inline' name='calendar_button_${name}' id='calendar_button_${name}_${choice}' value=choice labelKey='#i18n{appointment.calendarButton.${name}.${choice}}' checked=(value == choice) />
+		</#list>
+	</@formGroup>
+</#macro>
+<#macro calendarButtonSelect name value choices hasHelp=false>
+	<@formGroup labelFor='calendar_button_${name}' labelKey='#i18n{appointment.calendarButton.${name}}' helpKey=hasHelp?then('#i18n{appointment.calendarButton.${name}.help}','')>
+		<@select name='calendar_button_${name}' id='calendar_button_${name}'>
+			<#list choices as choice><@option value=choice label='#i18n{appointment.calendarButton.${name}.${choice}}' selected=(value == choice) /></#list>
+		</@select>
+	</@formGroup>
+</#macro>
+<#macro calendarButtonOptions config choices>
+<#-- Shown while the "add to calendar" switch of the general settings is on -->
+<@box id='calendar-button-options' class=config.enabled?then('', 'd-none')>
+	<@boxHeader title='#i18n{appointment.calendarButton.title}' />
+	<@boxBody>
+		<@row>
+			<@columns xs=12 md=6>
+				<@formGroup labelKey='#i18n{appointment.calendarButton.options}' helpKey='#i18n{appointment.calendarButton.options.help}'>
+					<#list choices.options as choice>
+						<@checkBox orientation='inline' labelKey='#i18n{appointment.calendarButton.options.${choice}}' name='calendar_button_options' id='calendar_button_options_${choice}' value=choice checked=config.options?seq_contains(choice) />
+					</#list>
+				</@formGroup>
+				<@calendarButtonRadio name='displayMode' value=config.displayMode choices=choices.displayMode hasHelp=true />
+				<@calendarButtonRadio name='trigger' value=config.trigger choices=choices.trigger hasHelp=true />
+				<@calendarButtonRadio name='buttonsLayout' value=config.buttonsLayout choices=choices.buttonsLayout hasHelp=true />
+				<@calendarButtonText name='label' value=config.label />
+				<#list ['showButtonIcon', 'showLinkIcons'] as switchName>
+					<@formGroup labelFor='calendar_button_${switchName}' hideLabel=['all']>
+						<@checkBox orientation='switch' labelKey='#i18n{appointment.calendarButton.${switchName}}' name='calendar_button_${switchName}' id='calendar_button_${switchName}' value='true' checked=config[switchName] />
+					</@formGroup>
+				</#list>
+			</@columns>
+			<@columns xs=12 md=6>
+				<@calendarButtonSelect name='buttonStyle' value=config.buttonStyle choices=choices.buttonStyle hasHelp=true />
+				<@calendarButtonSelect name='color' value=config.color choices=choices.color hasHelp=true />
+				<@calendarButtonText name='location' value=config.location />
+				<@formGroup labelKey='#i18n{appointment.calendarButton.availability}' helpKey='#i18n{appointment.calendarButton.availability.help}'>
+					<@radioButton orientation='inline' name='calendar_button_availability' id='calendar_button_availability_default' value='' labelKey='#i18n{appointment.calendarButton.availability.default}' checked=(config.availability == '') />
+					<#list choices.availability as choice>
+						<@radioButton orientation='inline' name='calendar_button_availability' id='calendar_button_availability_${choice}' value=choice labelKey='#i18n{appointment.calendarButton.availability.${choice}}' checked=(config.availability == choice) />
+					</#list>
+				</@formGroup>
+			</@columns>
+		</@row>
+	</@boxBody>
+</@box>
+</#macro>

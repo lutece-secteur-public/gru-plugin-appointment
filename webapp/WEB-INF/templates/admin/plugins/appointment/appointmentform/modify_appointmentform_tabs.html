@@ -5,6 +5,7 @@
 <#recover>
 </#attempt>
 <#assign hasMap = hasSuggestPOI && (isLeafletInstalled!false) />
+<#include "/admin/plugins/appointment/appointmentform/modify_appointmentform_calendar_button.html" />
 <#macro appointmentTabs tab appointmentform>
 <@tabs id='${tab}'>
 	<@tabList>
@@ -125,6 +126,9 @@
 						<@formGroup labelFor='activeAuthentication'>
 							<@checkBox orientation='switch' labelKey='#i18n{appointment.createAppointmentForm.labelActiveAuthentication}' name='activeAuthentication' id='activeAuthentication' value='true' checked=appointmentform.activeAuthentication!false />
 						</@formGroup>
+						<@formGroup labelFor='calendar_button_enabled'>
+							<@checkBox orientation='switch' labelKey='#i18n{appointment.calendarButton.enabled}' name='calendar_button_enabled' id='calendar_button_enabled' value='true' checked=appointmentform.calendarButtonConfig.enabled />
+						</@formGroup>
 						<@formGroup>
 							<@checkBox orientation='switch' labelKey='#i18n{appointment.createAppointmentForm.labelAnonymizable}' name='anonymizable' id='anonymizable' value='true' checked=appointmentform.anonymizable!false params='onchange="javascript:changeVisilityAnonymizePattern();"' />
 						</@formGroup>
@@ -187,6 +191,9 @@
 				</@box>     
 			</@columns>
 		</@row>	
+		<#if calendarButtonChoices??>
+			<@calendarButtonOptions config=appointmentform.calendarButtonConfig choices=calendarButtonChoices />
+		</#if>
 		<@row class='my-3'>
 			<@columns>
 				<@button type='submit' name='action_modifyAppointmentForm' title='#i18n{portal.util.labelModify}' buttonIcon='check' size='' />
@@ -202,6 +209,16 @@
 </#if>
 <#if hasSuggestPOI><@setupSuggestPOI /></#if>
 <script>
+document.addEventListener('DOMContentLoaded', function() {
+	// The options of the "add to calendar" button only matter while the button is shown
+	var calendarButtonSwitch = document.getElementById('calendar_button_enabled');
+	var calendarButtonOptions = document.getElementById('calendar-button-options');
+	if (calendarButtonSwitch && calendarButtonOptions) {
+		calendarButtonSwitch.addEventListener('change', function() {
+			calendarButtonOptions.classList.toggle('d-none', !this.checked);
+		});
+	}
+});
 <#if hasMap>
 document.addEventListener('DOMContentLoaded', function() {
 	var map = L.map('map_address').setView([48.85632, 2.33272], 12);

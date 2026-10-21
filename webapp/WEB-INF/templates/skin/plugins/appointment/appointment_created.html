@@ -32,4 +32,82 @@
 <@cStepDone step='5' title='#i18n{appointment.appointmentApp.confirmation}' idx=5 actionHref='${formMessages.urlRedirectAfterCreation}' actionLabel='${formMessages.labelButtonRedirection}'>
 	${formMessages.textAppointmentCreated}
 </@cStepDone>
+<#if calendarButton?? && calendarLinks??>
+<link rel="stylesheet" href="themes/shared/plugins/appointment/css/calendar-button.css" />
+<#include "/skin/plugins/appointment/calendar_button_icons.html" />
+<#assign calendarStyleClass><#if calendarButton.buttonStyle == 'bootstrap'>btn btn-${calendarButton.color}<#else>appt-cal-btn appt-cal-style-${calendarButton.buttonStyle}</#if></#assign>
+<#assign calendarButtonText><#if calendarButton.label?has_content><#outputformat "HTML">${calendarButton.label}</#outputformat><#else>#i18n{appointment.appointmentApp.addToCalendar}</#if></#assign>
+<#macro calendarLink option url class>
+<a class="${class} appt-cal-link" href="<#outputformat "HTML">${url}</#outputformat>"<#if !['apple', 'ical']?seq_contains(option)> target="_blank" rel="noopener"</#if>><#if calendarButton.showLinkIcons><@calendarButtonIcon name=option /></#if><span>#i18n{appointment.calendarButton.options.${option}}</span></a>
+</#macro>
+<#macro calendarMenu toggleLabel toggleClass>
+<@cDropdown label=toggleLabel btnClass=toggleClass>
+	<#list calendarLinks as calendarOption, calendarUrl>
+		<li><@calendarLink option=calendarOption url=calendarUrl class='dropdown-item' /></li>
+	</#list>
+</@cDropdown>
+</#macro>
+<@cRow class='my-3'>
+	<@cCol class='d-flex justify-content-center'>
+		<div class="appt-cal appt-cal-accent-${calendarButton.color}" id="appointment-add-to-calendar" data-trigger="${calendarButton.trigger}">
+		<#if calendarButton.displayMode == 'buttons'>
+			<div class="appt-cal-list appt-cal-list-${calendarButton.buttonsLayout} btn-group" role="group" aria-label="${calendarButtonText}">
+				<#list calendarLinks as calendarOption, calendarUrl>
+					<@calendarLink option=calendarOption url=calendarUrl class=calendarStyleClass />
+				</#list>
+			</div>
+		<#elseif calendarButton.displayMode == 'calendar'>
+			<div class="appt-cal-card">
+				<div class="appt-cal-card-date" aria-hidden="true">
+					<span class="appt-cal-card-day">${calendarEvent.day}</span>
+					<span class="appt-cal-card-month">${calendarEvent.month}</span>
+				</div>
+				<div class="appt-cal-card-body">
+					<div class="appt-cal-card-title">${formTitle}</div>
+					<#if calendarEvent.location?has_content><div class="appt-cal-card-meta"><@calendarButtonIcon name='location' /><span><#outputformat "HTML">${calendarEvent.location}</#outputformat></span></div></#if>
+					<div class="appt-cal-card-meta"><@calendarButtonIcon name='clock' /><span>${dateAppointment}, ${startingTimeAppointment} - ${endingTimeAppointment}</span></div>
+				</div>
+				<#assign calendarPlusLabel><span class="appt-cal-plus-tooltip" data-bs-toggle="tooltip" data-bs-placement="top" title="${calendarButtonText}"><@calendarButtonIcon name='plus' /><span class="visually-hidden">${calendarButtonText}</span></span></#assign>
+				<@calendarMenu toggleLabel=calendarPlusLabel toggleClass='link appt-cal-plus' />
+			</div>
+		<#else>
+			<#assign calendarDropdownLabel><#if calendarButton.showButtonIcon><@calendarButtonIcon name='calendar' /></#if><span>${calendarButtonText}</span></#assign>
+			<@calendarMenu toggleLabel=calendarDropdownLabel toggleClass=(calendarButton.buttonStyle == 'bootstrap')?then(calendarButton.color, 'link ' + calendarStyleClass) />
+		</#if>
+		</div>
+	</@cCol>
+</@cRow>
+<#if calendarButton.displayMode != 'buttons'>
+<script>
+document.addEventListener( 'DOMContentLoaded', () => {
+	const container = document.getElementById( 'appointment-add-to-calendar' );
+	const dropdownElement = container ? container.querySelector( '.dropdown' ) : null;
+	if ( !dropdownElement || !window.bootstrap ) {
+		return;
+	}
+	const toggle = dropdownElement.querySelector( '[data-bs-toggle="dropdown"]' );
+	const dropdown = bootstrap.Dropdown.getOrCreateInstance( toggle );
+	const tooltipElement = dropdownElement.querySelector( '.appt-cal-plus-tooltip' );
+	const tooltip = tooltipElement ? bootstrap.Tooltip.getOrCreateInstance( tooltipElement ) : null;
+	dropdownElement.addEventListener( 'show.bs.dropdown', () => tooltip && tooltip.hide( ) );
+	if ( container.dataset.trigger === 'hover' && window.matchMedia( '(hover: hover)' ).matches ) {
+		let hideTimer;
+		dropdownElement.addEventListener( 'mouseenter', () => {
+			clearTimeout( hideTimer );
+			dropdown.show( );
+		} );
+		dropdownElement.addEventListener( 'mouseleave', () => {
+			hideTimer = setTimeout( ( ) => dropdown.hide( ), 250 );
+		} );
+		toggle.addEventListener( 'click', ( event ) => {
+			if ( toggle.classList.contains( 'show' ) ) {
+				event.preventDefault( );
+				event.stopPropagation( );
+			}
+		} );
+	}
+} );
+</script>
+</#if>
+</#if>
 </@cTpl>

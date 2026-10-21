@@ -72,6 +72,8 @@ public final class AppointmentResourceIdService extends ResourceIdService
     public static final String PERMISSION_MODIFY_FORM = "MODIFY_FORM";
     /** Permission for modifying an advanced setting form */
     public static final String PERMISSION_MODIFY_ADVANCED_SETTING_FORM = "MODIFY_ADVANCED_SETTING_FORM";
+    /** Permission to modify the options of the "add to calendar" button of a form */
+    public static final String PERMISSION_MODIFY_CALENDAR_BUTTON_FORM = "MODIFY_CALENDAR_BUTTON_FORM";
     /** Permission for viewing appointment forms */
     public static final String PERMISSION_VIEW_FORM = "VIEW_FORM";
 
@@ -100,6 +102,7 @@ public final class AppointmentResourceIdService extends ResourceIdService
     private static final String PROPERTY_LABEL_DELETE_APPOINTMENT = "appointment.permission.label.deleteAppointment";
     private static final String PROPERTY_LABEL_MODIFY_FORM = "appointment.permission.label.modifyForm";
     private static final String PROPERTY_LABEL_MODIFY_ADVANCED_SETTINGS_FORM = "appointment.permission.label.modifyAdvancedSettingForm";
+    private static final String PROPERTY_LABEL_MODIFY_CALENDAR_BUTTON_FORM = "appointment.permission.label.modifyCalendarButtonForm";
     private static final String PROPERTY_LABEL_VIEW_FORM = "appointment.permission.label.viewForm";
     private static final String PROPERTY_LABEL_VIEW_APPOINTMENT = "appointment.permission.label.viewAppointment";
     private static final String PROPERTY_LABEL_CHANGE_STATE = "appointment.permission.label.changeState";
@@ -139,6 +142,11 @@ public final class AppointmentResourceIdService extends ResourceIdService
         permission = new Permission( );
         permission.setPermissionKey( PERMISSION_MODIFY_ADVANCED_SETTING_FORM );
         permission.setPermissionTitleKey( PROPERTY_LABEL_MODIFY_ADVANCED_SETTINGS_FORM );
+        resourceType.registerPermission( permission );
+
+        permission = new Permission( );
+        permission.setPermissionKey( PERMISSION_MODIFY_CALENDAR_BUTTON_FORM );
+        permission.setPermissionTitleKey( PROPERTY_LABEL_MODIFY_CALENDAR_BUTTON_FORM );
         resourceType.registerPermission( permission );
 
         permission = new Permission( );

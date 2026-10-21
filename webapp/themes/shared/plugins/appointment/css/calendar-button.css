@@ -1,0 +1,153 @@
+/* "Add to calendar" button of the confirmation page of an appointment */
+
+/* Accent: the color chosen in the form options, taken from the Bootstrap theme */
+.appt-cal { --appt-cal-accent: var(--bs-primary, #0d6efd); --appt-cal-on-accent: #fff; position: relative; z-index: 1; }
+.appt-cal-accent-secondary { --appt-cal-accent: var(--bs-secondary, #6c757d); }
+.appt-cal-accent-success { --appt-cal-accent: var(--bs-success, #198754); }
+.appt-cal-accent-info { --appt-cal-accent: var(--bs-info, #0dcaf0); --appt-cal-on-accent: #212529; }
+.appt-cal-accent-warning { --appt-cal-accent: var(--bs-warning, #ffc107); --appt-cal-on-accent: #212529; }
+.appt-cal-accent-danger { --appt-cal-accent: var(--bs-danger, #dc3545); }
+.appt-cal-accent-light { --appt-cal-accent: var(--bs-light, #f8f9fa); --appt-cal-on-accent: #212529; }
+.appt-cal-accent-dark { --appt-cal-accent: var(--bs-dark, #212529); }
+
+/* Predefined styles */
+.appt-cal .appt-cal-btn {
+	display: inline-flex;
+	align-items: center;
+	gap: .5rem;
+	padding: .6rem 1.1rem;
+	font-weight: 600;
+	line-height: 1.2;
+	text-decoration: none;
+	cursor: pointer;
+	border: 1px solid transparent;
+	transition: background-color .15s, color .15s, border-color .15s, box-shadow .15s, transform .1s;
+}
+.appt-cal .appt-cal-btn:focus-visible { outline: 3px solid var(--appt-cal-accent); outline-offset: 2px; }
+
+.appt-cal .appt-cal-style-default {
+	background: var(--bs-body-bg, #fff);
+	color: var(--bs-body-color, #212529);
+	border-color: var(--bs-border-color, #dee2e6);
+	border-radius: .65rem;
+	box-shadow: 0 2px 6px rgba(0, 0, 0, .12);
+}
+.appt-cal .appt-cal-style-default:hover { border-color: var(--appt-cal-accent); box-shadow: 0 4px 12px rgba(0, 0, 0, .16); }
+.appt-cal .appt-cal-style-default .ti { color: var(--appt-cal-accent); }
+
+.appt-cal .appt-cal-style-simple {
+	background: transparent;
+	color: var(--bs-body-color, #212529);
+	border-color: var(--bs-border-color, #dee2e6);
+	border-radius: .25rem;
+}
+.appt-cal .appt-cal-style-simple:hover { background: var(--bs-tertiary-bg, #f8f9fa); border-color: var(--appt-cal-accent); }
+
+.appt-cal .appt-cal-style-3d {
+	background: var(--appt-cal-accent);
+	color: var(--appt-cal-on-accent);
+	border-radius: .5rem;
+	box-shadow: 0 4px 0 rgba(0, 0, 0, .3);
+}
+.appt-cal .appt-cal-style-3d:hover { color: var(--appt-cal-on-accent); filter: brightness(1.05); }
+.appt-cal .appt-cal-style-3d:active { transform: translateY(3px); box-shadow: 0 1px 0 rgba(0, 0, 0, .3); }
+
+.appt-cal .appt-cal-style-flat {
+	background: var(--appt-cal-accent);
+	color: var(--appt-cal-on-accent);
+	border-radius: 0;
+}
+.appt-cal .appt-cal-style-flat:hover { color: var(--appt-cal-on-accent); filter: brightness(.9); }
+
+.appt-cal .appt-cal-style-round {
+	background: var(--bs-body-bg, #fff);
+	color: var(--bs-body-color, #212529);
+	border: 2px solid var(--appt-cal-accent);
+	border-radius: 50rem;
+}
+.appt-cal .appt-cal-style-round:hover { background: var(--appt-cal-accent); color: var(--appt-cal-on-accent); }
+
+.appt-cal .appt-cal-style-text {
+	background: transparent;
+	color: var(--appt-cal-accent);
+	padding: .25rem .5rem;
+}
+.appt-cal .appt-cal-style-text:hover { color: var(--appt-cal-accent); text-decoration: underline; }
+
+/* Icons and links: icon and text always on one line */
+.appt-cal .appt-cal-icon { display: block; flex: none; width: 1.25rem; height: 1.25rem; }
+.appt-cal .appt-cal-link,
+.appt-cal .dropdown-toggle { display: inline-flex; align-items: center; gap: .6rem; white-space: nowrap; }
+.appt-cal .dropdown-menu { min-width: max-content; padding: .4rem 0; }
+.appt-cal .dropdown-item.appt-cal-link { display: flex; padding: .55rem 1.1rem; }
+
+/* One button per calendar */
+.appt-cal-list { display: flex; gap: .5rem; }
+.appt-cal-list-row { flex-wrap: nowrap; justify-content: center; }
+.appt-cal-list-column { flex-direction: column; align-items: stretch; min-width: 15rem; }
+@media ( max-width: 575.98px ) {
+	.appt-cal-list-row { flex-wrap: wrap; }
+}
+
+/* Event card with a "+" menu */
+.appt-cal-card {
+	position: relative;
+	display: flex;
+	align-items: stretch;
+	min-width: 20rem;
+	max-width: 28rem;
+	background: var(--bs-body-bg, #fff);
+	border: 1px solid var(--bs-border-color, #dee2e6);
+	border-radius: .75rem;
+	box-shadow: 0 2px 10px rgba(0, 0, 0, .12);
+	text-align: left;
+}
+.appt-cal-card-date {
+	display: flex;
+	flex: none;
+	flex-direction: column;
+	align-items: center;
+	justify-content: center;
+	gap: .2rem;
+	width: 5.25rem;
+	padding: .75rem .5rem;
+	background: var(--appt-cal-accent);
+	color: var(--appt-cal-on-accent);
+	border-radius: calc( .75rem - 1px ) 0 0 calc( .75rem - 1px );
+}
+.appt-cal-card-day { font-size: 2.25rem; font-weight: 700; line-height: 1; }
+.appt-cal-card-month { font-size: .75rem; font-weight: 700; letter-spacing: .12em; text-transform: uppercase; line-height: 1; }
+.appt-cal-card-body {
+	display: flex;
+	flex: 1;
+	flex-direction: column;
+	justify-content: center;
+	gap: .35rem;
+	min-width: 0;
+	padding: .8rem 3.5rem .8rem 1rem;
+}
+.appt-cal-card-title { margin: 0; font-size: 1.05rem; font-weight: 700; line-height: 1.3; }
+.appt-cal-card-meta { display: flex; align-items: flex-start; gap: .45rem; margin: 0; font-size: .875rem; line-height: 1.35; color: var(--bs-secondary-color, #6c757d); }
+.appt-cal-card-meta .appt-cal-icon { width: 1rem; height: 1rem; margin-top: .1rem; }
+.appt-cal-card .dropdown { position: absolute; top: 50%; right: .75rem; transform: translateY( -50% ); }
+.appt-cal .appt-cal-plus {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	width: 2.25rem;
+	height: 2.25rem;
+	padding: 0;
+	line-height: 0;
+	background: var(--appt-cal-accent);
+	color: var(--appt-cal-on-accent);
+	border: 0;
+	border-radius: 50%;
+	box-shadow: 0 1px 4px rgba(0, 0, 0, .2);
+}
+.appt-cal .appt-cal-plus .appt-cal-icon { width: 1.15rem; height: 1.15rem; }
+.appt-cal .appt-cal-plus-tooltip { display: flex; align-items: center; justify-content: center; width: 100%; height: 100%; border-radius: 50%; }
+.appt-cal .appt-cal-plus:hover,
+.appt-cal .appt-cal-plus:focus,
+.appt-cal .appt-cal-plus.show { background: var(--appt-cal-accent); color: var(--appt-cal-on-accent); filter: brightness( .9 ); }
+.appt-cal .appt-cal-plus:focus-visible { outline: 3px solid var(--appt-cal-accent); outline-offset: 2px; }
+.appt-cal .appt-cal-plus.dropdown-toggle::after { display: none; }
