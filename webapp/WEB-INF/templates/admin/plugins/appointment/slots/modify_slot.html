@@ -2,7 +2,7 @@
 	<@pageColumn>
 		<@pageHeader title='#i18n{appointment.modifySlot.labelDate}' />
 		<@messages errors=errors infos=infos />
-		<@tform action='jsp/admin/plugins/appointment/ManageAppointmentSlots.jsp' boxed=true>
+		<@tform action='jsp/admin/plugins/appointment/ManageSpecificWeek.jsp' boxed=true>
 		<@input type='hidden' name='action' value='doModifySlot' />
 		<@input type='hidden' name='id_slot' value='${slot.idSlot}' />
 		<@input type='hidden' name='id_form' value='${id_form}' />

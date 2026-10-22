@@ -38,8 +38,10 @@ import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import fr.paris.lutece.plugins.appointment.business.planning.WeekDefinition;
+import fr.paris.lutece.plugins.appointment.business.planning.WeekDefinitionHome;
 import fr.paris.lutece.plugins.appointment.business.rule.ReservationRule;
 import fr.paris.lutece.plugins.appointment.web.dto.AppointmentFormDTO;
 import fr.paris.lutece.test.LuteceTestCase;
@@ -290,5 +292,38 @@ public class WeekDefinitionServiceTest extends LuteceTestCase
 
         assertEquals( 5, WeekDefinitionService.getOpenDaysOfWeek( openDays ).size( ) );
         FormServiceTest.cleanForm( nIdForm );
+    }
+
+    @Test
+    public void testReassignWeekDefinitionsBefore( )
+    {
+        int nIdForm = FormService.createAppointmentForm( FormServiceTest.buildAppointmentForm( ) );
+        int nIdReservationRule = createPeriodsAroundToday( nIdForm );
+        int nIdNewReservationRule = ReservationRuleService.copyReservationRule( nIdReservationRule );
+        LocalDate today = LocalDate.now( );
+
+        WeekDefinitionService.reassignWeekDefinitionsBefore( nIdForm, nIdReservationRule, nIdNewReservationRule, today );
+
+        assertEquals( List.of( today.minusDays( 20 ) + "/" + today.minusDays( 10 ), today.minusDays( 5 ) + "/" + today.minusDays( 1 ) ),
+                periods( nIdNewReservationRule ) );
+        assertEquals( List.of( today + "/" + today.plusDays( 5 ), today.plusDays( 10 ) + "/" + today.plusDays( 20 ) ), periods( nIdReservationRule ) );
+        FormServiceTest.cleanForm( nIdForm );
+    }
+
+    static int createPeriodsAroundToday( int nIdForm )
+    {
+        LocalDate today = LocalDate.now( );
+        int nIdReservationRule = WeekDefinitionService.findListWeekDefinition( nIdForm ).get( 0 ).getIdReservationRule( );
+        WeekDefinitionHome.deleteByIdReservationRule( nIdReservationRule );
+        WeekDefinitionService.createWeekDefinition( nIdReservationRule, today.minusDays( 20 ), today.minusDays( 10 ) );
+        WeekDefinitionService.createWeekDefinition( nIdReservationRule, today.minusDays( 5 ), today.plusDays( 5 ) );
+        WeekDefinitionService.createWeekDefinition( nIdReservationRule, today.plusDays( 10 ), today.plusDays( 20 ) );
+        return nIdReservationRule;
+    }
+
+    static List<String> periods( int nIdReservationRule )
+    {
+        return WeekDefinitionService.findByReservationRule( nIdReservationRule ).stream( ).map( week -> week.getDateOfApply( ) + "/" + week.getEndingDateOfApply( ) )
+                .sorted( ).collect( Collectors.toList( ) );
     }
 }

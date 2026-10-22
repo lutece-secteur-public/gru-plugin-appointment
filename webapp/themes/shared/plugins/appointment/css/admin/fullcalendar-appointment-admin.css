@@ -73,7 +73,16 @@
     justify-content: space-between;
     align-items: center;
     padding-inline: 5px;
-    height: 2.5rem
+}
+
+.fc-timegrid-event .fc-event-main {
+    overflow: hidden;
+}
+
+.fc-timegrid-event .fc-event-title {
+    height: 100%;
+    white-space: nowrap;
+    text-overflow: ellipsis;
 }
 
 .fc-multiMonthYear-view.fc-multimonth.fc-multimonth-multicol .fc-multimonth-daygrid-table .fc-event-title.fc-sticky{
@@ -97,6 +106,16 @@
 
 .fc-timegrid-cols .fc-event .fc-event-main .fc-event-title-container  .fc-event-title a{
     width: 25px
+}
+
+.fc-out-of-opening-hours {
+    background: repeating-linear-gradient( 45deg, #fff3cd, #fff3cd 6px, #ffe69c 6px, #ffe69c 12px ) !important;
+    border: 2px dashed #f59f00 !important;
+}
+
+.fc-out-of-opening-hours-icon {
+    color: #b35c00;
+    font-weight: 700;
 }
 
 /* Mini-calendar compact styles */

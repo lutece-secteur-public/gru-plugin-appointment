@@ -462,6 +462,47 @@ public final class WeekDefinitionService
     }
 
     /**
+     * Move the periods of a typical week that are before a date to another typical week. A period that contains the date is split in two: the part before
+     * the date goes to the other typical week, the rest stays on the typical week
+     *
+     * @param nIdForm
+     *            the form id
+     * @param nIdReservationRule
+     *            the id of the typical week that gives its periods
+     * @param nIdNewReservationRule
+     *            the id of the typical week that receives the periods
+     * @param dateLimit
+     *            the periods before this date are moved
+     */
+    public static void reassignWeekDefinitionsBefore( int nIdForm, int nIdReservationRule, int nIdNewReservationRule, LocalDate dateLimit )
+    {
+        List<WeekDefinition> listWeekChanged = new ArrayList<>( );
+        for ( WeekDefinition week : findByReservationRule( nIdReservationRule ) )
+        {
+            if ( !week.getDateOfApply( ).isBefore( dateLimit ) )
+            {
+                continue;
+            }
+            if ( week.getEndingDateOfApply( ).isBefore( dateLimit ) )
+            {
+                week.setIdReservationRule( nIdNewReservationRule );
+            }
+            else
+            {
+                listWeekChanged.add( createWeekDefinition( nIdNewReservationRule, week.getDateOfApply( ), dateLimit.minusDays( 1 ) ) );
+                week.setDateOfApply( dateLimit );
+            }
+            WeekDefinitionHome.update( week );
+            listWeekChanged.add( week );
+        }
+        if ( !listWeekChanged.isEmpty( ) )
+        {
+            CDI.current( ).getBeanManager( ).getEvent( ).select( WeekDefinitionEvent.class, new TypeQualifier( EventAction.UPDATE ) )
+                    .fireAsync( new WeekDefinitionEvent( nIdForm, listWeekChanged ) );
+        }
+    }
+
+    /**
      * Assign a week to the calendar
      * 
      * @param nIdForm
