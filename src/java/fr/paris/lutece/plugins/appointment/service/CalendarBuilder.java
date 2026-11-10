@@ -402,6 +402,8 @@ public class CalendarBuilder
                             slt.setIsOpen( true );
                             slt.setNbPotentialRemainingPlaces( sumNbPotentialRemainingPlaces );
                             slt.setNbRemainingPlaces( sumNbRemainingPlaces );
+                            // The grouped slot is offered whole: its capacity is what it offers, as the badge shows remaining / capacity
+                            slt.setMaxCapacity( sumNbRemainingPlaces );
                             slt.setDate( slotToAdd.getDate( ) );
                             slt.setIdForm( slotToAdd.getIdForm( ) );
                             slt.setIsFull( isfull ? 1 : 0 );
