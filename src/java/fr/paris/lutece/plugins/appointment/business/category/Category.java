@@ -35,6 +35,8 @@ package fr.paris.lutece.plugins.appointment.business.category;
 
 import java.io.Serializable;
 
+import jakarta.validation.constraints.NotBlank;
+
 /**
  * Business class of the Category
  * 
@@ -57,6 +59,7 @@ public final class Category implements Serializable
     /**
      * Label of the category
      */
+    @NotBlank( message = "#i18n{appointment.validation.category.Label.notEmpty}" )
     private String _strLabel;
 
     /**
