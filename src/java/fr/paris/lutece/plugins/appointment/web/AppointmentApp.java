@@ -772,6 +772,11 @@ public class AppointmentApp extends MVCApplication
             _notValidatedAppointment.setIdForm( nIdForm );
             _notValidatedAppointment.setSlot( null );
             _notValidatedAppointment.setNbMaxPotentialBookedSeats( 0 );
+            // Displayed again, back from the summary: the places this session still holds on the slots are its own, keep them
+            // instead of holding them a second time (the slot would look full)
+            int nHeldSeats = _notValidatedAppointment.getNbMaxPotentialBookedSeats( );
+            boolean bSlotsHeld = nHeldSeats > 0
+                    && listSlot.stream( ).allMatch( s -> s.getIdSlot( ) != 0 && AppointmentUtilities.isSlotHeldInSession( request, s.getIdSlot( ) ) );
             for ( Slot slot : listSlot )
             {
 
@@ -787,7 +792,7 @@ public class AppointmentApp extends MVCApplication
 
                 // Need to check competitive access
                 // May be the slot is already taken at the same time
-                if ( !bTestSecondAttempt && slot.getNbPotentialRemainingPlaces( ) == 0 )
+                if ( !bTestSecondAttempt && !bSlotsHeld && slot.getNbPotentialRemainingPlaces( ) == 0 )
                 {
                     _notValidatedAppointment = null;
                     addError( ERROR_MESSAGE_SLOT_FULL, getLocale( request ) );
@@ -807,7 +812,14 @@ public class AppointmentApp extends MVCApplication
                             ReservationRuleService.findReservationRuleByIdFormAndClosestToDateOfApply( nIdForm, slot.getDate( ) ) );
                     bool = false;
                 }
-                AppointmentUtilities.putTimerInSession( request, slot.getIdSlot( ), _notValidatedAppointment, _appointmentForm.getMaxPeoplePerAppointment( ) );
+                if ( !bSlotsHeld )
+                {
+                    AppointmentUtilities.putTimerInSession( request, slot.getIdSlot( ), _notValidatedAppointment, _appointmentForm.getMaxPeoplePerAppointment( ) );
+                }
+            }
+            if ( bSlotsHeld )
+            {
+                _notValidatedAppointment.setNbMaxPotentialBookedSeats( nHeldSeats );
             }
             if ( _notValidatedAppointment.getNbMaxPotentialBookedSeats( ) == 0 )
             {
