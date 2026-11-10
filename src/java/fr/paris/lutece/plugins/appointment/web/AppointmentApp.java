@@ -298,6 +298,7 @@ public class AppointmentApp extends MVCApplication
     // Messages
     private static final String MESSAGE_CANCEL_APPOINTMENT_PAGE_TITLE = "appointment.cancelAppointment.pageTitle";
     private static final String MESSAGE_CONFIRM_WORKFLOW_ACTION = "appointment.message.confirmWorkflowAction";
+    private static final String MESSAGE_PAGE_ACCESS_DENIED = "portal.site.message.pageAccessDenied";
     private static final String MESSAGE_MY_APPOINTMENTS_PAGE_TITLE = "appointment.myAppointments.name";
     private static final String MESSAGE_WF_ACTION_SUCESS = "appointment.wf.action.success";
     private static final String MESSAGE_ACTION_LOCKED = "appointment.message.error.actionLocked";
@@ -658,9 +659,11 @@ public class AppointmentApp extends MVCApplication
      *            the request
      * @return the xpage
      * @throws UserNotSignedException
+     * @throws SiteMessageException
+     *             if the user does not have the role of the form
      */
     @View( VIEW_APPOINTMENT_FORM )
-    public synchronized XPage getViewAppointmentForm( HttpServletRequest request ) throws UserNotSignedException, AccessDeniedException
+    public synchronized XPage getViewAppointmentForm( HttpServletRequest request ) throws UserNotSignedException, AccessDeniedException, SiteMessageException
     {
         String strIdForm = request.getParameter( PARAMETER_ID_FORM );
         String strNbPlacesToTake = request.getParameter( PARAMETER_NB_PLACE_TO_TAKE );
@@ -769,14 +772,14 @@ public class AppointmentApp extends MVCApplication
         {
 
             boolean bool = true;
-            _notValidatedAppointment.setIdForm( nIdForm );
-            _notValidatedAppointment.setSlot( null );
-            _notValidatedAppointment.setNbMaxPotentialBookedSeats( 0 );
             // Displayed again, back from the summary: the places this session still holds on the slots are its own, keep them
             // instead of holding them a second time (the slot would look full)
             int nHeldSeats = _notValidatedAppointment.getNbMaxPotentialBookedSeats( );
             boolean bSlotsHeld = nHeldSeats > 0
                     && listSlot.stream( ).allMatch( s -> s.getIdSlot( ) != 0 && AppointmentUtilities.isSlotHeldInSession( request, s.getIdSlot( ) ) );
+            _notValidatedAppointment.setIdForm( nIdForm );
+            _notValidatedAppointment.setSlot( null );
+            _notValidatedAppointment.setNbMaxPotentialBookedSeats( 0 );
             for ( Slot slot : listSlot )
             {
 
@@ -916,7 +919,7 @@ public class AppointmentApp extends MVCApplication
      * @throws AccessDeniedException
      */
     @Action( ACTION_DO_VALIDATE_FORM )
-    public synchronized XPage doValidateForm( HttpServletRequest request ) throws UserNotSignedException, AccessDeniedException
+    public synchronized XPage doValidateForm( HttpServletRequest request ) throws UserNotSignedException, AccessDeniedException, SiteMessageException
     {
         // CSRF Token control
         if ( !_securityTokenService.validate( request, ACTION_DO_VALIDATE_FORM ) )
@@ -1021,9 +1024,11 @@ public class AppointmentApp extends MVCApplication
      * @return The HTML content to display or the next URL to redirect to
      * @throws UserNotSignedException
      * @throws AccessDeniedException
+     * @throws SiteMessageException
+     *             if the user does not have the role of the form
      */
     @View( VIEW_DISPLAY_RECAP_APPOINTMENT )
-    public synchronized XPage displayRecapAppointment( HttpServletRequest request ) throws UserNotSignedException, AccessDeniedException
+    public synchronized XPage displayRecapAppointment( HttpServletRequest request ) throws UserNotSignedException, AccessDeniedException, SiteMessageException
     {
         checkMyLuteceAuthentication( _appointmentForm, request );
         String strModifDateAppointment = request.getParameter( PARAMETER_MODIF_DATE );
@@ -1072,9 +1077,11 @@ public class AppointmentApp extends MVCApplication
      * @return The XPage to display
      * @throws UserNotSignedException
      * @throws AccessDeniedException
+     * @throws SiteMessageException
+     *             if the user does not have the role of the form
      */
     @Action( ACTION_DO_MAKE_APPOINTMENT )
-    public synchronized XPage doMakeAppointment( HttpServletRequest request ) throws UserNotSignedException, AccessDeniedException
+    public synchronized XPage doMakeAppointment( HttpServletRequest request ) throws UserNotSignedException, AccessDeniedException, SiteMessageException
     {
         checkMyLuteceAuthentication( _appointmentForm, request );
         // CSRF Token control
@@ -1996,8 +2003,10 @@ public class AppointmentApp extends MVCApplication
      *            HttpServletRequest
      * @throws UserNotSignedException
      *             exception if the form requires an authentication and the user is not logged
+     * @throws SiteMessageException
+     *             if the user does not have the role of the form
      */
-    private void checkMyLuteceAuthentication( AppointmentFormDTO form, HttpServletRequest request ) throws UserNotSignedException, AccessDeniedException
+    private void checkMyLuteceAuthentication( AppointmentFormDTO form, HttpServletRequest request ) throws UserNotSignedException, SiteMessageException
     {
         if ( !SecurityService.isAuthenticationEnable( ) )
         {
@@ -2020,8 +2029,8 @@ public class AppointmentApp extends MVCApplication
 
                 if ( !Form.ROLE_NONE.equals( form.getRole( ) ) && !securityService.isUserInRole( request, form.getRole( ) ) )
                 {
-                    // User must have the right role
-                    throw new AccessDeniedException( "Unauthorized" );
+                    // User must have the right role: the front office shows a message, not the admin access denied error
+                    SiteMessageService.setMessage( request, MESSAGE_PAGE_ACCESS_DENIED, SiteMessage.TYPE_STOP );
                 }
             }
         }
