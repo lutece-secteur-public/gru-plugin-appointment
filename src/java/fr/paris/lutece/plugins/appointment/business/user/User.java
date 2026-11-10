@@ -58,6 +58,11 @@ public class User implements Serializable
     private static final long serialVersionUID = -5088753000751258184L;
 
     /**
+     * Letters, with a space, a hyphen or an apostrophe between two letters (compound names: Jean-Pierre, Le Gall, O'Neil)
+     */
+    private static final String NAME_PATTERN = "^[A-Za-zÀ-ÖØ-öø-ÿ]+(?:[ '’-][A-Za-zÀ-ÖØ-öø-ÿ]+)*$";
+
+    /**
      * User Id
      */
     private int _nIdUser;
@@ -71,7 +76,7 @@ public class User implements Serializable
      * First name of the User
      */
     @NotBlank( message = "appointment.validation.appointment.FirstName.notEmpty" )
-    @Pattern( regexp = "^[A-Za-zÀ-ÖØ-öø-ÿ]*$", message = "appointment.validation.appointment.FirstName.NoSpecialCharacter" )
+    @Pattern( regexp = NAME_PATTERN, message = "appointment.validation.appointment.FirstName.NoSpecialCharacter" )
     @Size( max = 255, message = "appointment.validation.appointment.FirstName.size" )
     private String _strFirstName;
 
@@ -79,7 +84,7 @@ public class User implements Serializable
      * Last name of the User
      */
     @NotBlank( message = "appointment.validation.appointment.LastName.notEmpty" )
-    @Pattern( regexp = "^[A-Za-zÀ-ÖØ-öø-ÿ]*$", message = "appointment.validation.appointment.LastName.NoSpecialCharacter" )
+    @Pattern( regexp = NAME_PATTERN, message = "appointment.validation.appointment.LastName.NoSpecialCharacter" )
     @Size( max = 255, message = "appointment.validation.appointment.LastName.size" )
     private String _strLastName;
 
