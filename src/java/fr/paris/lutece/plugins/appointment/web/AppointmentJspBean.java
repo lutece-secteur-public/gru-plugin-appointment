@@ -962,6 +962,9 @@ public class AppointmentJspBean extends MVCAdminJspBean
             throw new AccessDeniedException( AppointmentResourceIdService.PERMISSION_CREATE_APPOINTMENT );
         }
         FormRule formRule = FormRuleService.findFormRuleWithFormId( nIdForm );
+        // A full slot can be booked only when the form allows the overbooking AND the agent has the permission
+        boolean bOverbookingAllowed = formRule.getBoOverbooking( ) && RBACService.isAuthorized( AppointmentFormDTO.RESOURCE_TYPE, strIdForm,
+                AppointmentResourceIdService.PERMISSION_OVERBOOKING_FORM, (User) getUser( ) );
         Locale locale = getLocale( );
 
         String isModification = request.getParameter( PARAMETER_IS_MODIFICATION );
@@ -989,8 +992,7 @@ public class AppointmentJspBean extends MVCAdminJspBean
 
             listSlot = SlotService.buildListSlot( nIdForm, mapReservationRule, startingDateTime.toLocalDate( ), startingDateTime.toLocalDate( ) );
 
-            if ( formRule.getBoOverbooking( ) && RBACService.isAuthorized( AppointmentFormDTO.RESOURCE_TYPE, strIdForm,
-                    AppointmentResourceIdService.PERMISSION_OVERBOOKING_FORM, (User) getUser( ) ) )
+            if ( bOverbookingAllowed )
             {
                 listSlot = listSlot.stream( ).filter( s -> ( ( startingDateTime.compareTo( s.getStartingDateTime( ) ) <= 0 ) && ( s.getIsOpen( ) ) ) )
                         .limit( nNbConsecutiveSlot ).collect( Collectors.toList( ) );
@@ -1064,8 +1066,7 @@ public class AppointmentJspBean extends MVCAdminJspBean
 
                 // Need to check competitive access
                 // May be the slot is already taken at the same time
-                if ( !bSlotsHeld && slot.getNbPotentialRemainingPlaces( ) <= 0 && !formRule.getBoOverbooking( ) && !RBACService.isAuthorized( AppointmentFormDTO.RESOURCE_TYPE,
-                        strIdForm, AppointmentResourceIdService.PERMISSION_OVERBOOKING_FORM, (User) getUser( ) ) )
+                if ( !bSlotsHeld && slot.getNbPotentialRemainingPlaces( ) <= 0 && !bOverbookingAllowed )
                 {
                     _notValidatedAppointment = null;
                     return redirect( request, AdminMessageService.getMessageUrl( request, ERROR_MESSAGE_SLOT_FULL, AdminMessage.TYPE_STOP ) );
@@ -1095,8 +1096,7 @@ public class AppointmentJspBean extends MVCAdminJspBean
                 _notValidatedAppointment.setNbMaxPotentialBookedSeats( nHeldSeats );
             }
 
-            if ( _notValidatedAppointment.getNbMaxPotentialBookedSeats( ) == 0 && !formRule.getBoOverbooking( ) && !RBACService
-                    .isAuthorized( AppointmentFormDTO.RESOURCE_TYPE, strIdForm, AppointmentResourceIdService.PERMISSION_OVERBOOKING_FORM, (User) getUser( ) ) )
+            if ( _notValidatedAppointment.getNbMaxPotentialBookedSeats( ) == 0 && !bOverbookingAllowed )
 
             {
                 return redirect( request, AdminMessageService.getMessageUrl( request, ERROR_MESSAGE_SLOT_FULL, AdminMessage.TYPE_STOP ) );
