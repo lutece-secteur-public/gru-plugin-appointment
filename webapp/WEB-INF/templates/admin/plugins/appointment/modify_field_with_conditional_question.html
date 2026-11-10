@@ -68,10 +68,10 @@
 						<@manageFeatureItemColumn align='end'>
 							<@aButton href='jsp/admin/plugins/appointment/ManageAppointmentFormEntries.jsp?view=getModifyEntry&id_entry=${entry.idEntry}' title='#i18n{portal.util.labelModify}' hideTitle=['all'] buttonIcon='edit' size='' />
 							<#if cpt!=1>
-								<@aButton href='jsp/admin/plugins/appointment/ManageAppointmentFormEntries.jsp?action=doMoveUpEntryConditional&id_entry=${entry.idEntry}&id_field=${field.idField}' title='#i18n{appointment.modifyForm.manageEnter.titleMoveUp}' hideTitle=['all'] buttonIcon='chevron-up' size='' />
+								<@tform action='jsp/admin/plugins/appointment/ManageAppointmentFormEntries.jsp' method='post' class='d-inline'><@input type='hidden' name='action' value='doMoveUpEntryConditional' /><@input type='hidden' name='id_entry' value='${entry.idEntry}' /><@input type='hidden' name='id_field' value='${field.idField}' /><@button type='submit' title='#i18n{appointment.modifyForm.manageEnter.titleMoveUp}' hideTitle=['all'] buttonIcon='chevron-up' size='' /></@tform>
 							</#if>
 							<#if entry_has_next>
-								<@aButton href='jsp/admin/plugins/appointment/ManageAppointmentFormEntries.jsp?action=doMoveDownEntryConditional&id_entry=${entry.idEntry}&id_field=${field.idField}' title='#i18n{appointment.modifyForm.manageEnter.titleMoveDown}' hideTitle=['all'] buttonIcon='chevron-down' size='' />
+								<@tform action='jsp/admin/plugins/appointment/ManageAppointmentFormEntries.jsp' method='post' class='d-inline'><@input type='hidden' name='action' value='doMoveDownEntryConditional' /><@input type='hidden' name='id_entry' value='${entry.idEntry}' /><@input type='hidden' name='id_field' value='${field.idField}' /><@button type='submit' title='#i18n{appointment.modifyForm.manageEnter.titleMoveDown}' hideTitle=['all'] buttonIcon='chevron-down' size='' /></@tform>
 							</#if>
 							<@aButton href='jsp/admin/plugins/appointment/ManageAppointmentFormEntries.jsp?view=confirmRemoveEntry&id_entry=${entry.idEntry}&id_field=${field.idField}' title='#i18n{appointment.modifyForm.manageEnter.titleDelete}' hideTitle=['all'] buttonIcon='trash' color='danger' size='' />
 						</@manageFeatureItemColumn>

@@ -31,7 +31,7 @@
 								<@p class='mb-0 searchable'>#i18n{appointment.manage_comments.columnUserCreator} : <@span class='text-muted'>${comment.userFirstName!} ${comment.userLastName!}</@span></@p>
 							</@manageFeatureItemColumn>
 							<@manageFeatureItemColumn align='end'>
-								<@aButton href='jsp/admin/plugins/appointment/Comments.jsp?action=confirmRemoveComment&id_comment=${comment.id}&idMailingList=-1' title='#i18n{portal.util.labelDelete}' buttonIcon='trash' hideTitle=['xs','sm','md'] color='danger' size='' />
+								<@aButton href='jsp/admin/plugins/appointment/Comments.jsp?view=confirmRemoveComment&id_comment=${comment.id}&idMailingList=-1' title='#i18n{portal.util.labelDelete}' buttonIcon='trash' hideTitle=['xs','sm','md'] color='danger' size='' />
 							</@manageFeatureItemColumn>
 						</@manageFeatureItem>
 						</#list>

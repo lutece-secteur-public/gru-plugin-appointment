@@ -60,10 +60,10 @@
 									<@td>
 										<@aButton href='jsp/admin/plugins/appointment/ManageAppointmentFormFields.jsp?view=getModifyField&id_field=${field.idField}' title='#i18n{portal.util.labelModify}' hideTitle=['all'] buttonIcon='edit' />
 										<#if cpt!=1>
-											<@aButton href='jsp/admin/plugins/appointment/ManageAppointmentFormFields.jsp?action=doMoveFieldUp&id_field=${field.idField}#list' title='#i18n{appointment.moveUp.title}' hideTitle=['all'] buttonIcon='chevron-up' />
+											<@tform action='jsp/admin/plugins/appointment/ManageAppointmentFormFields.jsp#list' method='post' class='d-inline'><@input type='hidden' name='action' value='doMoveFieldUp' /><@input type='hidden' name='id_field' value='${field.idField}' /><@button type='submit' title='#i18n{appointment.moveUp.title}' hideTitle=['all'] buttonIcon='chevron-up' /></@tform>
 										</#if>
 										<#if field_has_next>
-											<@aButton href='jsp/admin/plugins/appointment/ManageAppointmentFormFields.jsp?action=doMoveFieldDown&id_field=${field.idField}#list' title='#i18n{appointment.moveDown.title}' hideTitle=['all'] buttonIcon='chevron-down' />
+											<@tform action='jsp/admin/plugins/appointment/ManageAppointmentFormFields.jsp#list' method='post' class='d-inline'><@input type='hidden' name='action' value='doMoveFieldDown' /><@input type='hidden' name='id_field' value='${field.idField}' /><@button type='submit' title='#i18n{appointment.moveDown.title}' hideTitle=['all'] buttonIcon='chevron-down' /></@tform>
 										</#if>
 										<@aButton href='jsp/admin/plugins/appointment/ManageAppointmentFormFields.jsp?view=getConfirmRemoveField&id_field=${field.idField}#list' title='#i18n{appointment.delete.title}' hideTitle=['all'] buttonIcon='trash' color='danger' />
 

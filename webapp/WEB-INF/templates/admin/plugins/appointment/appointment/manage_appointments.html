@@ -181,15 +181,15 @@
 						<#if activateWorkflow == "true">
 							<#if rightChangeStatus>
 								<#if appointment.isCancelled>
-									<@aButton href='jsp/admin/plugins/appointment/ManageAppointments.jsp?action=doChangeAppointmentStatus&id_appointment=${appointment.idAppointment}&status_cancelled=false' title='#i18n{appointment.manageAppointments.labelValidateAppointment}' hideTitle=['all'] buttonIcon='check' size='sm' />
+									<@button type='submit' title='#i18n{appointment.manageAppointments.labelValidateAppointment}' hideTitle=['all'] buttonIcon='check' size='sm' params='form="appointment-status-${appointment.idAppointment}"' />
 								</#if>
 								<#if !appointment.isCancelled>
-									<@aButton href='jsp/admin/plugins/appointment/ManageAppointments.jsp?action=doChangeAppointmentStatus&id_appointment=${appointment.idAppointment}&status_cancelled=true' title='#i18n{appointment.labelCancelAppointment}' hideTitle=['all'] buttonIcon='x' size='sm' color='light' />
+									<@button type='submit' title='#i18n{appointment.labelCancelAppointment}' hideTitle=['all'] buttonIcon='x' size='sm' color='light' params='form="appointment-status-${appointment.idAppointment}"' />
 								</#if>
 							</#if>
 						</#if>
 						<#if rightDelete?? && rightDelete>
-							<@aButton href='jsp/admin/plugins/appointment/ManageAppointments.jsp?action=confirmRemoveAppointment&id_form=${form.idForm}&id_appointment=${appointment.idAppointment}' title='#i18n{portal.util.labelDelete}' hideTitle=['all'] buttonIcon='trash' size='sm' color='danger' />
+							<@aButton href='jsp/admin/plugins/appointment/ManageAppointments.jsp?view=confirmRemoveAppointment&id_form=${form.idForm}&id_appointment=${appointment.idAppointment}' title='#i18n{portal.util.labelDelete}' hideTitle=['all'] buttonIcon='trash' size='sm' color='danger' />
 						</#if>
 					</@td>
 					<@td class='fs-5'>${appointment.formattedDateAppointmentTaken}</@td>
@@ -203,6 +203,12 @@
 		</@card>
 	</#if>
 </@tform>
+<#-- Status changes are posted: a form cannot be nested in the list form, the buttons of the list refer to these forms -->
+<#if activateWorkflow == "true" && (rightChangeStatus!false)>
+	<#list (appointment_list)![] as appointment>
+		<@tform id='appointment-status-${appointment.idAppointment}' action='jsp/admin/plugins/appointment/ManageAppointments.jsp' method='post' class='d-none'><@input type='hidden' name='action' value='doChangeAppointmentStatus' /><@input type='hidden' name='id_appointment' value='${appointment.idAppointment}' /><@input type='hidden' name='status_cancelled' value='${(!appointment.isCancelled)?c}' /></@tform>
+	</#list>
+</#if>
 </@appointmentTabs>
 <script>
 document.addEventListener('DOMContentLoaded', function() {

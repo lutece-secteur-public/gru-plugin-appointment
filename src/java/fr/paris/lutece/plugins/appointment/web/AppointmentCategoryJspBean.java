@@ -105,7 +105,7 @@ public class AppointmentCategoryJspBean extends AbstractAppointmentFormAndSlotJs
     private static final String VIEW_MODIFY_CATEGORY = "modifyCategory";
 
     // Actions
-    private static final String ACTION_CONFIRM_REMOVE_CATEGORY = "confirmRemoveCategory";
+    private static final String VIEW_CONFIRM_REMOVE_CATEGORY = "confirmRemoveCategory";
     private static final String ACTION_CREATE_CATEGORY = "createCategory";
     private static final String ACTION_MODIFY_CATEGORY = "modifyCategory";
     private static final String ACTION_REMOVE_CATEGORY = "removeCategory";
@@ -146,7 +146,7 @@ public class AppointmentCategoryJspBean extends AbstractAppointmentFormAndSlotJs
      * @throws AccessDeniedException
      *             If the user is not authorized
      */
-    @Action( ACTION_CONFIRM_REMOVE_CATEGORY )
+    @View( VIEW_CONFIRM_REMOVE_CATEGORY )
     public String getConfirmRemoveCategory( HttpServletRequest request )
     {
         String strIdCategory = request.getParameter( PARAMETER_ID_CATEGORY );

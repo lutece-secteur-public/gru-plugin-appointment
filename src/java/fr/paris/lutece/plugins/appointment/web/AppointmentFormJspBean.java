@@ -191,7 +191,7 @@ public class AppointmentFormJspBean extends AbstractAppointmentFormAndSlotJspBea
     private static final String ACTION_CREATE_APPOINTMENTFORM = "createAppointmentForm";
     private static final String ACTION_MODIFY_APPOINTMENTFORM = "modifyAppointmentForm";
     private static final String ACTION_REMOVE_APPOINTMENTFORM = "removeAppointmentForm";
-    private static final String ACTION_CONFIRM_REMOVE_APPOINTMENTFORM = "confirmRemoveAppointmentForm";
+    private static final String VIEW_CONFIRM_REMOVE_APPOINTMENTFORM = "confirmRemoveAppointmentForm";
     private static final String ACTION_DO_CHANGE_FORM_ACTIVATION = "doChangeFormActivation";
     private static final String ACTION_DO_MODIFY_FORM_MESSAGES = "doModifyAppointmentFormMessages";
     private static final String ACTION_DO_COPY_FORM = "doCopyAppointmentForm";
@@ -351,7 +351,7 @@ public class AppointmentFormJspBean extends AbstractAppointmentFormAndSlotJspBea
      * @throws AccessDeniedException
      *             If the user is not authorized to delete this appointment form
      */
-    @Action( ACTION_CONFIRM_REMOVE_APPOINTMENTFORM )
+    @View( VIEW_CONFIRM_REMOVE_APPOINTMENTFORM )
     public String getConfirmRemoveAppointmentForm( HttpServletRequest request ) throws AccessDeniedException
     {
         String strIdForm = request.getParameter( PARAMETER_ID_FORM );

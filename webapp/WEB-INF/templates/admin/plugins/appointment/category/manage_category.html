@@ -13,7 +13,7 @@
 					</@manageFeatureItemColumn>
 					<@manageFeatureItemColumn align='end'>
 						<@aButton href='jsp/admin/plugins/appointment/ManageAppointmentCategory.jsp?view=modifyCategory&id_category=${category.idCategory}' title='#i18n{portal.util.labelModify}' buttonIcon='pencil' class='me-1' hideTitle=['xs','md'] />
-						<@aButton href='jsp/admin/plugins/appointment/ManageAppointmentCategory.jsp?action=confirmRemoveCategory&id_category=${category.idCategory}' title='#i18n{portal.util.labelDelete}' buttonIcon='trash' color='danger' hideTitle=['xs','md'] size='' />
+						<@aButton href='jsp/admin/plugins/appointment/ManageAppointmentCategory.jsp?view=confirmRemoveCategory&id_category=${category.idCategory}' title='#i18n{portal.util.labelDelete}' buttonIcon='trash' color='danger' hideTitle=['xs','md'] size='' />
 					</@manageFeatureItemColumn>
 				</@manageFeatureItem>
 				</#list>

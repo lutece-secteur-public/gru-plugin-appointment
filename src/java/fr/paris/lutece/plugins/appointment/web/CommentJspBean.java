@@ -133,7 +133,7 @@ public class CommentJspBean extends AbstractAppointmentFormAndSlotJspBean
     private static final String ACTION_DO_ADD_COMMENT = "doAddComment";
     private static final String ACTION_DO_REMOVE_COMMENT = "doRemoveComment";
     private static final String ACTION_DO_MODIFY_COMMENT = "doModifyComment";
-    private static final String ACTION_CONFIRM_REMOVE_COMMENT = "confirmRemoveComment";
+    private static final String VIEW_CONFIRM_REMOVE_COMMENT = "confirmRemoveComment";
 
     // Properties
     private static final String PROPERTY_PAGE_TITLE_MANAGE_COMMENTS = "appointment.manage_comments.pageTitle";
@@ -308,7 +308,7 @@ public class CommentJspBean extends AbstractAppointmentFormAndSlotJspBean
      * @return the html code to confirm
      * @throws AccessDeniedException
      */
-    @Action( ACTION_CONFIRM_REMOVE_COMMENT )
+    @View( VIEW_CONFIRM_REMOVE_COMMENT )
     public String getConfirmRemoveComment( HttpServletRequest request ) throws AccessDeniedException
     {
         _comment = findAuthorizedComment( request );

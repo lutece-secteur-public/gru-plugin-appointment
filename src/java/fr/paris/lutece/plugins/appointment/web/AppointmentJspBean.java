@@ -313,7 +313,7 @@ public class AppointmentJspBean extends MVCAdminJspBean
     private static final String ACTION_DO_VALIDATE_FORM = "doValidateForm";
     private static final String ACTION_REMOVE_APPOINTMENT = "removeAppointment";
     private static final String ACTION_REMOVE_MASSAPPOINTMENT = "removeMassAppointment";
-    private static final String ACTION_CONFIRM_REMOVE_APPOINTMENT = "confirmRemoveAppointment";
+    private static final String VIEW_CONFIRM_REMOVE_APPOINTMENT = "confirmRemoveAppointment";
     private static final String ACTION_CONFIRM_REMOVE_MASS_APPOINTMENT = "confirmRemoveMassAppointment";
     private static final String ACTION_DO_MAKE_APPOINTMENT = "doMakeAppointment";
     private static final String ACTION_DO_PROCESS_WORKFLOW_ACTION = "doProcessWorkflowAction";
@@ -681,7 +681,7 @@ public class AppointmentJspBean extends MVCAdminJspBean
      *            The HTTP request
      * @return the HTML code to confirm
      */
-    @Action( ACTION_CONFIRM_REMOVE_APPOINTMENT )
+    @View( VIEW_CONFIRM_REMOVE_APPOINTMENT )
     public synchronized String getConfirmRemoveAppointment( HttpServletRequest request )
     {
         UrlItem url = new UrlItem( getActionUrl( ACTION_REMOVE_APPOINTMENT ) );

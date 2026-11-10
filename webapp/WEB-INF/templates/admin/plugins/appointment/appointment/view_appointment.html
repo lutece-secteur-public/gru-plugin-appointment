@@ -12,15 +12,15 @@
 			<#if activateWorkflow == "true">
 				<#if rightChangeStatus>
 					<#if appointment.isCancelled>
-						<@aButton href='jsp/admin/plugins/appointment/ManageAppointments.jsp?action=doChangeAppointmentStatus&id_appointment=${appointment.idAppointment}&status_cancelled=false' title='#i18n{appointment.manageAppointments.labelValidateAppointment}' buttonIcon='check' />
+						<@tform action='jsp/admin/plugins/appointment/ManageAppointments.jsp' method='post' class='d-inline'><@input type='hidden' name='action' value='doChangeAppointmentStatus' /><@input type='hidden' name='id_appointment' value='${appointment.idAppointment}' /><@input type='hidden' name='status_cancelled' value='false' /><@button type='submit' title='#i18n{appointment.manageAppointments.labelValidateAppointment}' buttonIcon='check' /></@tform>
 					</#if>
 					<#if !appointment.isCancelled>
-						<@aButton href='jsp/admin/plugins/appointment/ManageAppointments.jsp?action=doChangeAppointmentStatus&id_appointment=${appointment.idAppointment}&status_cancelled=true' title='#i18n{appointment.labelCancelAppointment}' buttonIcon='times' color='light' />
+						<@tform action='jsp/admin/plugins/appointment/ManageAppointments.jsp' method='post' class='d-inline'><@input type='hidden' name='action' value='doChangeAppointmentStatus' /><@input type='hidden' name='id_appointment' value='${appointment.idAppointment}' /><@input type='hidden' name='status_cancelled' value='true' /><@button type='submit' title='#i18n{appointment.labelCancelAppointment}' buttonIcon='times' color='light' /></@tform>
 					</#if>
 				</#if>
 			</#if>
 			<#if rightDelete?? && rightDelete>
-				<@aButton href='jsp/admin/plugins/appointment/ManageAppointments.jsp?action=confirmRemoveAppointment&id_form=${form.idForm}&id_appointment=${appointment.idAppointment}' title='#i18n{portal.util.labelDelete}' buttonIcon='trash' color='danger' />
+				<@aButton href='jsp/admin/plugins/appointment/ManageAppointments.jsp?view=confirmRemoveAppointment&id_form=${form.idForm}&id_appointment=${appointment.idAppointment}' title='#i18n{portal.util.labelDelete}' buttonIcon='trash' color='danger' />
 			</#if>
 			<@aButton href='jsp/admin/plugins/appointment/ManageAppointments.jsp?view=manageAppointments&id_form=${form.idForm}' buttonIcon='arrow-left' color='light' title='#i18n{portal.util.labelBack}' />
 		</@pageHeader>

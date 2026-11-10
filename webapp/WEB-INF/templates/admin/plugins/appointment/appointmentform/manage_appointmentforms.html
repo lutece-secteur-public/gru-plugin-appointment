@@ -30,17 +30,17 @@
 								<@link class='dropdown-item' linkIcon='message' href='jsp/admin/plugins/appointment/ManageAppointmentForms.jsp?view=modifyAppointmentFormMessages&id_form=${appointmentform.idForm}' label='#i18n{appointment.manageAppointmentForms.labelModifyMessages}' />
 							</#if>
 							<#if permission_create=="true">
-								<@link class='dropdown-item' linkIcon='copy' href='jsp/admin/plugins/appointment/ManageAppointmentForms.jsp?action=doCopyAppointmentForm&id_form=${appointmentform.idForm}' label='#i18n{appointment.manageAppointmentForms.labelCopy}' />
+								<@tform action='jsp/admin/plugins/appointment/ManageAppointmentForms.jsp' method='post' class='d-inline'><@input type='hidden' name='action' value='doCopyAppointmentForm' /><@input type='hidden' name='id_form' value='${appointmentform.idForm}' /><@button type='submit' color='link' class='dropdown-item'><@icon style='copy' /> #i18n{appointment.manageAppointmentForms.labelCopy}</@button></@tform>
 							</#if>
 							<#if permissions[appointmentform?index][4]=="true">
 								<#if appointmentform.isActive>
-									<@link class='dropdown-item text-warning' linkIcon='x' href='jsp/admin/plugins/appointment/ManageAppointmentForms.jsp?action=doChangeFormActivation&id_form=${appointmentform.idForm}' label='#i18n{appointment.manageAppointmentForms.labelDisable}' />
+									<@tform action='jsp/admin/plugins/appointment/ManageAppointmentForms.jsp' method='post' class='d-inline'><@input type='hidden' name='action' value='doChangeFormActivation' /><@input type='hidden' name='id_form' value='${appointmentform.idForm}' /><@button type='submit' color='link' class='dropdown-item text-warning'><@icon style='x' /> #i18n{appointment.manageAppointmentForms.labelDisable}</@button></@tform>
 								<#else>
-									<@link class='dropdown-item text-success' linkIcon='check' href='jsp/admin/plugins/appointment/ManageAppointmentForms.jsp?action=doChangeFormActivation&id_form=${appointmentform.idForm}' label='#i18n{appointment.manageAppointmentForms.labelEnable}' />
+									<@tform action='jsp/admin/plugins/appointment/ManageAppointmentForms.jsp' method='post' class='d-inline'><@input type='hidden' name='action' value='doChangeFormActivation' /><@input type='hidden' name='id_form' value='${appointmentform.idForm}' /><@button type='submit' color='link' class='dropdown-item text-success'><@icon style='check' /> #i18n{appointment.manageAppointmentForms.labelEnable}</@button></@tform>
 								</#if>
 							</#if>
 							<#if permissions[appointmentform?index][5]=="true">
-								<@link class='dropdown-item text-danger' linkIcon='trash' href='jsp/admin/plugins/appointment/ManageAppointmentForms.jsp?action=confirmRemoveAppointmentForm&id_form=${appointmentform.idForm}' label='#i18n{portal.util.labelDelete}' />
+								<@link class='dropdown-item text-danger' linkIcon='trash' href='jsp/admin/plugins/appointment/ManageAppointmentForms.jsp?view=confirmRemoveAppointmentForm&id_form=${appointmentform.idForm}' label='#i18n{portal.util.labelDelete}' />
 							</#if>
 						</@aButton>
 					</@manageFeatureItemColumn>
