@@ -320,7 +320,14 @@ public class AppointmentFormJspBean extends AbstractAppointmentFormAndSlotJspBea
         {
             return redirectView( request, VIEW_CREATE_APPOINTMENTFORM );
         }
-        _appointmentFormDTO.setIcon( buildImageResource( (MultipartHttpServletRequest) request ) );
+        ImageResource icon = buildImageResource( (MultipartHttpServletRequest) request );
+        if ( StringUtils.equals( MARK_NULL, icon.getMimeType( ) ) )
+        {
+            // No icon was sent: store no icon, as its removal does
+            icon.setImage( null );
+            icon.setMimeType( null );
+        }
+        _appointmentFormDTO.setIcon( icon );
         int nIdForm = FormService.createAppointmentForm( _appointmentFormDTO );
 
         // Set or remove (with '-1') the Access Controllers for the current form

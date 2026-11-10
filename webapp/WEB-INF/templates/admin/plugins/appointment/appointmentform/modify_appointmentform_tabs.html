@@ -159,7 +159,8 @@
 						</#if>
 						<#if appointmentform.getIcon()??>
 							<#assign xicon= appointmentform.getIcon()>
-							<#if xicon.mimeType?? >
+							<#-- A form created without an icon may store the mime type "NULL" -->
+							<#if xicon.mimeType?has_content && xicon.mimeType != 'NULL'>
 								<@formGroup labelFor='deleteIcon'>
 									<@checkBox orientation='switch' labelKey='#i18n{appointment.modifyAppointmentForm.deleteIcon}' name='deleteIcon' id='deleteIcon' value='true' />
 								</@formGroup>
