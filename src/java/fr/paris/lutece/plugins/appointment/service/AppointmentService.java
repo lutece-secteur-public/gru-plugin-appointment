@@ -36,6 +36,7 @@ package fr.paris.lutece.plugins.appointment.service;
 import java.security.SecureRandom;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Random;
 import java.util.StringJoiner;
@@ -273,6 +274,12 @@ public final class AppointmentService
         for ( Appointment appointment : AppointmentHome.findByFilter( appointmentFilter ) )
         {
             listAppointmentsDTO.add( buildAppointmentDTO( appointment ) );
+        }
+        // The query does not keep the order of a list of ids (a page of a sorted list): give it back
+        List<Integer> listIdAppointment = appointmentFilter.getListIdAppointment( );
+        if ( CollectionUtils.isNotEmpty( listIdAppointment ) )
+        {
+            listAppointmentsDTO.sort( Comparator.comparingInt( dto -> listIdAppointment.indexOf( dto.getIdAppointment( ) ) ) );
         }
         return listAppointmentsDTO;
     }

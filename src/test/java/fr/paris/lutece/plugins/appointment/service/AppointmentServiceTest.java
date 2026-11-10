@@ -37,7 +37,9 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import fr.paris.lutece.plugins.appointment.business.AppointmentTest;
 import fr.paris.lutece.plugins.appointment.business.SlotTest;
@@ -47,6 +49,7 @@ import fr.paris.lutece.plugins.appointment.business.slot.Slot;
 import fr.paris.lutece.plugins.appointment.business.user.User;
 import fr.paris.lutece.plugins.appointment.business.user.UserHome;
 import fr.paris.lutece.plugins.appointment.web.dto.AppointmentDTO;
+import fr.paris.lutece.plugins.appointment.web.dto.AppointmentFilterDTO;
 import fr.paris.lutece.plugins.appointment.web.dto.AppointmentFormDTO;
 import fr.paris.lutece.test.LuteceTestCase;
 
@@ -328,6 +331,35 @@ public class AppointmentServiceTest extends LuteceTestCase
         assertEquals( 2, slot.getNbPlacesTaken( ) );
         cleanUp( nIdForm, app, appointmentDTO );
         assertNull( AppointmentService.findAppointmentById( nIdAppointment ) );
+    }
+
+    /**
+     * The appointments of a page of the back office list come in the order of the ids the pager sorted
+     */
+    @Test
+    public void testAppointmentsOfAListOfIdsKeepItsOrder( )
+    {
+        AppointmentFormDTO app = FormServiceTest.buildAppointmentForm( );
+        int nIdForm = FormService.createAppointmentForm( app );
+        Slot slot = SlotTest.buildSlot( nIdForm, _slotStart, _slotEnd, 2, 2, 0, 2, Boolean.TRUE, Boolean.TRUE );
+        slot = SlotService.saveSlot( slot );
+        AppointmentDTO appointmentZola = AppointmentTest.buildAppointmentDTO( nIdForm, slot, "emile.zola@mdp.fr", "Emile", "Zola", _timeStart, _timeEnd, 1 );
+        AppointmentDTO appointmentAbel = AppointmentTest.buildAppointmentDTO( nIdForm, slot, "jean.abel@mdp.fr", "Jean", "Abel", _timeStart, _timeEnd, 1 );
+        int nIdZola = AppointmentService.saveAppointment( appointmentZola );
+        int nIdAbel = AppointmentService.saveAppointment( appointmentAbel );
+
+        assertEquals( List.of( nIdAbel, nIdZola ), findIdsInTheOrderOf( nIdForm, List.of( nIdAbel, nIdZola ) ) );
+        assertEquals( List.of( nIdZola, nIdAbel ), findIdsInTheOrderOf( nIdForm, List.of( nIdZola, nIdAbel ) ) );
+
+        cleanUp( nIdForm, app, appointmentZola, appointmentAbel );
+    }
+
+    private static List<Integer> findIdsInTheOrderOf( int nIdForm, List<Integer> listIds )
+    {
+        AppointmentFilterDTO filter = new AppointmentFilterDTO( );
+        filter.setIdForm( nIdForm );
+        filter.setListIdAppointment( listIds );
+        return AppointmentService.findListAppointmentsDTOByFilter( filter ).stream( ).map( AppointmentDTO::getIdAppointment ).collect( Collectors.toList( ) );
     }
 
     @Test
