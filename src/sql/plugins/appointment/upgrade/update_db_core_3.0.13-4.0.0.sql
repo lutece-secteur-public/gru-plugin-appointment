@@ -38,3 +38,6 @@ INSERT INTO core_portlet_template (id_portlet_type, description, template_path) 
 -- preconditions onFail:MARK_RAN onError:WARN
 -- comment The appointment portlets had no XSL style of their own : they are all rendered with the default template of their type
 UPDATE core_portlet SET id_style = 0 WHERE id_portlet_type IN ('APPOINTMENT_PORTLET', 'APPOINTMENT_FORM_PORTLET', 'APPOINTMENT_FORM_LIST_PORTLET');
+
+-- changeset appointment:update_db_core_3.0.13-4.0.0.sql-rev6.sql
+UPDATE core_admin_right SET level_right = 2 WHERE id_right IN ( 'APPOINTMENT_FORM_MANAGEMENT', 'APPOINTMENT_CATEGORY_MANAGEMENT' );
