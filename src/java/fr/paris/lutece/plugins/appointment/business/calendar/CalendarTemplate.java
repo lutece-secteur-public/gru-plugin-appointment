@@ -47,12 +47,13 @@ import jakarta.validation.constraints.Size;
 public final class CalendarTemplate implements Serializable
 {
 
+    // Titles of the templates in appointment_calendar_template (init_db_appointment.sql, LUT-33550)
     public static final String CALENDAR = "Calendrier";
 
-    public static final String FREE_SLOTS_GROUPED = "Liste des creneaux disponible regroupés";
+    public static final String FREE_SLOTS_GROUPED = "Liste des créneaux disponibles regroupés";
     public static final String CALENDAR_OPEN_DAYS = "Calendrier jours ouverts";
-    public static final String FREE_SLOTS = "Liste des creneaux disponibles";
-    public static final String FREE_SLOTS_ON_OPEN_DAYS = "Liste des creneaux disponibles jours ouverts";
+    public static final String FREE_SLOTS = "Liste des créneaux disponibles";
+    public static final String FREE_SLOTS_ON_OPEN_DAYS = "Liste des créneaux disponibles jours ouverts";
 
     /**
      * Serial version UID
