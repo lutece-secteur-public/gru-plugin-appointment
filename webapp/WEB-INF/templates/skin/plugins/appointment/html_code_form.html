@@ -36,7 +36,7 @@
 		<#if form_errors??><#assign hasDisplayableError = false><#list form_errors as form_error><#if form_error.isDisplayableError><#assign hasDisplayableError = true><#break></#if></#list><#if hasDisplayableError><#list form_errors as form_error><#if form_error.isDisplayableError && form_error.errorMessage==listAllErrors[8]><@cAlert type='danger' title=form_error.errorMessage ! /></#if></#list></#if></#if>
 		<@cRow>
 			<#assign formGroupError = ''>
-			<#if form_errors??><#assign hasDisplayableError = false><#list form_errors as form_error><#if form_error.isDisplayableError><#assign hasDisplayableError = true><#break></#if></#list><#if hasDisplayableError><#list form_errors as form_error><#if form_error.isDisplayableError && form_error.errorMessage==listAllErrors[0]><#assign formGroupError = form_error.errorMessage /></#if></#list></#if></#if>
+			<#if form_errors??><#assign hasDisplayableError = false><#list form_errors as form_error><#if form_error.isDisplayableError><#assign hasDisplayableError = true><#break></#if></#list><#if hasDisplayableError><#list form_errors as form_error><#if form_error.isDisplayableError && (form_error.errorMessage==listAllErrors[0] || form_error.errorMessage==listAllErrors[11] || form_error.errorMessage==listAllErrors[13])><#assign formGroupError = form_error.errorMessage /></#if></#list></#if></#if>
 			<@cCol cols='12 col-sm-6'>
 				<#assign lastnameValue><#if appointment??>${(appointment.lastName!)?html}</#if></#assign>
 				<#assign lastnameReadonly = user?? && (user.lastName?has_content || preferred_user_name?has_content)>
@@ -55,7 +55,7 @@
 				</#list>
 				<#if hasDisplayableError>
 					<#list form_errors as form_error>
-						<#if form_error.isDisplayableError && form_error.errorMessage==listAllErrors[1]>
+						<#if form_error.isDisplayableError && (form_error.errorMessage==listAllErrors[1] || form_error.errorMessage==listAllErrors[12] || form_error.errorMessage==listAllErrors[14])>
 							<#assign formGroupError = form_error.errorMessage />
 						</#if>
 					</#list>

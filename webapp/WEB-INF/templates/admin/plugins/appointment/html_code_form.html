@@ -20,7 +20,7 @@
 		</#if>
 		<#if form_errors??>
 			<#list form_errors as form_error>
-				<#if form_error.isDisplayableError && form_error.errorMessage==listAllErrors[0]>
+				<#if form_error.isDisplayableError && (form_error.errorMessage==listAllErrors[0] || form_error.errorMessage==listAllErrors[11] || form_error.errorMessage==listAllErrors[13])>
 					<#assign formGroupHelpKey = '${form_error.errorMessage}' />
 					<#assign formGroupClass='has-error' />
 				</#if>
@@ -36,7 +36,7 @@
 		</#if>
 		<#if form_errors??>
 			<#list form_errors as form_error>
-				<#if form_error.isDisplayableError && form_error.errorMessage==listAllErrors[1]>
+				<#if form_error.isDisplayableError && (form_error.errorMessage==listAllErrors[1] || form_error.errorMessage==listAllErrors[12] || form_error.errorMessage==listAllErrors[14])>
 					<#assign formGroupHelpKey = '${form_error.errorMessage}' />
 					<#assign formGroupClass='has-error' />
 				</#if>

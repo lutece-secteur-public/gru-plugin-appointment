@@ -68,6 +68,10 @@ public final class AppointmentDTO extends Appointment
     private static final String PROPERTY_MAX_APPOINTMENT_PERIODE = "appointment.message.error.MaxAppointmentPeriode";
     private static final String PROPERTY_MAX_APPOINTMENT_PERIODE_BACK = "appointment.info.appointment.emailerror";
     private static final String PROPERTY_NB_DAY_BETWEEN_TWO_APPOINTMENTS = "appointment.validation.appointment.NbMinDaysBetweenTwoAppointments.error";
+    private static final String PROPERTY_LAST_NAME_NO_SPECIAL_CHARACTER = "appointment.validation.appointment.LastName.NoSpecialCharacter";
+    private static final String PROPERTY_FIRST_NAME_NO_SPECIAL_CHARACTER = "appointment.validation.appointment.FirstName.NoSpecialCharacter";
+    private static final String PROPERTY_LAST_NAME_SIZE = "appointment.validation.appointment.LastName.size";
+    private static final String PROPERTY_FIRST_NAME_SIZE = "appointment.validation.appointment.FirstName.size";
     public static final String PROPERTY_APPOINTMENT_STATUS_UNRESERVED = "appointment.message.labelStatusUnreserved";
     public static final String PROPERTY_APPOINTMENT_STATUS_RESERVED = "appointment.message.labelStatusReserved";
 
@@ -536,6 +540,11 @@ public final class AppointmentDTO extends Appointment
         listAllErrors.add( I18nService.getLocalizedString( PROPERTY_MAX_APPOINTMENT_PERIODE, locale ) );
         listAllErrors.add( I18nService.getLocalizedString( PROPERTY_MAX_APPOINTMENT_PERIODE_BACK, locale ) );
         listAllErrors.add( I18nService.getLocalizedString( PROPERTY_NB_DAY_BETWEEN_TWO_APPOINTMENTS, locale ) );
+        // Other errors of the last name (11, 13) and of the first name (12, 14)
+        listAllErrors.add( I18nService.getLocalizedString( PROPERTY_LAST_NAME_NO_SPECIAL_CHARACTER, locale ) );
+        listAllErrors.add( I18nService.getLocalizedString( PROPERTY_FIRST_NAME_NO_SPECIAL_CHARACTER, locale ) );
+        listAllErrors.add( I18nService.getLocalizedString( PROPERTY_LAST_NAME_SIZE, locale ) );
+        listAllErrors.add( I18nService.getLocalizedString( PROPERTY_FIRST_NAME_SIZE, locale ) );
         return listAllErrors;
     }
 
