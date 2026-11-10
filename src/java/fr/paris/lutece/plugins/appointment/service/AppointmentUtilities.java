@@ -661,6 +661,21 @@ public final class AppointmentUtilities
         }
     }
 
+    /**
+     * Tell whether this session still holds places on a slot: its timer is in the session and has not given them back yet
+     *
+     * @param request
+     *            the request
+     * @param idSlot
+     *            the id of the slot
+     * @return true if the places held by this session on the slot are still held
+     */
+    public static boolean isSlotHeldInSession( HttpServletRequest request, int idSlot )
+    {
+        ScheduledFuture<Slot> task = (ScheduledFuture) request.getSession( ).getAttribute( SESSION_TASK_TIMER_SLOT + idSlot );
+        return ( task != null && !task.isDone( ) );
+    }
+
     public static boolean isEditSlotTaskExpiredTime( HttpServletRequest request, int idSlot )
     {
         ScheduledFuture<Slot> task = (ScheduledFuture) request.getSession( ).getAttribute( SESSION_TASK_TIMER_SLOT + idSlot );
