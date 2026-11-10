@@ -93,6 +93,19 @@ public class UserNameValidationTest extends LuteceTestCase
         }
     }
 
+    /**
+     * An empty name is left to @NotBlank and its own message: the pattern does not refuse it too
+     *
+     * @throws NoSuchFieldException
+     *             if a name field is renamed
+     */
+    @Test
+    public void testEmptyNameIsLeftToNotBlank( ) throws NoSuchFieldException
+    {
+        assertTrue( "".matches( getRegexp( FIELD_FIRST_NAME ) ) );
+        assertTrue( "".matches( getRegexp( FIELD_LAST_NAME ) ) );
+    }
+
     private static String getRegexp( String strField ) throws NoSuchFieldException
     {
         return User.class.getDeclaredField( strField ).getAnnotation( Pattern.class ).regexp( );

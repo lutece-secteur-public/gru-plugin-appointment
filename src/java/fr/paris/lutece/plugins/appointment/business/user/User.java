@@ -58,9 +58,10 @@ public class User implements Serializable
     private static final long serialVersionUID = -5088753000751258184L;
 
     /**
-     * Letters, with a space, a hyphen or an apostrophe between two letters (compound names: Jean-Pierre, Le Gall, O'Neil)
+     * Letters, with a space, a hyphen or an apostrophe between two letters (compound names: Jean-Pierre, Le Gall, O'Neil). An empty name
+     * matches: @NotBlank gives its own message
      */
-    private static final String NAME_PATTERN = "^[A-Za-zÀ-ÖØ-öø-ÿ]+(?:[ '’-][A-Za-zÀ-ÖØ-öø-ÿ]+)*$";
+    private static final String NAME_PATTERN = "^(?:[A-Za-zÀ-ÖØ-öø-ÿ]+(?:[ '’-][A-Za-zÀ-ÖØ-öø-ÿ]+)*)?$";
 
     /**
      * User Id
