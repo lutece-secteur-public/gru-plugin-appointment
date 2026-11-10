@@ -8,7 +8,7 @@
 		<#if response.entry.idEntry == entry.idEntry && response.entry.error?? && response.entry.error.isDisplayableError>
 			<#assign hasError = true>
 			<#assign error = response.entry.error>
-			<#assign errorMsg><#if error.mandatoryError>#i18n{appointment.message.mandatory.entry}<#else>${error.errorMessage}</#if></#assign>
+			<#assign errorMsg><#if error.mandatoryError>${error.errorMessage}<#else>#i18n{appointment.message.mandatory.entry}</#if></#assign>
 		</#if>
 	</#list>
 </#if>
