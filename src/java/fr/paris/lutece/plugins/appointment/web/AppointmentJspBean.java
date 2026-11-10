@@ -704,12 +704,7 @@ public class AppointmentJspBean extends MVCAdminJspBean
     public synchronized String doRemoveAppointment( HttpServletRequest request ) throws AccessDeniedException
     {
         int nIdAppointment = Integer.parseInt( request.getParameter( PARAMETER_ID_APPOINTMENT ) );
-        Integer idForm = Integer.parseInt( request.getParameter( PARAMETER_ID_FORM ) );
-        if ( !RBACService.isAuthorized( AppointmentFormDTO.RESOURCE_TYPE, Integer.toString( idForm ),
-                AppointmentResourceIdService.PERMISSION_DELETE_APPOINTMENT, (User) getUser( ) ) )
-        {
-            throw new AccessDeniedException( AppointmentResourceIdService.PERMISSION_DELETE_APPOINTMENT );
-        }
+        Integer idForm = getAuthorizedAppointment( nIdAppointment, AppointmentResourceIdService.PERMISSION_DELETE_APPOINTMENT ).getIdForm( );
         AppointmentService.deleteAppointment( nIdAppointment );
         AppLogService.info( LogUtilities.buildLog( ACTION_REMOVE_APPOINTMENT, Integer.toString( nIdAppointment ), getUser( ) ) );
         addInfo( INFO_APPOINTMENT_REMOVED, getLocale( ) );
@@ -757,6 +752,10 @@ public class AppointmentJspBean extends MVCAdminJspBean
         if ( tabIdAppointmentToDelete != null )
         {
             for ( String strIdAppointment : tabIdAppointmentToDelete )
+            for ( String strIdAppointment : tabIdAppointmentToDelete )
+            {
+                getAuthorizedAppointment( Integer.parseInt( strIdAppointment ), AppointmentResourceIdService.PERMISSION_DELETE_APPOINTMENT );
+            }
             {
                 AppointmentService.deleteAppointment( Integer.valueOf( strIdAppointment ) );
                 AppLogService.info( LogUtilities.buildLog( ACTION_REMOVE_APPOINTMENT, strIdAppointment, getUser( ) ) );
@@ -768,6 +767,28 @@ public class AppointmentJspBean extends MVCAdminJspBean
     }
 
     /**
+    /**
+     * Load an appointment and check a permission on its own form: the form given in the request may be another one
+     *
+     * @param nIdAppointment
+     *            the appointment id
+     * @param strPermission
+     *            the permission
+     * @return the appointment
+     * @throws AccessDeniedException
+     *             if the appointment does not exist or the user does not have the permission on its form
+     */
+    private AppointmentDTO getAuthorizedAppointment( int nIdAppointment, String strPermission ) throws AccessDeniedException
+    {
+        AppointmentDTO appointmentDTO = AppointmentService.buildAppointmentDTOFromIdAppointment( nIdAppointment );
+        if ( appointmentDTO == null || !RBACService.isAuthorized( AppointmentFormDTO.RESOURCE_TYPE, Integer.toString( appointmentDTO.getIdForm( ) ),
+                strPermission, (User) getUser( ) ) )
+        {
+            throw new AccessDeniedException( strPermission );
+        }
+        return appointmentDTO;
+    }
+
      * View details of an appointment
      *
      * @param request
@@ -782,16 +803,11 @@ public class AppointmentJspBean extends MVCAdminJspBean
     public synchronized String getViewAppointment( HttpServletRequest request ) throws AccessDeniedException
     {
         String strIdAppointment = request.getParameter( PARAMETER_ID_APPOINTMENT );
-        String strIdForm = request.getParameter( PARAMETER_ID_FORM );
-        int nIdForm = Integer.parseInt( strIdForm );
-        Form form = FormService.findFormLightByPrimaryKey( nIdForm );
         int nIdAppointment = Integer.parseInt( strIdAppointment );
-        AppointmentDTO appointmentDTO = AppointmentService.buildAppointmentDTOFromIdAppointment( nIdAppointment );
-        if ( !RBACService.isAuthorized( AppointmentFormDTO.RESOURCE_TYPE, strIdForm, AppointmentResourceIdService.PERMISSION_VIEW_APPOINTMENT,
-                (User) getUser( ) ) )
-        {
-            throw new AccessDeniedException( AppointmentResourceIdService.PERMISSION_VIEW_APPOINTMENT );
-        }
+        AppointmentDTO appointmentDTO = getAuthorizedAppointment( nIdAppointment, AppointmentResourceIdService.PERMISSION_VIEW_APPOINTMENT );
+        int nIdForm = appointmentDTO.getIdForm( );
+        String strIdForm = Integer.toString( nIdForm );
+        Form form = FormService.findFormLightByPrimaryKey( nIdForm );
         _models.put( MARK_APPOINTMENT, appointmentDTO );
         if ( appointmentDTO.getAdminUserCreate( ) != null )
         {
