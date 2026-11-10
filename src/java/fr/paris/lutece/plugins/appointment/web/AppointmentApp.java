@@ -357,7 +357,8 @@ public class AppointmentApp extends MVCApplication
         if ( !StringUtils.isNumeric( strIdForm ) )
         {
             addError( ERROR_MESSAGE_FORM_NO_MORE_VALID, locale );
-            return redirectView( request, VIEW_APPOINTMENT_FORM_LIST );
+            // The list of the forms in this request: its message would not survive a redirect
+            return getFormList( request );
         }
         int nIdForm = Integer.parseInt( strIdForm );
         String nbPlacesToTake = request.getParameter( PARAMETER_NB_PLACE_TO_TAKE );
@@ -367,7 +368,8 @@ public class AppointmentApp extends MVCApplication
         if ( _appointmentForm == null )
         {
             addError( ERROR_MESSAGE_FORM_NO_MORE_VALID, locale );
-            return redirectView( request, VIEW_APPOINTMENT_FORM_LIST );
+            // The list of the forms in this request: its message would not survive a redirect
+            return getFormList( request );
         }
         _strNbPlacesToTakeLength = String.valueOf(_appointmentForm.getNbConsecutiveSlots());
         boolean bError = false;
