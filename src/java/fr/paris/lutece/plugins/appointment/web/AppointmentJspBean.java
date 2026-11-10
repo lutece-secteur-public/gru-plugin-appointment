@@ -123,6 +123,7 @@ import fr.paris.lutece.portal.service.util.AppLogService;
 import fr.paris.lutece.portal.service.util.AppPathService;
 import fr.paris.lutece.portal.service.util.AppPropertiesService;
 import fr.paris.lutece.portal.service.workflow.WorkflowService;
+import fr.paris.lutece.portal.service.workgroup.AdminWorkgroupService;
 import fr.paris.lutece.portal.util.mvc.admin.MVCAdminJspBean;
 import fr.paris.lutece.portal.util.mvc.admin.annotations.Controller;
 import fr.paris.lutece.portal.web.cdi.mvc.Models;
@@ -365,7 +366,7 @@ public class AppointmentJspBean extends MVCAdminJspBean
             return redirect( request, AppointmentFormJspBean.getURLManageAppointmentForms( request ) );
         }
 
-        if ( !RBACService.isAuthorized( AppointmentFormDTO.RESOURCE_TYPE, strIdForm, AppointmentResourceIdService.PERMISSION_VIEW_FORM, (User) getUser( ) ) )
+        if ( !isAuthorizedForm( Integer.parseInt( strIdForm ), AppointmentResourceIdService.PERMISSION_VIEW_FORM ) )
         {
             throw new AccessDeniedException( AppointmentResourceIdService.PERMISSION_VIEW_FORM );
         }
@@ -557,7 +558,7 @@ public class AppointmentJspBean extends MVCAdminJspBean
             return redirect( request, AppointmentFormJspBean.getURLManageAppointmentForms( request ) );
         }
 
-        if ( !RBACService.isAuthorized( AppointmentFormDTO.RESOURCE_TYPE, strIdForm, AppointmentResourceIdService.PERMISSION_VIEW_FORM, (User) getUser( ) ) )
+        if ( !isAuthorizedForm( Integer.parseInt( strIdForm ), AppointmentResourceIdService.PERMISSION_VIEW_FORM ) )
         {
             throw new AccessDeniedException( AppointmentResourceIdService.PERMISSION_VIEW_FORM );
         }
@@ -752,10 +753,10 @@ public class AppointmentJspBean extends MVCAdminJspBean
         if ( tabIdAppointmentToDelete != null )
         {
             for ( String strIdAppointment : tabIdAppointmentToDelete )
-            for ( String strIdAppointment : tabIdAppointmentToDelete )
             {
                 getAuthorizedAppointment( Integer.parseInt( strIdAppointment ), AppointmentResourceIdService.PERMISSION_DELETE_APPOINTMENT );
             }
+            for ( String strIdAppointment : tabIdAppointmentToDelete )
             {
                 AppointmentService.deleteAppointment( Integer.valueOf( strIdAppointment ) );
                 AppLogService.info( LogUtilities.buildLog( ACTION_REMOVE_APPOINTMENT, strIdAppointment, getUser( ) ) );
@@ -766,7 +767,6 @@ public class AppointmentJspBean extends MVCAdminJspBean
         return redirect( request, VIEW_MANAGE_APPOINTMENTS, PARAMETER_ID_FORM, idForm );
     }
 
-    /**
     /**
      * Load an appointment and check a permission on its own form: the form given in the request may be another one
      *
@@ -781,14 +781,30 @@ public class AppointmentJspBean extends MVCAdminJspBean
     private AppointmentDTO getAuthorizedAppointment( int nIdAppointment, String strPermission ) throws AccessDeniedException
     {
         AppointmentDTO appointmentDTO = AppointmentService.buildAppointmentDTOFromIdAppointment( nIdAppointment );
-        if ( appointmentDTO == null || !RBACService.isAuthorized( AppointmentFormDTO.RESOURCE_TYPE, Integer.toString( appointmentDTO.getIdForm( ) ),
-                strPermission, (User) getUser( ) ) )
+        if ( appointmentDTO == null || !isAuthorizedForm( appointmentDTO.getIdForm( ), strPermission ) )
         {
             throw new AccessDeniedException( strPermission );
         }
         return appointmentDTO;
     }
 
+    /**
+     * Check a permission on a form and its workgroup: the list of forms hides the forms of the other workgroups, their pages are refused too
+     *
+     * @param nIdForm
+     *            the form id
+     * @param strPermission
+     *            the permission
+     * @return true if the user has the permission on the form and belongs to its workgroup
+     */
+    private boolean isAuthorizedForm( int nIdForm, String strPermission )
+    {
+        Form form = FormService.findFormLightByPrimaryKey( nIdForm );
+        return form != null && RBACService.isAuthorized( AppointmentFormDTO.RESOURCE_TYPE, Integer.toString( nIdForm ), strPermission, (User) getUser( ) )
+                && AdminWorkgroupService.isAuthorized( form, (User) getUser( ) );
+    }
+
+    /**
      * View details of an appointment
      *
      * @param request
@@ -941,8 +957,7 @@ public class AppointmentJspBean extends MVCAdminJspBean
         int nIdForm = Integer.parseInt( strIdForm );
 
         String strNbPlacesToTake = request.getParameter( PARAMETER_NB_PLACE_TO_TAKE );
-        if ( !RBACService.isAuthorized( AppointmentFormDTO.RESOURCE_TYPE, strIdForm, AppointmentResourceIdService.PERMISSION_CREATE_APPOINTMENT,
-                (User) getUser( ) ) )
+        if ( !isAuthorizedForm( nIdForm, AppointmentResourceIdService.PERMISSION_CREATE_APPOINTMENT ) )
         {
             throw new AccessDeniedException( AppointmentResourceIdService.PERMISSION_CREATE_APPOINTMENT );
         }
