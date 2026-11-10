@@ -1450,6 +1450,13 @@ public class AppointmentApp extends MVCApplication
         if ( StringUtils.isNotEmpty( strRef ) )
         {
             Appointment appointment = AppointmentService.findAppointmentByReference( strRef );
+            if ( appointment == null )
+            {
+                // Unknown reference: back to the cancel page, which says that no appointment has this reference
+                Map<String, String> mapParameters = new HashMap<>( );
+                mapParameters.put( PARAMETER_REF_APPOINTMENT, strRef );
+                return redirect( request, VIEW_GET_VIEW_CANCEL_APPOINTMENT, mapParameters );
+            }
             AppointmentDTO appointmentDto = AppointmentService.buildAppointmentDTOFromIdAppointment( appointment.getIdAppointment( ) );
 
             // Accept only one cancel !!!
