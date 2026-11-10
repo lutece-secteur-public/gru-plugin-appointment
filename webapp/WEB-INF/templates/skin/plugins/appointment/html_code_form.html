@@ -31,8 +31,8 @@
 		<@cInput type='hidden' name='date_of_display' value='${date_of_display}' class='' />
 		<@cInput type='hidden' name='token' value='${token}' class='' />
 		<@cInput type='hidden' name='session' value='session' class='' />
-		<#if infos?? && infos?size gt 0><#assign infoMsg><#list infos as info>${info.message}</#list></#assign><@cAlert type='info' dismissible=true id='messages_infos_div' title=infoMsg /></#if>
-		<#if errors?? && errors?size gt 0><#assign errMsg><#list errors as error>${error.message}</#list></#assign><@cAlert type='danger' dismissible=true id='messages_errors_div' title=errMsg /></#if>
+		<#if infos?? && infos?size gt 0><#assign infoMsg><#list infos as info>${info.message}<#sep><br></#sep></#list></#assign><@cAlert type='info' dismissible=true id='messages_infos_div' title=infoMsg /></#if>
+		<#if errors?? && errors?size gt 0><#assign errMsg><#list errors as error>${error.message}<#sep><br></#sep></#list></#assign><@cAlert type='danger' dismissible=true id='messages_errors_div' title=errMsg /></#if>
 		<#if form_errors??><#assign hasDisplayableError = false><#list form_errors as form_error><#if form_error.isDisplayableError><#assign hasDisplayableError = true><#break></#if></#list><#if hasDisplayableError><#list form_errors as form_error><#if form_error.isDisplayableError && form_error.errorMessage==listAllErrors[8]><@cAlert type='danger' title=form_error.errorMessage ! /></#if></#list></#if></#if>
 		<@cRow>
 			<#assign formGroupError = ''>
