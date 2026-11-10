@@ -24,6 +24,11 @@ ${mark_nb_places_to_take_form!}
 			<@cAlert type='danger' title=errorMsg />
 		</#if>
 	<#else>
+	<#-- A slot refused (full, closed or too late) sends back here with its message -->
+	<#if (errors!)?size gt 0>
+		<#assign errorMsg><#list errors as error>${error.message}<#sep><br></#sep></#list></#assign>
+		<@cAlert type='danger' title=errorMsg />
+	</#if>
 	<@cBlock id='appointment-picker'>
 		<@cBlock id='day-panel' params='role="region" aria-label="#i18n{appointment.appointmentCalendar.labelSelectDay}"'>
 			<@cBlock type='nav' class='d-flex justify-content-between align-items-center mb-3' params='aria-label="#i18n{appointment.appointmentApp.previousWeek} / #i18n{appointment.appointmentApp.nextWeek}"'>
