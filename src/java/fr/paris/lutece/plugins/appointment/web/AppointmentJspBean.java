@@ -645,7 +645,9 @@ public class AppointmentJspBean extends MVCAdminJspBean
             _pager.withIdList( AppointmentService.findListAppointmentsIdsByFilter( _filter ) );
         }
 
-        _pager.populateModels( request, _models, this::loadAppointmentDTOs, getLocale( ) );
+        // The pager loads the page through a callback: give it the filter, not the field of the session bean
+        AppointmentFilterDTO filter = _filter;
+        _pager.populateModels( request, _models, listIds -> loadAppointmentDTOs( listIds, filter ), getLocale( ) );
 
         AppointmentFormDTO form = FormService.buildAppointmentFormLight( nIdForm );
         User user = getUser( );
@@ -1717,9 +1719,10 @@ public class AppointmentJspBean extends MVCAdminJspBean
      * and enriches with workflow state and actions.
      *
      * @param listIds the appointment IDs of the current page
+     * @param filter the filter of the list
      * @return the enriched DTOs
      */
-    private List<AppointmentDTO> loadAppointmentDTOs( List<Integer> listIds )
+    private List<AppointmentDTO> loadAppointmentDTOs( List<Integer> listIds, AppointmentFilterDTO filter )
     {
         if ( listIds == null || listIds.isEmpty( ) )
         {
@@ -1727,15 +1730,15 @@ public class AppointmentJspBean extends MVCAdminJspBean
         }
 
         AppointmentFilterDTO pageFilter = new AppointmentFilterDTO( );
-        pageFilter.setIdForm( _filter.getIdForm( ) );
+        pageFilter.setIdForm( filter.getIdForm( ) );
         pageFilter.setListIdAppointment( listIds );
-        pageFilter.setOrderBy( _filter.getOrderBy( ) );
-        pageFilter.setOrderAsc( _filter.isOrderAsc( ) );
+        pageFilter.setOrderBy( filter.getOrderBy( ) );
+        pageFilter.setOrderAsc( filter.isOrderAsc( ) );
 
         List<AppointmentDTO> listDTOs = AppointmentService.findListAppointmentsDTOByFilter( pageFilter );
 
         // Enrich with workflow states and actions
-        AppointmentFormDTO form = FormService.buildAppointmentFormLight( _filter.getIdForm( ) );
+        AppointmentFormDTO form = FormService.buildAppointmentFormLight( filter.getIdForm( ) );
         if ( ( form.getIdWorkflow( ) > 0 ) && _workflowService.isAvailable( ) )
         {
             int nIdWorkflow = form.getIdWorkflow( );

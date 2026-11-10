@@ -2060,7 +2060,7 @@ public class AppointmentApp extends MVCApplication
      * @param appointment
      *            the appointment being prepared, its form id set
      */
-    public void prefillAppointment( AppointmentDTO appointment )
+    public synchronized void prefillAppointment( AppointmentDTO appointment )
     {
         _notValidatedAppointment = appointment;
         _validatedAppointment = null;
