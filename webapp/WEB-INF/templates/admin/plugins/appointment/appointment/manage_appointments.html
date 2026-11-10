@@ -222,8 +222,9 @@ document.addEventListener('DOMContentLoaded', function() {
 	}
 	boxes.forEach(function(cb) { cb.addEventListener('change', refresh); });
 	document.getElementById('advanced-search-form').addEventListener('submit', function(e) {
-		const dStart = document.getElementById('startingDateOfSearch').value;
-		const dEnd = document.getElementById('endingDateOfSearch').value;
+		// The dates can come back from the filter as "yyyy-MM-dd HH:mm:ss": only the day is read here
+		const dStart = document.getElementById('startingDateOfSearch').value.substring(0, 10);
+		const dEnd = document.getElementById('endingDateOfSearch').value.substring(0, 10);
 		const error = document.getElementById('search-dates-error');
 		if (dStart && dEnd) {
 			const tStart = document.getElementById('startingTimeOfSearch').value || '00:00';
