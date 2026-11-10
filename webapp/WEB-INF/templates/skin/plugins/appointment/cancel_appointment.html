@@ -23,13 +23,17 @@
 			<#if nbplaces gt 1>
 				<@chItem>#i18n{appointment.createAppointmentForm.labelNumberOfBookedseatsPerAppointment} : ${nbplaces}</@chItem>
 			</#if>
+			<#-- One line per question: the answers of a multiple choice question are joined -->
+			<#assign recapEntries = [] /><#assign recapValues = {} />
 			<#list listResponseRecapDTO as response>
 				<#if response.recapValue?? && response.recapValue?has_content>
-					<#if !(entrySave??) || entrySave.idEntry != response.entry.idEntry>
-						<#assign entrySave = response.entry>
-						<@chItem>${response.entry.title} : ${response.recapValue}</@chItem>
-					</#if>
+					<#assign recapKey = response.entry.idEntry?c />
+					<#if !recapValues[recapKey]??><#assign recapEntries = recapEntries + [response.entry] /></#if>
+					<#assign recapValues = recapValues + { recapKey : (recapValues[recapKey]![]) + [response.recapValue] } />
 				</#if>
+			</#list>
+			<#list recapEntries as entry>
+				<@chItem>${entry.title} : ${recapValues[entry.idEntry?c]?join(', ')}</@chItem>
 			</#list>
 		</@chList>
 	</@cStepDone>
