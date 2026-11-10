@@ -309,7 +309,10 @@ public class TypicalWeekJspBean extends AbstractAppointmentFormAndSlotJspBean
         {
             throw new AccessDeniedException( AppointmentResourceIdService.PERMISSION_MODIFY_ADVANCED_SETTING_FORM );
         }
+        // The advanced parameters do not post the activation of the form: populate would set it to false and skip the check of the weeks open in FO
+        boolean bIsActive = _appointmentForm.getIsActive( );
         populate( _appointmentForm, request );
+        _appointmentForm.setIsActive( bIsActive );
         List<Slot> listSlotsImpacted = new ArrayList<>( );
         List<Slot> listSlotsImpactedWithAppointment = new ArrayList<>( );
 
