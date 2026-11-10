@@ -5,7 +5,9 @@ const defaultDate = '${date_of_display}';
 const minDateOfOpenDay = '${min_date_of_open_day}';
 const maxDateOfOpenDay = '${max_date_of_open_day}';
 const hiddenDays = [<#if hidden_days??><#list hidden_days as hd>${hd},</#list></#if>];
-const labelFull = '#i18n{appointment.appointmentCalendar.labelSlotFull}';
+<#-- The labels of the Messages tab of the form, or the default ones -->
+const labelFull = '<#if formMessages?? && formMessages.calendarFullLabel?has_content>${formMessages.calendarFullLabel?html?js_string}<#else>#i18n{appointment.appointmentCalendar.labelSlotFull}</#if>';
+const labelReserve = '<#if formMessages?? && formMessages.calendarReserveLabel?has_content>${formMessages.calendarReserveLabel?html?js_string}</#if>';
 const labelClosed = '#i18n{appointment.appointmentCalendar.labelSlotClosed}';
 const labelNoSlot = '#i18n{appointment.appointmentCalendar.labelNoSlot}';
 const labelAvailable = '#i18n{appointment.appointmentCalendar.labelAvailableSlots}';
@@ -165,7 +167,8 @@ const slots = [
 			const status = document.createElement('div');
 			status.className = 'mt-2';
 			if (hasAvailable) {
-				status.innerHTML = '<span class="badge bg-success">' + availableCount + ' ' + labelAvailable + '</span>';
+				status.innerHTML = '<span class="badge bg-success">' + availableCount + ' ' + labelAvailable + '</span>'
+					+ (labelReserve ? '<div class="small mt-1">' + labelReserve + '</div>' : '');
 			} else if (daySlots.length > 0) {
 				status.innerHTML = '<span class="badge bg-secondary text-light">' + labelFull + '</span>';
 			} else {
