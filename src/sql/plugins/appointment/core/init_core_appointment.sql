@@ -68,3 +68,6 @@ INSERT INTO core_portlet_template (id_portlet_type, description, template_path) 
 -- preconditions onFail:MARK_RAN onError:WARN
 -- precondition-sql-check expectedResult:0 SELECT COUNT(*) FROM core_portlet_template WHERE id_portlet_type = 'APPOINTMENT_FORM_LIST_PORTLET'
 INSERT INTO core_portlet_template (id_portlet_type, description, template_path) VALUES ('APPOINTMENT_FORM_LIST_PORTLET', 'Défaut', 'skin/plugins/appointment/portlet/appointment_form_list_portlet.html');
+
+-- changeset appointment:init_core_appointment.sql-rev4.sql
+UPDATE core_admin_right SET level_right = 2 WHERE id_right IN ( 'APPOINTMENT_FORM_MANAGEMENT', 'APPOINTMENT_CATEGORY_MANAGEMENT' );
