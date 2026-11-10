@@ -29,8 +29,12 @@
 	</@chList>
 </@cStepDone>
 <@cStepDone step='4' title='#i18n{appointment.appointmentApp.validation}' idx=4 actionName='' />
-<@cStepDone step='5' title='#i18n{appointment.appointmentApp.confirmation}' idx=5 actionHref='${formMessages.urlRedirectAfterCreation}' actionLabel='${formMessages.labelButtonRedirection}'>
+<#-- The end button is a link of its own: as the action of the step, it would be named "Edit the step Confirmation" -->
+<@cStepDone step='5' title='#i18n{appointment.appointmentApp.confirmation}' idx=5 actionName=''>
 	${formMessages.textAppointmentCreated}
+	<#if formMessages.urlRedirectAfterCreation?has_content>
+	<@cLink label='${formMessages.labelButtonRedirection}' class='btn btn-primary mt-3' href='${formMessages.urlRedirectAfterCreation}' />
+	</#if>
 </@cStepDone>
 <#if calendarButton?? && calendarLinks??>
 <link rel="stylesheet" href="themes/shared/plugins/appointment/css/calendar-button.css" />
