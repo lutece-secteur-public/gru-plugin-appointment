@@ -654,7 +654,10 @@ public final class FormService
     public static Form updateForm( AppointmentFormDTO appointmentForm )
     {
         Form form = FormService.findFormLightByPrimaryKey( appointmentForm.getIdForm( ) );
+        // The booking on several slots is chosen when the form is created, and cannot change afterwards
+        boolean bMultislotAppointment = form.getIsMultislotAppointment( );
         fillInFormWithAppointmentForm( form, appointmentForm );
+        form.setIsMultislotAppointment( bMultislotAppointment );
         FormService.updateForm( form );
         return form;
     }
