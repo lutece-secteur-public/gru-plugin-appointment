@@ -242,15 +242,16 @@ public class AppointmentFormJspBean extends AbstractAppointmentFormAndSlotJspBea
         String strUrl = url.getUrl( );
         List<AppointmentFormDTO> listAppointmentForm = FormService.buildAllAppointmentFormLight( );
         listAppointmentForm = (List<AppointmentFormDTO>) AdminWorkgroupService.getAuthorizedCollection( listAppointmentForm, (User) adminUser );
-        listAppointmentForm = listAppointmentForm.stream( ).sorted( ( a1, a2 ) -> a1.getTitle( ).compareTo( a2.getTitle( ) ) ).collect( Collectors.toList( ) );
+        // Filtered before the paging: the permissions of the buttons are read by position in the same list
+        listAppointmentForm = RBACService.getAuthorizedCollection( listAppointmentForm, AppointmentResourceIdService.PERMISSION_VIEW_FORM, (User) adminUser )
+                .stream( ).sorted( ( a1, a2 ) -> a1.getTitle( ).compareTo( a2.getTitle( ) ) ).collect( Collectors.toList( ) );
         LocalizedPaginator<AppointmentFormDTO> paginator = new LocalizedPaginator<>( listAppointmentForm, _nItemsPerPage, strUrl, PARAMETER_PAGE_INDEX,
                 _strCurrentPageIndex, getLocale( ) );
         AdminUser user = AdminUserService.getAdminUser( request );
         _models.put( MARK_NB_ITEMS_PER_PAGE, Integer.toString( _nItemsPerPage ) );
         _models.put( MARK_PAGINATOR, paginator );
         _models.put( MARK_BASE_URL, AppPathService.getProdUrl( request ) );
-        _models.put( MARK_APPOINTMENTFORM_LIST, RBACService.getAuthorizedCollection( paginator.getPageItems( ), AppointmentResourceIdService.PERMISSION_VIEW_FORM,
-                (User) AdminUserService.getAdminUser( request ) ) );
+        _models.put( MARK_APPOINTMENTFORM_LIST, paginator.getPageItems( ) );
         _models.put( VIEW_PERMISSIONS_FORM, AppointmentUtilities.getPermissions( paginator.getPageItems( ), user ) );
         _models.put( MARK_PERMISSION_CREATE, String.valueOf(
                 RBACService.isAuthorized( AppointmentFormDTO.RESOURCE_TYPE_CREATE, "0", AppointmentResourceIdService.PERMISSION_CREATE_FORM, (User) user ) ) );
