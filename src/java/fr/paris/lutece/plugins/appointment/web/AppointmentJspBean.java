@@ -126,6 +126,7 @@ import fr.paris.lutece.portal.service.workflow.WorkflowService;
 import fr.paris.lutece.portal.util.mvc.admin.MVCAdminJspBean;
 import fr.paris.lutece.portal.util.mvc.admin.annotations.Controller;
 import fr.paris.lutece.portal.web.cdi.mvc.Models;
+import fr.paris.lutece.portal.web.constants.Parameters;
 import fr.paris.lutece.portal.util.mvc.commons.annotations.Action;
 import fr.paris.lutece.portal.util.mvc.commons.annotations.View;
 import fr.paris.lutece.portal.util.mvc.utils.MVCUtils;
@@ -225,8 +226,9 @@ public class AppointmentJspBean extends MVCAdminJspBean
     private static final String PARAMETER_FIRST_NAME = "firstname";
     private static final String PARAMETER_LAST_NAME = "lastname";
     private static final String PARAMETER_BACK = "back";
-    private static final String PARAMETER_ORDER_BY = "orderBy";
-    private static final String PARAMETER_ORDER_ASC = "orderAsc";
+    // Parameters of the sort links of the @sort macro
+    private static final String PARAMETER_ORDER_BY = Parameters.SORTED_ATTRIBUTE_NAME;
+    private static final String PARAMETER_ORDER_ASC = Parameters.SORTED_ASC;
     private static final String PARAMETER_ID_APPOINTMENT_DELETE = "apmt";
     private static final String PARAMETER_DELETE_AND_BACK = "eraseAll";
     private static final String PARAMETER_SEARCH = "Search";
