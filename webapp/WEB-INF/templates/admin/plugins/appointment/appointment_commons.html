@@ -365,8 +365,8 @@ document.addEventListener('DOMContentLoaded', function() {
 				<#if formCalendarErrors??>
 					<@messages errors=errors infos=infos/>
 				<#else>
-					<#-- The messages of the previous action, the creation of an appointment for instance -->
-					<#if (infos?? && infos?has_content) || (errors?? && errors?has_content)><@messages errors=errors![] infos=infos![] /></#if>
+					<#-- The messages of the previous action, the creation of an appointment for instance; the other tabs show them themselves -->
+					<#if tab == 'calendar' && ((infos?? && infos?has_content) || (errors?? && errors?has_content))><@messages errors=errors![] infos=infos![] /></#if>
 					<#if tab !='typicalWeek' && tab !='year' && tab !='day' && tab !='filter'>
 						<@row>
 							<@columns xs=12 md=12 lg=10 id='fc-calendar-col'>
