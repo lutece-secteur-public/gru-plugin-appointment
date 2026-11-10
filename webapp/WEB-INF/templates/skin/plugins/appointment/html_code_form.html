@@ -40,7 +40,7 @@
 			<@cCol cols='12 col-sm-6'>
 				<#assign lastnameValue><#if appointment??>${(appointment.lastName!)?html}</#if></#assign>
 				<#assign lastnameReadonly = user?? && (user.lastName?has_content || preferred_user_name?has_content)>
-				<@cField label='${formMessages.fieldLastNameTitle!}' required=true>
+				<@cField label='${formMessages.fieldLastNameTitle!}' for='lastname' required=true>
 					<@cInput value=lastnameValue maxlength=255 id='lastname' name='lastname' readonly=lastnameReadonly errorMsg=formGroupError helpMsg=(formGroupError != '')?then('', formMessages.fieldLastNameHelp!) />
 				</@cField>
 			</@cCol>
@@ -64,7 +64,7 @@
 			<@cCol cols='12 col-sm-6'>
 				<#assign firstnameValue><#if appointment??>${(appointment.firstName!)?html}</#if></#assign>
 				<#assign firstnameReadonly = user?? && user.firstName?has_content>
-				<@cField label='${formMessages.fieldFirstNameTitle!}' required=true>
+				<@cField label='${formMessages.fieldFirstNameTitle!}' for='firstname' required=true>
 					<@cInput value=firstnameValue maxlength=255 id='firstname' name='firstname' readonly=firstnameReadonly errorMsg=formGroupError helpMsg=(formGroupError != '')?then('', formMessages.fieldFirstNameHelp!) />
 				</@cField>
 			</@cCol>
@@ -90,7 +90,7 @@
 			<@cCol cols='12 col-sm-6'>
 				<#assign emailValue><#if appointment??>${(appointment.email!)?html}</#if></#assign>
 				<#assign emailReadonly = user?? && user.email?has_content>
-				<@cField label='${formMessages.fieldEmailTitle!}' required=form.enableMandatoryEmail>
+				<@cField label='${formMessages.fieldEmailTitle!}' for='email' required=form.enableMandatoryEmail>
 					<@cInput type='email' value=emailValue maxlength=255 id='email' name='email' readonly=emailReadonly errorMsg=formGroupError helpMsg=(formGroupError != '')?then('', formMessages.fieldEmailHelp!) />
 				</@cField>
 			</@cCol>
@@ -116,7 +116,7 @@
 					<#assign emailConfirmValue><#if appointment??>${(appointment.email!)?html}</#if></#assign>
 					<@cInput type='hidden' value=emailConfirmValue maxlength=255 id='emailConfirm' name='emailConfirm' class='' readonly=true />
 				<#else>
-					<@cField label='${formMessages.fieldConfirmationEmail!}' required=form.enableMandatoryEmail>
+					<@cField label='${formMessages.fieldConfirmationEmail!}' for='emailConfirm' required=form.enableMandatoryEmail>
 						<#assign emailConfirmInputValue><#if appointment??>${(appointment.emailConfirm!)?html}</#if></#assign>
 						<@cInput type='email' value=emailConfirmInputValue maxlength=255 id='emailConfirm' name='emailConfirm' errorMsg=formGroupError helpMsg=(formGroupError != '')?then('', formMessages.fieldConfirmationEmailHelp!) />
 					</@cField>
@@ -143,7 +143,7 @@
 				<@cCol>
 					<#assign nbBookedSeatsValue><#if appointment??>${appointment.nbBookedSeats!}</#if></#assign>
 					<#assign nbSeatsReadonly = (nbPlacesToTake != 0)>
-					<@cField label='#i18n{appointment.createAppointmentForm.labelMaxPeoplePerAppointment}' required=true>
+					<@cField label='#i18n{appointment.createAppointmentForm.labelMaxPeoplePerAppointment}' for='nbBookedSeats' required=true>
 						<@cInput type='number' readonly=nbSeatsReadonly maxlength=3 id='nbBookedSeats' value=nbBookedSeatsValue name='nbBookedSeats' min=1 max=nbplaces params='onkeypress="return validateQty(event);"' errorMsg=formGroupError helpMsg=(formGroupError != '')?then('', (nbplaces != 0)?then(nbplaces + ' place(s) maximum', '')) />
 					</@cField>
 				</@cCol>
