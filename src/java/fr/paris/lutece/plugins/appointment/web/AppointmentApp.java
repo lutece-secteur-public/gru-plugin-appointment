@@ -1164,7 +1164,7 @@ public class AppointmentApp extends MVCApplication
         model.put( MARK_STARTING_TIME_APPOINTMENT, firstSlot.getStartingTime( ) );
         model.put( MARK_ENDING_TIME_APPOINTMENT, lastSlot.getEndingTime( ) );
         model.put( MARK_USER,  _validatedAppointment.getUser( ) );
-        model.put( MARK_PLACES, _validatedAppointment.getNbPlaces( ) );
+        model.put( MARK_PLACES, _validatedAppointment.getNbBookedSeats( ) );
         model.put( MARK_FORM, form );
         model.put( MARK_FORM_MESSAGES, formMessages );
         CalendarButtonConfig calendarButtonConfig = form.getCalendarButtonConfig( );
