@@ -153,11 +153,19 @@ public class AppointmentAnnualCalendarJspBean extends AbstractAppointmentFormAnd
      * @param request
      *            the request
      * @return the page
+     * @throws AccessDeniedException
+     *             If the user is not authorized to modify the advanced settings of the form
      */
     @View( value = VIEW_MANAGE_ANNUAL_CALENDAR )
-    public String getViewManageAnnualCalendar( HttpServletRequest request )
+    public String getViewManageAnnualCalendar( HttpServletRequest request ) throws AccessDeniedException
     {
-        int nIdForm = Integer.parseInt( request.getParameter( PARAMETER_ID_FORM ) );
+        String strIdForm = request.getParameter( PARAMETER_ID_FORM );
+        if ( !RBACService.isAuthorized( AppointmentFormDTO.RESOURCE_TYPE, strIdForm, AppointmentResourceIdService.PERMISSION_MODIFY_ADVANCED_SETTING_FORM,
+                (User) getUser( ) ) )
+        {
+            throw new AccessDeniedException( AppointmentResourceIdService.PERMISSION_MODIFY_ADVANCED_SETTING_FORM );
+        }
+        int nIdForm = Integer.parseInt( strIdForm );
         AppointmentFormDTO form = buildAppointmentFormLight( nIdForm );
         String strStartYear = request.getParameter( PARAMETER_START_YEAR );
         int nStartYear;
