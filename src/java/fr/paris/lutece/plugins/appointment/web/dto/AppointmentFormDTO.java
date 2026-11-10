@@ -38,6 +38,7 @@ import java.sql.Date;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
 
 import fr.paris.lutece.plugins.appointment.business.display.CalendarButtonConfig;
@@ -286,7 +287,8 @@ public final class AppointmentFormDTO extends ReservationRule implements RBACRes
     /**
      * Anonymization Pattern
      */
-    @Size( max = 2, message = "#i18n{appointment.validation.appointmentform.AnonymizationPattern.size}" )
+    // One of the patterns of the list: %f form id, %g guid, %n number
+    @Pattern( regexp = "^(%[fgn])?$", message = "#i18n{appointment.validation.appointmentform.AnonymizationPattern.size}" )
     private String _strAnonymizationPattern;
 
     /**
