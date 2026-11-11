@@ -62,6 +62,7 @@ import fr.paris.lutece.portal.service.admin.AdminUserService;
 import fr.paris.lutece.portal.service.i18n.I18nService;
 import fr.paris.lutece.portal.service.message.AdminMessage;
 import fr.paris.lutece.portal.service.message.AdminMessageService;
+import fr.paris.lutece.portal.service.message.MessageHtml;
 import fr.paris.lutece.portal.service.plugin.Plugin;
 import fr.paris.lutece.portal.service.plugin.PluginService;
 import fr.paris.lutece.portal.service.rbac.RBACService;
@@ -469,9 +470,9 @@ public class AppointmentFormEntryJspBean extends MVCAdminJspBean
             List<String> listErrors = new ArrayList<>( );
             if ( !_entryService.checkForRemoval( strIdEntry, listErrors, getLocale( ) ) )
             {
-                String strCause = AdminMessageService.getFormattedList( listErrors, getLocale( ) );
+                MessageHtml cause = AdminMessageService.getFormattedList( listErrors, getLocale( ) );
                 Object [ ] args = {
-                        strCause
+                        cause
                 };
                 return AdminMessageService.getMessageUrl( request, MESSAGE_CANT_REMOVE_ENTRY, args, AdminMessage.TYPE_STOP );
             }

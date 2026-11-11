@@ -51,7 +51,8 @@ public interface IAppointmentAddonService
      *            The appointment
      * @param locale
      *            The locale to use
-     * @return The HTML content of the add-on to display
+     * @return The HTML content of the add-on to display, rendered by the add-on from its own templates: the consumer marks it
+     *         as markup (HtmlMarkup) when it puts it in a model, the template writes it as it is
      */
     String getAppointmentAddOn( int nIdAppointment, Locale locale );
 }

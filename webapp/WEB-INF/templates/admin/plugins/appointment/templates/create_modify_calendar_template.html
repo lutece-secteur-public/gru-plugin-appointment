@@ -15,7 +15,8 @@
 		<@formGroup labelKey='#i18n{appointment.createModifyCalendarTemplate.labelTemplatePath}'>
 			<@inputGroup>
 				<@select items=refListTemplates default_value=(template.templatePath)!'' name='templatePath' />
-				<@button type='submit' name='action' value='doDownloadTemplate' title='#i18n{portal.util.labelDownload}' buttonIcon='download' color='light' params='formaction="jsp/admin/plugins/appointment/DoDownloadCalendarTemplate.jsp"' />
+				<#-- formaction is not a parameter of the button macro: the button is written as is, its target is a literal -->
+				<button type="submit" name="action" value="doDownloadTemplate" class="btn btn-light" formaction="jsp/admin/plugins/appointment/DoDownloadCalendarTemplate.jsp"><i class="ti ti-download me-1" aria-hidden="true"></i>#i18n{portal.util.labelDownload}</button>
 			</@inputGroup>
 		</@formGroup>
 		<@formGroup>

@@ -68,3 +68,25 @@ function changeDisabledStateOfRequiredFields(id, bDisabled){
     	});
 	}
 }
+
+// The conditional questions of the radio buttons and the check boxes: the inputs name the fields they show or hide
+// (data-appointment-hide, data-appointment-show, data-appointment-toggle) instead of an inline handler
+document.addEventListener('click', function (event) {
+	const input = event.target;
+	if (!(input instanceof HTMLInputElement)) {
+		return;
+	}
+	if (input.dataset.appointmentHide !== undefined) {
+		input.dataset.appointmentHide.split(' ').filter(Boolean).forEach(id => {
+			hide(id);
+			changeDisabledStateOfRequiredFields(id, true);
+		});
+	}
+	if (input.dataset.appointmentShow) {
+		doDisplay(input.dataset.appointmentShow);
+		changeDisabledStateOfRequiredFields(input.dataset.appointmentShow, false);
+	}
+	if (input.dataset.appointmentToggle) {
+		doCheckboxEffect(input.checked, input.dataset.appointmentToggle);
+	}
+});

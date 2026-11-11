@@ -1,20 +1,20 @@
-<#assign formSubtitle><#if form.displayTitleFo && form.title != "">${form.title}<#else>#i18n{appointment.appointmentApp.defaultTitle}</#if></#assign>
+<#assign formSubtitle = (form.displayTitleFo && form.title != "")?then(form.title, '#i18n{appointment.appointmentApp.defaultTitle}') />
 <@pageContainer>
 	<@pageColumn>
 		<@pageHeader title='#i18n{appointment.appointmentApp.recap.title}' description=formSubtitle />
 		<@tform id='form-validate' action='jsp/admin/plugins/appointment/ManageAppointments.jsp' enctype='multipart/form-data' boxed=true>
 			<@input type='hidden' name='action' value='doMakeAppointment' />
 			<@formGroup labelFor='lastname' labelKey='${formMessages.fieldLastNameTitle!}'>
-				<@input type='hidden' name='lastname' value='${appointment.lastName?html}' />
-				<@staticText>${appointment.lastName?html}</@staticText>
+				<@input type='hidden' name='lastname' value='${appointment.lastName}' />
+				<@staticText>${appointment.lastName}</@staticText>
 			</@formGroup>
 			<@formGroup labelFor='firstname' labelKey='${formMessages.fieldFirstNameTitle!}'>
-				<@input type='hidden' name='firstname' value='${appointment.firstName?html}' />
-				<@staticText>${appointment.firstName?html}</@staticText>
+				<@input type='hidden' name='firstname' value='${appointment.firstName}' />
+				<@staticText>${appointment.firstName}</@staticText>
 			</@formGroup>
 			<@formGroup labelFor='email' labelKey='${formMessages.fieldEmailTitle!}'>
-				<@input type='hidden' name='email' value='${appointment.email?html}' />
-				<@staticText>${appointment.email?html}</@staticText>
+				<@input type='hidden' name='email' value='${appointment.email}' />
+				<@staticText>${appointment.email}</@staticText>
 			</@formGroup>
 			<#if form.maxPeoplePerAppointment gt 1>
 				<@formGroup labelFor='nbSeat' labelKey='#i18n{appointment.createAppointmentForm.labelNumberOfBookedseatsPerAppointment}'>
@@ -38,10 +38,10 @@
 					<@formGroup labelKey='${formGroupLabelKey!}'>
 						<#if response.file??>
 							<@link href='jsp/admin/plugins/appointment/DoDownloadAppointmentsFileFromSession.jsp?view=downloadFileFromSession&idResponse=${response.entry.idEntry}'>
-								<@staticText>${response.recapValue}</@staticText>
+								<@staticText>${response.recapMarkup}</@staticText>
 							</@link>
 						<#else>
-							<@staticText>${response.recapValue}</@staticText>
+							<@staticText>${response.recapMarkup}</@staticText>
 						</#if>
 					</@formGroup>
 				</#if>

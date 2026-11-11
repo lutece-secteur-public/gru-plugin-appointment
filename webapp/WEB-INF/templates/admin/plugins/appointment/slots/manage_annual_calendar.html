@@ -5,13 +5,13 @@
 		</@columns>
 		<@columns sm=2>
 			<@p class='border-bottom pb-3 mb-3'>
-				<@span class='d-inline-block align-middle rounded-circle bg-secondary' params='style="width:20px;height:20px"'></@span> #i18n{appointment.annual.label.daySpecifity}
+				<@span class='d-inline-block align-middle rounded-circle bg-secondary appointment-color-sample'></@span> #i18n{appointment.annual.label.daySpecifity}
 			</@p>
 			<@ul class='list-unstyled'>
 				<#list listReservationRule as rule>
 					<@li class='py-2'>
-						<@aButton color='outline-primary justify-content-start px-2 w-100 text-wrap' href='jsp/admin/plugins/appointment/ManageAppointmentSlots.jsp?view=manageTypicalWeek&id_form=${id_form}&id_reservation_rule=${rule.idReservationRule}' params='style="border-color:${rule.color!};"'>
-                            <@icon style='circle-filled me-2 fs-4' params='style="color:${rule.color!};"' /> ${rule.name}
+						<@aButton color='outline-primary justify-content-start px-2 w-100 text-wrap' href='jsp/admin/plugins/appointment/ManageAppointmentSlots.jsp?view=manageTypicalWeek&id_form=${id_form}&id_reservation_rule=${rule.idReservationRule}' params={"data-appointment-border-color": rule.color!}>
+                            <@icon style='circle-filled me-2 fs-4' params={"data-appointment-color": rule.color!} /> ${rule.name}
                         </@aButton>
 					</@li>
 				</#list>
@@ -42,7 +42,7 @@
 			<@formGroup rows=2>
 				<@button type='submit' name='save' id='save' buttonIcon='check' title='#i18n{appointment.labelSave}' />
 				<@button type='submit' name='delete' id='delete' title='#i18n{portal.util.labelDelete}' buttonIcon='trash' color='danger' />
-				<@button type='button' params='data-bs-dismiss="modal"' title='#i18n{portal.util.labelCancel}' buttonIcon='times' color='light' />
+				<@button type='button' params={"data-bs-dismiss": "modal"} title='#i18n{portal.util.labelCancel}' buttonIcon='times' color='light' />
 			</@formGroup>
 		</@tform>
 	</@modalBody>
@@ -110,19 +110,19 @@ document.addEventListener('DOMContentLoaded', function() {
 	<#list listReservationRule as rule>
 		<#list listWeekDefinition?filter( weekdef -> weekdef.idReservationRule = rule.idReservationRule ) as weekdef>
 		{
-			id: '${rule.idReservationRule}-${weekdef.idWeekDefinition}',
-			title: '${rule.name?js_string}',
-			description: '${rule.descriptionRule?js_string}',
-			start: new Date(${weekdef.dateOfApply.year}, ${weekdef.dateOfApply.monthValue -1}, ${weekdef.dateOfApply.dayOfMonth}),
-			end: new Date(${weekdef.endingDateOfApply.year}, ${weekdef.endingDateOfApply.monthValue -1}, ${weekdef.endingDateOfApply.dayOfMonth!} + 1),
-			color: '${rule.color}',
+			id: '${rule.idReservationRule?c}-${weekdef.idWeekDefinition?c}',
+			title: '${rule.name?js_string?no_esc}',
+			description: '${(rule.descriptionRule!)?js_string?no_esc}',
+			start: new Date(${weekdef.dateOfApply.year?c}, ${(weekdef.dateOfApply.monthValue - 1)?c}, ${weekdef.dateOfApply.dayOfMonth?c}),
+			end: new Date(${weekdef.endingDateOfApply.year?c}, ${(weekdef.endingDateOfApply.monthValue - 1)?c}, ${weekdef.endingDateOfApply.dayOfMonth?c} + 1),
+			color: '${(rule.color!)?js_string?no_esc}',
 			textColor: '#000',
 			extendedProps: {
-				ruleId: ${rule.idReservationRule},
-				ruleName: '${rule.name?js_string}',
-				ruleDescription: '${rule.descriptionRule?js_string}',
-				idweekdef: ${weekdef.idWeekDefinition},
-				ruleColor: '${rule.color}'
+				ruleId: ${rule.idReservationRule?c},
+				ruleName: '${rule.name?js_string?no_esc}',
+				ruleDescription: '${(rule.descriptionRule!)?js_string?no_esc}',
+				idweekdef: ${weekdef.idWeekDefinition?c},
+				ruleColor: '${(rule.color!)?js_string?no_esc}'
 			}
 		},
 		</#list>
@@ -138,7 +138,7 @@ document.addEventListener('DOMContentLoaded', function() {
 		initialDate: currentDate,
 		multiMonthMaxColumns: 3,
 		multiMonthMinWidth: 150,
-		locale: '${language}',
+		locale: '${language?js_string?no_esc}',
 		headerToolbar: {
 			left: 'prev',
 			center: 'title',
@@ -162,11 +162,17 @@ document.addEventListener('DOMContentLoaded', function() {
 		},
 		eventMouseEnter: function(info) {
 			const ep = info.event.extendedProps;
-			const content = `<#noparse>
-				<div class="event-tooltip-content">
-					<p class="event-name" style="color:${ep.ruleColor}">${ep.ruleName}</p>
-					<p class="event-location">${ep.ruleDescription}</p>
-				</div>`</#noparse>
+			// The name and the description of the rule are text
+			const content = document.createElement('div');
+			content.className = 'event-tooltip-content';
+			const contentName = document.createElement('p');
+			contentName.className = 'event-name';
+			contentName.style.color = ep.ruleColor;
+			contentName.textContent = ep.ruleName;
+			const contentDescription = document.createElement('p');
+			contentDescription.className = 'event-location';
+			contentDescription.textContent = ep.ruleDescription;
+			content.append(contentName, contentDescription);
 			if ( activePopover ) { activePopover.dispose(); activePopover = null; }
 			activePopover = new bootstrap.Popover(info.el, {
 				trigger: 'manual',

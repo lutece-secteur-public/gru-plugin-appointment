@@ -94,3 +94,21 @@ function setLabelComment( event, locale ){
   }
   return labelEvent;
 }
+
+// The colours of the reservation rules, written as data-appointment-color (text) and data-appointment-border-color:
+// applied only when they are a hexadecimal colour, as the colour field of the rule stores them
+document.addEventListener( 'DOMContentLoaded', function( ) {
+  var isColor = function( value ) {
+    return /^#[0-9a-fA-F]{3,8}$/.test( value || '' );
+  };
+  document.querySelectorAll( '[data-appointment-color]' ).forEach( function( el ) {
+    if ( isColor( el.dataset.appointmentColor ) ) {
+      el.style.color = el.dataset.appointmentColor;
+    }
+  } );
+  document.querySelectorAll( '[data-appointment-border-color]' ).forEach( function( el ) {
+    if ( isColor( el.dataset.appointmentBorderColor ) ) {
+      el.style.borderColor = el.dataset.appointmentBorderColor;
+    }
+  } );
+} );

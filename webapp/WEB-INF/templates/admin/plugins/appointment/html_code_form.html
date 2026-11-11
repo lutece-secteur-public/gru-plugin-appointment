@@ -27,7 +27,7 @@
 			</#list>
 		</#if>
 		<@formGroup class='${formGroupClass!}' labelFor='lastname' labelKey='${formMessages.fieldLastNameTitle!}' helpKey='${formGroupHelpKey!}' mandatory=true>
-			<@input type='text' name='lastname' id='lastname' value='${(appointment.lastName!)?html}' maxlength=255 />
+			<@input type='text' name='lastname' id='lastname' value='${appointment.lastName!}' maxlength=255 />
 		</@formGroup>
 		<#assign formGroupHelpKey = '' />
 		<#assign formGroupClass='' />
@@ -43,7 +43,7 @@
 			</#list>
 		</#if>
 		<@formGroup class='${formGroupClass!}' labelFor='firstname' labelKey='${formMessages.fieldFirstNameTitle!}' helpKey='${formGroupHelpKey!}' mandatory=true>
-			<@input type='text' name='firstname' id='firstname' value='${(appointment.firstName!)?html}' maxlength=255 />
+			<@input type='text' name='firstname' id='firstname' value='${appointment.firstName!}' maxlength=255 />
 		</@formGroup>
 		<#assign formGroupHelpKey = '' />
 		<#assign formGroupClass='' />
@@ -59,7 +59,7 @@
 			</#list>
 		</#if>
 		<@formGroup class='${formGroupClass!}' labelFor='email' labelKey='${formMessages.fieldEmailTitle!}' helpKey='${formGroupHelpKey!}' mandatory=form.enableMandatoryEmail!>
-			<@input type='email' name='email' id='email' value='${(appointment.email!)?html}' maxlength=255 />
+			<@input type='email' name='email' id='email' value='${appointment.email!}' maxlength=255 />
 		</@formGroup>
 		<#assign formGroupHelpKey = '' />
 		<#assign formGroupClass='' />
@@ -96,7 +96,7 @@
 				</#list>
 			</#if>
 			<@formGroup class='${formGroupClass!}' labelFor='nbBookedSeats' labelKey='#i18n{appointment.createAppointmentForm.labelMaxPeoplePerAppointment}' helpKey='${formGroupHelpKey!}' mandatory=true>
-				<@input type='number' name='nbBookedSeats' id='nbBookedSeats' value='${appointment.nbBookedSeats!}' maxlength=3 params='onkeypress="return validateQty(event);"' min=1 max=nbplaces />
+				<@input type='number' name='nbBookedSeats' id='nbBookedSeats' value='${appointment.nbBookedSeats!}' maxlength=3 params={"data-appointment-digits": true} min=1 max=nbplaces />
 			</@formGroup>
 		</#if>
 		${str_entry}
@@ -123,6 +123,17 @@ if (event.keyCode == 8 || event.keyCode == 9 || event.keyCode == 46 || event.key
 	} 
 	else return true;
 }
+
+// The fields marked data-appointment-digits accept digits only
+document.addEventListener( 'DOMContentLoaded', function( ) {
+	document.querySelectorAll( '[data-appointment-digits]' ).forEach( function( input ) {
+		input.addEventListener( 'keypress', function( event ) {
+			if ( !validateQty( event ) ) {
+				event.preventDefault( );
+			}
+		} );
+	} );
+} );
 
 document.addEventListener('DOMContentLoaded', function () {
 	document.getElementById('emailConfirm').addEventListener('paste', function (e) {

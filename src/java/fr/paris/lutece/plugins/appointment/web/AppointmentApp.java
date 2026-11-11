@@ -120,6 +120,7 @@ import fr.paris.lutece.portal.service.security.LuteceUser;
 import fr.paris.lutece.portal.service.security.SecurityService;
 import fr.paris.lutece.portal.service.security.UserNotSignedException;
 import fr.paris.lutece.portal.service.template.AppTemplateService;
+import fr.paris.lutece.portal.service.template.HtmlMarkup;
 import fr.paris.lutece.portal.service.util.AppLogService;
 import fr.paris.lutece.portal.service.util.AppPathService;
 import fr.paris.lutece.portal.service.util.AppPropertiesService;
@@ -647,7 +648,7 @@ public class AppointmentApp extends MVCApplication
         _models.put( PARAMETER_WEEK_VIEW, weekView );
         _models.put( MARK_MAX_NBPLACESTOTAKE, Integer.valueOf( _strNbPlacesToTakeLength ) );
         HtmlTemplate templateNbPlacesToTakeForm = AppTemplateService.getTemplate( TEMPLATE_HTML_CODE_NB_PLACES_TO_TAKE_FORM, locale, _models.asMap( ) );
-        _models.put( MARK_FORM_NB_PLACES_TO_TAKE_HTML, templateNbPlacesToTakeForm.getHtml( ) );
+        _models.put( MARK_FORM_NB_PLACES_TO_TAKE_HTML, HtmlMarkup.of( templateNbPlacesToTakeForm.getHtml( ) ) );
 
         return getXPage( calendarTemplate.getTemplatePath( ), locale, _models );
     }
@@ -869,7 +870,7 @@ public class AppointmentApp extends MVCApplication
         _models.put( PARAMETER_DATE_OF_DISPLAY, _notValidatedAppointment.getSlot( ).get( 0 ).getDate( ) );
         _models.put( MARK_FORM, _appointmentForm );
         _models.put( MARK_FORM_MESSAGES, formMessages );
-        _models.put( MARK_STR_ENTRY, strBuffer.toString( ) );
+        _models.put( MARK_STR_ENTRY, HtmlMarkup.of( strBuffer.toString( ) ) );
         _models.put( MARK_LOCALE, locale );
         _models.put( MARK_PLACES, _notValidatedAppointment.getNbMaxPotentialBookedSeats( ) );
         _models.put( MARK_LIST_ERRORS, AppointmentDTO.getAllErrors( locale ) );
@@ -898,7 +899,7 @@ public class AppointmentApp extends MVCApplication
 
         _models.put( SecurityTokenService.MARK_TOKEN, _securityTokenService.getToken( request, ACTION_DO_VALIDATE_FORM ) );
         HtmlTemplate templateForm = AppTemplateService.getTemplate( TEMPLATE_HTML_CODE_FORM, locale, _models.asMap( ) );
-        _models.put( MARK_FORM_HTML, templateForm.getHtml( ) );
+        _models.put( MARK_FORM_HTML, HtmlMarkup.of( templateForm.getHtml( ) ) );
         XPage xPage = getXPage( TEMPLATE_APPOINTMENT_FORM, locale, _models );
 
         if ( _appointmentForm.getDisplayTitleFo( ) )
@@ -1043,7 +1044,7 @@ public class AppointmentApp extends MVCApplication
         Map<String, Object> model = new HashMap<>( );
         if ( _appointmentForm.getEnableCaptcha( ) && _captchaService.isResolvable( ) )
         {
-            model.put( MARK_CAPTCHA, _captchaService.get( ).getHtmlCode( ) );
+            model.put( MARK_CAPTCHA, HtmlMarkup.of( _captchaService.get( ).getHtmlCode( ) ) );
         }
         if ( strModifDateAppointment != null && Boolean.parseBoolean( strModifDateAppointment ) )
         {
@@ -1787,7 +1788,7 @@ public class AppointmentApp extends MVCApplication
                 }
                 String strHtmlTasksForm = _workflowService.getDisplayTasksForm( appointment.getIdAppointment( ),
                         Appointment.APPOINTMENT_RESOURCE_TYPE, nIdAction, request, getLocale( request ), null );
-                _models.put( MARK_TASKS_FORM, strHtmlTasksForm );
+                _models.put( MARK_TASKS_FORM, HtmlMarkup.of( strHtmlTasksForm ) );
                 _models.put( PARAMETER_ID_ACTION, nIdAction );
                 _models.put( PARAMETER_REF_APPOINTMENT, refAppointment );
 

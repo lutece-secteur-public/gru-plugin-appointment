@@ -3,9 +3,9 @@
 		<@pageHeader title='${form.title}'>
 			<#if appointment.listWorkflowActions?? && appointment.listWorkflowActions?size gt 0>
 				<#list appointment.listWorkflowActions as action>
-					<@aButton href='jsp/admin/plugins/appointment/ManageAppointments.jsp?view=viewWorkflowActionForm&id_action=${action.id}&amp;id_appointment=${appointment.idAppointment}'>
-						<#assign iconParams><#if action.icon.width!=-1>width="${action.icon.width}" </#if><#if action.icon.height!=-1>height="${action.icon.height}" </#if>title="${action.name}"</#assign>
-						<@img url='image?resource_type=workflow_icon_img&id=${action.icon.id}' alt='${action.name}' params=iconParams />
+					<@aButton href='jsp/admin/plugins/appointment/ManageAppointments.jsp?view=viewWorkflowActionForm&id_action=${action.id}&id_appointment=${appointment.idAppointment}'>
+						<#assign iconParams = (action.icon.width != -1)?then({"width": action.icon.width?c}, {}) + (action.icon.height != -1)?then({"height": action.icon.height?c}, {}) />
+						<@img url='image?resource_type=workflow_icon_img&id=${action.icon.id}' alt='${action.name}' title=action.name params=iconParams />
 					</@aButton>
 				</#list>
 			</#if>
@@ -28,9 +28,9 @@
 			<@boxBody>
 				<@messages errors=errors />
 				<@listGroup>
-					<@listGroupItem>${formMessages.fieldLastNameTitle!} : <strong>${appointment.lastName?html}</strong></@listGroupItem>
-					<@listGroupItem>${formMessages.fieldFirstNameTitle!} : <strong>${appointment.firstName?html}</strong></@listGroupItem>
-					<@listGroupItem>${formMessages.fieldEmailTitle!} : <strong>${appointment.email?html}</strong></@listGroupItem>
+					<@listGroupItem>${formMessages.fieldLastNameTitle!} : <strong>${appointment.lastName}</strong></@listGroupItem>
+					<@listGroupItem>${formMessages.fieldFirstNameTitle!} : <strong>${appointment.firstName}</strong></@listGroupItem>
+					<@listGroupItem>${formMessages.fieldEmailTitle!} : <strong>${appointment.email}</strong></@listGroupItem>
 					<@listGroupItem>#i18n{appointment.createAppointmentForm.labelNumberOfBookedseatsPerAppointment} : <strong>${appointment.nbBookedSeats}</strong></@listGroupItem>
 					<#assign shownEntries = [] />
 					<#list listResponseRecapDTO as response>
@@ -43,7 +43,7 @@
 						<#elseif response.recapValue?has_content>
 							<#if !entrySave?exists||entrySave.idEntry!=response.entry.idEntry><#assign responseLabelKey = response.entry.title /><#assign entrySave=response.entry /></#if>
 							<@listGroupItem>
-								${responseLabelKey!} : <#if response.file?? && response.file.idFile gt 0><@link href='jsp/admin/plugins/appointment/DoDownloadAppointmentsFile.jsp?view=downloadFile&idResponse=${response.idResponse}'><strong>${response.recapValue}</strong></@link><#else><strong>${response.recapValue}</strong></#if>
+								${responseLabelKey!} : <#if response.file?? && response.file.idFile gt 0><@link href='jsp/admin/plugins/appointment/DoDownloadAppointmentsFile.jsp?view=downloadFile&idResponse=${response.idResponse}'><strong>${response.recapMarkup}</strong></@link><#else><strong>${response.recapMarkup}</strong></#if>
 							</@listGroupItem>
 						</#if>
 					</#list>
@@ -51,7 +51,7 @@
 					<@listGroupItem>#i18n{appointment.viewAppointmentFormMessages.labelAppointmentTakenBy} : <#if appointment.adminUserCreate?has_content>#i18n{appointment.viewAppointmentFormMessages.labelAppointmentUserBO} <#if userCreator??><strong>${userCreator.lastName!''} ${userCreator.firstName!''}</strong></#if><#else><em>#i18n{appointment.viewAppointmentFormMessages.labelAppointmentUser}</em></#if></@listGroupItem>
 				</@listGroup>
 				${addon!}
-				<#if resource_history?? && resource_history != ''>${resource_history}</#if>
+				<#if resource_history?has_content>${resource_history}</#if>
 			</@boxBody>
 		</@box>
 	</@pageColumn>

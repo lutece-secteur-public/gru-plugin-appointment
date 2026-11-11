@@ -4,7 +4,7 @@
     <@getCommentModal modalId='modify-comment' modalTitle='#i18n{appointment.modify_comment.pageTitle}' idComment="modifyComment" idStartingDate="modifyStartingValidityDate" idEndingDate="modifyEndingValidityDate" idStartingTime="idModifyStartingTime" idEndingTime="idModifyEndingTime" action="doModifyComment" idForm=id_form mailingList=mailing_list locale=locale from="specificweek" />
 </@appointmentTabs>    
 
-<@modal id='updatePlanningSlot' params='data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"'>
+<@modal id='updatePlanningSlot' params={"data-bs-backdrop": "static", "data-bs-keyboard": "false", "tabindex": "-1"}>
     <@modalBody>
         <@tform action='jsp/admin/plugins/appointment/ManageSpecificWeek.jsp'>						
         <@input type='hidden' name='action' value='doModifyListSlot' />
@@ -38,14 +38,14 @@
             <@radioButton labelFor='shift_slot_true' labelKey='#i18n{appointment.modifySlot.shiftSlot}' name='shift_slot' id='shift_slot_true' value='true' />
         </@formGroup>
         <@formGroup rows=2>
-            <@button type='submit' buttonIcon='check' params='name="modify"' id='modify' title='#i18n{portal.util.labelModify}' />
-            <@button color='light' title='#i18n{portal.util.labelCancel}' params=' data-bs-dismiss="modal" aria-label="#i18n{portal.util.labelCancel}"' />
+            <@button type='submit' buttonIcon='check' name="modify" id='modify' title='#i18n{portal.util.labelModify}' />
+            <@button color='light' title='#i18n{portal.util.labelCancel}' params={"data-bs-dismiss": "modal", "aria-label": "#i18n{portal.util.labelCancel}"} />
         </@formGroup>
         </@tform>
     </@modalBody>
 </@modal>
 
-<@modal id='updatePlanningMultiSlot' params='data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"'>
+<@modal id='updatePlanningMultiSlot' params={"data-bs-backdrop": "static", "data-bs-keyboard": "false", "tabindex": "-1"}>
     <@modalBody>
         <@tform action="jsp/admin/plugins/appointment/ManageSpecificWeek.jsp">
             <@input type='hidden' name='action' value='doModifyListSlot' />
@@ -64,7 +64,7 @@
             </@formGroup>
             <@formGroup rows=2>
                 <@button type='submit' color='primary' title='#i18n{portal.util.labelValidate}' />
-                <@button color='light' title='#i18n{portal.util.labelCancel}' params=' data-bs-dismiss="modal" aria-label="#i18n{portal.util.labelCancel}"' />
+                <@button color='light' title='#i18n{portal.util.labelCancel}' params={"data-bs-dismiss": "modal", "aria-label": "#i18n{portal.util.labelCancel}"} />
             </@formGroup>
         </@tform>
     </@modalBody>

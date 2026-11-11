@@ -1,11 +1,12 @@
 <#assign errorMsg = ''>
 <#assign helpMsg = ''>
-<#if entry.helpMessage?exists&&entry.helpMessage!=''><#assign helpMsg>${entry.helpMessage}</#assign></#if>
-<#if list_responses??><#list list_responses as response><#if response.entry.idEntry == entry.idEntry && response.entry.error?? && response.entry.error.isDisplayableError><#assign error = response.entry.error><#assign errorMsg><#if error.mandatoryError>#i18n{appointment.message.mandatory.entry}<#else>${error.errorMessage}</#if></#assign></#if></#list></#if>
+<#if entry.helpMessage?exists&&entry.helpMessage!=''><#assign helpMsg = entry.helpMessage /></#if>
+<#if list_responses??><#list list_responses as response><#if response.entry.idEntry == entry.idEntry && response.entry.error?? && response.entry.error.isDisplayableError><#assign error = response.entry.error><#assign errorMsg = error.mandatoryError?then('#i18n{appointment.message.mandatory.entry}', error.errorMessage) /></#if></#list></#if>
 <#assign default=getFieldValueByCode( entry, "text_config")>
 <#assign field_width=getFieldValueByCode( entry, "width")>
 <#assign field_max_size=getFieldValueByCode( entry, "max_size")>
-<#assign field_value><#if list_responses??><#list list_responses as response><#if response.entry.idEntry == entry.idEntry><#if response.toStringValueResponse??>${response.toStringValueResponse}</#if></#if></#list><#else>${default}</#if></#assign>
+<#assign field_value = '' />
+<#if list_responses??><#list list_responses as response><#if response.entry.idEntry == entry.idEntry && response.toStringValueResponse??><#assign field_value = field_value + response.toStringValueResponse /></#if></#list><#else><#assign field_value = default /></#if>
 <@cField for='attribute${entry.idEntry}' label=entry.title! required=entry.mandatory >
 	<@cInput name='attribute${entry.idEntry}' id='attribute${entry.idEntry}' maxlength=field_max_size?number!0 value=field_value! class='form-control ${entry.CSSClass!}' errorMsg=errorMsg helpMsg=helpMsg />
 </@cField>

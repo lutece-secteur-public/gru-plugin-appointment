@@ -4,13 +4,15 @@ const eventUrl = 'jsp/site/Portal.jsp?page=appointment&view=getViewAppointmentFo
 const defaultDate = '${date_of_display}';
 const minDateOfOpenDay = '${min_date_of_open_day}';
 const maxDateOfOpenDay = '${max_date_of_open_day}';
-const hiddenDays = [<#if hidden_days??><#list hidden_days as hd>${hd},</#list></#if>];
+const hiddenDays = [<#if hidden_days??><#list hidden_days as hd>${hd?number?c},</#list></#if>];
 <#-- The labels of the Messages tab of the form, or the default ones -->
-const labelFull = '<#if formMessages?? && formMessages.calendarFullLabel?has_content>${formMessages.calendarFullLabel?html?js_string}<#else>#i18n{appointment.appointmentCalendar.labelSlotFull}</#if>';
-const labelReserve = '<#if formMessages?? && formMessages.calendarReserveLabel?has_content>${formMessages.calendarReserveLabel?html?js_string}</#if>';
-const labelClosed = '#i18n{appointment.appointmentCalendar.labelSlotClosed}';
-const labelNoSlot = '#i18n{appointment.appointmentCalendar.labelNoSlot}';
-const labelAvailable = '#i18n{appointment.appointmentCalendar.labelAvailableSlots}';
+const labelFull = '<#if formMessages?? && formMessages.calendarFullLabel?has_content>${formMessages.calendarFullLabel?js_string?no_esc}<#else>${i18n('appointment.appointmentCalendar.labelSlotFull')?js_string?no_esc}</#if>';
+const labelReserve = '<#if formMessages?? && formMessages.calendarReserveLabel?has_content>${formMessages.calendarReserveLabel?js_string?no_esc}</#if>';
+const labelClosed = '${i18n('appointment.appointmentCalendar.labelSlotClosed')?js_string?no_esc}';
+const labelNoSlot = '${i18n('appointment.appointmentCalendar.labelNoSlot')?js_string?no_esc}';
+const labelAvailable = '${i18n('appointment.appointmentCalendar.labelAvailableSlots')?js_string?no_esc}';
+const labelToday = '${i18n('appointment.appointmentCalendar.labelToday')?js_string?no_esc}';
+const labelCurrentAppointment = '${i18n('appointment.label.yourCurrentAppointment')?js_string?no_esc}';
 
 const slots = [
 <#if events??>
@@ -18,12 +20,12 @@ const slots = [
 {
 	start: '${event.startingDateTime}',
 	end: '${event.endingDateTime}',
-	id: '${event.idSlot}',
-	url: eventUrl + '&id_form=${event.idForm}&starting_date_time=${event.startingDateTime}&modif_date=${modifDateAppointment?c}',
+	id: '${event.idSlot?c}',
+	url: eventUrl + '&id_form=${event.idForm?c}&starting_date_time=${event.startingDateTime}&modif_date=${modifDateAppointment?c}',
 	open: <#if event.isOpen>true<#else>false</#if>,
 	available: <#if event.isOpen && (event.nbRemainingPlaces > 0) && (event.nbRemainingPlaces == event.nbPotentialRemainingPlaces)>true<#elseif event.isOpen && (event.nbRemainingPlaces > 0) && (event.nbPotentialRemainingPlaces > 0)>true<#else>false</#if>,
-	remaining: ${event.nbRemainingPlaces},
-	maxCapacity: ${event.maxCapacity}
+	remaining: ${event.nbRemainingPlaces?c},
+	maxCapacity: ${event.maxCapacity?c}
 },
 </#list>
 </#if>
@@ -52,6 +54,13 @@ const slots = [
 	}
 	function addDays(d, n) { const r = new Date(d); r.setDate(r.getDate() + n); return r; }
 	function sameDay(a, b) { return toDateKey(a) === toDateKey(b); }
+	// An element holding a text: the labels come from the form settings and the URL, never parsed as HTML
+	function textElement(tag, className, text) {
+		const el = document.createElement(tag);
+		if (className) el.className = className;
+		el.textContent = text;
+		return el;
+	}
 
 	// Group slots by date
 	const slotsByDate = {};
@@ -91,9 +100,14 @@ const slots = [
 		const info = document.createElement('p');
 		info.className = 'text-center main-info-color mb-3';
 		info.setAttribute('role', 'status');
-		info.innerHTML = '<span><strong>#i18n{appointment.label.yourCurrentAppointment}</strong> '
-			+ '<span class="text-capitalize">' + formattedDate + '</span>, '
-			+ urlStartTime + ' — ' + urlEndTime + '</span>';
+		const infoContent = document.createElement('span');
+		const infoLabel = document.createElement('strong');
+		infoLabel.textContent = labelCurrentAppointment;
+		const infoDate = document.createElement('span');
+		infoDate.className = 'text-capitalize';
+		infoDate.textContent = formattedDate;
+		infoContent.append(infoLabel, ' ', infoDate, ', ' + urlStartTime + ' — ' + urlEndTime);
+		info.appendChild(infoContent);
 		dayList.parentNode.insertBefore(info, dayList);
 		currentMonday = getMonday(apptDate);
 		isAppointmentSelected = true;
@@ -161,18 +175,18 @@ const slots = [
 
 			const badge = document.createElement('span');
 			badge.className = 'badge ' + (isToday ? ' bg-primary' : ' invisible');
-			badge.textContent = "#i18n{appointment.appointmentCalendar.labelToday}";
+			badge.textContent = labelToday;
 			body.appendChild(badge);
 
 			const status = document.createElement('div');
 			status.className = 'mt-2';
 			if (hasAvailable) {
-				status.innerHTML = '<span class="badge bg-success">' + availableCount + ' ' + labelAvailable + '</span>'
-					+ (labelReserve ? '<div class="small mt-1">' + labelReserve + '</div>' : '');
+				status.appendChild(textElement('span', 'badge bg-success', availableCount + ' ' + labelAvailable));
+				if (labelReserve) status.appendChild(textElement('div', 'small mt-1', labelReserve));
 			} else if (daySlots.length > 0) {
-				status.innerHTML = '<span class="badge bg-secondary text-light">' + labelFull + '</span>';
+				status.appendChild(textElement('span', 'badge bg-secondary text-light', labelFull));
 			} else {
-				status.innerHTML = '<span class="badge bg-light text-muted">' + labelNoSlot + '</span>';
+				status.appendChild(textElement('span', 'badge bg-light text-muted', labelNoSlot));
 			}
 			body.appendChild(status);
 			card.appendChild(body);
@@ -195,14 +209,14 @@ const slots = [
 
 			card.setAttribute('aria-label',
 				dayDate.toLocaleDateString('fr-FR', { weekday: 'long', day: 'numeric', month: 'long' })
-				 + (isToday ? ", #i18n{appointment.appointmentCalendar.labelToday}" : "") + ', ' + (hasAvailable ? availableCount + ' ' + labelAvailable : labelFull)
+				 + (isToday ? ', ' + labelToday : '') + ', ' + (hasAvailable ? availableCount + ' ' + labelAvailable : labelFull)
 			);
 			if (isToday && hasAvailable) showTimeSlots(dayKey, dayDate);
 		}
 	}
 
 	function showTimeSlots(dayKey, dayDate) {
-		timePanel.style.display = '';
+		timePanel.classList.remove('d-none');
 		selectedDayLabel.textContent = formatDayLong(dayDate);
 
 		const daySlots = (slotsByDate[dayKey] || []).slice();
@@ -211,7 +225,7 @@ const slots = [
 		timeList.innerHTML = '';
 
 		if (daySlots.length === 0) {
-			timeList.innerHTML = '<p class="text-muted">' + labelNoSlot + '</p>';
+			timeList.appendChild(textElement('p', 'text-muted', labelNoSlot));
 			backBtn.focus();
 			return;
 		}
@@ -228,20 +242,19 @@ const slots = [
 				item.href = slot.url;
 				item.className += ' border-primary bg-white text-dark';
 				item.style.cursor = 'pointer';
-				item.innerHTML = '<span class="fw-bold fs-5">' + startTime + ' — ' + endTime + '</span>' +
-					'<span class="badge bg-primary">' + slot.remaining  + ' <span class="visually-hidden">' + labelAvailable+ '</span> / ' + slot.maxCapacity + '</span>';
+				const remaining = textElement('span', 'badge bg-primary', slot.remaining + ' ');
+				remaining.append(textElement('span', 'visually-hidden', labelAvailable), ' / ' + slot.maxCapacity);
+				item.append(textElement('span', 'fw-bold fs-5', startTime + ' — ' + endTime), remaining);
 				item.setAttribute('title', startTime + ' \u00e0 ' + endTime + ', ' + slot.remaining + ' ' + labelAvailable+ ' / ' + slot.maxCapacity );
 			} else if (slot.open) {
 				item.className += ' bg-light text-muted';
 				item.setAttribute('aria-disabled', 'true');
-				item.innerHTML = '<span class="fw-bold fs-5">' + startTime + ' — ' + endTime + '</span>' +
-					'<span class="badge bg-secondary">' + labelFull + '</span>';
+				item.append(textElement('span', 'fw-bold fs-5', startTime + ' — ' + endTime), textElement('span', 'badge bg-secondary', labelFull));
 				item.setAttribute('title', startTime + ' \u00e0 ' + endTime + ', ' + labelFull);
 			} else {
 				item.className += ' bg-light text-muted';
 				item.setAttribute('aria-disabled', 'true');
-				item.innerHTML = '<span class="fw-bold fs-5">' + startTime + ' — ' + endTime + '</span>' +
-					'<span class="badge bg-dark">' + labelClosed + '</span>';
+				item.append(textElement('span', 'fw-bold fs-5', startTime + ' — ' + endTime), textElement('span', 'badge bg-dark', labelClosed));
 				item.setAttribute('title', startTime + ' \u00e0 ' + endTime + ', ' + labelClosed);
 				if ( isAppointmentSelected ){
 					item.href = slot.url;
@@ -253,7 +266,7 @@ const slots = [
 				item.classList.add('border-3');
 				item.style.borderColor = 'var(--main-info-color-40) !important';
 				item.style.borderStyle = 'dashed !important';
-				item.querySelector('.badge').insertAdjacentText('beforebegin', '#i18n{appointment.label.yourCurrentAppointment}');
+				item.querySelector('.badge').insertAdjacentText('beforebegin', labelCurrentAppointment);
 				// item.style.boxShadow = '0 0 0 0.2rem rgba(255, 193, 7, 0.4)';
 			}
 
@@ -264,11 +277,11 @@ const slots = [
 		const firstAvailable = timeList.querySelector('a[href]');
 		if (firstAvailable) firstAvailable.focus();
 
-		selectedDayLabel.insertAdjacentHTML('beforeend', '<small> - ' + daySlots.filter(s => s.available).length+ ' ' + labelAvailable + '</small>');
+		selectedDayLabel.appendChild(textElement('small', '', ' - ' + daySlots.filter(s => s.available).length + ' ' + labelAvailable));
 	}
 
 	function showDays() {
-		timePanel.style.display = 'none';
+		timePanel.classList.add('d-none');
 		dayPanel.style.display = '';
 		renderWeek();
 	}

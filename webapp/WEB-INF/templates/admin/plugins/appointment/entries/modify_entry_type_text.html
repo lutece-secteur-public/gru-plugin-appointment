@@ -52,7 +52,7 @@
 			<#assign confirmFieldTitle = "" />
 		</#if>
 		<@formGroup>
-			<@checkBox orientation='switch' labelKey='#i18n{appointment.createEntry.labelConfirmField}' name='confirm_field' id='confirm_field' value='1' params='onchange="javascript:changeVisilityConfirmFieldTitle();"' checked=checkedValue />
+			<@checkBox orientation='switch' labelKey='#i18n{appointment.createEntry.labelConfirmField}' name='confirm_field' id='confirm_field' value='1' checked=checkedValue />
 		</@formGroup>
 		<@formGroup labelFor='confirm_field_title' labelKey='#i18n{appointment.createEntry.labelConfirmFieldTitle}' id='confirm_field_title_p'>
 			<@input type='text' name='confirm_field_title' id='confirm_field_title' value=confirmFieldTitle maxlength=255 />
@@ -66,7 +66,7 @@
 				<#assign checkedValue = false />
 				<#assign anonPattern = "" />
 			</#if>
-			<@checkBox orientation='switch' labelKey='#i18n{appointment.createAppointmentForm.labelAnonymizable.genattField}' name='anonymizable' id='anonymizable' value='1' params='onchange="javascript:changeVisilityAnonymizePattern();"' checked=checkedValue />
+			<@checkBox orientation='switch' labelKey='#i18n{appointment.createAppointmentForm.labelAnonymizable.genattField}' name='anonymizable' id='anonymizable' value='1' checked=checkedValue />
 		</@formGroup>
 		<@formGroup labelFor='anonymize_pattern' id="anonymize_pattern_group" labelKey='#i18n{appointment.createAppointmentForm.labelAnonymizePattern}' helpKey='${anonymization_help_message}'>
 			<@input type='text' name='anonymize_pattern' id='anonymize_pattern' value='${anonPattern!}' maxlength=255 />
@@ -139,5 +139,6 @@ function changeVisilityConfirmFieldTitle(){
 	}
 }
 changeVisilityConfirmFieldTitle();
+document.getElementById("confirm_field").addEventListener("change", changeVisilityConfirmFieldTitle);
 </script>
 <@anonymPattern />

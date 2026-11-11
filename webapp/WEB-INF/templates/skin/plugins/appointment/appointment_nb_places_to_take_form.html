@@ -5,19 +5,19 @@
 	</@cStepDone>
 <#else>
 	<@cStepCurrent step='1' id='step_current_place_to_take' title='#i18n{appointment.label.labelNbConsecutiveSlots}' hasMandatory=false>
-		<@cForm id='form-validate' method='post' action='jsp/site/Portal.jsp?page=appointment&view=getViewAppointmentCalendar' params='role="form"'>
+		<@cForm id='form-validate' method='post' action='jsp/site/Portal.jsp?page=appointment&view=getViewAppointmentCalendar' role="form">
 			<@cInput type='hidden' name='action' value='getViewAppointmentCalendar' class='' />
 			<@cInput type='hidden' name='id_form' value='${form.idForm}' class='' />
 			<@cRow>
 				<@cCol cols='12 col-md-4'>
 					<@cLabel for='nbPlacesToTake' label='#i18n{appointment.label.labelNbConsecutiveSlots}' />
-					<@cInputGroup params='style="max-width:200px;"'>
+					<@cInputGroup class='appointment-nb-places'>
 						<@cSelect name='nbPlacesToTake'>
 							<#list 1..maxNbPlacesToTake as x>
 								<@cOption value=x label=x selected=(x == nbPlacesToTake ) />
 							</#list>
 						</@cSelect>
-						<@cBtn class='primary btn-sm btn-save-placetotake' type='submit' label='' params=' name="save"' >
+						<@cBtn class='primary btn-sm btn-save-placetotake' type='submit' label='' params={"name": "save"} >
 							<@cIcon name='chevron-down' />
 							<@cInline class='d-none d-sm-inline'>#i18n{appointment.nbPlacesToTakeForm.labelValidate}</@cInline>
 						</@cBtn>
@@ -34,7 +34,7 @@
 		const breadcrumb = document.querySelector('.breadcrumb');
 		if (breadcrumb) {
 			const lastCrumb = breadcrumb.querySelector('.breadcrumb-item:last-child');
-			if (!hasNbPlacesToTake) lastCrumb.textContent = '#i18n{appointment.label.labelNbConsecutiveSlots}';
+			if (!hasNbPlacesToTake) lastCrumb.textContent = '${i18n('appointment.label.labelNbConsecutiveSlots')?js_string?no_esc}';
 		}
 		</#if>
 		if (!placeStep) return;

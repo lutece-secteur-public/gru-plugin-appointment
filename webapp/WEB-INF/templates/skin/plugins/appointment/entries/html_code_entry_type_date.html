@@ -1,14 +1,14 @@
 <#assign errorMsg = ''>
 <#assign helpMsg = ''>
 <#if entry.helpMessage?? && entry.helpMessage != ''>
-	<#assign helpMsg>${entry.helpMessage}</#assign>
+	<#assign helpMsg = entry.helpMessage />
 </#if>
 <#if list_responses??>
 	<#list list_responses as response>
 		<#if response.entry.idEntry == entry.idEntry && response.entry.error?? && response.entry.error.isDisplayableError>
 			<#assign hasError = true>
 			<#assign error = response.entry.error>
-			<#assign errorMsg><#if error.mandatoryError>${error.errorMessage}<#else>#i18n{appointment.message.mandatory.entry}</#if></#assign>
+			<#assign errorMsg = error.mandatoryError?then(error.errorMessage, '#i18n{appointment.message.mandatory.entry}') />
 		</#if>
 	</#list>
 </#if>

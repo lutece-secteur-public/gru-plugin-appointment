@@ -26,7 +26,7 @@
 						</#if>
 						<@link href='${manageUrl}${appointmentform.idForm}&context=slot' title='#i18n{appointment.manageAppointmentForms.labelPlanning}' hideLabel=['all'] linkIcon='clock' class='btn-action' />
 					</#if>
-					<@button dropdownMenu=true title='#i18n{portal.util.labelActions}' hideTitle=['all'] buttonIcon='dots' size='sm' params="data-bs-popper-config='{\"strategy\":\"fixed\"}'">
+					<@button dropdownMenu=true title='#i18n{portal.util.labelActions}' hideTitle=['all'] buttonIcon='dots' size='sm' params={"data-bs-popper-config": "{\"strategy\":\"fixed\"}"}>
 						<#if appointmentform.isActive>
 							<@link class='dropdown-item' linkIcon='calendar-share' href='${baseUrl!}jsp/site/Portal.jsp?page=appointment&view=getViewAppointmentCalendar&id_form=${appointmentform.idForm}' target='_blank' label='#i18n{appointment.manageAppointmentForms.labelViewCalendar}' />
 						</#if>

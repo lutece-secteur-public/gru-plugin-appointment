@@ -1,5 +1,5 @@
 <@cTpl>
-<#assign formTitle><#if form.displayTitleFo && form.title != ''>${form.title}<#else>#i18n{appointment.appointmentApp.defaultTitle}</#if></#assign>
+<#assign formTitle = (form.displayTitleFo && form.title != '')?then(form.title, '#i18n{appointment.appointmentApp.defaultTitle}') />
 <@cStepDone step='1' title=formTitle idx=1 actionName=''>
 	${form.description!}
 </@cStepDone>
@@ -10,10 +10,10 @@
 </@cStepDone>
 <@cStepDone step='3' title='#i18n{appointment.appointmentApp.enteringInformation}' idx=3 actionName=''>
 	<@chList>
-		<@chItem>${formMessages.fieldLastNameTitle!} : ${user.lastName?html}</@chItem>
-		<@chItem>${formMessages.fieldFirstNameTitle!} : ${user.firstName?html}</@chItem>
+		<@chItem>${formMessages.fieldLastNameTitle!} : ${user.lastName}</@chItem>
+		<@chItem>${formMessages.fieldFirstNameTitle!} : ${user.firstName}</@chItem>
 		<#if user.email?has_content>
-			<@chItem>${formMessages.fieldEmailTitle!} : ${user.email?html}</@chItem>
+			<@chItem>${formMessages.fieldEmailTitle!} : ${user.email}</@chItem>
 		</#if>
 		<#if nbplaces gt 1>
 			<@chItem>#i18n{appointment.createAppointmentForm.labelNumberOfBookedseatsPerAppointment} : ${nbplaces}</@chItem>
@@ -24,29 +24,29 @@
 			<#if response.recapValue?? && response.recapValue?has_content>
 				<#assign recapKey = response.entry.idEntry?c />
 				<#if !recapValues[recapKey]??><#assign recapEntries = recapEntries + [response.entry] /></#if>
-				<#assign recapValues = recapValues + { recapKey : (recapValues[recapKey]![]) + [response.recapValue] } />
+				<#assign recapValues = recapValues + { recapKey : (recapValues[recapKey]![]) + [response.recapMarkup] } />
 			</#if>
 		</#list>
 		<#list recapEntries as entry>
-			<@chItem>${entry.title} : ${recapValues[entry.idEntry?c]?join(', ')}</@chItem>
+			<@chItem>${entry.title} : <#list recapValues[entry.idEntry?c] as recapValue>${recapValue}<#sep>, </#list></@chItem>
 		</#list>
 	</@chList>
 </@cStepDone>
 <@cStepDone step='4' title='#i18n{appointment.appointmentApp.validation}' idx=4 actionName='' />
 <#-- The end button is a link of its own: as the action of the step, it would be named "Edit the step Confirmation" -->
 <@cStepDone step='5' title='#i18n{appointment.appointmentApp.confirmation}' idx=5 actionName=''>
-	${formMessages.textAppointmentCreated}
+	${richText(formMessages.textAppointmentCreated!)}
 	<#if formMessages.urlRedirectAfterCreation?has_content>
-	<@cLink label='${formMessages.labelButtonRedirection}' class='btn btn-primary mt-3' href='${formMessages.urlRedirectAfterCreation}' />
+	<@cLink label='${formMessages.labelButtonRedirection}' class='btn btn-primary mt-3' href=safeUrl(formMessages.urlRedirectAfterCreation) />
 	</#if>
 </@cStepDone>
 <#if calendarButton?? && calendarLinks??>
 <link rel="stylesheet" href="themes/shared/plugins/appointment/css/calendar-button.css" />
 <#include "/skin/plugins/appointment/calendar_button_icons.html" />
-<#assign calendarStyleClass><#if calendarButton.buttonStyle == 'bootstrap'>btn btn-${calendarButton.color}<#else>appt-cal-btn appt-cal-style-${calendarButton.buttonStyle}</#if></#assign>
-<#assign calendarButtonText><#if calendarButton.label?has_content><#outputformat "HTML">${calendarButton.label}</#outputformat><#else>#i18n{appointment.appointmentApp.addToCalendar}</#if></#assign>
+<#assign calendarStyleClass = (calendarButton.buttonStyle == 'bootstrap')?then('btn btn-' + calendarButton.color, 'appt-cal-btn appt-cal-style-' + calendarButton.buttonStyle) />
+<#assign calendarButtonText = calendarButton.label?has_content?then(calendarButton.label, '#i18n{appointment.appointmentApp.addToCalendar}') />
 <#macro calendarLink option url class>
-<a class="${class} appt-cal-link" href="<#outputformat "HTML">${url}</#outputformat>"<#if !['apple', 'ical']?seq_contains(option)> target="_blank" rel="noopener"</#if>><#if calendarButton.showLinkIcons><@calendarButtonIcon name=option /></#if><span>#i18n{appointment.calendarButton.options.${option}}</span></a>
+<a class="${class} appt-cal-link" href="${url}"<#if !['apple', 'ical']?seq_contains(option)> target="_blank" rel="noopener"</#if>><#if calendarButton.showLinkIcons><@calendarButtonIcon name=option /></#if><span>#i18n{appointment.calendarButton.options.${option}}</span></a>
 </#macro>
 <#macro calendarMenu toggleLabel toggleClass>
 <@cDropdown label=toggleLabel btnClass=toggleClass>
@@ -72,7 +72,7 @@
 				</div>
 				<div class="appt-cal-card-body">
 					<div class="appt-cal-card-title">${formTitle}</div>
-					<#if calendarEvent.location?has_content><div class="appt-cal-card-meta"><@calendarButtonIcon name='location' /><span><#outputformat "HTML">${calendarEvent.location}</#outputformat></span></div></#if>
+					<#if calendarEvent.location?has_content><div class="appt-cal-card-meta"><@calendarButtonIcon name='location' /><span>${calendarEvent.location}</span></div></#if>
 					<div class="appt-cal-card-meta"><@calendarButtonIcon name='clock' /><span>${dateAppointment}, ${startingTimeAppointment} - ${endingTimeAppointment}</span></div>
 				</div>
 				<#assign calendarPlusLabel><span class="appt-cal-plus-tooltip" data-bs-toggle="tooltip" data-bs-placement="top" title="${calendarButtonText}"><@calendarButtonIcon name='plus' /><span class="visually-hidden">${calendarButtonText}</span></span></#assign>

@@ -14,7 +14,7 @@
 			<@checkBox orientation='switch' name='is_open' id='is_open' value='true' checked=slot.isOpen />
 		</@formGroup>
 		<@formGroup labelKey='#i18n{appointment.modifySlot.labelMaxCapacityForThisSlot}' mandatory=true>
-			<@input type='text' name='max_capacity' value='${slot.maxCapacity}' params='onkeypress="return validateQty(event);"' maxlength=3 />
+			<@input type='text' name='max_capacity' value='${slot.maxCapacity}' params={"data-appointment-digits": true} maxlength=3 />
 		</@formGroup>
 		<@formGroup labelKey='#i18n{appointment.model.entity.appointmentform.attribute.timeStart}'>
 			<@p>${slot.startingTime}</@p>
@@ -50,5 +50,16 @@ else if ( key < 48 || key > 57 ) {
 }
 else return true;
 };
+
+// The fields marked data-appointment-digits accept digits only
+document.addEventListener( 'DOMContentLoaded', function( ) {
+	document.querySelectorAll( '[data-appointment-digits]' ).forEach( function( input ) {
+		input.addEventListener( 'keypress', function( event ) {
+			if ( !validateQty( event ) ) {
+				event.preventDefault( );
+			}
+		} );
+	} );
+} );
 </script>
 <@getTime idField='ending_time' language=language />

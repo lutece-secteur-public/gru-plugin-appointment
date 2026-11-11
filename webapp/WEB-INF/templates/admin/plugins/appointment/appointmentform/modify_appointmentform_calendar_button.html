@@ -1,8 +1,7 @@
 <#-- Options of the "add to calendar" button shown on the confirmation page -->
 <#macro calendarButtonText name value>
-	<#local escapedValue><#outputformat "HTML">${value!}</#outputformat></#local>
 	<@formGroup labelFor='calendar_button_${name}' labelKey='#i18n{appointment.calendarButton.${name}}' helpKey='#i18n{appointment.calendarButton.${name}.help}'>
-		<@input type='text' name='calendar_button_${name}' id='calendar_button_${name}' value=escapedValue maxlength=255 />
+		<@input type='text' name='calendar_button_${name}' id='calendar_button_${name}' value=value!'' maxlength=255 />
 	</@formGroup>
 </#macro>
 <#macro calendarButtonRadio name value choices hasHelp=false>
