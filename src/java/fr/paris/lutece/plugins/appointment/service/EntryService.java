@@ -62,6 +62,7 @@ import fr.paris.lutece.plugins.genericattributes.service.entrytype.EntryTypeServ
 import fr.paris.lutece.plugins.genericattributes.service.entrytype.IEntryTypeService;
 import fr.paris.lutece.portal.service.content.XPageAppService;
 import fr.paris.lutece.portal.service.template.AppTemplateService;
+import fr.paris.lutece.portal.service.template.HtmlMarkup;
 import fr.paris.lutece.portal.service.util.AppPathService;
 import fr.paris.lutece.portal.service.util.RemovalListenerService;
 import fr.paris.lutece.portal.util.mvc.utils.MVCUtils;
@@ -548,7 +549,7 @@ public class EntryService extends RemovalListenerService implements Serializable
                                 getHtmlEntry( model, entryConditional.getIdEntry( ), strGroupStringBuffer, locale, bDisplayFront, appointmentDTO );
                             }
                         }
-                        model.put( MARK_STR_LIST_CHILDREN, strGroupStringBuffer.toString( ) );
+                        model.put( MARK_STR_LIST_CHILDREN, HtmlMarkup.of( strGroupStringBuffer.toString( ) ) );
                         model.put( MARK_FIELD, field );
                         String templateDivConditionalEntry = bDisplayFront ? TEMPLATE_DIV_CONDITIONAL_ENTRY_FO : TEMPLATE_DIV_CONDITIONAL_ENTRY_BO;
                         template = AppTemplateService.getTemplate( templateDivConditionalEntry, locale, model );
@@ -558,7 +559,7 @@ public class EntryService extends RemovalListenerService implements Serializable
                         model.remove( MARK_STR_LIST_CHILDREN );
                     }
                 }
-                model.put( MARK_STR_LIST_CHILDREN, strConditionalQuestionStringBuffer.toString( ) );
+                model.put( MARK_STR_LIST_CHILDREN, HtmlMarkup.of( strConditionalQuestionStringBuffer.toString( ) ) );
             }
             model.put( MARK_ENTRY, entry );
             model.put( MARK_LOCALE, locale );
@@ -802,6 +803,6 @@ public class EntryService extends RemovalListenerService implements Serializable
         {
             getHtmlEntry( model, entryChild.getIdEntry( ), strGroupStringBuffer, locale, bDisplayFront, appointmentDTO );
         }
-        model.put( MARK_STR_LIST_CHILDREN, strGroupStringBuffer.toString( ) );
+        model.put( MARK_STR_LIST_CHILDREN, HtmlMarkup.of( strGroupStringBuffer.toString( ) ) );
     }
 }

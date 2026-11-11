@@ -1,6 +1,6 @@
 <#assign tab>
 <#-- <@aButton href='jsp/admin/plugins/appointment/ManageAppointmentSlots.jsp' id='btn-new-typicalweek-2' buttonIcon='calendar-plus' color='action' size='sm' title='#i18n{appointment.typicalWeek.buttonLabelCreate}' /> -->
-<@tform type='inline' action='jsp/admin/plugins/appointment/ManageAppointmentSlots.jsp' params='enctype="multipart/form-data"' >
+<@tform type='inline' action='jsp/admin/plugins/appointment/ManageAppointmentSlots.jsp' enctype="multipart/form-data" >
 <@input type='hidden' name='id_form' value='${appointmentform.idForm}' />
 <@input type='hidden' name='view_manageTypicalWeek' value='' />
 <@button type='submit' id='btn-new-typicalweek' color='action' size='sm' buttonIcon='calendar-plus' title='#i18n{appointment.typicalWeek.buttonLabelCreate}' />
@@ -13,7 +13,7 @@
 		<!-- Modify Global Parameters-->
 		<@div id="appointment_search">
 			<#if id_reservation_rule != 0 >
-				<@tform action='jsp/admin/plugins/appointment/ManageAppointmentSlots.jsp' params='enctype="multipart/form-data"' class='mb-3'>
+				<@tform action='jsp/admin/plugins/appointment/ManageAppointmentSlots.jsp' enctype="multipart/form-data" class='mb-3'>
 				<@input type='hidden' id='is_multislot_appointment' name='is_multislot_appointment' value='${appointmentform.isMultislotAppointment?then("true", "false")}'/>
 				<@input type='hidden' id='bo_overbooking' name='bo_overbooking' value='${appointmentform.boOverbooking?then("true", "false")}'/>                    
 				<@fieldSet legend='#i18n{appointment.modifyAppointmentForm.titleAlterablesParameters}'>
@@ -30,7 +30,7 @@
 					</#if>
 				</@fieldSet>
 				<@formGroup labelFor='color' labelKey='#i18n{appointment.createAppointmentForm.labelColor}' mandatory=true>
-					<@input type='color' id='color' class='p-2' name='color' value=appointmentform.color!'#3769D9' params='style="width:50px;height:50px"'/> 
+					<@input type='color' id='color' class='p-2 appointment-input-sm' name='color' value=appointmentform.color!'#3769D9' /> 
 				</@formGroup>
 				<@formGroup>
 					<@button type='submit' name='action_modifyGlobalParameters' title='#i18n{portal.util.labelModify}' buttonIcon='check' />                            
@@ -40,7 +40,7 @@
 			</#if>
 			<!-- Modify Advanced Parameters-->
 			<#if canUpdateAdvancedParam >
-				<@tform action='jsp/admin/plugins/appointment/ManageAppointmentSlots.jsp' params='enctype="multipart/form-data"'>
+				<@tform action='jsp/admin/plugins/appointment/ManageAppointmentSlots.jsp' enctype="multipart/form-data">
 					<@input type='hidden' name='id_form' value='${appointmentform.idForm}' />
 					<@input type='hidden' id='bo_overbooking' name='bo_overbooking' value='${appointmentform.boOverbooking?then("true", "false")}'/> 
 					<@input type='hidden' id='is_multislot_appointment' name='is_multislot_appointment' value='${appointmentform.isMultislotAppointment?then("true", "false")}'/>
@@ -67,7 +67,7 @@
 						</#if>
 						<@columns md=6>
 							<@formGroup labelFor='color' labelKey='#i18n{appointment.createAppointmentForm.labelColor}' mandatory=true>
-								<@input type='color' id='color' class='p-2' name='color' value=appointmentform.color!'#3769D9' params='style="width:50px;height:50px"'/> 
+								<@input type='color' id='color' class='p-2 appointment-input-sm' name='color' value=appointmentform.color!'#3769D9' /> 
 							</@formGroup>
 						</@columns>
 					</#if>
@@ -139,11 +139,11 @@
 				<#if id_reservation_rule?number=item.idReservationRule?number><#assign active=true ><#assign py=1 ><#else><#assign active=false ></#if>
 				<@listGroupItem class='d-flex align-items-center justify-content-between w-100 py-${py}' active=active>
 					<@span>
-						<@icon style='calendar-week' class='me-2' params='style="color:${item.color!};"' />
+						<@icon style='calendar-week' class='me-2' params={"data-appointment-color": item.color!} />
 						<@link href='jsp/admin/plugins/appointment/ManageAppointmentSlots.jsp?view=manageTypicalWeek&id_form=${appointmentform.idForm}&id_reservation_rule=${item.idReservationRule}' label='${item.name}'  />
 					</@span>
 					<#if active=true>
-						<@tform type='inline' class='typical-week-edit' action='jsp/admin/plugins/appointment/ManageAppointmentSlots.jsp?view=manageTypicalWeek' params='enctype="multipart/form-data"'>
+						<@tform type='inline' class='typical-week-edit' action='jsp/admin/plugins/appointment/ManageAppointmentSlots.jsp?view=manageTypicalWeek' enctype="multipart/form-data">
 							<@input type='hidden' name='id_form' value='${appointmentform.idForm}' />
 							<@input type='hidden' name='id_reservation_rule' value='${item.idReservationRule}' />
 							<@button type='button' class='btn-editappsearch' buttonIcon='pencil' color='primary btn-ghost' size='sm' title='#i18n{portal.util.labelModify}' hideTitle=['all'] />
@@ -220,7 +220,7 @@
 	</@formGroup>
 	<@formGroup rows=2>
 		<@button type='submit' color='primary' title='#i18n{portal.util.labelValidate}' />
-		<@button color='light' title='#i18n{portal.util.labelCancel}' params='data-bs-dismiss="modal" aria-label="#i18n{portal.util.labelCancel}"' />
+		<@button color='light' title='#i18n{portal.util.labelCancel}' params={"data-bs-dismiss": "modal", "aria-label": "#i18n{portal.util.labelCancel}"} />
 	</@formGroup>
 </@tform>
 </@modalBody>
@@ -246,8 +246,8 @@ const events = [<#if events??>
 <#assign eventTitle='${maxCap} / ${realCap}'>
 <#assign strCustomColor><#if event.isOpen & ( maxCap > realCap )>rgba(255,165,0,1)<#elseif event.isOpen &  ( maxCap <= realCap )>rgba(204,235,255,1)<#else>rgba(255,0,0,1)</#if></#assign>
 {
-	title : '${eventTitle?js_string}',
-	description : '${eventTitle?js_string}',
+	title : '${eventTitle?js_string?no_esc}',
+	description : '${eventTitle?js_string?no_esc}',
 	start : '${event.startingDateTime}',
 	end : '${event.endingDateTime}',
 	id : '${event.idTimeSlot}',

@@ -6,7 +6,7 @@
 		<@cAlert type='warning' title='#i18n{appointment.message.error.noAppointmentWithThisReference}' />
 	</@cContainer>
 <#else>
-	<#assign formTitle><#if form.displayTitleFo && form.title != ''>${form.title}<#else>#i18n{appointment.appointmentApp.defaultTitle}</#if></#assign>
+	<#assign formTitle = (form.displayTitleFo && form.title != '')?then(form.title, '#i18n{appointment.appointmentApp.defaultTitle}') />
 	<@cStepDone step='1' title=formTitle idx=1 actionName=''>
 		<@cAlert type='info' title=form.description! />
 	</@cStepDone>
@@ -17,9 +17,9 @@
 	</@cStepDone>
 	<@cStepDone step='3' title='#i18n{appointment.appointmentApp.enteringInformation}' idx=3 actionName=''>
 		<@chList>
-			<@chItem>${formMessages.fieldLastNameTitle!} : ${user.lastName?html}</@chItem>
-			<@chItem>${formMessages.fieldFirstNameTitle!} : ${user.firstName?html}</@chItem>
-			<@chItem>${formMessages.fieldEmailTitle!} : ${user.email?html}</@chItem>
+			<@chItem>${formMessages.fieldLastNameTitle!} : ${user.lastName}</@chItem>
+			<@chItem>${formMessages.fieldFirstNameTitle!} : ${user.firstName}</@chItem>
+			<@chItem>${formMessages.fieldEmailTitle!} : ${user.email}</@chItem>
 			<#if nbplaces gt 1>
 				<@chItem>#i18n{appointment.createAppointmentForm.labelNumberOfBookedseatsPerAppointment} : ${nbplaces}</@chItem>
 			</#if>
@@ -29,11 +29,11 @@
 				<#if response.recapValue?? && response.recapValue?has_content>
 					<#assign recapKey = response.entry.idEntry?c />
 					<#if !recapValues[recapKey]??><#assign recapEntries = recapEntries + [response.entry] /></#if>
-					<#assign recapValues = recapValues + { recapKey : (recapValues[recapKey]![]) + [response.recapValue] } />
+					<#assign recapValues = recapValues + { recapKey : (recapValues[recapKey]![]) + [response.recapMarkup] } />
 				</#if>
 			</#list>
 			<#list recapEntries as entry>
-				<@chItem>${entry.title} : ${recapValues[entry.idEntry?c]?join(', ')}</@chItem>
+				<@chItem>${entry.title} : <#list recapValues[entry.idEntry?c] as recapValue>${recapValue}<#sep>, </#list></@chItem>
 			</#list>
 		</@chList>
 	</@cStepDone>

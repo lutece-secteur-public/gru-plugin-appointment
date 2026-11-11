@@ -31,7 +31,7 @@
 <#if response.entry.idEntry == entry.idEntry && response.entry.error?? && show_error == 0  && response.entry.error.isDisplayableError>
 <#assign show_error = 1>
 <#assign error = response.entry.error>
-<#assign errorMsg><#if error.mandatoryError>${error.errorMessage}<#else>#i18n{appointment.message.mandatory.entry}</#if></#assign>
+<#assign errorMsg = error.mandatoryError?then(error.errorMessage, '#i18n{appointment.message.mandatory.entry}') />
 <@alert color='danger' title=errorMsg />
 </#if>
 </#list>

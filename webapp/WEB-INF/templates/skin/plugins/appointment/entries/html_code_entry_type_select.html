@@ -1,7 +1,7 @@
 <#assign errorMsg = ''>
 <#assign helpMsg = ''>
-<#if list_responses??><#list list_responses as response><#if response.entry.idEntry == entry.idEntry && response.entry.error?? && response.entry.error.isDisplayableError><#assign error = response.entry.error><#assign errorMsg><#if error.mandatoryError>${error.errorMessage}<#else>#i18n{appointment.message.mandatory.entry}</#if></#assign></#if></#list></#if>
-<#if entry.helpMessage?? && entry.helpMessage != ''><#assign helpMsg>${entry.helpMessage}</#assign></#if>
+<#if list_responses??><#list list_responses as response><#if response.entry.idEntry == entry.idEntry && response.entry.error?? && response.entry.error.isDisplayableError><#assign error = response.entry.error><#assign errorMsg = error.mandatoryError?then(error.errorMessage, '#i18n{appointment.message.mandatory.entry}') /></#if></#list></#if>
+<#if entry.helpMessage?? && entry.helpMessage != ''><#assign helpMsg = entry.helpMessage /></#if>
 <#assign selectClass = 'form-select ${entry.CSSClass!}' />
 <@cField label='${entry.title}' required=entry.mandatory for='attribute${entry.idEntry}'>
 	<@cSelect name='attribute${entry.idEntry}' id='attribute${entry.idEntry}' class=selectClass helpMsg=helpMsg errorMsg=errorMsg>
@@ -10,8 +10,8 @@
 			<#if field.code == 'answer_choice'>
 				<#assign isSelected = false>
 				<#if list_responses??><#list list_responses as response><#if response.entry.idEntry == entry.idEntry && response.field??><#if response.field.idField == field.idField><#assign isSelected = true></#if></#if></#list><#else><#if field.defaultValue><#assign isSelected = true></#if></#if>
-				<#assign optionParams = ''>
-				<#if field.comment?? && field.comment != ''><#assign optionParams>title="${field.comment}"</#assign></#if>
+				<#assign optionParams = {} />
+				<#if field.comment?? && field.comment != ''><#assign optionParams = {"title": field.comment} /></#if>
 				<@cOption value='${field.idField}' label=field.title! selected=isSelected params=optionParams />
 			</#if>
 		</#list>

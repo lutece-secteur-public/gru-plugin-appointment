@@ -4,7 +4,7 @@
 			<@tform method='post' type='inline'>
 				<@formGroup labelFor='search_comments' labelKey='#i18n{appointment.manage_comments.labelSearch}' hideLabel=['all'] formStyle='inline'>
 					<@inputGroup>
-						<@input type='text' name='search_comments' id='search_comments' placeHolder='#i18n{appointment.manage_comments.labelSearch}' params='autocomplete="off" addons' />
+						<@input type='text' name='search_comments' id='search_comments' placeHolder='#i18n{appointment.manage_comments.labelSearch}' autoComplete="off" />
 						<@button color='primary' title='#i18n{appointment.manage_comments.labelSearch}' buttonIcon='search' hideTitle=['all'] />
 					</@inputGroup>
 				</@formGroup>
@@ -19,7 +19,7 @@
 						<#list comment_list as comment>
 						<@manageFeatureItem class='comment-item'>
 							<@manageFeatureItemColumn auto=true>
-								<@div class='searchable'><strong class='d-block'>${comment.formTitle!}</strong>${comment.comment}</@div>
+								<@div class='searchable'><strong class='d-block'>${comment.formTitle!}</strong>${richText(comment.comment!)}</@div>
 							</@manageFeatureItemColumn>
 							<@manageFeatureItemColumn auto=true>
 								<@p class='mb-0 searchable'>#i18n{appointment.manage_comments.columnStartingValidityDate} : <@span class='text-muted'>${(comment.startingValidityDate?string?date.xs?string.short)!} ${comment.startingValidityTime!}</@span></@p>
@@ -49,7 +49,10 @@
 	</@pageColumn>
 </@pageContainer>
 <script>
-document.getElementById('feature-title').innerHTML = '<a href="jsp/admin/plugins/appointment/Comments.jsp?plugin_name=appointment" title="#i18n{appointment.manage_comments.pageTitle}">#i18n{appointment.manage_comments.pageTitle}</a>';
+var featureLink = document.createElement('a');
+featureLink.href = 'jsp/admin/plugins/appointment/Comments.jsp?plugin_name=appointment';
+featureLink.title = featureLink.textContent = '${i18n('appointment.manage_comments.pageTitle')?js_string?no_esc}';
+document.getElementById('feature-title').replaceChildren(featureLink);
 </script>
 <script type="module">
 import LuteceSearchList from './themes/shared/modules/luteceSearchList.js';

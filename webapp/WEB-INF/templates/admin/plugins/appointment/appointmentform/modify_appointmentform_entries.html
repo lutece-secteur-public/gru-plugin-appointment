@@ -46,7 +46,7 @@
 								<#if entry.entryType.group>
 									<@h level=3 class='my-0 h2'>${entry.title}</@h>
 								<#else>
-									<#if entry.entryType.comment?? && entry.entryType.comment>${entry.comment}<#else>${entry.title}</#if>
+									<#if entry.entryType.comment?? && entry.entryType.comment>${richText(entry.comment!)}<#else>${entry.title}</#if>
 								</#if>
 							</@manageFeatureItemColumn>
 							<#if entry.numberConditionalQuestion!=0>
@@ -74,17 +74,17 @@
 									<@aButton href='jsp/admin/plugins/appointment/ManageAppointmentFormEntries.jsp?view=getModifyEntry&id_entry=${entry.idEntry}' title='#i18n{portal.util.labelModify}' hideTitle=['all'] buttonIcon='edit' size='' />
 								</#if>
 								<#if entry.parent?exists>
-									<@button type='submit' title='#i18n{appointment.modifyField.manageConditionalQuestion.titleGoOut}' hideTitle=['all'] buttonIcon='indent-decrease' size='' params='form="entry-move-out-${entry.idEntry}"' />
+									<@button type='submit' title='#i18n{appointment.modifyField.manageConditionalQuestion.titleGoOut}' hideTitle=['all'] buttonIcon='indent-decrease' size='' params={"form": "entry-move-out-${entry.idEntry}"} />
 								</#if>
 								<#if !entry.entryType.group && !entry.entryType.myLuteceUser>
-									<@button type='submit' title='#i18n{appointment.createEntry.manageField.titleCopy}' hideTitle=['all'] buttonIcon='copy' size='' params='form="entry-copy-${entry.idEntry}"' />
+									<@button type='submit' title='#i18n{appointment.createEntry.manageField.titleCopy}' hideTitle=['all'] buttonIcon='copy' size='' params={"form": "entry-copy-${entry.idEntry}"} />
 								</#if>
 								<#if !entry.entryType.group>
 									<#assign field_disabled=getFieldValueByCode( entry, "disabled")>
 									<#if entry.disabled>
-										<@button type='submit' title='#i18n{appointment.createEntry.manageField.titleEnable}' hideTitle=['all'] color='success' buttonIcon='eye' size='' params='form="entry-disabled-${entry.idEntry}"' />
+										<@button type='submit' title='#i18n{appointment.createEntry.manageField.titleEnable}' hideTitle=['all'] color='success' buttonIcon='eye' size='' params={"form": "entry-disabled-${entry.idEntry}"} />
 									<#else>
-										<@button type='submit' title='#i18n{appointment.createEntry.manageField.titleDisable}' hideTitle=['all'] color='light' buttonIcon='eye-off' size='' params='form="entry-disabled-${entry.idEntry}"' />
+										<@button type='submit' title='#i18n{appointment.createEntry.manageField.titleDisable}' hideTitle=['all'] color='light' buttonIcon='eye-off' size='' params={"form": "entry-disabled-${entry.idEntry}"} />
 									</#if>
 								</#if>
 								<@aButton href='jsp/admin/plugins/appointment/ManageAppointmentFormEntries.jsp?view=confirmRemoveEntry&id_entry=${entry.idEntry}#list' title='#i18n{appointment.delete.title}' hideTitle=['all'] buttonIcon='trash' color='danger' size='' />

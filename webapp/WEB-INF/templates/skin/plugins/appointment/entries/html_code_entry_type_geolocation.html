@@ -11,7 +11,7 @@
 <#assign hasError = false />
 <#assign errorMsg = ''>
 <#assign helpMsg = ''>
-<#if entry.helpMessage?exists && entry.helpMessage != ''><#assign helpMsg>${entry.helpMessage}</#assign></#if>
+<#if entry.helpMessage?exists && entry.helpMessage != ''><#assign helpMsg = entry.helpMessage /></#if>
 <#if list_responses??>
 	<#list list_responses as response>
 		<#if response.entry.idEntry == entry.idEntry && response.toStringValueResponse??>
@@ -26,7 +26,7 @@
 				<#if response.entry.error?? && response.entry.error.isDisplayableError>
 					<#assign hasError = true />
 					<#assign error = response.entry.error>
-					<#assign errorMsg><#if error.mandatoryError>${error.errorMessage}<#else>#i18n{appointment.message.mandatory.entry}</#if></#assign>
+					<#assign errorMsg = error.mandatoryError?then(error.errorMessage, '#i18n{appointment.message.mandatory.entry}') />
 				</#if>
 			</#if>
 		</#if>
@@ -46,7 +46,7 @@
 		<#if useAddressAutocomplete>
 			<@suggestPOIInput id="${entry.idEntry}_address" name="${entry.idEntry}_address" currentValue="" required=entry.mandatory />
 		<#else>
-			<@cInput type='text' value='' name='${entry.idEntry}_address' id='${entry.idEntry}_address' class='form-control' params='size="50"' helpMsg=helpMsg />
+			<@cInput type='text' value='' name='${entry.idEntry}_address' id='${entry.idEntry}_address' class='form-control' size="50" helpMsg=helpMsg />
 		</#if>
 		<@cInput type='hidden' name='${entry.idEntry}_x' id='${entry.idEntry}_x' class='' value='' />
 		<@cInput type='hidden' name='${entry.idEntry}_y' id='${entry.idEntry}_y' class='' value='' />
@@ -61,11 +61,11 @@
 <@setupSuggestPOI />
 <script>
 document.addEventListener('DOMContentLoaded', function() {
-	var autocompleteContainer = document.getElementById('${entry.idEntry}_address');
-	var inputIdAddress = document.getElementById('${entry.idEntry}_idAddress');
-	var inputX = document.getElementById('${entry.idEntry}_x');
-	var inputY = document.getElementById('${entry.idEntry}_y');
-	var inputGeometry = document.getElementById('${entry.idEntry}_geometry');
+	var autocompleteContainer = document.getElementById('${entry.idEntry?c}_address');
+	var inputIdAddress = document.getElementById('${entry.idEntry?c}_idAddress');
+	var inputX = document.getElementById('${entry.idEntry?c}_x');
+	var inputY = document.getElementById('${entry.idEntry?c}_y');
+	var inputGeometry = document.getElementById('${entry.idEntry?c}_geometry');
 
 	var suggestPoi = new SuggestPOI(autocompleteContainer);
 

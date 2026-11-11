@@ -12,10 +12,10 @@
     var eventUrl = 'jsp/admin/plugins/appointment/ManageAppointments.jsp?view=';
     var idForm = '${id_form}';
     var locale = '${locale}'.replace('_', '-');
-    var labelPrevWeek = '#i18n{appointment.appointmentApp.previousWeek}';
-    var labelNextWeek = '#i18n{appointment.appointmentApp.nextWeek}';
-    var labelPrevDay  = '#i18n{appointment.appointmentApp.previousDay}';
-    var labelNextDay  = '#i18n{appointment.appointmentApp.nextDay}';
+    var labelPrevWeek = '${i18n('appointment.appointmentApp.previousWeek')?js_string?no_esc}';
+    var labelNextWeek = '${i18n('appointment.appointmentApp.nextWeek')?js_string?no_esc}';
+    var labelPrevDay  = '${i18n('appointment.appointmentApp.previousDay')?js_string?no_esc}';
+    var labelNextDay  = '${i18n('appointment.appointmentApp.nextDay')?js_string?no_esc}';
     var events = [
         <#if events??>
             <#list events as event>
@@ -84,7 +84,7 @@
 
             customButtons: {
                 datePicker: {
-                    text: '#i18n{appointment.appointmentCalendar.labelChooseDate}',
+                    text: '${i18n('appointment.appointmentCalendar.labelChooseDate')?js_string?no_esc}',
                     click: function() {
                         var existing = document.getElementById('hiddenDate');
                         if (existing) existing.remove();

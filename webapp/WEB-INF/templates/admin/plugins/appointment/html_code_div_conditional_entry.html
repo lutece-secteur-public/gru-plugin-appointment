@@ -1,3 +1,4 @@
-<@div class='form-element-conditionnel' id='div${field.getIdField()}' params='style="visibility:hidden; display:none;"'>
+<#-- Hidden until its answer is chosen: appointment.js sets display and visibility on the element itself -->
+<div class="form-element-conditionnel" id="div${field.getIdField()?c}" style="visibility:hidden; display:none;">
 ${str_list_entry_children}
-</@div>
+</div>

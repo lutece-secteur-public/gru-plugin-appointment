@@ -20,7 +20,7 @@
 		</@formGroup>
 		<@formGroup>
 			<@button type='submit' buttonIcon='check' title='#i18n{appointment.labelSave}' class='form-validation' />
-			<@aButton href='javascript:window.history.go(-1);' buttonIcon='arrow-left' title='#i18n{appointment.labelCancel}' color='light' />
+			<@aButton href='jsp/admin/plugins/appointment/ManageAppointmentFormEntries.jsp?view=modifyAppointmentFormEntries&id_form=${form.idForm}' params={"data-lutece-action": "back"} buttonIcon='arrow-left' title='#i18n{appointment.labelCancel}' color='light' />
 		</@formGroup>
 		</@tform>
     </@pageColumn>

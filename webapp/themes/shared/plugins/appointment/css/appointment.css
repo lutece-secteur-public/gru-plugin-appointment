@@ -45,3 +45,7 @@
 #step_current_place_to_take .step-content{
     padding-block: 0 var(--lutece-ds-sp-md);
 }
+/* Number of consecutive slots to take, above the calendar */
+.appointment-nb-places {
+	max-width: 200px;
+}

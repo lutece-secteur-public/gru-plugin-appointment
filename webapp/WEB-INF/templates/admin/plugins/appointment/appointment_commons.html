@@ -11,7 +11,7 @@ document.addEventListener('DOMContentLoaded', function() {
 	/* Add Form title */
 	const pageTitle = document.querySelector('#feature-title + .page-title');
 	if (pageTitle) {
-		pageTitle.textContent = pageTitle.textContent.trim( ) + ' : ' + '${form.title!?js_string}';
+		pageTitle.textContent = pageTitle.textContent.trim( ) + ' : ' + '${(form.title!)?js_string?no_esc}';
 	}
 });
 </#if>
@@ -126,7 +126,7 @@ document.addEventListener('DOMContentLoaded', function() {
 		<@input type='hidden' name='from' value='${from!}' />
 		<@input type='hidden' name='additional_parameters' value='${additionalParameters!}' />
 		<@formGroup labelFor='comment' labelKey='#i18n{appointment.comment.name}' helpKey='#i18n{appointment.comment.name}' mandatory=true rows=2>
-			<@input type='textarea' name='comment' id=idComment richtext=true mandatory=true>${((current.comment)!)?html}</@input>
+			<@input type='textarea' name='comment' id=idComment richtext=true mandatory=true>${(current.comment)!}</@input>
 			<@span id=idComment+'_errorEmpty' class='text-danger labelErrorComment'>#i18n{appointment.message.comment.error.commentEmpty}</@span>
 		</@formGroup>
 		<@formGroup labelFor='startingValidityDate' labelKey=startDateLabel mandatory=true rows=2>
@@ -155,16 +155,16 @@ document.addEventListener('DOMContentLoaded', function() {
 			<@select name='idMailingList'>
 				<@option value='-1' label='#i18n{appointment.create_comment.labelNoNotification}' />
 				<#list mailing_list as item>
-					<#assign isSelected><#if default=item.code>true<#else>false</#if></#assign>
-					<#assign label><#if !item.name?has_content>label="${i18n("portal.util.labelEmpty")}"<#else>${item.name}</#if></#assign>
-					<@option value=item.code label=label selected=isSelected?boolean />
+					<#assign isSelected = (default == item.code) />
+					<#assign label = item.name?has_content?then(item.name, i18n("portal.util.labelEmpty")) />
+					<@option value=item.code label=label selected=isSelected />
 				</#list>
 			</@select>
 		</@formGroup>
 </#local>
 <#local commentActions>
-			<#if action == 'doModifyComment'><@button type='submit' id='commentDelete' name='view_confirmRemoveComment' buttonIcon='trash' title='#i18n{portal.util.labelDelete}' color='danger' params='formnovalidate' /></#if>
-			<@button type='submit' id='action_${action}' name='action_${action}' buttonIcon='check' title='#i18n{portal.util.labelValidate}' params='formnovalidate' />
+			<#if action == 'doModifyComment'><@button type='submit' id='commentDelete' name='view_confirmRemoveComment' buttonIcon='trash' title='#i18n{portal.util.labelDelete}' color='danger' params={"formnovalidate": true} /></#if>
+			<@button type='submit' id='action_${action}' name='action_${action}' buttonIcon='check' title='#i18n{portal.util.labelValidate}' params={"formnovalidate": true} />
 </#local>
 <#if inline>
 <@box>
@@ -183,7 +183,7 @@ ${commentActions}		</@boxFooter>
 		<@modalBody>
 ${commentFields}		</@modalBody>
 		<@modalFooter>
-			<@button type='button' params='data-bs-dismiss="modal"' title='#i18n{portal.util.labelCancel}' buttonIcon='times' color='light' />
+			<@button type='button' params={"data-bs-dismiss": "modal"} title='#i18n{portal.util.labelCancel}' buttonIcon='times' color='light' />
 ${commentActions}		</@modalFooter>
 	</@tform>
 </@modal>
@@ -199,10 +199,10 @@ document.addEventListener('DOMContentLoaded', function() {
 		el.style.display = 'none';
 	});
 
-	var startDateEl = document.getElementById('${idStartingDate}');
-	var endDateEl = document.getElementById('${idEndingDate}');
-	var startTimeEl = document.getElementById('${idStartingTime}');
-	var endTimeEl = document.getElementById('${idEndingTime}');
+	var startDateEl = document.getElementById('${idStartingDate?js_string?no_esc}');
+	var endDateEl = document.getElementById('${idEndingDate?js_string?no_esc}');
+	var startTimeEl = document.getElementById('${idStartingTime?js_string?no_esc}');
+	var endTimeEl = document.getElementById('${idEndingTime?js_string?no_esc}');
 	var now = new Date();
 	var today = now.getFullYear() + '-' + String(now.getMonth() + 1).padStart(2, '0') + '-' + String(now.getDate()).padStart(2, '0');
 
@@ -230,7 +230,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
 	<#if action != 'doModifyComment' && !inline>
 	/* Set default dates to first open day with appointments in displayed week */
-	document.getElementById('${modalId}').addEventListener('shown.bs.modal', function() {
+	document.getElementById('${modalId?js_string?no_esc}').addEventListener('shown.bs.modal', function() {
 		// Reset date constraints
 		if (startDateEl && startDateEl._flatpickr) { startDateEl._flatpickr.set('minDate', null); startDateEl._flatpickr.set('maxDate', null); }
 		if (endDateEl && endDateEl._flatpickr) { endDateEl._flatpickr.set('minDate', null); endDateEl._flatpickr.set('maxDate', null); }
@@ -261,7 +261,7 @@ document.addEventListener('DOMContentLoaded', function() {
 	});
 	</#if>
 	// Click on validation button events
-	document.querySelector( '[name="action_${action}"]' ).addEventListener( 'click', function(e){
+	document.querySelector( '[name="action_${action?js_string?no_esc}"]' ).addEventListener( 'click', function(e){
 		document.querySelectorAll('.labelErrorComment').forEach(function(el) {
 		   el.style.display = 'none';
 		});
@@ -271,7 +271,7 @@ document.addEventListener('DOMContentLoaded', function() {
 		var dStartDate = new Date(dStart);
 		var dEndDate = new Date(dEnd);
 		if( dEndDate < dStartDate ){
-			document.getElementById( '${idEndingDate}_errorEndDateBeforeStartDate' ).style.display = 'block'
+			document.getElementById( '${idEndingDate?js_string?no_esc}_errorEndDateBeforeStartDate' ).style.display = 'block'
 			e.preventDefault();
 		}
 		var tStart = startTimeEl.value || '00:00';
@@ -281,17 +281,17 @@ document.addEventListener('DOMContentLoaded', function() {
 		var endDateAndTime = new Date(dEndDate); endDateAndTime.setHours(parseInt(teParts[0]),parseInt(teParts[1]),0,0);
 		if(( endDateAndTime < startDateAndTime ) || ( endDateAndTime.getTime() === startDateAndTime.getTime() ) && (startTimeEl.value != '00:00') && (endTimeEl.value != '00:00')) {
 			if( endDateAndTime < startDateAndTime ) {
-				document.getElementById( '${idEndingTime}_errorEndTimeBeforeStartTime' ).style.display = 'block';
+				document.getElementById( '${idEndingTime?js_string?no_esc}_errorEndTimeBeforeStartTime' ).style.display = 'block';
 			}
 			if ((endDateAndTime.getTime() === startDateAndTime.getTime()) && (startTimeEl.value != '00:00') && (endTimeEl.value != '00:00'))  {
-				document.getElementById( '${idEndingTime}_errorEndTimeEqualStartTime' ).style.display = 'block';
+				document.getElementById( '${idEndingTime?js_string?no_esc}_errorEndTimeEqualStartTime' ).style.display = 'block';
 			}
 			e.preventDefault();
 		}
-		var commentEditor = window.tinymce ? tinymce.get( '${idComment}' ) : null;
-		var commentText = commentEditor ? commentEditor.getContent( ) : document.getElementById( '${idComment}' ).value;
+		var commentEditor = window.tinymce ? tinymce.get( '${idComment?js_string?no_esc}' ) : null;
+		var commentText = commentEditor ? commentEditor.getContent( ) : document.getElementById( '${idComment?js_string?no_esc}' ).value;
 		if( commentText.trim().length === 0 ){
-			document.getElementById( '${idComment}_errorEmpty' ).style.display = 'block';
+			document.getElementById( '${idComment?js_string?no_esc}_errorEmpty' ).style.display = 'block';
 			e.preventDefault();
 		} 
 	});
@@ -299,7 +299,7 @@ document.addEventListener('DOMContentLoaded', function() {
 </script>
 </#macro>
 <#macro btnComment >
-<#if permission_add_comment?boolean><@button id='toggle-add-comment' buttonIcon='message-plus' title='#i18n{appointment.create_comment.pageTitle}' hideTitle=['xs','sm'] size='sm' color='action' params='data-bs-toggle="modal" data-bs-target="#commentModal"' /></#if>
+<#if permission_add_comment?boolean><@button id='toggle-add-comment' buttonIcon='message-plus' title='#i18n{appointment.create_comment.pageTitle}' hideTitle=['xs','sm'] size='sm' color='action' params={"data-bs-toggle": "modal", "data-bs-target": "#commentModal"} /></#if>
 </#macro>
 <#macro tabsComment tab>
 <@tabList id='${tab}-tab'>
@@ -327,13 +327,13 @@ document.addEventListener('DOMContentLoaded', function() {
 	<#if tab='day'><#assign active = true /><#else><#assign active = false /></#if>
 	<#if isDeskInstalled?? && isDeskInstalled><@tabLink href='jsp/admin/plugins/appointment/modules/desk/ManageAppointmentDesks.jsp?plugin_name=appointment-desk&id_form=${form.idForm}&context=app' title='#i18n{appointment.specificDay.pageTitle}' active=active /></#if>  
 <#else>
-	<#assign tabparams='data-menu="slot"'>
+	<#assign tabparams = {"data-menu": "slot"} />
 	<#if isDeskInstalled?? && isDeskInstalled><@tabLink href='jsp/admin/plugins/appointment/modules/desk/ManageAppointmentDesks.jsp?plugin_name=appointment-desk&id_form=${form.idForm}&context=slot' title='#i18n{appointment.specificDay.pageTitle}' active=true params=tabparams /></#if>
 	<#assign active = false />
 	<@tabLink href='jsp/admin/plugins/appointment/ManageSpecificWeek.jsp?view=manageSpecificWeek&id_form=${form.idForm}&context=slot' title='#i18n{appointment.specificWeek.pageTitle}' active=active params=tabparams/> 			 
 	<@tabLink href='jsp/admin/plugins/appointment/ManageAnnualCalendar.jsp?view=manageAnnualCalendar&id_form=${form.idForm}&context=slot' title='#i18n{appointment.annual.calendar.pageTitle}' active=active params=tabparams/>  			
 	<@tabLink href='jsp/admin/plugins/appointment/ManageAppointmentSlots.jsp?view=manageTypicalWeek&id_form=${form.idForm}&context=slot' title='#i18n{appointment.typicalWeek.pageTitle}' active=active params=tabparams/>
-	<#assign tabparams='data-menu="app"'>
+	<#assign tabparams = {"data-menu": "app"} />
 	<#assign active = false />
 	<@tabLink href='jsp/admin/plugins/appointment/ManageAppointments.jsp?view=viewCalendarManageAppointment&id_form=${form.idForm}&context=app' title='#i18n{appointment.manageAppointmentCalendar.pageTitle}' active=active params=tabparams/>
 	<@tabLink href='jsp/admin/plugins/appointment/ManageAppointments.jsp?view=manageAppointments&id_form=${form.idForm}&context=app' title='#i18n{appointment.manageAppointments.pageTitle}' active=active params=tabparams/>
@@ -355,7 +355,7 @@ document.addEventListener('DOMContentLoaded', function() {
 						</@button>
 					</@li>
 				</#if>
-				<#if tabBtn !=''>
+				<#if tabBtn?has_content>
 					<@li class='nav-item ms-auto'>
 						${tabBtn}
 					</@li>
@@ -373,12 +373,12 @@ document.addEventListener('DOMContentLoaded', function() {
 								<@div id='calendar'>
 									<@div id='loader' class='d-flex justify-content-center align-items-center vh-100 h-75'>
 										<@span class='fw-bold'>#i18n{appointment.labelLoading}...</@span>
-										<@div class='spinner-border' params='role="status" aria-hidden="true"' />
+										<@div class='spinner-border' params={"role": "status", "aria-hidden": "true"} />
 									</@div>
 								</@div>
 							</@columns>
 							<@columns xs=12 md=12 lg=2 class='d-none d-lg-block' id='fc-sidebar-col'>
-								<@div id='mini-calendar' class='stickycommentModal-top' params='style="top:80px"' />
+								<@div id='mini-calendar' class='stickycommentModal-top appointment-mini-calendar' />
 							</@columns>
 						</@row>
 					</#if>
@@ -390,7 +390,7 @@ document.addEventListener('DOMContentLoaded', function() {
 </@row>
 <script>
 <@headerTitle form=form />
-localStorage.setItem( 'appointmentContext', '${context}' );
+localStorage.setItem( 'appointmentContext', '${context?js_string?no_esc}' );
 </script>
 </#macro>
 <#macro commentModal update=false >
@@ -420,18 +420,19 @@ commentModal.show();
 <#macro getComments comments_list>
 <#list comments_list as comment_event>
 <#compress>
-<#assign comment_title>${comment_event.comment?replace('\n', '')?replace('\r', '')?replace('\rn', '')?replace('\'', '&apos;')?replace('\\', '&bsol;')}</#assign>
+<#-- The comment is rich text: sanitized, then written as a JSON string; the calendar shows it as HTML -->
+<#assign comment_title = richText(comment_event.comment!)?markup_string?replace('\n', '')?replace('\r', '') />
 </#compress>
 {
-	"title" : "${comment_title?json_string}",
+	"title" : "${comment_title?json_string?no_esc}",
 	"start" : "${comment_event.startingValidityDate}T${comment_event.startingValidityTime!}",
 	"end" : "${comment_event.calendarAllDaySlotEnd}T${comment_event.endingValidityTime!}",
 	"validity_end" : "${comment_event.endingValidityDate}",
 	"start_time" : "${comment_event.startingValidityTime!}",
 	"end_time" : "${comment_event.endingValidityTime!}",
 	"id" : "C${comment_event.id}",
-	"creator_name" : "${comment_event.userLastName!''} ${comment_event.userFirstName!''}",
-	"creator_user" : "${comment_event.creatorUserName!''}",
+	"creator_name" : "${(comment_event.userLastName!'')?json_string?no_esc} ${(comment_event.userFirstName!'')?json_string?no_esc}",
+	"creator_user" : "${(comment_event.creatorUserName!'')?json_string?no_esc}",
 	"creation_date" : "${comment_event.creationDate?date.xs!''}",
 	"type" : "comment",
 	"allDay" : true,
@@ -453,6 +454,12 @@ commentModal.show();
 </#list>
 </#macro>
 <#macro fullCalendarScript selectable=true isSpecific=false isTypical=false height='auto' showComments=true locale=locale>
+// A text written into HTML built by the calendar (popover content): its characters are escaped by the DOM
+function fcText(text) {
+	var el = document.createElement('span');
+	el.textContent = ( text === undefined || text === null ) ? '' : String(text);
+	return el.innerHTML;
+}
 function fcFormatTime(date) {
 	if (!date) return '';
 	return String(date.getHours()).padStart(2, '0') + ':' + String(date.getMinutes()).padStart(2, '0');
@@ -513,7 +520,7 @@ function initMiniCalendar(fcInstance) {
 				dot.className = 'mini-cal-dot';
 				dot.setAttribute('data-bs-toggle', 'tooltip');
 				dot.setAttribute('data-bs-placement', 'top');
-				dot.setAttribute('title', count + ' #i18n{appointment.appointmentCalendar.labelAvailableSlots}');
+				dot.setAttribute('title', count + ' ${i18n('appointment.appointmentCalendar.labelAvailableSlots')?js_string?no_esc}');
 				var frame = cell.querySelector('.fc-daygrid-day-frame');
 				if (frame) frame.appendChild(dot);
 				new bootstrap.Tooltip(dot);
@@ -584,10 +591,10 @@ function initAppointmentCalendar() {
 	var calendarInst = new FullCalendar.Calendar(calendarEl, {
 		<#if !showComments>allDaySlot: false,</#if>
 		displayEventTime: false,
-		allDayText: '#i18n{appointment.appointmentCalendar.labelAllDay}',
+		allDayText: '${i18n('appointment.appointmentCalendar.labelAllDay')?js_string?no_esc}',
 		buttonText : {
-			prev : '#i18n{appointment.appointmentApp.previousWeek}',
-			next : '#i18n{appointment.appointmentApp.nextWeek}',
+			prev : '${i18n('appointment.appointmentApp.previousWeek')?js_string?no_esc}',
+			next : '${i18n('appointment.appointmentApp.nextWeek')?js_string?no_esc}',
 			today : "#i18n{appointment.appointmentCalendar.labelToday}",
 		},
 		height: 'auto',
@@ -711,7 +718,7 @@ function initAppointmentCalendar() {
 		<#if showComments>
 			// Comments
 			var isCommentModerator=${permission_moderate_comment};
-			if( type == "comment" && ( calEvent.extendedProps.creator_user === '${permission_access_code}' || isCommentModerator ) ){
+			if( type == "comment" && ( calEvent.extendedProps.creator_user === '${permission_access_code?js_string?no_esc}' || isCommentModerator ) ){
 				<@commentModal update=true />
 			} else if( type == "appointment" ) {
 				jsEvent.preventDefault();
@@ -917,7 +924,8 @@ function initAppointmentCalendar() {
 					var commentData = { start: event.start, validity_end: event.extendedProps.validity_end, start_time: event.extendedProps.start_time, end_time: event.extendedProps.end_time };
 					labelEventDate = (typeof setLabelComment === 'function') ? setLabelComment( commentData, '${locale}' ) : '';
 					var creator = (event.extendedProps.creator_name || '').trim() !== '' ? event.extendedProps.creator_name : event.extendedProps.creator_user;
-					<#noparse>json.content = `<p class="md-0">${labelEventDate}</p><p class="md-0">Créé par <em>${creator}</em> le ${event.extendedProps.creation_date}</span><hr>${event.title.replace(/"/g,'\\"')}</p>`;</#noparse>
+					<#-- The creator and the dates are text, the title is the sanitized HTML of the comment -->
+					<#noparse>json.content = `<p class="md-0">${fcText(labelEventDate)}</p><p class="md-0">Créé par <em>${fcText(creator)}</em> le ${fcText(event.extendedProps.creation_date)}</span><hr>${event.title.replace(/"/g,'\\"')}</p>`;</#noparse>
 					var dateDebut='', dateFin='';
 					if ( ! ( event.extendedProps.start_time == null || event.extendedProps.start_time == undefined || event.extendedProps.start_time == '00:00' ) ){
 						var startDDMM = (event.start.getDate().toString().padStart(2,'0')) + (event.start.getMonth()+1).toString().padStart(2,'0');
@@ -928,7 +936,7 @@ function initAppointmentCalendar() {
 							dateFin=fcFormatDate(endValDate, 'ddd DD/MM') + ' à ';
 						}
 						var fcTitle = el.querySelector('.fc-event-title p');
-						if (fcTitle) { fcTitle.insertAdjacentHTML('afterbegin', dateDebut + event.extendedProps.start_time + '/' + dateFin + event.extendedProps.end_time + ' ' ); }
+						if (fcTitle) { fcTitle.insertAdjacentText('afterbegin', dateDebut + event.extendedProps.start_time + '/' + dateFin + event.extendedProps.end_time + ' ' ); }
 					} else {
 						el.classList.add('allday');
 					}
@@ -961,13 +969,13 @@ function initAppointmentCalendar() {
 				miniCalEl.style.display = '';
 				if (sidebarCol) sidebarCol.style.display = '';
 				if (calendarCol) { calendarCol.classList.remove('col-lg-12'); calendarCol.classList.add('col-lg-10'); }
-				toggleBtn.title = '#i18n{appointment.appointmentCalendar.labelHideMiniCalendar}';
+				toggleBtn.title = '${i18n('appointment.appointmentCalendar.labelHideMiniCalendar')?js_string?no_esc}';
 				toggleBtn.querySelector('i').className = 'ti ti-calendar-off';
 			} else {
 				miniCalEl.style.display = 'none';
 				if (sidebarCol) sidebarCol.style.display = 'none';
 				if (calendarCol) { calendarCol.classList.remove('col-lg-10'); calendarCol.classList.add('col-lg-12'); }
-				toggleBtn.title = '#i18n{appointment.appointmentCalendar.labelShowMiniCalendar}';
+				toggleBtn.title = '${i18n('appointment.appointmentCalendar.labelShowMiniCalendar')?js_string?no_esc}';
 				toggleBtn.querySelector('i').className = 'ti ti-calendar';
 			}
 			calendarInst.updateSize();

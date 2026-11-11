@@ -68,7 +68,7 @@
 								<@td>
 									<#if field.conditionalQuestions?exists>
 										<#list field.conditionalQuestions as conditionalEntry>
-											<@p class='mb-0'><#if conditionalEntry.entryType.comment>${conditionalEntry.comment}<#else>${conditionalEntry.title}</#if></@p>
+											<@p class='mb-0'><#if conditionalEntry.entryType.comment>${richText(conditionalEntry.comment!)}<#else>${conditionalEntry.title}</#if></@p>
 										</#list>
 									</#if>
 								</@td>

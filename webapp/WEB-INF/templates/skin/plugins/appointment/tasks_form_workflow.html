@@ -10,10 +10,10 @@
 				${tasks_form}
 				<@cRow class='mt-3'>
 					<@cCol>
-						<@cBtn label='' type='submit' class='primary' params='name="save"'>
+						<@cBtn label='' type='submit' class='primary' params={"name": "save"}>
 							<@cIcon name='check' /> #i18n{workflow.tasks_form_test_workflow.button_save}
 						</@cBtn>
-						<@cBtn label='' type='submit' class='secondary' params='name="back" formnovalidate'>
+						<@cBtn label='' type='submit' class='secondary' params={"name": "back", "formnovalidate": true}>
 							<@cIcon name='x' /> #i18n{workflow.tasks_form_test_workflow.button_cancel}
 						</@cBtn>
 					</@cCol>

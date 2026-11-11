@@ -39,6 +39,7 @@ import fr.paris.lutece.plugins.genericattributes.business.Entry;
 import fr.paris.lutece.plugins.genericattributes.business.Field;
 import fr.paris.lutece.plugins.genericattributes.business.Response;
 import fr.paris.lutece.portal.business.file.File;
+import fr.paris.lutece.portal.service.template.HtmlMarkup;
 
 /**
  * DTO that represent a response to display a recap
@@ -57,6 +58,12 @@ public final class ResponseRecapDTO extends Response implements Comparable<Respo
      * The recap value
      */
     private String _strRecapValue;
+
+    /**
+     * True when the recap value is HTML rendered by the entry type from its own template (an image), false when it is
+     * the text of the answer
+     */
+    private boolean _bRecapValueHtml;
 
     /**
      * The response
@@ -107,6 +114,38 @@ public final class ResponseRecapDTO extends Response implements Comparable<Respo
     public void setRecapValue( String strRecapValue )
     {
         this._strRecapValue = strRecapValue;
+    }
+
+    /**
+     * Tells whether the recap value is HTML rendered by the entry type
+     * 
+     * @return true if the recap value is HTML
+     */
+    public boolean isRecapValueHtml( )
+    {
+        return _bRecapValueHtml;
+    }
+
+    /**
+     * Sets whether the recap value is HTML rendered by the entry type
+     * 
+     * @param bRecapValueHtml
+     *            true if the recap value is HTML rendered by the entry type from its own template
+     */
+    public void setRecapValueHtml( boolean bRecapValueHtml )
+    {
+        _bRecapValueHtml = bRecapValueHtml;
+    }
+
+    /**
+     * Gives the recap value to write in a template: the HTML of the entry type marked as markup, the text of an answer
+     * as it is, escaped by the template. Built at each call: markup is not kept in the DTO.
+     * 
+     * @return the recap value to write in a template
+     */
+    public Object getRecapMarkup( )
+    {
+        return ( _bRecapValueHtml && _strRecapValue != null ) ? HtmlMarkup.of( _strRecapValue ) : _strRecapValue;
     }
 
     /**

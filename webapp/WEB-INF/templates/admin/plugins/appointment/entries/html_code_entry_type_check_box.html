@@ -13,10 +13,11 @@
 	<#else>
 		<#if field.defaultValue><#assign checked = true /></#if>
 	</#if>
-	<#if field.conditionalQuestions?exists&&field.conditionalQuestions?size!=0><#assign params='onclick="doCheckboxEffect(this.checked,${field.idField});"' /></#if>
+	<#-- appointment.js shows or hides the conditional questions of the answer named by data-appointment-toggle -->
+	<#assign cbParams = (field.conditionalQuestions?exists&&field.conditionalQuestions?size!=0)?then({"data-appointment-toggle": field.idField?c}, {}) />
 	<#assign helpMsg = '' />
 	<#if field.comment?? && field.comment != ''><#assign helpMsg=field.comment /></#if>
-	<@checkBox labelKey='${field.title!}' wrapperClass=entry.CSSClass! name='attribute${entry.idEntry}' id='attribute${entry.idEntry}_${field.idField}' value='${field.idField}' checked=checked orientation=orientation params=params />
+	<@checkBox labelKey='${field.title!}' wrapperClass=entry.CSSClass! name='attribute${entry.idEntry}' id='attribute${entry.idEntry}_${field.idField}' value='${field.idField}' checked=checked orientation=orientation params=cbParams />
 	<#if helpMsg?has_content><@p class='form-text'>${helpMsg}</@p></#if>
 </#if>
 </#list>
@@ -24,7 +25,7 @@
 <#list list_responses as response>
 <#if response.entry.idEntry == entry.idEntry && response.entry.error?? && response.entry.error.isDisplayableError>
 	<#assign error = response.entry.error>
-	<#assign errorMsg><#if error.mandatoryError>${error.errorMessage}<#else>#i18n{appointment.message.mandatory.entry}</#if></#assign>
+	<#assign errorMsg = error.mandatoryError?then(error.errorMessage, '#i18n{appointment.message.mandatory.entry}') />
 	<@alert color='danger' title=errorMsg />
 </#if>
 </#list>
@@ -34,7 +35,7 @@
 <script>
 <#list list_responses as response>
 <#if response.entry.idEntry == entry.idEntry && response.field??>
-	var baliseId = 'div' + ${response.field.idField};
+	var baliseId = 'div' + ${response.field.idField?c};
 	if(document.getElementById && document.getElementById(baliseId) != null){
 		document.getElementById(baliseId).style.visibility='visible';
 		document.getElementById(baliseId).style.display='block';
@@ -46,7 +47,7 @@
 <#list entry.fields as field>
 <#if field.defaultValue && field.conditionalQuestions?exists && field.conditionalQuestions?size != 0>
 <script>
-var baliseId = 'div' + ${field.idField};
+var baliseId = 'div' + ${field.idField?c};
 if(document.getElementById && document.getElementById(baliseId) != null){
 	document.getElementById(baliseId).style.visibility='visible';
 	document.getElementById(baliseId).style.display='block';

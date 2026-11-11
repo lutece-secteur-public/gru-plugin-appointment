@@ -1,11 +1,11 @@
 <@cTpl>
 <@cSection class='lutece-appointment'>
-<#assign stepFormTitle><#if form.displayTitleFo && form.title != "">${form.title}<#else>#i18n{appointment.appointmentApp.defaultTitle}</#if></#assign>
-<#assign stepCalendarTitle><#if formMessages.calendarTitle?? && formMessages.calendarTitle != "">${formMessages.calendarTitle}<#else>#i18n{appointment.appointmentCalendar.labelSelectDay}</#if></#assign>
+<#assign stepFormTitle = (form.displayTitleFo && form.title != "")?then(form.title, '#i18n{appointment.appointmentApp.defaultTitle}') />
+<#assign stepCalendarTitle = (formMessages.calendarTitle?? && formMessages.calendarTitle != "")?then(formMessages.calendarTitle, '#i18n{appointment.appointmentCalendar.labelSelectDay}') />
 <@cBreadCrumb home='#i18n{portal.util.labelHome}'>
 	<@chItem class='breadcrumb-item'><@cLink href='jsp/site/Portal.jsp?page=appointment' label='#i18n{appointment.xpage.formList.labelFormList}' /></@chItem>
 	<@chItem class='breadcrumb-item'>${form.title!}</@chItem>
-    <@chItem class='breadcrumb-item active' params='aria-current="page"'>${stepCalendarTitle}</@chItem>
+    <@chItem class='breadcrumb-item active' params={"aria-current": "page"}>${stepCalendarTitle}</@chItem>
 </@cBreadCrumb>
 <@cStepDone step='1' title=stepFormTitle idx=0 actionName=''>
 <@chItem>${form.description!}</@chItem>
@@ -27,24 +27,24 @@ ${mark_nb_places_to_take_form!}
 			<@cAlert type='danger' id='messages_errors_div' title=errorMsg />
 		</#if>
 		<@cBlock id='appointment-picker'>
-			<@cBlock id='day-panel' params='role="region" aria-label="#i18n{appointment.appointmentCalendar.labelSelectDay}"'>
-				<@cBlock type='nav' class='d-flex justify-content-between align-items-center mb-3' params='aria-label="#i18n{appointment.appointmentApp.previousWeek} / #i18n{appointment.appointmentApp.nextWeek}"'>
+			<@cBlock id='day-panel' params={"role": "region", "aria-label": "#i18n{appointment.appointmentCalendar.labelSelectDay}"}>
+				<@cBlock type='nav' class='d-flex justify-content-between align-items-center mb-3' params={"aria-label": "#i18n{appointment.appointmentApp.previousWeek} / #i18n{appointment.appointmentApp.nextWeek}"}>
 					<@cBtn class='secondary btn-sm' id='week-prev' label=''>
 						<@cIcon name='chevron-left' /> #i18n{appointment.appointmentApp.previousWeek}
 					</@cBtn>
-					<@cInline type='strong' id='week-label' params='aria-live="polite"' />
+					<@cInline type='strong' id='week-label' params={"aria-live": "polite"} />
 					<@cBtn class='secondary btn-sm' id='week-next' label=''>
 						#i18n{appointment.appointmentApp.nextWeek} <@cIcon name='chevron-right' />
 					</@cBtn>
 				</@cBlock>
-				<@cRow id='day-list' params='role="listbox" aria-label="#i18n{appointment.appointmentCalendar.labelSelectDay}"' />
+				<@cRow id='day-list' params={"role": "listbox", "aria-label": "#i18n{appointment.appointmentCalendar.labelSelectDay}"} />
 			</@cBlock>
-			<@cBlock id='time-panel' params='role="region" aria-label="#i18n{appointment.appointmentCalendar.labelSelectTime}" style="display:none"'>
+			<@cBlock id='time-panel' class="d-none" params={"role": "region", "aria-label": "#i18n{appointment.appointmentCalendar.labelSelectTime}"}>
 				<@cBtn class='outline-secondary btn-sm mb-3 visually-hidden' id='back-to-days' label=''>
 					<@cIcon name='arrow-left' /> #i18n{appointment.appointmentCalendar.labelBackToDay}
 				</@cBtn>
 				<@cTitle level=3 id='selected-day-label' class='mb-3 h5'></@cTitle>
-				<@cBlock id='time-list' params='role="listbox" aria-label="#i18n{appointment.appointmentCalendar.labelSelectTime}"' />
+				<@cBlock id='time-list' params={"role": "listbox", "aria-label": "#i18n{appointment.appointmentCalendar.labelSelectTime}"} />
 			</@cBlock>
 		</@cBlock>
 	</#if>

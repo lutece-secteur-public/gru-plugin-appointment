@@ -1,6 +1,6 @@
 <@cTpl>
-<#assign formTitle><#if form.displayTitleFo && form.title != ''>${form.title}<#else>#i18n{appointment.appointmentApp.defaultTitle}</#if></#assign>
-<#assign stepTwoHref>jsp/site/Portal.jsp?page=appointment&view=getViewAppointmentCalendar&id_form=${form.idForm}<#if modifDateAppointment>&refAppointment=${appointment.reference!}</#if><#if nbPlacesToTake?? && nbPlacesToTake != 0>&nbPlacesToTake=${nbPlacesToTake!}</#if>#step2</#assign>
+<#assign formTitle = (form.displayTitleFo && form.title != '')?then(form.title, '#i18n{appointment.appointmentApp.defaultTitle}') />
+<#assign stepTwoHref = "jsp/site/Portal.jsp?page=appointment&view=getViewAppointmentCalendar&id_form=${form.idForm}" + modifDateAppointment?then("&refAppointment=${(appointment.reference!)?url}", "") + (nbPlacesToTake?? && nbPlacesToTake != 0)?then("&nbPlacesToTake=${nbPlacesToTake}", "") + "#step2" />
 <@cStepDone step='1' title=formTitle idx=1 actionName=''>
 	<@cText>${form.description!}</@cText>
 </@cStepDone>
@@ -10,11 +10,12 @@
 		<@chItem>#i18n{appointment.labelThe} ${appointment.dateOfTheAppointment} #i18n{appointment.labelFrom} ${appointment.slot[0].startingTime} #i18n{appointment.labelTo} ${appointment.slot[i - 1].endingTime}</@chItem>
 	</@chList>
 </@cStepDone>
-<@cStepDone step='3' title='#i18n{appointment.appointmentApp.enteringInformation}' idx=3 actionHref='javascript:history.back()' actionLabel='#i18n{portal.util.labelModify}'>
+<#-- Back to the information entered, the form view of the slot when the history cannot be used -->
+<@cStepDone step='3' title='#i18n{appointment.appointmentApp.enteringInformation}' idx=3 actionHref='jsp/site/Portal.jsp?page=appointment&view=getViewAppointmentForm&id_form=${form.idForm}&starting_date_time=${appointment.slot[0].startingDateTime}' actionParams={"data-lutece-action": "back"} actionLabel='#i18n{portal.util.labelModify}'>
 	<@chList>
-		<@chItem>${formMessages.fieldLastNameTitle!} : ${appointment.lastName?html}</@chItem>
-		<@chItem>${formMessages.fieldFirstNameTitle!} : ${appointment.firstName?html}</@chItem>
-		<@chItem>${formMessages.fieldEmailTitle!} : ${appointment.email?html}</@chItem>
+		<@chItem>${formMessages.fieldLastNameTitle!} : ${appointment.lastName}</@chItem>
+		<@chItem>${formMessages.fieldFirstNameTitle!} : ${appointment.firstName}</@chItem>
+		<@chItem>${formMessages.fieldEmailTitle!} : ${appointment.email}</@chItem>
 		<#if form.maxPeoplePerAppointment gt 1><@chItem>#i18n{appointment.createAppointmentForm.labelNumberOfBookedseatsPerAppointment} : ${appointment.nbBookedSeats}</@chItem></#if>
 		<#-- One line per question: the answers of a multiple choice question are joined -->
 		<#assign recapEntries = [] /><#assign recapValues = {} />
@@ -22,11 +23,11 @@
 			<#if response.recapValue?? && response.recapValue?has_content>
 				<#assign recapKey = response.entry.idEntry?c />
 				<#if !recapValues[recapKey]??><#assign recapEntries = recapEntries + [response.entry] /></#if>
-				<#assign recapValues = recapValues + { recapKey : (recapValues[recapKey]![]) + [response.recapValue] } />
+				<#assign recapValues = recapValues + { recapKey : (recapValues[recapKey]![]) + [response.recapMarkup] } />
 			</#if>
 		</#list>
 		<#list recapEntries as entry>
-			<@chItem>${entry.title} : ${recapValues[entry.idEntry?c]?join(', ')}</@chItem>
+			<@chItem>${entry.title} : <#list recapValues[entry.idEntry?c] as recapValue>${recapValue}<#sep>, </#list></@chItem>
 		</#list>
 	</@chList>
 	<#--
@@ -47,9 +48,9 @@
 	<@cForm id='form-validate' action='jsp/site/Portal.jsp' method='post' enctype='multipart/form-data'>
 		<@cInput name='page' value='appointment' type='hidden' class='' />
 		<@cInput name='action' value='doMakeAppointment' type='hidden' class='' />
-		<@cInput name='lastname' value='${appointment.lastName?html}' type='hidden' class='' />
-		<@cInput name='firstname' value='${appointment.firstName?html}' type='hidden' class='' />
-		<@cInput name='email' value='${appointment.email?html}' type='hidden' class='' />
+		<@cInput name='lastname' value='${appointment.lastName}' type='hidden' class='' />
+		<@cInput name='firstname' value='${appointment.firstName}' type='hidden' class='' />
+		<@cInput name='email' value='${appointment.email}' type='hidden' class='' />
 		<@cInput type='hidden' name='token' value='${token}' class='' />
 		<#if form.maxPeoplePerAppointment gt 1><@cInput name='nbSeat' value='${appointment.nbBookedSeats}' type='hidden' class='' /></#if>
 		<@cText>#i18n{appointment.appointmentApp.validationText}</@cText>
@@ -57,7 +58,7 @@
 		<#if captcha??>${captcha!}</#if>
 		<@cRow class='my-3'>
 			<@cCol class='d-flex justify-content-center'>
-				<@cBtn label='' class='primary' params='name="validate" value="validate"'><@cIcon name='check' /> #i18n{portal.util.labelValidate}</@cBtn>
+				<@cBtn label='' class='primary' params={"name": "validate", "value": "validate"}><@cIcon name='check' /> #i18n{portal.util.labelValidate}</@cBtn>
 			</@cCol>
 		</@cRow>
 	</@cForm>

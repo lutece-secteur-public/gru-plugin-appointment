@@ -71,6 +71,7 @@ import fr.paris.lutece.plugins.appointment.business.planning.WorkingDay;
 import fr.paris.lutece.plugins.appointment.business.rule.ReservationRule;
 import fr.paris.lutece.plugins.appointment.business.slot.Slot;
 import fr.paris.lutece.plugins.appointment.business.user.User;
+import fr.paris.lutece.plugins.appointment.service.entrytype.EntryTypeImage;
 import fr.paris.lutece.plugins.appointment.service.lock.SlotEditTask;
 import fr.paris.lutece.plugins.appointment.web.dto.AppointmentDTO;
 import fr.paris.lutece.plugins.appointment.web.dto.AppointmentFilterDTO;
@@ -629,6 +630,8 @@ public final class AppointmentUtilities
                 IEntryTypeService entryTypeService = EntryTypeServiceManager.getEntryTypeService( response.getEntry( ) );
                 ResponseRecapDTO responseRecapDTO = new ResponseRecapDTO( response,
                         entryTypeService.getResponseValueForRecap( response.getEntry( ), request, response, locale ) );
+                // The image entry type renders its recap value from a template
+                responseRecapDTO.setRecapValueHtml( entryTypeService instanceof EntryTypeImage );
 
                 List<ResponseRecapDTO> listResponse = mapResponse.computeIfAbsent( nIndex, ArrayList::new );
                 listResponse.add( responseRecapDTO );

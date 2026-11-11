@@ -48,6 +48,8 @@ import java.util.Map;
 import java.util.StringJoiner;
 import java.util.stream.Collectors;
 
+import freemarker.core.TemplateHTMLOutputModel;
+
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 
@@ -119,6 +121,7 @@ import fr.paris.lutece.portal.service.plugin.Plugin;
 import fr.paris.lutece.portal.service.plugin.PluginService;
 import fr.paris.lutece.portal.service.rbac.RBACService;
 import fr.paris.lutece.portal.service.template.AppTemplateService;
+import fr.paris.lutece.portal.service.template.HtmlMarkup;
 import fr.paris.lutece.portal.service.util.AppLogService;
 import fr.paris.lutece.portal.service.util.AppPathService;
 import fr.paris.lutece.portal.service.util.AppPropertiesService;
@@ -834,8 +837,8 @@ public class AppointmentJspBean extends MVCAdminJspBean
         _models.put( MARK_FORM, form );
         if ( ( form.getIdWorkflow( ) > 0 ) && _workflowService.isAvailable( ) )
         {
-            _models.put( MARK_RESOURCE_HISTORY, _workflowService.getDisplayDocumentHistory( nIdAppointment, Appointment.APPOINTMENT_RESOURCE_TYPE,
-                    form.getIdWorkflow( ), request, getLocale( ), (User) getUser( ) ) );
+            _models.put( MARK_RESOURCE_HISTORY, HtmlMarkup.of( _workflowService.getDisplayDocumentHistory( nIdAppointment, Appointment.APPOINTMENT_RESOURCE_TYPE,
+                    form.getIdWorkflow( ), request, getLocale( ), (User) getUser( ) ) ) );
         }
         if ( ( form.getIdWorkflow( ) > 0 ) && _workflowService.isAvailable( ) )
         {
@@ -872,7 +875,7 @@ public class AppointmentJspBean extends MVCAdminJspBean
         appointmentDTO.setListResponse( listResponse );
         _models.put( MARK_LIST_RESPONSE_RECAP_DTO, AppointmentUtilities.buildListResponse( appointmentDTO, request, locale ) );
         _models.put( MARK_READ_ONLY_ENTRIES, buildReadOnlyEntries( listResponse, locale ) );
-        _models.put( MARK_ADDON, AppointmentAddOnManager.getAppointmentAddOn( appointmentDTO.getIdAppointment( ), getLocale( ) ) );
+        _models.put( MARK_ADDON, HtmlMarkup.of( AppointmentAddOnManager.getAppointmentAddOn( appointmentDTO.getIdAppointment( ), getLocale( ) ) ) );
         User user = getUser( );
         _models.put( MARK_RIGHT_CREATE,
                 RBACService.isAuthorized( AppointmentFormDTO.RESOURCE_TYPE, strIdForm, AppointmentResourceIdService.PERMISSION_CREATE_APPOINTMENT, user ) );
@@ -1119,7 +1122,7 @@ public class AppointmentJspBean extends MVCAdminJspBean
         boolean isOverbooking = !_appointmentForm.getIsMultislotAppointment( ) && formRule.getBoOverbooking( ) && RBACService
                 .isAuthorized( AppointmentFormDTO.RESOURCE_TYPE, strIdForm, AppointmentResourceIdService.PERMISSION_OVERBOOKING_FORM, (User) getUser( ) );
 
-        _models.put( MARK_STR_ENTRY, strBuffer.toString( ) );
+        _models.put( MARK_STR_ENTRY, HtmlMarkup.of( strBuffer.toString( ) ) );
         _models.put( MARK_FORM, _appointmentForm );
         _models.put( MARK_APPOINTMENT, _notValidatedAppointment );
         _models.put( PARAMETER_DATE_OF_DISPLAY, _notValidatedAppointment.getSlot( ).get( 0 ).getDate( ) );
@@ -1130,7 +1133,7 @@ public class AppointmentJspBean extends MVCAdminJspBean
         _models.put( MARK_LOCALE, locale );
         _models.put( MARK_LIST_ERRORS, AppointmentDTO.getAllErrors( locale ) );
         HtmlTemplate templateForm = AppTemplateService.getTemplate( TEMPLATE_HTML_CODE_FORM_ADMIN, getLocale( ), _models.asMap( ) );
-        _models.put( MARK_FORM_HTML, templateForm.getHtml( ) );
+        _models.put( MARK_FORM_HTML, HtmlMarkup.of( templateForm.getHtml( ) ) );
         _models.put( MARK_LOCALE, getLocale( ) );
 
 
@@ -1361,7 +1364,7 @@ public class AppointmentJspBean extends MVCAdminJspBean
         _models.put( MARK_FORM_MESSAGES, FormMessageService.findFormMessageByIdForm( _validatedAppointment.getIdForm( ) ) );
         _models.put( MARK_APPOINTMENT, _validatedAppointment );
         Locale locale = getLocale( );
-        _models.put( MARK_ADDON, AppointmentAddOnManager.getAppointmentAddOn( _validatedAppointment.getIdAppointment( ), getLocale( ) ) );
+        _models.put( MARK_ADDON, HtmlMarkup.of( AppointmentAddOnManager.getAppointmentAddOn( _validatedAppointment.getIdAppointment( ), getLocale( ) ) ) );
         _models.put( MARK_LIST_RESPONSE_RECAP_DTO, AppointmentUtilities.buildListResponse( _validatedAppointment, request, locale ) );
         _models.put( MARK_READ_ONLY_ENTRIES, buildReadOnlyEntries( _validatedAppointment.getListResponse( ), locale ) );
         _models.put( MARK_FORM, _appointmentForm );
@@ -1593,7 +1596,7 @@ public class AppointmentJspBean extends MVCAdminJspBean
                 String strHtmlTasksForm = _workflowService.getDisplayTasksForm( nIdAppointment, Appointment.APPOINTMENT_RESOURCE_TYPE, nIdAction,
                         request, getLocale( ), null );
                 Map<String, Object> model = new HashMap<>( );
-                model.put( MARK_TASKS_FORM, strHtmlTasksForm );
+                model.put( MARK_TASKS_FORM, HtmlMarkup.of( strHtmlTasksForm ) );
                 model.put( PARAMETER_ID_ACTION, nIdAction );
                 model.put( PARAMETER_ID_APPOINTMENT, nIdAppointment );
                 return getPage( PROPERTY_PAGE_TITLE_TASKS_FORM_WORKFLOW, TEMPLATE_TASKS_FORM_WORKFLOW, model );
@@ -1810,11 +1813,11 @@ public class AppointmentJspBean extends MVCAdminJspBean
      *            the responses of the appointment
      * @param locale
      *            the locale
-     * @return the rendered HTML by question id, only for the questions whose entry type has a read-only template
+     * @return the rendered HTML by question id, marked as markup, only for the questions whose entry type has a read-only template
      */
-    private Map<String, String> buildReadOnlyEntries( List<Response> listResponse, Locale locale )
+    private Map<String, TemplateHTMLOutputModel> buildReadOnlyEntries( List<Response> listResponse, Locale locale )
     {
-        Map<String, String> mapHtml = new HashMap<>( );
+        Map<String, TemplateHTMLOutputModel> mapHtml = new HashMap<>( );
         if ( CollectionUtils.isEmpty( listResponse ) )
         {
             return mapHtml;
@@ -1837,7 +1840,7 @@ public class AppointmentJspBean extends MVCAdminJspBean
                 model.put( MARK_READ_ONLY_ENTRY, entry );
                 model.put( MARK_READ_ONLY_LIST_RESPONSES, entryResponses.getValue( ) );
                 model.put( MARK_REGEX_URL, REGEX_URL );
-                mapHtml.put( String.valueOf( entry.getIdEntry( ) ), AppTemplateService.getTemplate( strTemplate, locale, model ).getHtml( ) );
+                mapHtml.put( String.valueOf( entry.getIdEntry( ) ), HtmlMarkup.of( AppTemplateService.getTemplate( strTemplate, locale, model ).getHtml( ) ) );
             }
         }
         return mapHtml;

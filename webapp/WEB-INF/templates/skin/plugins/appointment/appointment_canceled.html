@@ -1,14 +1,14 @@
 <@cTpl>
 <@cRow>
 	<@cCol>
-		<@cText>${formMessages.textAppointmentCanceled}</@cText>
+		<@cText>${richText(formMessages.textAppointmentCanceled!)}</@cText>
 		<@cText>
 			<#if backUrl??>
-				<@cBtn href='${backUrl}' label='' class='primary btn-lg'>
+				<@cBtn href=safeUrl(backUrl) label='' class='primary btn-lg'>
 					#i18n{portal.util.labelBack}
 				</@cBtn>
 			<#else>
-				<@cBtn href='${formMessages.urlRedirectAfterCreation}' label='' class='primary btn-lg'>
+				<@cBtn href=safeUrl(formMessages.urlRedirectAfterCreation!) label='' class='primary btn-lg'>
 					${formMessages.labelButtonRedirection}
 				</@cBtn>
 			</#if>

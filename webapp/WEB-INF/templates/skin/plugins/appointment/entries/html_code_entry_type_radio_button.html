@@ -1,20 +1,19 @@
-<#assign hide="">
-<#assign disableRequiredFields="">
+<#-- The answers with conditional questions: choosing an answer hides them, appointment.js reads data-appointment-hide -->
+<#assign conditionalIds = [] />
 <#list entry.fields as field>
 <#if field.conditionalQuestions?exists && field.conditionalQuestions?size != 0>
-	<#assign hide = hide + "hide(${field.idField});">
-	<#assign disableRequiredFields>changeDisabledStateOfRequiredFields(${field.idField}, true);</#assign>
+	<#assign conditionalIds = conditionalIds + [field.idField?c] />
 </#if>
 </#list>
 <#assign errorMsg = ''>
 <#assign helpMsg = ''>
-<#if entry.helpMessage?exists && entry.helpMessage != ''><#assign helpMsg>${entry.helpMessage}</#assign></#if>
+<#if entry.helpMessage?exists && entry.helpMessage != ''><#assign helpMsg = entry.helpMessage /></#if>
 <#if list_responses??>
 <#list list_responses as response>
 <#if response.entry.idEntry == entry.idEntry && response.entry.error?? && response.entry.error.isDisplayableError>
 <#assign hasError = true>
 <#assign error = response.entry.error>
-<#assign errorMsg><#if error.mandatoryError>${error.errorMessage}<#else>#i18n{appointment.message.mandatory.entry}</#if></#assign>
+<#assign errorMsg = error.mandatoryError?then(error.errorMessage, '#i18n{appointment.message.mandatory.entry}') />
 </#if>
 </#list>
 </#if>
@@ -25,12 +24,11 @@
 <#list entry.fields as field>
 	<#if field.code == 'answer_choice'>
 		<#assign answerChoiceIdx = answerChoiceIdx + 1>
-		<#assign onclickEvent = 'onclick="${hide} ${disableRequiredFields}"' />
-		<#if field.conditionalQuestions?exists && field.conditionalQuestions?size != 0><#assign onclickEvent = 'onclick="${hide} doDisplay(${field.idField}); changeDisabledStateOfRequiredFields(${field.idField}, false);"'></#if>
 		<#assign isChecked = false><#if list_responses??><#list list_responses as response><#if response.entry.idEntry == entry.idEntry && response.field??><#if response.field.idField == field.idField><#assign isChecked = true></#if></#if></#list><#else><#if field.defaultValue><#assign isChecked = true></#if></#if>
-		<#assign radioParams = onclickEvent>
-		<#if field.comment?? && field.comment != ''><#assign radioParams = radioParams + ' title="${field.comment}"'></#if>
-		<#assign radioLabel><#if !field.noDisplayTitle>${field.title}<#else> </#if></#assign>
+		<#assign radioParams = conditionalIds?has_content?then({"data-appointment-hide": conditionalIds?join(' ')}, {}) />
+		<#if field.conditionalQuestions?exists && field.conditionalQuestions?size != 0><#assign radioParams = radioParams + {"data-appointment-show": field.idField?c} /></#if>
+		<#if field.comment?? && field.comment != ''><#assign radioParams = radioParams + {"title": field.comment} /></#if>
+		<#assign radioLabel = field.noDisplayTitle?then(' ', field.title) />
 		<@cRadio name='attribute${entry.idEntry}' id='attribute${entry.idEntry}_${field.idField}' value='${field.idField}' checked=isChecked label=radioLabel params=radioParams inline=entry.fieldInLine errorMsg=(answerChoiceIdx == answerChoiceCount)?then(errorMsg,'') helpMsg=(answerChoiceIdx == answerChoiceCount)?then(helpMsg,'') />
 	</#if>
 </#list>
@@ -40,7 +38,7 @@
 <script>
 <#list list_responses as response>
 <#if response.entry.idEntry == entry.idEntry && response.field??>
-var baliseId = "div" + ${response.field.idField};
+var baliseId = "div" + ${response.field.idField?c};
 if(document.getElementById && document.getElementById(baliseId) != null) {
 	document.getElementById(baliseId).style.visibility='visible';
 	document.getElementById(baliseId).style.display='block';
@@ -52,7 +50,7 @@ if(document.getElementById && document.getElementById(baliseId) != null) {
 <#list entry.fields as field>
 <#if field.defaultValue && field.conditionalQuestions?exists && field.conditionalQuestions?size != 0>
 <script>
-var baliseId = "div" + ${field.idField};
+var baliseId = "div" + ${field.idField?c};
 if(document.getElementById && document.getElementById(baliseId) != null) {
 	document.getElementById(baliseId).style.visibility='visible';
 	document.getElementById(baliseId).style.display='block';
