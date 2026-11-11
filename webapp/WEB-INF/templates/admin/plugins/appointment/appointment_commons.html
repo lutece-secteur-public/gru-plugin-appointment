@@ -163,7 +163,7 @@ document.addEventListener('DOMContentLoaded', function() {
 		</@formGroup>
 </#local>
 <#local commentActions>
-			<#if action == 'doModifyComment'><@button type='submit' id='commentDelete' name='action_confirmRemoveComment' buttonIcon='trash' title='#i18n{portal.util.labelDelete}' color='danger' params='formnovalidate' /></#if>
+			<#if action == 'doModifyComment'><@button type='submit' id='commentDelete' name='view_confirmRemoveComment' buttonIcon='trash' title='#i18n{portal.util.labelDelete}' color='danger' params='formnovalidate' /></#if>
 			<@button type='submit' id='action_${action}' name='action_${action}' buttonIcon='check' title='#i18n{portal.util.labelValidate}' params='formnovalidate' />
 </#local>
 <#if inline>
