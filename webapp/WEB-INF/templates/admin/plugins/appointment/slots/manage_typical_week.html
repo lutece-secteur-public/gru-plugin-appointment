@@ -125,6 +125,38 @@
 					<#if id_reservation_rule != 0 ><@button type='submit' title='#i18n{portal.util.labelModify}' buttonIcon='check' /><#else><@button type='submit' title='#i18n{portal.util.labelCreate}' buttonIcon='check' /></#if>
 					<@aButton href='jsp/admin/plugins/appointment/ManageAppointmentSlots.jsp?view=manageTypicalWeek&id_form=${appointmentform.idForm}&id_reservation_rule=${id_reservation_rule}' buttonIcon='times' title='#i18n{portal.util.labelCancel}' color='light' />
 				</@tform>
+			<#elseif canUpdateLimitedAdvancedParam>
+				<@tform action='jsp/admin/plugins/appointment/ManageAppointmentSlots.jsp' id='limited_advanced_parameters_form' params='enctype="multipart/form-data"'>
+					<@input type='hidden' name='id_form' value='${appointmentform.idForm}' />
+					<@input type='hidden' name='action_modifyAdvancedParameters' value='' />
+					<@fieldSet legend='#i18n{appointment.modifyAppointmentForm.titleStructuralsParameters}'>
+					<@row>
+						<@columns md=6>
+							<@formGroup labelFor='max_capacity_per_slot' labelKey='#i18n{appointment.createAppointmentForm.labelMaxCapacityPerSlot}' helpKey='#i18n{appointment.createAppointmentForm.labelMaxCapacityPerSlot.help}' mandatory=true>
+								<@input type='number' name='max_capacity_per_slot' id='max_capacity_per_slot' value=appointmentform.maxCapacityPerSlot!'' maxlength=3 />
+							</@formGroup>
+						</@columns>
+						<@columns md=6>
+							<@formGroup labelFor='time_start' labelKey='#i18n{appointment.createAppointmentForm.labelTimeStart}' helpKey='#i18n{appointment.createAppointmentForm.labelTimeStart.help}' mandatory=true>
+								<@inputGroup>
+									<@inputGroupItem type='text'><@icon style='clock' /></@inputGroupItem>
+									<@input type='text' name='time_start' id='time_start' value=appointmentform.timeStart!'' />
+								</@inputGroup>
+							</@formGroup>
+						</@columns>
+						<@columns md=6>
+							<@formGroup labelFor='time_end' labelKey='#i18n{appointment.createAppointmentForm.labelTimeEnd}' helpKey='#i18n{appointment.createAppointmentForm.labelTimeEnd.help}' mandatory=true>
+								<@inputGroup>
+									<@inputGroupItem type='text'><@icon style='clock' /></@inputGroupItem>
+									<@input type='text' name='time_end' id='time_end' value=appointmentform.timeEnd!'' />
+								</@inputGroup>
+							</@formGroup>
+						</@columns>
+					</@row>
+					</@fieldSet>
+					<@button type='submit' title='#i18n{portal.util.labelModify}' buttonIcon='check' />
+					<@aButton href='jsp/admin/plugins/appointment/ManageAppointmentSlots.jsp?view=manageTypicalWeek&id_form=${appointmentform.idForm}&id_reservation_rule=${id_reservation_rule}' buttonIcon='times' title='#i18n{portal.util.labelCancel}' color='light' />
+				</@tform>
 			</#if>
 		</@div>
 		<@div id='calendar' class='mt-5'></@div>
@@ -134,7 +166,7 @@
 			<#assign active=false >
 			<#assign idx=0 >
 			<@listGroup>
-			<#list listReservationRule as item>
+			<#list listReservationRule?filter( item -> item.enable ) as item>
 				<#assign py=2 >
 				<#if id_reservation_rule?number=item.idReservationRule?number><#assign active=true ><#assign py=1 ><#else><#assign active=false ></#if>
 				<@listGroupItem class='d-flex align-items-center justify-content-between w-100 py-${py}' active=active>
@@ -225,6 +257,10 @@
 </@tform>
 </@modalBody>
 </@modal> 
+<#if canUpdateLimitedAdvancedParam>
+<#include "/admin/plugins/appointment/slots/confirm_advanced_parameters.html" />
+<@confirmAdvancedParameters formId='limited_advanced_parameters_form' slots=slotsWithAppointment />
+</#if>
 <script>
 const slotDuration = '${min_duration}';
 const minTime = '${min_time}';
