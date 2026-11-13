@@ -441,7 +441,12 @@ public class AppointmentFormJspBean extends AbstractAppointmentFormAndSlotJspBea
         {
             throw new AccessDeniedException( AppointmentResourceIdService.PERMISSION_MODIFY_FORM );
         }
-        int nIdForm = Integer.parseInt( request.getParameter( PARAMETER_ID_FORM ) );
+        int nIdForm = NumberUtils.toInt( strIdForm, -1 );
+        // An unknown form gives the list of the forms instead of an error
+        if ( FormService.findFormLightByPrimaryKey( nIdForm ) == null )
+        {
+            return redirectView( request, VIEW_MANAGE_APPOINTMENTFORMS );
+        }
         if ( ( _appointmentFormDTO == null ) || ( nIdForm != _appointmentFormDTO.getIdForm( ) ) )
         {
         	_appointmentFormDTO = FormService.buildAppointmentForm( nIdForm, 0 );
@@ -656,7 +661,12 @@ public class AppointmentFormJspBean extends AbstractAppointmentFormAndSlotJspBea
         {
             throw new AccessDeniedException( AppointmentResourceIdService.PERMISSION_MODIFY_FORM );
         }
-        int nIdForm = Integer.parseInt( strIdForm );
+        int nIdForm = NumberUtils.toInt( strIdForm, -1 );
+        // An unknown form gives the list of the forms instead of an error
+        if ( FormService.findFormLightByPrimaryKey( nIdForm ) == null )
+        {
+            return redirectView( request, VIEW_MANAGE_APPOINTMENTFORMS );
+        }
         FormMessage formMessage = FormMessageService.findFormMessageByIdForm( nIdForm );
         Map<String, Object> model = new HashMap<>( );
         model.put( MARK_FORM_MESSAGE, formMessage );
