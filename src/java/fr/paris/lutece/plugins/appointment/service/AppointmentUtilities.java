@@ -40,7 +40,7 @@ import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
-import java.time.temporal.WeekFields;
+import java.time.temporal.TemporalAdjusters;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.HashMap;
@@ -1150,6 +1150,22 @@ public final class AppointmentUtilities
     }
 
     /**
+     * Compute the last day of the front office booking window: the window covers the current week (the week of the
+     * starting date) and the following weeks, up to the given number of weeks, and ends on a Sunday.
+     *
+     * @param startingDateOfDisplay
+     *            the first day of the window
+     * @param nNbWeeksToDisplay
+     *            the number of weeks to display, the current week included
+     * @return the last day of the window
+     */
+    public static LocalDate getEndingDateOfDisplay( LocalDate startingDateOfDisplay, int nNbWeeksToDisplay )
+    {
+        // ISO week (Monday to Sunday), whatever the locale: a bare language locale may start the week on Sunday
+        return startingDateOfDisplay.with( TemporalAdjusters.nextOrSame( DayOfWeek.SUNDAY ) ).plusWeeks( (long) nNbWeeksToDisplay - 1 );
+    }
+
+    /**
      * check if one of the weeks in the list is open on the FO calendar
      *
      * @param appointmentFormDTO
@@ -1157,7 +1173,7 @@ public final class AppointmentUtilities
      * @param listWeek
      *            the list of weekDefinition
      * @param locale
-     *            the locale
+     *            the locale (not used: the window follows the ISO week, see {@link #getEndingDateOfDisplay(LocalDate, int)})
      * @return true if one of the weeks in the list is open on the FO calendar
      */
     public static boolean weekIsOpenInFO( AppointmentFormDTO appointmentFormDTO, List<WeekDefinition> listWeek, Locale locale )
@@ -1176,8 +1192,7 @@ public final class AppointmentUtilities
             // since today
             // We calculate the number of weeks including the current week, so it
             // will end to the (n) next sunday
-            LocalDate dateOfSunday = startingDateOfDisplay.with( WeekFields.of( locale ).dayOfWeek( ), DayOfWeek.SUNDAY.getValue( ) );
-            LocalDate endingDateOfDisplay = dateOfSunday.plusWeeks( (long) appointmentFormDTO.getNbWeeksToDisplay( ) - 1 );
+            LocalDate endingDateOfDisplay = getEndingDateOfDisplay( startingDateOfDisplay, appointmentFormDTO.getNbWeeksToDisplay( ) );
             Date endingValidityDate = appointmentFormDTO.getDateEndValidity( );
             if ( endingValidityDate != null && endingDateOfDisplay.isAfter( endingValidityDate.toLocalDate( ) ) )
             {

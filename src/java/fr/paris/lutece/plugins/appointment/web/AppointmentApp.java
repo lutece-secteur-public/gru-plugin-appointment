@@ -39,8 +39,6 @@ import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.format.DateTimeParseException;
 import java.time.format.TextStyle;
-import java.time.temporal.TemporalField;
-import java.time.temporal.WeekFields;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -428,9 +426,7 @@ public class AppointmentApp extends MVCApplication
         // since today
         // We calculate the number of weeks including the current week, so it
         // will end to the (n) next sunday
-        TemporalField fieldISO = WeekFields.of( locale ).dayOfWeek( );
-        LocalDate dateOfSunday = startingDateOfDisplay.with( fieldISO, DayOfWeek.SUNDAY.getValue( ) );
-        LocalDate endingDateOfDisplay = dateOfSunday.plusWeeks( (long) nNbWeeksToDisplay - 1 );
+        LocalDate endingDateOfDisplay = AppointmentUtilities.getEndingDateOfDisplay( startingDateOfDisplay, nNbWeeksToDisplay );
         // if the ending date of display is after the ending validity date of
         // the form
         // assign the ending date of display with the ending validity date of
@@ -728,7 +724,7 @@ public class AppointmentApp extends MVCApplication
             {
                 return redirect( request, VIEW_APPOINTMENT_CALENDAR, PARAMETER_ID_FORM, nIdForm, PARAMETER_NB_PLACE_TO_TAKE, _nNbPlacesToTake );
             }
-            if ( !isAuthorizedDate( startingDateTime, getLocale( request ) ) )
+            if ( !isAuthorizedDate( startingDateTime ) )
             {
 
                 addError( ERROR_MESSAGE_SLOT_FULL, getLocale( request ) );
@@ -1295,7 +1291,7 @@ public class AppointmentApp extends MVCApplication
         }
 
         if ( !form.getIsActive( ) || _validatedAppointment.getStartingDateTime( ).isBefore( LocalDateTime.now( ) )
-                || !isAuthorizedDate( startingDateTime, locale ) )
+                || !isAuthorizedDate( startingDateTime ) )
         {
             _validatedAppointment = null;
             addError( ERROR_MESSAGE_FORM_NOT_ACTIVE, getLocale( request ) );
@@ -2053,11 +2049,9 @@ public class AppointmentApp extends MVCApplication
      *
      * @param date
      *            the starting date of slot
-     * @param locale
-     *            the locale
      * @return true if the starting date of slot is displayed on FO
      */
-    private boolean isAuthorizedDate( LocalDateTime date, Locale locale )
+    private boolean isAuthorizedDate( LocalDateTime date )
     {
         // Get the min time from now before a user can take an appointment (in hours)
         LocalDateTime startingDateOfDisplay = LocalDateTime.now( ).plusHours( _appointmentForm.getMinTimeBeforeAppointment( ) );
@@ -2069,8 +2063,7 @@ public class AppointmentApp extends MVCApplication
         }
         // Calculate the ending date of display with the nb weeks to display since today
         // We calculate the number of weeks including the current week, so it and will end to the (n) next sunday
-        LocalDate endingDateOfDisplay = startingDateOfDisplay.toLocalDate( ).with( WeekFields.of( locale ).dayOfWeek( ), DayOfWeek.SUNDAY.getValue( ) )
-                .plusWeeks( (long) _appointmentForm.getNbWeeksToDisplay( ) - 1 );
+        LocalDate endingDateOfDisplay = AppointmentUtilities.getEndingDateOfDisplay( startingDateOfDisplay.toLocalDate( ), _appointmentForm.getNbWeeksToDisplay( ) );
         return !( date.toLocalDate( ).isAfter( endingDateOfDisplay ) || date.isBefore( startingDateOfDisplay ) );
 
     }
