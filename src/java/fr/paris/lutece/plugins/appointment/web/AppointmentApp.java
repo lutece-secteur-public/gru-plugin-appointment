@@ -1305,7 +1305,8 @@ public class AppointmentApp extends MVCApplication
                 .filter( s -> ( ( startingDateTime.compareTo( s.getStartingDateTime( ) ) <= 0 ) && ( s.getNbRemainingPlaces( ) > 0 ) && ( s.getIsOpen( ) ) ) )
                 .limit( nNbConsecutiveSlot ).collect( Collectors.toList( ) );
 
-        if ( listSlot == null || ( _nNbPlacesToTake > 0 && listSlot.size( ) != _nNbPlacesToTake ) || !AppointmentUtilities.isConsecutiveSlots( listSlot ) )
+        if ( listSlot == null || listSlot.stream( ).noneMatch( slot -> slot.getStartingDateTime( ).isEqual( startingDateTime ) )
+                || ( _nNbPlacesToTake > 0 && listSlot.size( ) != _nNbPlacesToTake ) || !AppointmentUtilities.isConsecutiveSlots( listSlot ) )
         {
             addError( ERROR_MESSAGE_SLOT_FULL, getLocale( request ) );
             return redirect( request, VIEW_APPOINTMENT_CALENDAR, PARAMETER_ID_FORM, nIdForm, PARAMETER_NB_PLACE_TO_TAKE, _nNbPlacesToTake );
