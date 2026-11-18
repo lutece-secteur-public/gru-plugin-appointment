@@ -973,9 +973,8 @@ public final class AppointmentUtilities
         {
             return false;
         }
-        // If we have change the open hours
-
-        return !newStartingTime.equals( oldStartingTime ) || !newEndingTime.equals( oldEndingTime );
+        // If we have change the open hours, appointments are impacted
+        return newStartingTime.equals( oldStartingTime ) && newEndingTime.equals( oldEndingTime );
     }
 
     /**

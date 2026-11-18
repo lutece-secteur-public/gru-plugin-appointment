@@ -457,6 +457,30 @@ public class AppointmentUtilitiesTest extends LuteceTestCase
     }
 
     /**
+     * The advanced parameters of a typical week with appointments: a change of capacity only does not impact the
+     * appointments, a change of the opening hours does
+     */
+    @Test
+    public void testCheckNoAppointmentsImpactedByAdvancedParameters( )
+    {
+        AppointmentFormDTO appointmentForm = FormServiceTest.buildAppointmentForm( );
+        appointmentForm.setDateStartValidity( Date.valueOf( _formStart ) );
+        appointmentForm.setDateEndValidity( Date.valueOf( _formEnd ) );
+        int nIdForm = FormService.createAppointmentForm( appointmentForm );
+        appointmentForm.setIdForm( nIdForm );
+        int nIdRule = ReservationRuleHome.findByIdForm( nIdForm ).get( 0 ).getIdReservationRule( );
+
+        AppointmentFormDTO newForm = FormService.buildAppointmentForm( nIdForm, nIdRule );
+        newForm.setMaxCapacityPerSlot( newForm.getMaxCapacityPerSlot( ) + 1 );
+        assertTrue( AppointmentUtilities.checkNoAppointmentsImpacted( new ArrayList<Slot>( ), newForm ) );
+
+        newForm = FormService.buildAppointmentForm( nIdForm, nIdRule );
+        newForm.setTimeEnd( LocalTime.parse( newForm.getTimeEnd( ) ).minusHours( 1 ).toString( ) );
+        assertFalse( AppointmentUtilities.checkNoAppointmentsImpacted( new ArrayList<Slot>( ), newForm ) );
+        cleanUp( nIdForm, appointmentForm );
+    }
+
+    /**
      * Check that the user can take another appointment
      */
     @Test
