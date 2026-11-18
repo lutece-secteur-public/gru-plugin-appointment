@@ -825,12 +825,13 @@ public class TypicalWeekJspBean extends AbstractAppointmentFormAndSlotJspBean
             }
             if ( nMaxCapacity >= 0 && nMaxCapacity != timeSlot.getMaxCapacity( ) )
             {
-                timeSlot.setMaxCapacity( nMaxCapacity );
+                // Compare with the capacity before it is replaced
                 if ( nMaxCapacity < timeSlot.getMaxCapacity( ) )
                 {
 
                     bMaxCapacityIsLower = true;
                 }
+                timeSlot.setMaxCapacity( nMaxCapacity );
             }
             else
             {
@@ -1012,6 +1013,8 @@ public class TypicalWeekJspBean extends AbstractAppointmentFormAndSlotJspBean
             lock.lock( );
             try
             {
+                // The new capacity of this slot: the variation applies to the capacity of each slot
+                int nNewMaxCapacity = nMaxCapacity;
                 if ( ( nMaxCapacity != -1 && slotImpacted.getMaxCapacity( ) != nMaxCapacity ) )
                 {
 
@@ -1021,7 +1024,7 @@ public class TypicalWeekJspBean extends AbstractAppointmentFormAndSlotJspBean
                     if ( nVarMaxCapacity != 0 )
                     {
 
-                        nMaxCapacity = ( slotImpacted.getMaxCapacity( ) + nVarMaxCapacity ) >= 0 ? ( slotImpacted.getMaxCapacity( ) + nVarMaxCapacity ) : 0;
+                        nNewMaxCapacity = ( slotImpacted.getMaxCapacity( ) + nVarMaxCapacity ) >= 0 ? ( slotImpacted.getMaxCapacity( ) + nVarMaxCapacity ) : 0;
                         bMaxCapacityHasChanged = true;
 
                     }
@@ -1031,7 +1034,7 @@ public class TypicalWeekJspBean extends AbstractAppointmentFormAndSlotJspBean
                     bOpeningHasChanged = true;
                     binfoOpeningHasChanged = true;
                 }
-                slotImpacted = updateRemainingPlaces( slotImpacted, bMaxCapacityHasChanged, nMaxCapacity, bOpeningHasChanged, bIsOpen );
+                slotImpacted = updateRemainingPlaces( slotImpacted, bMaxCapacityHasChanged, nNewMaxCapacity, bOpeningHasChanged, bIsOpen );
                 SlotSafeService.updateSlot( slotImpacted );
             }
             finally
