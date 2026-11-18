@@ -645,6 +645,9 @@ public class SpecificWeekJspBean extends AbstractAppointmentFormAndSlotJspBean
 
         for ( Slot slot : listSlot )
         {
+            // The checks of the ending time are made for each slot
+            bEndingTimeHasChanged = false;
+            bNoApptImpacted = true;
             Lock lock = SlotSafeService.getLockOnSlot( slot.getIdSlot( ) );
             lock.lock( );
             try
