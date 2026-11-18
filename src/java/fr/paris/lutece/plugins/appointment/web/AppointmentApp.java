@@ -381,6 +381,11 @@ public class AppointmentApp extends MVCApplication
 
         FormMessage formMessages = FormMessageService.findFormMessageByIdForm( nIdForm );
 
+        if ( StringUtils.isEmpty( refAppointment ) && _validatedAppointment != null && _validatedAppointment.getIdAppointment( ) != 0 )
+        {
+            // A calendar opened without a reference is a new booking: forget the appointment of a previous reschedule
+            _validatedAppointment = null;
+        }
         if ( StringUtils.isNotEmpty( refAppointment ) )
         {
             // If we want to change the date of an appointment
@@ -1125,14 +1130,12 @@ public class AppointmentApp extends MVCApplication
         {
 
             addError( ERROR_MESSAGE_SLOT_FULL, getLocale( request ) );
-            return redirect( request, VIEW_APPOINTMENT_CALENDAR, PARAMETER_ID_FORM, _validatedAppointment.getIdForm( ), PARAMETER_NB_PLACE_TO_TAKE,
-                    _nNbPlacesToTake );
+            return redirectToCalendar( request, _validatedAppointment.getIdForm( ) );
         }
         catch( SlotEditTaskExpiredTimeException e )
         {
             addError( ERROR_MESSAGE_SLOT_EDIT_TASK_EXPIRED_TIME, getLocale( request ) );
-            return redirect( request, VIEW_APPOINTMENT_CALENDAR, PARAMETER_ID_FORM, _validatedAppointment.getIdForm( ), PARAMETER_NB_PLACE_TO_TAKE,
-                    _nNbPlacesToTake );
+            return redirectToCalendar( request, _validatedAppointment.getIdForm( ) );
         }
         catch( AppointmentSavedException e )
         {
@@ -1263,6 +1266,28 @@ public class AppointmentApp extends MVCApplication
     }
 
     /**
+     * Redirect to the calendar of a form, keeping the reference of the appointment being rescheduled if any
+     *
+     * @param request
+     *            the request
+     * @param nIdForm
+     *            the id of the form
+     * @return the redirection to the calendar
+     */
+    private XPage redirectToCalendar( HttpServletRequest request, int nIdForm )
+    {
+        Map<String, String> parameters = new LinkedHashMap<>( );
+        parameters.put( PARAMETER_ID_FORM, String.valueOf( nIdForm ) );
+        parameters.put( PARAMETER_NB_PLACE_TO_TAKE, String.valueOf( _nNbPlacesToTake ) );
+        if ( _validatedAppointment != null && _validatedAppointment.getIdAppointment( ) != 0
+                && StringUtils.isNotEmpty( _validatedAppointment.getReference( ) ) )
+        {
+            parameters.put( PARAMETER_REF_APPOINTMENT, _validatedAppointment.getReference( ) );
+        }
+        return redirect( request, VIEW_APPOINTMENT_CALENDAR, parameters );
+    }
+
+    /**
      * Return to the display recap view with the new date selected on the calendar
      *
      * @param request
@@ -1309,7 +1334,7 @@ public class AppointmentApp extends MVCApplication
                 || ( _nNbPlacesToTake > 0 && listSlot.size( ) != _nNbPlacesToTake ) || !AppointmentUtilities.isConsecutiveSlots( listSlot ) )
         {
             addError( ERROR_MESSAGE_SLOT_FULL, getLocale( request ) );
-            return redirect( request, VIEW_APPOINTMENT_CALENDAR, PARAMETER_ID_FORM, nIdForm, PARAMETER_NB_PLACE_TO_TAKE, _nNbPlacesToTake );
+            return redirectToCalendar( request, nIdForm );
         }
 
         boolean bool = true;
@@ -1335,7 +1360,7 @@ public class AppointmentApp extends MVCApplication
             if ( slot.getNbPotentialRemainingPlaces( ) <= 0 )
             {
                 addError( ERROR_MESSAGE_SLOT_FULL, locale );
-                return redirect( request, VIEW_APPOINTMENT_CALENDAR, PARAMETER_ID_FORM, nIdForm, PARAMETER_NB_PLACE_TO_TAKE, _nNbPlacesToTake );
+                return redirectToCalendar( request, nIdForm );
             }
 
             _validatedAppointment.addSlot( slot );
@@ -1353,7 +1378,7 @@ public class AppointmentApp extends MVCApplication
         if ( _validatedAppointment.getNbMaxPotentialBookedSeats( ) == 0 )
         {
             addError( ERROR_MESSAGE_SLOT_FULL, locale );
-            return redirect( request, VIEW_APPOINTMENT_CALENDAR, PARAMETER_ID_FORM, nIdForm, PARAMETER_NB_PLACE_TO_TAKE, _nNbPlacesToTake );
+            return redirectToCalendar( request, nIdForm );
         }
 
         for ( Response response : _validatedAppointment.getListResponse( ) )
