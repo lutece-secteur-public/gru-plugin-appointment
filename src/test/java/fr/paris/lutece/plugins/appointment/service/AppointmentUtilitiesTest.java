@@ -522,6 +522,22 @@ public class AppointmentUtilitiesTest extends LuteceTestCase
     }
 
     /**
+     * A negative number of booked seats must be refused
+     */
+    @Test
+    public void testCheckAndReturnNegativeNbBookedSeats( )
+    {
+        AppointmentFormDTO appointmentForm = new AppointmentFormDTO( );
+        appointmentForm.setMaxPeoplePerAppointment( 2 );
+        AppointmentDTO appointmentDTO = new AppointmentDTO( );
+        appointmentDTO.setNbMaxPotentialBookedSeats( 2 );
+        List<GenericAttributeError> listFormErrors = new ArrayList<>( );
+        AppointmentUtilities.checkAndReturnNbBookedSeats( "-3", appointmentForm, appointmentDTO, Locale.ENGLISH, listFormErrors );
+        assertEquals( 1, listFormErrors.size( ) );
+        assertEquals( "The number of seats must be greater than zero.", listFormErrors.get( 0 ).getErrorMessage( ) );
+    }
+
+    /**
      * Check if there are appointments impacted by the new week definition
      */
     @Test

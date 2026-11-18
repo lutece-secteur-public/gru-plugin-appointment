@@ -109,6 +109,7 @@ public final class AppointmentUtilities
     public static final String ERROR_MESSAGE_EMPTY_NB_BOOKED_SEAT = "appointment.validation.appointment.NbBookedSeat.notEmpty";
     public static final String ERROR_MESSAGE_FORMAT_NB_BOOKED_SEAT = "appointment.validation.appointment.NbBookedSeat.notNumberFormat";
     public static final String ERROR_MESSAGE_ERROR_NB_BOOKED_SEAT = "appointment.validation.appointment.NbBookedSeat.error";
+    public static final String ERROR_MESSAGE_NOT_POSITIVE_NB_BOOKED_SEAT = "appointment.validation.appointment.NbBookedSeat.notPositive";
 
     public static final String MARK_PERMISSION_ADD_COMMENT = "permission_add_comment";
     public static final String MARK_PERMISSION_MODERATE_COMMENT = "permission_moderate_comment";
@@ -528,6 +529,14 @@ public final class AppointmentUtilities
             genAttError.setErrorMessage( I18nService.getLocalizedString( ERROR_MESSAGE_EMPTY_NB_BOOKED_SEAT, locale ) );
             listFormErrors.add( genAttError );
         }
+        else
+            if ( nbBookedSeats < 0 )
+            {
+                // A negative number of seats would give places back to the slot
+                GenericAttributeError genAttError = new GenericAttributeError( );
+                genAttError.setErrorMessage( I18nService.getLocalizedString( ERROR_MESSAGE_NOT_POSITIVE_NB_BOOKED_SEAT, locale ) );
+                listFormErrors.add( genAttError );
+            }
         return nbBookedSeats;
     }
 
