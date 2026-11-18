@@ -91,6 +91,32 @@ public class AppointmentFilterDTO extends User
     private boolean _orderAsc = true;
 
     /**
+     * True to match the e-mail exactly (case insensitive) instead of a "contains" search
+     */
+    private boolean _bExactEmail;
+
+    /**
+     * Tell if the e-mail criterion must match exactly (case insensitive)
+     * 
+     * @return true for an exact match, false for a "contains" search
+     */
+    public boolean isExactEmail( )
+    {
+        return _bExactEmail;
+    }
+
+    /**
+     * Set if the e-mail criterion must match exactly (case insensitive)
+     * 
+     * @param bExactEmail
+     *            true for an exact match, false for a "contains" search
+     */
+    public void setExactEmail( boolean bExactEmail )
+    {
+        _bExactEmail = bExactEmail;
+    }
+
+    /**
      * Get the form id
      * 
      * @return the form id

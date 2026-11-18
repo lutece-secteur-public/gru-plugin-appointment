@@ -258,6 +258,7 @@ public final class AppointmentUtilities
         {
             AppointmentFilterDTO filter = new AppointmentFilterDTO( );
             filter.setEmail( strEmail );
+            filter.setExactEmail( true );
             filter.setStatus( 0 );
             filter.setIdForm( form.getIdForm( ) );
             List<Appointment> listAppointment = AppointmentService.findListAppointmentsByFilter( filter );
@@ -383,6 +384,7 @@ public final class AppointmentUtilities
 
             AppointmentFilterDTO filter = new AppointmentFilterDTO( );
             filter.setEmail( strEmail );
+            filter.setExactEmail( true );
             filter.setIdForm( form.getIdForm( ) );
             filter.setStatus( 0 );
             if ( form.getNbDaysForMaxAppointmentsPerUser( ) > 0 )

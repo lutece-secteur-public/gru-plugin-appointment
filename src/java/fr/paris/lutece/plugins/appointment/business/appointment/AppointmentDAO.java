@@ -110,6 +110,7 @@ public class AppointmentDAO implements IAppointmentDAO
     private static final String SQL_FILTER_FIRST_NAME = "UPPER(user.first_name) LIKE ?";
     private static final String SQL_FILTER_LAST_NAME = "UPPER(user.last_name) LIKE ?";
     private static final String SQL_FILTER_EMAIL = "UPPER(user.email) LIKE ?";
+    private static final String SQL_FILTER_EMAIL_EXACT = "UPPER(user.email) = ?";
     private static final String SQL_FILTER_PHONE_NUMBER = "UPPER(user.phone_number) LIKE ?";
     private static final String SQL_FILTER_ID_FORM = "slot.id_form = ?";
     private static final String SQL_FILTER_GUID = "user.guid = ?";
@@ -513,7 +514,14 @@ public class AppointmentDAO implements IAppointmentDAO
         }
         if ( appointmentFilter.getEmail( ) != null )
         {
-            daoUtil.setString( ++nIndex, CONSTANT_PERCENT + appointmentFilter.getEmail( ).toUpperCase( ) + CONSTANT_PERCENT );
+            if ( appointmentFilter.isExactEmail( ) )
+            {
+                daoUtil.setString( ++nIndex, appointmentFilter.getEmail( ).toUpperCase( ) );
+            }
+            else
+            {
+                daoUtil.setString( ++nIndex, CONSTANT_PERCENT + appointmentFilter.getEmail( ).toUpperCase( ) + CONSTANT_PERCENT );
+            }
         }
         if ( StringUtils.isNotEmpty( appointmentFilter.getPhoneNumber( ) ) )
         {
@@ -591,7 +599,7 @@ public class AppointmentDAO implements IAppointmentDAO
         if ( appointmentFilter.getEmail( ) != null )
         {
             sbSql.append( CONSTANT_AND );
-            sbSql.append( SQL_FILTER_EMAIL );
+            sbSql.append( appointmentFilter.isExactEmail( ) ? SQL_FILTER_EMAIL_EXACT : SQL_FILTER_EMAIL );
         }
         if ( StringUtils.isNotEmpty( appointmentFilter.getPhoneNumber( ) ) )
         {

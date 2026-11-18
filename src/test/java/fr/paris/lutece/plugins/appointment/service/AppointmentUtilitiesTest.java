@@ -374,6 +374,45 @@ public class AppointmentUtilitiesTest extends LuteceTestCase
     }
 
     /**
+     * The appointments of another address that contains the e-mail must not be counted
+     */
+    @Test
+    public void testCheckNbMaxAppointmentsOnAGivenPeriodExactEmail( )
+    {
+        AppointmentFormDTO appointmentForm = FormServiceTest.buildAppointmentForm( );
+        appointmentForm.setDateStartValidity( Date.valueOf( _formStart ) );
+        appointmentForm.setDateEndValidity( Date.valueOf( _formEnd ) );
+        appointmentForm.setNbMaxAppointmentsPerUser( 1 );
+        appointmentForm.setNbDaysForMaxAppointmentsPerUser( 7 );
+        // Build the form
+        int nIdForm = FormService.createAppointmentForm( appointmentForm );
+        appointmentForm.setIdForm( nIdForm );
+
+        Slot slot1 = SlotTest.buildSlot( nIdForm, _formStart.atTime( _timeStart ), _formStart.atTime( _timeEnd ), 3, 3, 0, 3, Boolean.TRUE, Boolean.TRUE );
+        slot1 = SlotService.saveSlot( slot1 );
+
+        AppointmentDTO appointmentDTO1 = AppointmentTest.buildAppointmentDTO( nIdForm, slot1, "jean.dupont@mdp.fr", "Jean", "Dupont", _timeStart, _timeEnd, 1 );
+        try
+        {
+            AppointmentService.saveAppointment( appointmentDTO1 );
+        }
+        catch( Exception e )
+        {
+            fail( e.getLocalizedMessage( ) );
+        }
+
+        Slot slot2 = SlotTest.buildSlot( nIdForm, _formStartPlus1.atTime( _timeStart ), _formStartPlus1.atTime( _timeEnd ), 3, 3, 0, 3, Boolean.TRUE,
+                Boolean.TRUE );
+        slot2 = SlotService.saveSlot( slot2 );
+
+        AppointmentDTO appointmentDTO2 = AppointmentTest.buildAppointmentDTO( nIdForm, slot2, "dupont@mdp.fr", "Paul", "Dupont", _timeStart, _timeEnd, 1 );
+
+        assertTrue( AppointmentUtilities.checkNbMaxAppointmentsOnAGivenPeriod( appointmentDTO2, "dupont@mdp.fr", appointmentForm ) );
+        assertFalse( AppointmentUtilities.checkNbMaxAppointmentsOnAGivenPeriod( appointmentDTO2, "JEAN.DUPONT@mdp.fr", appointmentForm ) );
+        cleanUp( nIdForm, appointmentForm, appointmentDTO1, appointmentDTO2 );
+    }
+
+    /**
      * Check that the user can take another appointment
      */
     @Test
