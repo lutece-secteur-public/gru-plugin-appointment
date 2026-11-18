@@ -1183,6 +1183,13 @@ public class AppointmentJspBean extends MVCAdminJspBean
     {
         String strIdForm = request.getParameter( PARAMETER_ID_FORM );
         int nIdForm = Integer.parseInt( strIdForm );
+        if ( _notValidatedAppointment == null || _appointmentForm == null )
+        {
+            // The appointment of this session was dropped (calendar or list opened in another tab): start again from the calendar
+            addError( ERROR_MESSAGE_FORM_NO_MORE_VALID, getLocale( ) );
+            _notValidatedAppointment = null;
+            return redirect( request, VIEW_CALENDAR_MANAGE_APPOINTMENTS, PARAMETER_ID_FORM, nIdForm );
+        }
         String strEmail = request.getParameter( PARAMETER_EMAIL );
         String strEmailConfirm = request.getParameter( PARAMETER_EMAIL_CONFIRMATION );
         Locale locale = getLocale( );
