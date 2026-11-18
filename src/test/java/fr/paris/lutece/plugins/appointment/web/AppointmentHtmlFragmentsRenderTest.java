@@ -209,6 +209,27 @@ public class AppointmentHtmlFragmentsRenderTest extends LuteceTestCase
     }
 
     /**
+     * A reschedule only changes the date: the recap offers no link back to the information entered
+     */
+    @Test
+    public void testRecapOfARescheduleHasNoLinkToTheInformation( )
+    {
+        AppointmentFormDTO form = FormServiceTest.buildAppointmentForm( );
+        Map<String, Object> model = new HashMap<>( );
+        model.put( "form", form );
+        model.put( "formMessages", new FormMessage( ) );
+        model.put( "appointment", appointment( form.getIdForm( ) ) );
+        model.put( "modifDateAppointment", true );
+        model.put( "token", "token" );
+        model.put( "listResponseRecapDTO", List.of( ) );
+
+        String strHtml = render( "skin/plugins/appointment/appointment_form_recap.html", model );
+
+        assertTrue( strHtml, strHtml.contains( "view=getViewAppointmentCalendar&amp;id_form=" ) );
+        assertFalse( strHtml, strHtml.contains( "view=getViewAppointmentForm" ) );
+    }
+
+    /**
      * The booking form writes the entries built in Java as markup and the values typed by the user escaped once
      */
     @Test

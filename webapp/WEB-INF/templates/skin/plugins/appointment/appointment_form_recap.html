@@ -10,8 +10,9 @@
 		<@chItem>#i18n{appointment.labelThe} ${appointment.dateOfTheAppointment} #i18n{appointment.labelFrom} ${appointment.slot[0].startingTime} #i18n{appointment.labelTo} ${appointment.slot[i - 1].endingTime}</@chItem>
 	</@chList>
 </@cStepDone>
-<#-- Back to the information entered, the form view of the slot when the history cannot be used -->
-<@cStepDone step='3' title='#i18n{appointment.appointmentApp.enteringInformation}' idx=3 actionHref='jsp/site/Portal.jsp?page=appointment&view=getViewAppointmentForm&id_form=${form.idForm}&starting_date_time=${appointment.slot[0].startingDateTime}' actionParams={"data-lutece-action": "back"} actionLabel='#i18n{portal.util.labelModify}'>
+<#-- Back to the information entered, the form view of the slot when the history cannot be used. A reschedule only changes the date: no link -->
+<#assign stepThreeHref = modifDateAppointment?then('', 'jsp/site/Portal.jsp?page=appointment&view=getViewAppointmentForm&id_form=${form.idForm}&starting_date_time=${appointment.slot[0].startingDateTime}') />
+<@cStepDone step='3' title='#i18n{appointment.appointmentApp.enteringInformation}' idx=3 actionName='' actionHref=stepThreeHref actionParams={"data-lutece-action": "back"} actionLabel='#i18n{portal.util.labelModify}'>
 	<@chList>
 		<@chItem>${formMessages.fieldLastNameTitle!} : ${appointment.lastName}</@chItem>
 		<@chItem>${formMessages.fieldFirstNameTitle!} : ${appointment.firstName}</@chItem>

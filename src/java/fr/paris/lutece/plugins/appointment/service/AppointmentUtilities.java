@@ -266,7 +266,7 @@ public final class AppointmentUtilities
             // appointment that we currently edit
             if ( appointmentDTO.getIdAppointment( ) != 0 )
             {
-                listAppointment.removeIf( a -> a.getIdAppointment( ) != appointmentDTO.getIdAppointment( ) );
+                listAppointment.removeIf( a -> a.getIdAppointment( ) == appointmentDTO.getIdAppointment( ) );
             }
 
             if ( CollectionUtils.isNotEmpty( listAppointment ) )
@@ -398,7 +398,7 @@ public final class AppointmentUtilities
             if ( appointmentDTO.getIdAppointment( ) != 0 )
             {
 
-                listAppointmentsDTO.removeIf( appt -> appt.getIdAppointment( ) != appointmentDTO.getIdAppointment( ) );
+                listAppointmentsDTO.removeIf( appt -> appt.getIdAppointment( ) == appointmentDTO.getIdAppointment( ) );
             }
 
             if ( CollectionUtils.isNotEmpty( listAppointmentsDTO ) )
@@ -460,7 +460,7 @@ public final class AppointmentUtilities
                 if ( appointmentDTO.getIdAppointment( ) != 0 )
                 {
 
-                    listAppointmentsDTO.removeIf( appt -> appt.getIdAppointment( ) != appointmentDTO.getIdAppointment( ) );
+                    listAppointmentsDTO.removeIf( appt -> appt.getIdAppointment( ) == appointmentDTO.getIdAppointment( ) );
                 }
                 listAppointments.addAll( listAppointmentsDTO );
                 if ( CollectionUtils.isNotEmpty( listAppointmentsDTO ) && listAppointmentsDTO.size( ) >= category.getNbMaxAppointmentsPerUser( ) )
