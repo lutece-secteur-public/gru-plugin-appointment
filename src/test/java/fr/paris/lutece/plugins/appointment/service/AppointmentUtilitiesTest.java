@@ -519,6 +519,10 @@ public class AppointmentUtilitiesTest extends LuteceTestCase
     {
         assertEquals( LocalTime.parse( "09:30" ), AppointmentUtilities.getMaxTimeToDisplay( LocalTime.parse( "09:01" ) ) );
         assertEquals( LocalTime.parse( "11:00" ), AppointmentUtilities.getMaxTimeToDisplay( LocalTime.parse( "10:42" ) ) );
+        // A form closing at 23:30 or later has no next hour
+        assertEquals( LocalTime.MAX, AppointmentUtilities.getMaxTimeToDisplay( LocalTime.parse( "23:30" ) ) );
+        assertEquals( LocalTime.MAX, AppointmentUtilities.getMaxTimeToDisplay( LocalTime.parse( "23:59" ) ) );
+        assertEquals( LocalTime.parse( "23:30" ), AppointmentUtilities.getMaxTimeToDisplay( LocalTime.parse( "23:00" ) ) );
     }
 
     /**

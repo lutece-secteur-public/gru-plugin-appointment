@@ -817,9 +817,15 @@ public final class AppointmentUtilities
             maxEndingTimeToDisplay = LocalTime.of( maxEndingTime.getHour( ), THIRTY_MINUTES );
         }
         else
-        {
-            maxEndingTimeToDisplay = LocalTime.of( maxEndingTime.getHour( ) + 1, 0 );
-        }
+            if ( maxEndingTime.getHour( ) == LocalTime.MAX.getHour( ) )
+            {
+                // There is no next hour after 23:30: display until the end of the day
+                maxEndingTimeToDisplay = LocalTime.MAX;
+            }
+            else
+            {
+                maxEndingTimeToDisplay = LocalTime.of( maxEndingTime.getHour( ) + 1, 0 );
+            }
         return maxEndingTimeToDisplay;
     }
 
