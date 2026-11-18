@@ -375,7 +375,7 @@ public class CommentJspBean extends AbstractAppointmentFormAndSlotJspBean
     {
         return !( comment.getStartingValidityDate( ).isAfter( comment.getEndingValidityDate( ) )
                 || ( comment.getStartingValidityDate( ).isEqual( comment.getEndingValidityDate( ) ) && comment.getStartingValidityTime( ) != null
-                        && comment.getStartingValidityTime( ).isAfter( comment.getEndingValidityTime( ) ) ) );
+                        && comment.getEndingValidityTime( ) != null && comment.getStartingValidityTime( ).isAfter( comment.getEndingValidityTime( ) ) ) );
 
     }
 
@@ -466,14 +466,9 @@ public class CommentJspBean extends AbstractAppointmentFormAndSlotJspBean
         {
             comment.setStartingValidityDate( LocalDate.parse( strStartDate ) );
             comment.setEndingValidityDate( LocalDate.parse( strEndDate ) );
-            if ( StringUtils.isNotBlank( strStartTime ) )
-            {
-                comment.setStartingValidityTime( LocalTime.parse( strStartTime ) );
-            }
-            if ( StringUtils.isNotBlank( strEndTime ) )
-            {
-                comment.setEndingValidityTime( LocalTime.parse( strEndTime ) );
-            }
+            // The times are optional: a blank field removes the stored time
+            comment.setStartingValidityTime( StringUtils.isNotBlank( strStartTime ) ? LocalTime.parse( strStartTime ) : null );
+            comment.setEndingValidityTime( StringUtils.isNotBlank( strEndTime ) ? LocalTime.parse( strEndTime ) : null );
         }
         catch( DateTimeParseException e )
         {
