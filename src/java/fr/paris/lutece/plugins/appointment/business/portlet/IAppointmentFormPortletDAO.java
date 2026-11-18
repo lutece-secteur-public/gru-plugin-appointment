@@ -43,5 +43,12 @@ import fr.paris.lutece.portal.business.portlet.IPortletInterfaceDAO;
  */
 public interface IAppointmentFormPortletDAO extends IPortletInterfaceDAO
 {
-    // No new method
+    /**
+     * Tell if a portlet shows an appointment form
+     *
+     * @param nIdForm
+     *            the id of the appointment form
+     * @return true if at least one portlet shows the form
+     */
+    boolean isFormUsed( int nIdForm );
 }

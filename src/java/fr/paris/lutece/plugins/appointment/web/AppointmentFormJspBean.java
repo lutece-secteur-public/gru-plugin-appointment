@@ -55,6 +55,7 @@ import fr.paris.lutece.api.user.User;
 import fr.paris.lutece.plugins.appointment.business.appointment.Appointment;
 import fr.paris.lutece.plugins.appointment.business.display.CalendarButtonConfig;
 import fr.paris.lutece.plugins.appointment.business.form.Form;
+import fr.paris.lutece.plugins.appointment.business.portlet.AppointmentFormPortletHome;
 import fr.paris.lutece.plugins.appointment.business.form.FormHome;
 import fr.paris.lutece.plugins.appointment.business.message.FormMessage;
 import fr.paris.lutece.plugins.appointment.business.message.FormMessageHome;
@@ -176,6 +177,7 @@ public class AppointmentFormJspBean extends AbstractAppointmentFormAndSlotJspBea
     private static final String MESSAGE_INFO_IMPORTED_CLOSING_DAYS = "appointment.info.appointmentform.closingDayImport";
     private static final String MESSAGE_ERROR_CANT_REMOVE_FORM = "appointment.message.cantRemove.form";
     private static final String MESSAGE_ERROR_CANT_REMOVE_ACTIVE_FORM = "appointment.message.cantRemove.activate.form";
+    private static final String MESSAGE_ERROR_CANT_REMOVE_FORM_IN_PORTLET = "appointment.message.cantRemove.portlet.form";
 
     /** Prefix of the parameters of the "add to calendar" button options, all named calendar_button_<option> */
     private static final String PARAMETER_CALENDAR_BUTTON_PREFIX = "calendar_button_";
@@ -407,6 +409,11 @@ public class AppointmentFormJspBean extends AbstractAppointmentFormAndSlotJspBea
         if ( CollectionUtils.isNotEmpty( AppointmentService.findListAppointmentByIdForm( nIdForm ) ) )
         {
             addError( MESSAGE_ERROR_CANT_REMOVE_FORM, getLocale( ) );
+            return redirectView( request, VIEW_MANAGE_APPOINTMENTFORMS );
+        }
+        if ( AppointmentFormPortletHome.isFormUsed( nIdForm ) )
+        {
+            addError( MESSAGE_ERROR_CANT_REMOVE_FORM_IN_PORTLET, getLocale( ) );
             return redirectView( request, VIEW_MANAGE_APPOINTMENTFORMS );
         }
 

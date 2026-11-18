@@ -52,6 +52,7 @@ public class AppointmentFormPortletDAO implements IAppointmentFormPortletDAO
     private static final String SQL_QUERY_INSERT = "INSERT INTO appointment_form_portlet ( id_portlet, id_form ) VALUES ( ? , ?)";
     private static final String SQL_QUERY_DELETE = "DELETE FROM appointment_form_portlet WHERE id_portlet = ? ";
     private static final String SQL_QUERY_UPDATE = "UPDATE appointment_form_portlet SET id_form = ? WHERE id_portlet = ? ";
+    private static final String SQL_QUERY_SELECT_BY_FORM = "SELECT id_portlet FROM appointment_form_portlet WHERE id_form = ? ";
 
     // /////////////////////////////////////////////////////////////////////////////////////
     // Access methods to data
@@ -136,5 +137,19 @@ public class AppointmentFormPortletDAO implements IAppointmentFormPortletDAO
             }
         }
         return portlet;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public boolean isFormUsed( int nIdForm )
+    {
+        try ( DAOUtil daoUtil = new DAOUtil( SQL_QUERY_SELECT_BY_FORM ) )
+        {
+            daoUtil.setInt( 1, nIdForm );
+            daoUtil.executeQuery( );
+            return daoUtil.next( );
+        }
     }
 }

@@ -127,6 +127,16 @@ public class AppointmentPortletRenderingTest extends LuteceTestCase
     }
 
     /**
+     * The form shown by the form portlet is known as used, a form that no portlet shows is not
+     */
+    @Test
+    public void testIsFormUsed( )
+    {
+        assertTrue( AppointmentFormPortletHome.isFormUsed( _nIdForm ) );
+        assertFalse( AppointmentFormPortletHome.isFormUsed( _nIdForm + 100000 ) );
+    }
+
+    /**
      * Sets the common attributes of a test portlet
      *
      * @param portlet
