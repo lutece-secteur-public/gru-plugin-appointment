@@ -128,6 +128,7 @@ public class SpecificWeekJspBean extends AbstractAppointmentFormAndSlotJspBean
     private static final String MESSAGE_INFO_MULTI_SURBOOKING = "appointment.modifyCalendarMultiSlots.messageSurbooking";
 
     private static final String MESSAGE_INFO_OVERLOAD = "appointment.modifyCalendarSlots.messageOverload";
+    private static final String ERROR_MESSAGE_EMPTY_RESERVATIONS_RULES = "appointment.message.error.empty.reservationsRules";
     private static final String MESSAGE_ERROR_PARSING_JSON = "appointment.message.error.parsing.json";
 
     // Parameters
@@ -235,6 +236,13 @@ public class SpecificWeekJspBean extends AbstractAppointmentFormAndSlotJspBean
         LocalTime minStartingTime = WeekDefinitionService.getMinStartingTimeOfAListOfWeekDefinition( listReservationRules );
         // Get the max time of all the week definitions
         LocalTime maxEndingTime = WeekDefinitionService.getMaxEndingTimeOfAListOfWeekDefinition( listReservationRules );
+        if ( listReservationRules.isEmpty( ) )
+        {
+            // No week assigned to the form: reset the range to prevent a calendar crash, as the calendar views do
+            addError( ERROR_MESSAGE_EMPTY_RESERVATIONS_RULES, getLocale( ) );
+            minStartingTime = LocalTime.MIN;
+            maxEndingTime = LocalTime.NOON;
+        }
         // Get all the working days of all the week definitions
         List<String> listDayOfWeek = new ArrayList<>( WeekDefinitionService.getSetDaysOfWeekOfAListOfWeekDefinitionForFullCalendar( listReservationRules ) );
         // Build the slots
