@@ -240,4 +240,16 @@ public final class AppointmentHome
     {
         return _dao.selectAllAppointmentId( _plugin );
     }
+
+    /**
+     * Counts the appointments not cancelled and not ended yet that are assigned to a back office user
+     *
+     * @param nIdAdminUser
+     *            the id of the back office user
+     * @return the number of upcoming appointments assigned to the user
+     */
+    public static int countUpcomingByIdAdminUser( int nIdAdminUser )
+    {
+        return _dao.countUpcomingByIdAdminUser( nIdAdminUser, _plugin );
+    }
 }

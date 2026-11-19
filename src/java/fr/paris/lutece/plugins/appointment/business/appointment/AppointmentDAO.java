@@ -115,6 +115,10 @@ public class AppointmentDAO implements IAppointmentDAO
     private static final String SQL_FILTER_ID_FORM = "slot.id_form = ?";
     private static final String SQL_FILTER_GUID = "user.guid = ?";
     private static final String SQL_FILTER_STATUS = "app.is_cancelled = ?";
+    private static final String SQL_QUERY_COUNT_UPCOMING_BY_ID_ADMIN_USER = "SELECT COUNT(DISTINCT app.id_appointment) FROM appointment_appointment app"
+            + " INNER JOIN appointment_appointment_slot app_slot ON app.id_appointment = app_slot.id_appointment"
+            + " INNER JOIN appointment_slot slot ON app_slot.id_slot = slot.id_slot"
+            + " WHERE app.id_admin_user = ? AND app.is_cancelled = 0 AND slot.ending_date_time >= ?";
     private static final String SQL_FILTER_DATE_APPOINTMENT_MIN = "slot.starting_date_time >= ?";
     private static final String SQL_FILTER_DATE_APPOINTMENT_MAX = "slot.starting_date_time < ?";
     private static final String SQL_FILTER_ID_LIST_START = "app.id_appointment IN ( ";
@@ -705,6 +709,22 @@ public class AppointmentDAO implements IAppointmentDAO
         return listAppointment;
     }
 
+    @Override
+    public int countUpcomingByIdAdminUser( int nIdAdminUser, Plugin plugin )
+    {
+        try ( DAOUtil daoUtil = new DAOUtil( SQL_QUERY_COUNT_UPCOMING_BY_ID_ADMIN_USER, plugin ) )
+        {
+            daoUtil.setInt( 1, nIdAdminUser );
+            daoUtil.setTimestamp( 2, Timestamp.valueOf( LocalDateTime.now( ) ) );
+            daoUtil.executeQuery( );
+
+            return daoUtil.next( ) ? daoUtil.getInt( 1 ) : 0;
+        }
+    }
+
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public List<Integer> selectAllAppointmentId( Plugin plugin )
     {

@@ -206,4 +206,15 @@ public interface IAppointmentDAO
      * @return
      */
     List<Integer> selectAllAppointmentId( Plugin plugin );
+
+    /**
+     * Counts the appointments not cancelled and not ended yet that are assigned to a back office user
+     *
+     * @param nIdAdminUser
+     *            the id of the back office user
+     * @param plugin
+     *            the plugin
+     * @return the number of upcoming appointments assigned to the user
+     */
+    int countUpcomingByIdAdminUser( int nIdAdminUser, Plugin plugin );
 }
