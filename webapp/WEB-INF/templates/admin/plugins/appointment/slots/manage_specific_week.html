@@ -1,4 +1,4 @@
-<@messages errors=errors infos=infos/>
+<@messages errors=errors infos=infos warnings=warnings/>
 <@appointmentTabs tab='specificWeek' form=appointmentform context='slot'>
     <@getCommentModal modalId='commentModal' modalTitle='#i18n{appointment.create_comment.pageTitle}' idComment="comment" idStartingDate="startingValidityDate" idEndingDate="endingValidityDate" idStartingTime="idStartingTime" idEndingTime="idEndingTime" action="doAddComment" idForm=id_form mailingList=mailing_list locale=locale from="specificweek" />
     <@getCommentModal modalId='modify-comment' modalTitle='#i18n{appointment.modify_comment.pageTitle}' idComment="modifyComment" idStartingDate="modifyStartingValidityDate" idEndingDate="modifyEndingValidityDate" idStartingTime="idModifyStartingTime" idEndingTime="idModifyEndingTime" action="doModifyComment" idForm=id_form mailingList=mailing_list locale=locale from="specificweek" />
