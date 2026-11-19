@@ -1276,12 +1276,11 @@ public class AppointmentApp extends MVCApplication
     public synchronized XPage getViewChangeDateAppointment( HttpServletRequest request )
     {
         String strIdForm = request.getParameter( PARAMETER_ID_FORM );
-        String strStartingDateTime = request.getParameter( PARAMETER_STARTING_DATE_TIME );
-        if ( !StringUtils.isNumeric( strIdForm ) || StringUtils.isEmpty( strStartingDateTime ) || _validatedAppointment == null )
+        LocalDateTime startingDateTime = parseStartingDateTime( request );
+        if ( !StringUtils.isNumeric( strIdForm ) || startingDateTime == null || _validatedAppointment == null )
         {
             return redirectView( request, VIEW_APPOINTMENT_FORM_LIST );
         }
-        LocalDateTime startingDateTime = LocalDateTime.parse( strStartingDateTime );
         Locale locale = getLocale( request );
         int nIdForm = Integer.parseInt( strIdForm );
         Form form = FormService.findFormLightByPrimaryKey( nIdForm );
