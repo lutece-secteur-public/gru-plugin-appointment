@@ -367,6 +367,8 @@ public final class AppointmentExportService
     {
         EntryFilter entryFilter = new EntryFilter( );
         entryFilter.setIdResource( Integer.valueOf( strIdForm ) );
+        // The entries are shared by the plugins: only the ones of the appointment form
+        entryFilter.setResourceType( Form.RESOURCE_TYPE );
         List<Entry> listEntry = EntryHome.getEntryList( entryFilter );
 
         ReferenceList refList = new ReferenceList( );
