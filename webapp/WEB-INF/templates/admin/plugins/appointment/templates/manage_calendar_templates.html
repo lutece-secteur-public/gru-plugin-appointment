@@ -51,7 +51,7 @@
 			</@manageFeatureItem>
 			</#list>
 			</@manageFeature>
-			<#if dataTableManager.enablePaginator && (dataTableManager.paginator.pagesCount > 10)>
+			<#if dataTableManager.enablePaginator && (dataTableManager.paginator.pagesCount > 1)>
 			<@tform method='post' action='${dataTableManager.sortUrl}' class='w-100 d-flex justify-content-between align-items-center mt-3'>
 				<@input type='hidden' name='${dataTableManager.id}' id='${dataTableManager.id}' value='${dataTableManager.id}' />
 				<@paginationPageLinks paginator=dataTableManager.paginator />
