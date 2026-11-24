@@ -144,4 +144,16 @@ public class AppointmentCalendarScriptRenderTest extends LuteceTestCase
         assertFalse( strHtml, strHtml.contains( "2026-12-01T\"" ) );
         assertFalse( strHtml, strHtml.matches( "(?s).*\"end\" : \"[0-9-]+T\".*" ) );
     }
+
+    /**
+     * The data of a comment given to the modification modal is written by JSON.stringify: a backslash of the comment no longer breaks JSON.parse
+     */
+    @Test
+    public void testCommentDataWrittenAsJson( )
+    {
+        String strHtml = render( "<@fullCalendarScript selectable=false />" );
+
+        assertTrue( strHtml, strHtml.contains( "el.setAttribute( 'data-json', JSON.stringify(" ) );
+        assertFalse( strHtml, strHtml.contains( "'{\"id_comment\":\"' + event.id" ) );
+    }
 }

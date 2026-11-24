@@ -960,7 +960,7 @@ function initAppointmentCalendar() {
 				if( event.extendedProps.type == 'comment' ){
 					el.classList.add('comments');
 					el.setAttribute( 'id', 'comment-' + event.id );
-					el.setAttribute( 'data-json', '{"id_comment":"' + event.id + '", "comment_text":"' + event.title.replace(/"/g,'\\"') + '", "comment_start":"' + fcFormatDate(event.start, 'YYYY-MM-DD') + '", "comment_start_time":"' + event.extendedProps.start_time + '", "comment_end":"' + event.extendedProps.validity_end + '", "comment_end_time\":"' + event.extendedProps.end_time + '"}' );
+					el.setAttribute( 'data-json', JSON.stringify( { id_comment: event.id, comment_text: event.title, comment_start: fcFormatDate(event.start, 'YYYY-MM-DD'), comment_start_time: event.extendedProps.start_time, comment_end: event.extendedProps.validity_end, comment_end_time: event.extendedProps.end_time } ) );
 					/* Add comment render — build flat object expected by setLabelComment */
 					var commentData = { start: event.start, validity_end: event.extendedProps.validity_end, start_time: event.extendedProps.start_time, end_time: event.extendedProps.end_time };
 					labelEventDate = (typeof setLabelComment === 'function') ? setLabelComment( commentData, '${locale}' ) : '';
