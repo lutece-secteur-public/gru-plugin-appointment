@@ -15,7 +15,7 @@
 			<@input type='text' name='title' id='title' value='${entry.title}' maxlength=255 />
 		</@formGroup>
 		<@formGroup helpKey='#i18n{appointment.createEntry.labelMandatoryCommentForEntryTypeSession}'>
-			<@checkBox orientation='switch' labelKey='#i18n{appointment.createEntry.labelMandatory}' name='mandatory' id='mandatory' value='1' checked=entry.checked />
+			<@checkBox orientation='switch' labelKey='#i18n{appointment.createEntry.labelMandatory}' name='mandatory' id='mandatory' value='1' checked=entry.mandatory />
 		</@formGroup>
 		<@formGroup labelFor='value' labelKey='#i18n{appointment.createEntry.labelAttributeName}' helpKey='#i18n{appointment.createEntry.labelAttributeNameComment}' mandatory=true>
 			<#assign field=getFieldByCode( entry, "attribute_name")>

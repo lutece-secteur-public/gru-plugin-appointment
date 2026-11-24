@@ -41,6 +41,7 @@ import java.util.Map;
 
 import org.junit.jupiter.api.Test;
 
+import fr.paris.lutece.plugins.appointment.web.dto.AppointmentFormDTO;
 import fr.paris.lutece.plugins.genericattributes.business.Entry;
 import fr.paris.lutece.plugins.genericattributes.business.EntryType;
 import fr.paris.lutece.plugins.genericattributes.business.Field;
@@ -72,6 +73,37 @@ public class AppointmentEntryTemplatesRenderTest extends LuteceTestCase
 
         assertTrue( strHtml, strHtml.contains( "attribute12_confirm_field" ) );
         assertFalse( strHtml, strHtml.contains( "value=\"" + COMMENT ) );
+    }
+
+    /**
+     * Modification of a "Session" question: the switch "mandatory" shows the flag of the question
+     */
+    @Test
+    public void testSessionMandatoryChecked( )
+    {
+        Entry entry = entry( "Session" );
+        entry.setMandatory( true );
+        entry.setFields( fields( entry, new String [ ] [ ] {
+                { "attribute_name", "bh_attr" }, { "anonymizable", "false" }
+        } ) );
+
+        String strHtml = render( "admin/plugins/appointment/entries/modify_entry_type_session.html", modifyModel( entry ) );
+
+        assertTrue( strHtml, strHtml.matches( "(?s).*<input[^>]*name=\"mandatory\"[^>]*checked.*" ) );
+    }
+
+    private static Map<String, Object> modifyModel( Entry entry )
+    {
+        AppointmentFormDTO form = new AppointmentFormDTO( );
+        form.setIdForm( 3 );
+        form.setTitle( "bh form" );
+        entry.setHelpMessage( "" );
+        entry.setComment( "" );
+        Map<String, Object> model = new HashMap<>( );
+        model.put( "entry", entry );
+        model.put( "form", form );
+        model.put( "anonymization_help_message", "" );
+        return model;
     }
 
     static Entry entry( String strType )
