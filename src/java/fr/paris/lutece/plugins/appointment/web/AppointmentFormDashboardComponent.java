@@ -40,6 +40,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+import jakarta.enterprise.inject.spi.CDI;
 import jakarta.servlet.http.HttpServletRequest;
 
 import org.apache.commons.lang3.math.NumberUtils;
@@ -56,6 +57,8 @@ import fr.paris.lutece.portal.service.dashboard.DashboardComponent;
 import fr.paris.lutece.portal.service.plugin.Plugin;
 import fr.paris.lutece.portal.service.plugin.PluginService;
 import fr.paris.lutece.portal.service.rbac.RBACService;
+import fr.paris.lutece.portal.service.security.SecurityTokenHandler;
+import fr.paris.lutece.portal.service.security.SecurityTokenService;
 import fr.paris.lutece.portal.service.template.AppTemplateService;
 import fr.paris.lutece.portal.service.util.AppPathService;
 import fr.paris.lutece.portal.service.workgroup.AdminWorkgroupService;
@@ -123,6 +126,9 @@ public class AppointmentFormDashboardComponent extends DashboardComponent
         }
         
         model.put( VIEW_PERMISSIONS_FORM, AppointmentUtilities.getPermissions( listDisplayedForms, AdminUserService.getAdminUser( request ) ) );
+        // the widget is rendered outside the controllers of the plugin: its forms (copy, enable, disable) need the token of their actions
+        model.put( SecurityTokenHandler.MARK_CSRF_TOKEN,
+                CDI.current( ).select( SecurityTokenService.class ).get( ).getToken( request, AbstractAppointmentJspBean.SECURITY_TOKEN_ACTION ) );
         HtmlTemplate template = AppTemplateService.getTemplate( TEMPLATE_DASHBOARD, AdminUserService.getLocale( request ), model );
         return template.getHtml( );
     }
