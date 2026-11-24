@@ -79,6 +79,11 @@ function fpSet( el, dateStr ) {
 	}
 }
 
+// The last day of a range whose end is exclusive: the calendar day before, not 24 hours before (23-hour day of the change of time)
+function dayBefore(date) {
+	return new Date(date.getFullYear(), date.getMonth(), date.getDate() - 1);
+}
+
 function editEvent(eventData) {
 	if (eventData.weekDef != undefined) {
 		document.querySelector('#event-modal input[name="id_week_definition"]').value = eventData.weekDef;
@@ -156,9 +161,9 @@ document.addEventListener('DOMContentLoaded', function() {
 
 			if ( overlapping.length > 0 ) {
 				const ep = overlapping[0].extendedProps;
-				editEvent({ startDate: info.start, endDate: new Date(info.end.getTime() - 86400000)  , weekDef: ep.idweekdef });
+				editEvent({ startDate: info.start, endDate: dayBefore(info.end)  , weekDef: ep.idweekdef });
 			} else {
-				editEvent({ startDate: info.start, endDate: new Date(info.end.getTime() - 86400000)  });
+				editEvent({ startDate: info.start, endDate: dayBefore(info.end)  });
 			}
 			
 			calendarInst.unselect();
@@ -194,7 +199,7 @@ document.addEventListener('DOMContentLoaded', function() {
 		eventClick: function(info) {
 			const ep = info.event.extendedProps;
 			info.jsEvent.preventDefault();
-			editEvent({ startDate: info.event.start, endDate: new Date(info.event.end.getTime() - 86400000), weekDef: ep.idweekdef });
+			editEvent({ startDate: info.event.start, endDate: dayBefore(info.event.end), weekDef: ep.idweekdef });
 		},
 		dayCellDidMount: function(info) {
 			const cDay = fcFormatISO(info.date);

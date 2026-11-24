@@ -81,4 +81,16 @@ public class AppointmentAnnualCalendarRenderTest extends LuteceTestCase
         assertTrue( strHtml, strHtml.contains( "const startYear = 2031;" ) );
         assertFalse( strHtml, strHtml.contains( "initialDate: new Date().toJSON" ) );
     }
+
+    /**
+     * The last day of a selected range is the calendar day before its exclusive end, not 24 hours before
+     */
+    @Test
+    public void testLastDayIsTheCalendarDayBefore( )
+    {
+        String strHtml = render( 2027 );
+
+        assertFalse( strHtml, strHtml.contains( "86400000" ) );
+        assertTrue( strHtml, strHtml.contains( "date.getDate() - 1" ) );
+    }
 }
