@@ -490,7 +490,7 @@ function initMiniCalendar(fcInstance) {
 	// Build available appointment counts per day from main calendar events
 	// A slot is available when: not filled, not overbooked, not closed (bgClosedColor)
 	function buildAppointmentCounts() {
-		var closedColor = (typeof bgClosedColor !== 'undefined') ? bgClosedColor.replace(';', '') : '#bebebe';
+		var closedColor = (typeof bgClosedColor !== 'undefined') ? bgClosedColor : '#bebebe';
 		var counts = {};
 		fcInstance.getEvents().forEach(function(event) {
 			var type = event.extendedProps.type || '';
