@@ -50,7 +50,6 @@ import jakarta.enterprise.inject.spi.CDI;
 import fr.paris.lutece.plugins.genericattributes.business.Entry;
 import fr.paris.lutece.plugins.genericattributes.business.EntryHome;
 import fr.paris.lutece.plugins.genericattributes.business.Field;
-import fr.paris.lutece.plugins.genericattributes.business.FieldHome;
 
 import fr.paris.lutece.plugins.genericattributes.business.Response;
 import fr.paris.lutece.plugins.genericattributes.business.ResponseHome;
@@ -142,10 +141,15 @@ public final class AppointmentResponseService
                 // link to a response removed with its question
                 continue;
             }
-            if ( response.getField( ) != null )
+            if ( response.getField( ) != null && response.getField( ).getIdField( ) != 0 )
             {
-                response.setField( FieldHome.findByPrimaryKey( response.getField( ).getIdField( ) ) );
+                response.setField( AppointmentResponseHome.findFieldOfResponse( response ) );
             }
+            else
+                if ( response.getField( ) != null )
+                {
+                    response.setField( null );
+                }
             if ( response.getFile( ) != null )
             {
                 // load from default generic attribute file service. The files are only read: they are not put in the upload session, where the

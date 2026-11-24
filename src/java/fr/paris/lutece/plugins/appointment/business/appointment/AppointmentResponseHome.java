@@ -37,6 +37,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import fr.paris.lutece.plugins.appointment.service.AppointmentPlugin;
+import fr.paris.lutece.plugins.genericattributes.business.Field;
 import fr.paris.lutece.plugins.genericattributes.business.FieldHome;
 import fr.paris.lutece.plugins.genericattributes.business.Response;
 import fr.paris.lutece.plugins.genericattributes.business.ResponseHome;
@@ -110,7 +111,7 @@ public final class AppointmentResponseHome
             }
             if ( response.getField( ) != null && response.getField( ).getIdField( ) != 0 )
             {
-                response.setField( FieldHome.findByPrimaryKey( response.getField( ).getIdField( ) ) );
+                response.setField( findFieldOfResponse( response ) );
             }
             listResponse.add( response );
         }
@@ -129,4 +130,28 @@ public final class AppointmentResponseHome
         return _dao.findListIdResponse( nIdAppointment, _plugin );
     }
 
+    /**
+     * Load the field (answer choice) of a response. An answer of a "Liste déroulante SQL" question is a line of its query, with no row in
+     * genatt_field (or the row of another question with the same id): its id is kept and its title is the value saved with the response
+     *
+     * @param response
+     *            the response, holding the id of its field
+     * @return the field of the response
+     */
+    public static Field findFieldOfResponse( Response response )
+    {
+        int nIdField = response.getField( ).getIdField( );
+        Field field = FieldHome.findByPrimaryKey( nIdField );
+        if ( field != null && ( response.getEntry( ) == null || field.getParentEntry( ) == null
+                || field.getParentEntry( ).getIdEntry( ) == response.getEntry( ).getIdEntry( ) ) )
+        {
+            return field;
+        }
+        Field fieldOfQuery = new Field( );
+        fieldOfQuery.setIdField( nIdField );
+        fieldOfQuery.setTitle( response.getResponseValue( ) );
+        fieldOfQuery.setValue( response.getResponseValue( ) );
+        fieldOfQuery.setParentEntry( response.getEntry( ) );
+        return fieldOfQuery;
+    }
 }
