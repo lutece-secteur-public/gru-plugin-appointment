@@ -50,7 +50,7 @@
 									<@checkBox orientation='switch' labelKey='#i18n{appointment.label.BoOverbooking}' name='bo_overbooking' id='bo_overbooking' value='true' checked=appointmentform.boOverbooking!false />
 								</@formGroup>
 								<@formGroup labelFor='nb_consecutive_slots' labelKey='#i18n{appointment.label.nbConsecutiveSlots}' helpKey='#i18n{appointment.label.nbConsecutiveSlots.help}' mandatory=true	>
-									<@input type='number' name='nb_consecutive_slots' id='nb_consecutive_slots' value=appointmentform.nb_consecutive_slots!'1' params={"data-appointment-digits": true} maxlength=2 />
+									<@input type='number' name='nb_consecutive_slots' id='nb_consecutive_slots' value=(appointmentform.nbConsecutiveSlots!1)?c params={"data-appointment-digits": true} maxlength=2 />
 								</@formGroup>
 								<@formGroup labelFor='nb_weeks_to_display' labelKey='#i18n{appointment.label.nbWeeksToDisplay}' helpKey='#i18n{appointment.label.nbWeeksToDisplay.help}' mandatory=true>
 									<@input type='number' name='nb_weeks_to_display' id='nb_weeks_to_display' value=appointmentform.nbWeeksToDisplay!'' params={"data-appointment-digits": true} maxlength=2 />
@@ -271,14 +271,18 @@ document.addEventListener( 'DOMContentLoaded', function( ) {
 	} );
 } );
 
-function toggleConsecutiveSlots() {
+function toggleConsecutiveSlots(keepValue) {
+	// keepValue is true only for the initial call (a change event gives an Event)
+	keepValue = keepValue === true;
 	var nbConsecutiveSlots = document.getElementById('nb_consecutive_slots');
 	var isMultislotAppointment = document.getElementById('is_multislot_appointment');
 
 	if (isMultislotAppointment.checked) {
-		// Checkbox is checked, enable inputs field and set value to 5
+		// Checkbox is checked, enable inputs field and set value to 5, except at load: the value typed before a refused creation is kept
 		nbConsecutiveSlots.disabled = false;
-		nbConsecutiveSlots.value = '5';
+		if (!keepValue) {
+			nbConsecutiveSlots.value = '5';
+		}
 	} else {
 		// Checkbox is unchecked, disable inputs field and set value to 1
 		nbConsecutiveSlots.disabled = true;
@@ -287,7 +291,7 @@ function toggleConsecutiveSlots() {
 }
 
 // Initial call to set the initial state of the input field
-toggleConsecutiveSlots();
+toggleConsecutiveSlots(true);
 
 function validateNbConsecutiveSlots() {
 	var nbConsecutiveSlotsInput = document.getElementById('nb_consecutive_slots');
