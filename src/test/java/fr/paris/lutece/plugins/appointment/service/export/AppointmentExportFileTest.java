@@ -34,6 +34,8 @@
 package fr.paris.lutece.plugins.appointment.service.export;
 
 import java.lang.reflect.Method;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.List;
 import java.util.Locale;
 
@@ -66,5 +68,18 @@ public class AppointmentExportFileTest extends LuteceTestCase
         getEntryValue.setAccessible( true );
 
         assertEquals( "bh_document.pdf", getEntryValue.invoke( null, entry, List.of( response ), Locale.FRENCH ) );
+    }
+
+    /**
+     * The name of the export file gives the hour on 24 hours
+     */
+    @Test
+    public void testFileNameHourOn24Hours( )
+    {
+        String strExpected = new SimpleDateFormat( "yyyyMMdd-HHmm" ).format( Calendar.getInstance( Locale.FRENCH ).getTime( ) );
+        ExcelAppointmentGenerator generator = new ExcelAppointmentGenerator( List.of( ), Locale.FRENCH, List.of( ), List.of( ) );
+
+        // the minute may change between the two lines: compare the date and the hour only
+        assertTrue( generator.getFileName( ).startsWith( strExpected.substring( 0, 11 ) ), generator.getFileName( ) + " / " + strExpected );
     }
 }
