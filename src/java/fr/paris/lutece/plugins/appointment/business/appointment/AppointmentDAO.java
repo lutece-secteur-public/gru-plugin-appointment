@@ -132,6 +132,7 @@ public class AppointmentDAO implements IAppointmentDAO
     private static final String SQL_SORT_SLOT_STARTING_DATE_TIME = "slot.starting_date_time";
     private static final String SQL_SORT_APP_ID_ADMIN_USER = "app.id_admin_user";
     private static final String SQL_SORT_APP_IS_CANCELLED = "app.is_cancelled";
+    private static final String SQL_SORT_APP_DATE_CREATE = "app.date_appointment_create";
     private static final String SQL_SORT_ASC = " ASC ";
     private static final String SQL_SORT_DESC = " DESC ";
 
@@ -147,6 +148,7 @@ public class AppointmentDAO implements IAppointmentDAO
     private static final String DATE_APPOINTMENT = "date_appointment";
     private static final String ADMIN = "admin";
     private static final String STATUS = "status";
+    private static final String DATE_APPOINTMENT_TAKEN = "date_appointment_taken";
 
 
     @Override
@@ -678,6 +680,9 @@ public class AppointmentDAO implements IAppointmentDAO
                 break;
             case STATUS:
                 sbSql.append( SQL_SORT_APP_IS_CANCELLED );
+                break;
+            case DATE_APPOINTMENT_TAKEN:
+                sbSql.append( SQL_SORT_APP_DATE_CREATE );
                 break;
             default:
                 sbSql.append( SQL_SORT_SLOT_STARTING_DATE_TIME );

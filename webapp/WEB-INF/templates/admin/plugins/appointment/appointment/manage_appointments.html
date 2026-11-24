@@ -138,13 +138,13 @@
 					<@sort jsp_url='jsp/admin/plugins/appointment/ManageAppointments.jsp?view=manageAppointments&id_form=${form.idForm}' attribute='status' titleAscDesc=['#i18n{appointment.labelStatus}','#i18n{appointment.labelStatus}'] />	
 				</@th>
 				<@th>
+					<#-- the workflow state is not a column of the appointment: no sort -->
 					<@span class='fs-6'>#i18n{appointment.manageAppointments.columnState}</@span>
-					<@sort jsp_url='jsp/admin/plugins/appointment/ManageAppointments.jsp?view=manageAppointments&id_form=${form.idForm}' attribute='state' titleAscDesc=['#i18n{appointment.manageAppointments.columnState}','#i18n{appointment.manageAppointments.columnState}'] />	
 				</@th>
 				<@th><@span class='fs-6'>#i18n{portal.util.labelActions}</@span></@th>
 				<@th>
 					<@span class='fs-6'>#i18n{appointment.manageAppointments.columnDateAppointmentTaken}</@span>
-					<@sort jsp_url='jsp/admin/plugins/appointment/ManageAppointments.jsp?view=manageAppointments&id_form=${form.idForm}' attribute='date_appointment' titleAscDesc=['#i18n{appointment.manageAppointments.columnDateAppointmentTaken}','#i18n{appointment.manageAppointments.columnDateAppointmentTaken}'] />	
+					<@sort jsp_url='jsp/admin/plugins/appointment/ManageAppointments.jsp?view=manageAppointments&id_form=${form.idForm}' attribute='date_appointment_taken' titleAscDesc=['#i18n{appointment.manageAppointments.columnDateAppointmentTaken}','#i18n{appointment.manageAppointments.columnDateAppointmentTaken}'] />	
 				</@th>
 			</@tr>
 			<@tableHeadBodySeparator />
