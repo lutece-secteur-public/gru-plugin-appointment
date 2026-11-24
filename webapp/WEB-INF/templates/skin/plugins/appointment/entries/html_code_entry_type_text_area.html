@@ -22,11 +22,15 @@
 <@cField class=(hasError??)?then('has-error', '')>
 <@cLabel for='attribute${entry.idEntry}' label=entry.title! required=entry.mandatory />
 <#if list_responses??>
+	<#assign textAreaWritten = false />
 	<#list list_responses as response>
 		<#if response.entry.idEntry == entry.idEntry && response.toStringValueResponse??>
 			<@getTextAreaContent responseContent=response.toStringValueResponse entry=entry/>
+			<#assign textAreaWritten = true />
 		</#if>
 	</#list>
+	<#-- a conditional question whose answer was not chosen comes back with a response without value: its input is written empty -->
+	<#if !textAreaWritten><@getTextAreaContent responseContent='' entry=entry /></#if>
 <#else>
 	<#assign default=getFieldValueByCode( entry, "text_config")>
 	<@getTextAreaContent responseContent=default entry=entry />
