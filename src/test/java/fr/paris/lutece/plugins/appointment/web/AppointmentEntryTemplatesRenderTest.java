@@ -33,6 +33,8 @@
  */
 package fr.paris.lutece.plugins.appointment.web;
 
+import java.sql.Timestamp;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -90,6 +92,25 @@ public class AppointmentEntryTemplatesRenderTest extends LuteceTestCase
         String strHtml = render( "admin/plugins/appointment/entries/modify_entry_type_session.html", modifyModel( entry ) );
 
         assertTrue( strHtml, strHtml.matches( "(?s).*<input[^>]*name=\"mandatory\"[^>]*checked.*" ) );
+    }
+
+    /**
+     * Modification of a "Date" question: the default date is posted as "value", in the pattern read by the entry type
+     */
+    @Test
+    public void testDateDefaultValuePostedAsValue( )
+    {
+        Entry entry = entry( "Date" );
+        List<Field> listFields = fields( entry, new String [ ] [ ] {
+                { "default_date_value", null }, { "anonymizable", "false" }
+        } );
+        listFields.get( 0 ).setValueTypeDate( Timestamp.valueOf( LocalDateTime.of( 2026, 12, 1, 0, 0 ) ) );
+        entry.setFields( listFields );
+
+        String strHtml = render( "admin/plugins/appointment/entries/modify_entry_type_date.html", modifyModel( entry ) );
+
+        assertTrue( strHtml, strHtml.matches( "(?s).*<input[^>]*name=\"value\"[^>]*value=\"2026-12-01 00:00:00\".*" ) );
+        assertFalse( strHtml, strHtml.contains( "name=\"date\"" ) );
     }
 
     private static Map<String, Object> modifyModel( Entry entry )

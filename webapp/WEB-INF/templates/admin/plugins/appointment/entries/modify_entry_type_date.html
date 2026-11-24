@@ -24,7 +24,8 @@
 		<@formGroup labelFor='date' labelKey='#i18n{appointment.defaultValue.name}'>
 			<#assign field = getFieldByCode( entry, "default_date_value" ) >
 			<@inputGroup>
-				<@input type='text' name='date' id='date' value='${field.valueTypeDate?if_exists}' />
+				<#-- posted as "value" in the pattern read by the entry type (yyyy-MM-dd HH:mm:ss), as on the creation screen -->
+				<@input type='text' name='value' id='date' value='${(field.valueTypeDate?string("yyyy-MM-dd HH:mm:ss"))!}' />
 				<@inputGroupItem type='text'>
 					<@icon style='calendar' />
 				</@inputGroupItem>
