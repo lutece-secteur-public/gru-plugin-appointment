@@ -55,7 +55,6 @@ import fr.paris.lutece.portal.service.message.AdminMessageService;
 import fr.paris.lutece.portal.service.util.AppLogService;
 import fr.paris.lutece.portal.service.util.AppPathService;
 import fr.paris.lutece.portal.service.util.AppPropertiesService;
-import fr.paris.lutece.portal.util.mvc.admin.MVCAdminJspBean;
 import fr.paris.lutece.portal.util.mvc.admin.annotations.Controller;
 import fr.paris.lutece.portal.util.mvc.commons.annotations.Action;
 import fr.paris.lutece.portal.util.mvc.commons.annotations.View;
@@ -76,8 +75,8 @@ import jakarta.inject.Named;
  */
 @SessionScoped
 @Named
-@Controller( controllerJsp = CalendarTemplateJspBean.CONTROLLER_JSP, controllerPath = CalendarTemplateJspBean.CONTROLLER_PATH, right = CalendarTemplateJspBean.RIGHT_MANAGE_CALENDAR_TEMPLATES )
-public class CalendarTemplateJspBean extends MVCAdminJspBean
+@Controller( controllerJsp = CalendarTemplateJspBean.CONTROLLER_JSP, controllerPath = CalendarTemplateJspBean.CONTROLLER_PATH, right = CalendarTemplateJspBean.RIGHT_MANAGE_CALENDAR_TEMPLATES, securityTokenEnabled = true )
+public class CalendarTemplateJspBean extends AbstractAppointmentJspBean
 {
     /**
      * Right to manage appointment calendar templates
@@ -165,7 +164,7 @@ public class CalendarTemplateJspBean extends MVCAdminJspBean
      *            The request
      * @return The HTML code to display
      */
-    @View( value = VIEW_MANAGE_CALENDAR_TEMPLATES, defaultView = true )
+    @View( value = VIEW_MANAGE_CALENDAR_TEMPLATES, defaultView = true, securityTokenAction = SECURITY_TOKEN_ACTION )
     public String getManageAppointmentCalendarTemplates( HttpServletRequest request )
     {
         _template = null;
@@ -198,7 +197,7 @@ public class CalendarTemplateJspBean extends MVCAdminJspBean
      *            The request
      * @return The page to create or modify an existing template
      */
-    @View( VIEW_CREATE_MODIFY_TEMPLATE )
+    @View( value = VIEW_CREATE_MODIFY_TEMPLATE, securityTokenAction = SECURITY_TOKEN_ACTION )
     public String getCreateModifyTemplate( HttpServletRequest request )
     {
         String strIdTemplate = request.getParameter( PARAMETER_ID_TEMPLATE );
@@ -266,7 +265,7 @@ public class CalendarTemplateJspBean extends MVCAdminJspBean
      *            The request
      * @return The next URL to redirect to
      */
-    @Action( ACTION_CREATE_MODIFY_TEMPLATE )
+    @Action( value = ACTION_CREATE_MODIFY_TEMPLATE, securityTokenAction = SECURITY_TOKEN_ACTION )
     public String doCreateModifyTemplate( HttpServletRequest request )
     {
         // We reset the session template to prevent collisions with any other
@@ -311,7 +310,7 @@ public class CalendarTemplateJspBean extends MVCAdminJspBean
      *            The request
      * @return The next URL to redirect to
      */
-    @View( VIEW_CONFIRM_REMOVE_TEMPLATE )
+    @View( value = VIEW_CONFIRM_REMOVE_TEMPLATE, securityTokenAction = SECURITY_TOKEN_ACTION )
     public String getConfirmRemoveTemplate( HttpServletRequest request )
     {
         String strIdTemplate = request.getParameter( PARAMETER_ID_TEMPLATE );
@@ -343,7 +342,7 @@ public class CalendarTemplateJspBean extends MVCAdminJspBean
      *            The request
      * @return The next URL to redirect to
      */
-    @Action( ACTION_REMOVE_TEMPLATE )
+    @Action( value = ACTION_REMOVE_TEMPLATE, securityTokenAction = SECURITY_TOKEN_ACTION )
     public String doRemoveTemplate( HttpServletRequest request )
     {
         String strIdTemplate = request.getParameter( PARAMETER_ID_TEMPLATE );
@@ -377,7 +376,7 @@ public class CalendarTemplateJspBean extends MVCAdminJspBean
      *            The request
      * @return The next URL to redirect to
      */
-    @Action( ACTION_DOWNLOAD_TEMPLATE )
+    @Action( value = ACTION_DOWNLOAD_TEMPLATE, securityTokenAction = SECURITY_TOKEN_ACTION )
     public String doDownloadTemplate( HttpServletRequest request )
     {
         String strTemplate = request.getParameter( PARAMETER_TEMPLACE_PATH );

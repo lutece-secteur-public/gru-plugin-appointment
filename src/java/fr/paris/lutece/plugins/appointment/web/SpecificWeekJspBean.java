@@ -103,7 +103,7 @@ import jakarta.inject.Named;
  */
 @SessionScoped
 @Named
-@Controller( controllerJsp = SpecificWeekJspBean.JSP_MANAGE_APPOINTMENT_SLOTS, controllerPath = "jsp/admin/plugins/appointment/", right = AppointmentFormJspBean.RIGHT_MANAGEAPPOINTMENTFORM )
+@Controller( controllerJsp = SpecificWeekJspBean.JSP_MANAGE_APPOINTMENT_SLOTS, controllerPath = "jsp/admin/plugins/appointment/", right = AppointmentFormJspBean.RIGHT_MANAGEAPPOINTMENTFORM, securityTokenEnabled = true )
 public class SpecificWeekJspBean extends AbstractAppointmentFormAndSlotJspBean
 {
     /**
@@ -190,7 +190,7 @@ public class SpecificWeekJspBean extends AbstractAppointmentFormAndSlotJspBean
      * @return the page
      * @throws AccessDeniedException
      */
-    @View( defaultView = true, value = VIEW_MANAGE_SPECIFIC_WEEK )
+    @View( defaultView = true, value = VIEW_MANAGE_SPECIFIC_WEEK, securityTokenAction = SECURITY_TOKEN_ACTION )
     public String getViewManageSpecificWeek( HttpServletRequest request ) throws AccessDeniedException
     {
         _slot = null;
@@ -282,7 +282,7 @@ public class SpecificWeekJspBean extends AbstractAppointmentFormAndSlotJspBean
      * @return the page
      * @throws AccessDeniedException
      */
-    @View( VIEW_MODIFY_SLOT )
+    @View( value = VIEW_MODIFY_SLOT, securityTokenAction = SECURITY_TOKEN_ACTION )
     public String getViewModifySlot( HttpServletRequest request ) throws AccessDeniedException
     {
         String strIdForm = request.getParameter( PARAMETER_ID_FORM );
@@ -326,7 +326,7 @@ public class SpecificWeekJspBean extends AbstractAppointmentFormAndSlotJspBean
      * @return to the page of the specific week
      * @throws AccessDeniedException
      */
-    @Action( ACTION_DO_MODIFY_SLOT )
+    @Action( value = ACTION_DO_MODIFY_SLOT, securityTokenAction = SECURITY_TOKEN_ACTION )
     public String doModifySlot( HttpServletRequest request ) throws AccessDeniedException
     {
         boolean bOpeningHasChanged = false;
@@ -428,7 +428,7 @@ public class SpecificWeekJspBean extends AbstractAppointmentFormAndSlotJspBean
      * @return to the page of the specific week
      * @throws AccessDeniedException
      */
-    @Action( ACTION_DO_MODIFY_LIST_SLOT )
+    @Action( value = ACTION_DO_MODIFY_LIST_SLOT, securityTokenAction = SECURITY_TOKEN_ACTION )
     public String doModifyListSlots( HttpServletRequest request ) throws AccessDeniedException
     {
         int nVarMaxCapacity = 0;

@@ -59,7 +59,6 @@ import fr.paris.lutece.portal.service.rbac.RBACService;
 import fr.paris.lutece.portal.service.util.AppPropertiesService;
 import fr.paris.lutece.portal.service.workflow.WorkflowService;
 import fr.paris.lutece.portal.service.workgroup.AdminWorkgroupService;
-import fr.paris.lutece.portal.util.mvc.admin.MVCAdminJspBean;
 
 import jakarta.enterprise.inject.Instance;
 import jakarta.inject.Inject;
@@ -70,7 +69,7 @@ import fr.paris.lutece.util.ReferenceList;
 import fr.paris.lutece.util.html.AbstractPaginator;
 import fr.paris.lutece.util.url.UrlItem;
 
-public abstract class AbstractAppointmentFormAndSlotJspBean extends MVCAdminJspBean
+public abstract class AbstractAppointmentFormAndSlotJspBean extends AbstractAppointmentJspBean
 {
 
     /**

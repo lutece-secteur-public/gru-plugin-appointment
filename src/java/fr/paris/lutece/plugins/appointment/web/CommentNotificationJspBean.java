@@ -38,7 +38,6 @@ import fr.paris.lutece.plugins.appointment.business.comment.CommentNotificationC
 import fr.paris.lutece.plugins.appointment.business.comment.CommentNotificationHome;
 import fr.paris.lutece.portal.service.admin.AccessDeniedException;
 import fr.paris.lutece.portal.service.util.AppPathService;
-import fr.paris.lutece.portal.util.mvc.admin.MVCAdminJspBean;
 import fr.paris.lutece.portal.util.mvc.admin.annotations.Controller;
 import fr.paris.lutece.portal.util.mvc.commons.annotations.Action;
 import fr.paris.lutece.portal.util.mvc.commons.annotations.View;
@@ -56,8 +55,8 @@ import jakarta.inject.Named;
  */
 @SessionScoped
 @Named
-@Controller( controllerJsp = CommentNotificationJspBean.CONTROLLER_JSP, controllerPath = CommentNotificationJspBean.CONTROLLER_PATH, right = CommentJspBean.RIGHT_MANAGECOMMENTTFORM )
-public class CommentNotificationJspBean extends MVCAdminJspBean
+@Controller( controllerJsp = CommentNotificationJspBean.CONTROLLER_JSP, controllerPath = CommentNotificationJspBean.CONTROLLER_PATH, right = CommentJspBean.RIGHT_MANAGECOMMENTTFORM, securityTokenEnabled = true )
+public class CommentNotificationJspBean extends AbstractAppointmentJspBean
 {
     private static final long serialVersionUID = 1995349998868975731L;
 
@@ -108,7 +107,7 @@ public class CommentNotificationJspBean extends MVCAdminJspBean
      * @return The HTML code to display
      * @throws AccessDeniedException
      */
-    @View( value = VIEW_NOTIFIACTION_CONFIG, defaultView = true )
+    @View( value = VIEW_NOTIFIACTION_CONFIG, defaultView = true, securityTokenAction = SECURITY_TOKEN_ACTION )
     public String getNotificationCommentConfig( HttpServletRequest request )
     {
         _commentNotificationConfig = null;
@@ -125,7 +124,7 @@ public class CommentNotificationJspBean extends MVCAdminJspBean
      * @return The HTML code to display
      * @throws AccessDeniedException
      */
-    @View( value = VIEW_MODIFY_NOTIFIACTION_CONFIG )
+    @View( value = VIEW_MODIFY_NOTIFIACTION_CONFIG, securityTokenAction = SECURITY_TOKEN_ACTION )
     public String getModifyNotificationCommentConfig( HttpServletRequest request )
     {
         String type = request.getParameter( PARAMETER_TYPE );
@@ -144,7 +143,7 @@ public class CommentNotificationJspBean extends MVCAdminJspBean
      * @return The next URL to redirect to
      * @throws AccessDeniedException
      */
-    @Action( ACTION_DO_UPDATE_NOTIFICATION_CONFIG )
+    @Action( value = ACTION_DO_UPDATE_NOTIFICATION_CONFIG, securityTokenAction = SECURITY_TOKEN_ACTION )
     public String doUpdateNotificationCommentConfig( HttpServletRequest request )
     {
         // The configuration is the one of the posted type, not the one kept in the session: another tab may have opened another type

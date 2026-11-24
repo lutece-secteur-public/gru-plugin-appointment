@@ -66,7 +66,6 @@ import fr.paris.lutece.portal.service.plugin.PluginService;
 import fr.paris.lutece.portal.service.rbac.RBACService;
 import fr.paris.lutece.portal.service.util.AppPathService;
 import fr.paris.lutece.portal.service.util.AppPropertiesService;
-import fr.paris.lutece.portal.util.mvc.admin.MVCAdminJspBean;
 import fr.paris.lutece.portal.util.mvc.admin.annotations.Controller;
 import fr.paris.lutece.portal.util.mvc.commons.annotations.Action;
 import fr.paris.lutece.portal.util.mvc.commons.annotations.View;
@@ -88,8 +87,8 @@ import jakarta.inject.Named;
  */
 @SessionScoped
 @Named
-@Controller( controllerJsp = "ManageAppointmentFormEntries.jsp", controllerPath = "jsp/admin/plugins/appointment/", right = AppointmentFormJspBean.RIGHT_MANAGEAPPOINTMENTFORM )
-public class AppointmentFormEntryJspBean extends MVCAdminJspBean
+@Controller( controllerJsp = "ManageAppointmentFormEntries.jsp", controllerPath = "jsp/admin/plugins/appointment/", right = AppointmentFormJspBean.RIGHT_MANAGEAPPOINTMENTFORM, securityTokenEnabled = true )
+public class AppointmentFormEntryJspBean extends AbstractAppointmentJspBean
 {
     private static final long serialVersionUID = -4951787792196104967L;
 
@@ -168,7 +167,7 @@ public class AppointmentFormEntryJspBean extends MVCAdminJspBean
      * @return the page
      * @throws AccessDeniedException
      */
-    @View( VIEW_MODIFY_APPOINTMENTFORM_ENTRIES )
+    @View( value = VIEW_MODIFY_APPOINTMENTFORM_ENTRIES, securityTokenAction = SECURITY_TOKEN_ACTION )
     public String getModifyAppointmentFormEntries( HttpServletRequest request ) throws AccessDeniedException
     {
         String strIdForm = request.getParameter( PARAMETER_ID_FORM );
@@ -196,7 +195,7 @@ public class AppointmentFormEntryJspBean extends MVCAdminJspBean
      *            The request
      * @return The HTML code to display or the next URL to redirect to
      */
-    @View( value = VIEW_GET_CREATE_ENTRY )
+    @View( value = VIEW_GET_CREATE_ENTRY, securityTokenAction = SECURITY_TOKEN_ACTION )
     public String getCreateEntry( HttpServletRequest request )
     {
         String strIdForm = request.getParameter( PARAMETER_ID_FORM );
@@ -257,7 +256,7 @@ public class AppointmentFormEntryJspBean extends MVCAdminJspBean
      *            the request
      * @return The HTML code to display or the next URL to redirect to
      */
-    @Action( ACTION_DO_CREATE_ENTRY )
+    @Action( value = ACTION_DO_CREATE_ENTRY, securityTokenAction = SECURITY_TOKEN_ACTION )
     public String doCreateEntry( HttpServletRequest request )
     {
         String strIdForm = request.getParameter( PARAMETER_ID_FORM );
@@ -316,7 +315,7 @@ public class AppointmentFormEntryJspBean extends MVCAdminJspBean
      *            The HTTP request
      * @return The entry modification page
      */
-    @View( VIEW_GET_MODIFY_ENTRY )
+    @View( value = VIEW_GET_MODIFY_ENTRY, securityTokenAction = SECURITY_TOKEN_ACTION )
     public String getModifyEntry( HttpServletRequest request )
     {
         Plugin plugin = getPlugin( );
@@ -364,7 +363,7 @@ public class AppointmentFormEntryJspBean extends MVCAdminJspBean
      *            The HTTP request
      * @return The URL to go after performing the action
      */
-    @Action( ACTION_DO_MODIFY_ENTRY )
+    @Action( value = ACTION_DO_MODIFY_ENTRY, securityTokenAction = SECURITY_TOKEN_ACTION )
     public String doModifyEntry( HttpServletRequest request )
     {
         String strIdEntry = request.getParameter( PARAMETER_ID_ENTRY );
@@ -435,7 +434,7 @@ public class AppointmentFormEntryJspBean extends MVCAdminJspBean
      *            The HTTP request
      * @return the confirmation page of delete entry
      */
-    @View( VIEW_CONFIRM_REMOVE_ENTRY )
+    @View( value = VIEW_CONFIRM_REMOVE_ENTRY, securityTokenAction = SECURITY_TOKEN_ACTION )
     public String getConfirmRemoveEntry( HttpServletRequest request )
     {
         String strIdEntry = request.getParameter( PARAMETER_ID_ENTRY );
@@ -457,7 +456,7 @@ public class AppointmentFormEntryJspBean extends MVCAdminJspBean
      *            The HTTP request
      * @return The URL to go after performing the action
      */
-    @Action( ACTION_DO_REMOVE_ENTRY )
+    @Action( value = ACTION_DO_REMOVE_ENTRY, securityTokenAction = SECURITY_TOKEN_ACTION )
     public String doRemoveEntry( HttpServletRequest request )
     {
         String strIdEntry = request.getParameter( PARAMETER_ID_ENTRY );
@@ -515,7 +514,7 @@ public class AppointmentFormEntryJspBean extends MVCAdminJspBean
      *            The request
      * @return The next URL to redirect to
      */
-    @Action( ACTION_DO_MOVE_UP_ENTRY_CONDITIONAL )
+    @Action( value = ACTION_DO_MOVE_UP_ENTRY_CONDITIONAL, securityTokenAction = SECURITY_TOKEN_ACTION )
     public String doMoveUpEntryConditional( HttpServletRequest request )
     {
         return doMoveEntryConditional( request, true );
@@ -528,7 +527,7 @@ public class AppointmentFormEntryJspBean extends MVCAdminJspBean
      *            The request
      * @return The next URL to redirect to
      */
-    @Action( ACTION_DO_MOVE_DOWN_ENTRY_CONDITIONAL )
+    @Action( value = ACTION_DO_MOVE_DOWN_ENTRY_CONDITIONAL, securityTokenAction = SECURITY_TOKEN_ACTION )
     public String doMoveDownEntryConditional( HttpServletRequest request )
     {
         return doMoveEntryConditional( request, false );
@@ -576,7 +575,7 @@ public class AppointmentFormEntryJspBean extends MVCAdminJspBean
      *            The HTTP request
      * @return The URL to go after performing the action
      */
-    @Action( ACTION_DO_COPY_ENTRY )
+    @Action( value = ACTION_DO_COPY_ENTRY, securityTokenAction = SECURITY_TOKEN_ACTION )
     public String doCopyEntry( HttpServletRequest request )
     {
         String strIdEntry = request.getParameter( PARAMETER_ID_ENTRY );
@@ -623,7 +622,7 @@ public class AppointmentFormEntryJspBean extends MVCAdminJspBean
      *            the request
      * @return The URL of the form management page
      */
-    @Action( ACTION_DO_CHANGE_ORDER_ENTRY )
+    @Action( value = ACTION_DO_CHANGE_ORDER_ENTRY, securityTokenAction = SECURITY_TOKEN_ACTION )
     public String doChangeOrderEntry( HttpServletRequest request )
     {
         // gets the entry which needs to be changed (order)
@@ -683,7 +682,7 @@ public class AppointmentFormEntryJspBean extends MVCAdminJspBean
      *            The request
      * @return The newt URL to redirect to
      */
-    @Action( ACTION_DO_MOVE_OUT_ENTRY )
+    @Action( value = ACTION_DO_MOVE_OUT_ENTRY, securityTokenAction = SECURITY_TOKEN_ACTION )
     public String doMoveOutEntry( HttpServletRequest request )
     {
         String strIdEntry = request.getParameter( PARAMETER_ID_ENTRY );
@@ -707,7 +706,7 @@ public class AppointmentFormEntryJspBean extends MVCAdminJspBean
      *            the HTTP Request
      * @return The URL to go after performing the action
      */
-    @Action( ACTION_DO_REMOVE_REGULAR_EXPRESSION )
+    @Action( value = ACTION_DO_REMOVE_REGULAR_EXPRESSION, securityTokenAction = SECURITY_TOKEN_ACTION )
     public String doRemoveRegularExpression( HttpServletRequest request )
     {
         String strIdExpression = request.getParameter( PARAMETER_ID_EXPRESSION );
@@ -731,7 +730,7 @@ public class AppointmentFormEntryJspBean extends MVCAdminJspBean
      *            the HTTP Request
      * @return The URL to go after performing the action
      */
-    @Action( ACTION_DO_INSERT_REGULAR_EXPRESSION )
+    @Action( value = ACTION_DO_INSERT_REGULAR_EXPRESSION, securityTokenAction = SECURITY_TOKEN_ACTION )
     public String doInsertRegularExpression( HttpServletRequest request )
     {
         String strIdExpression = request.getParameter( PARAMETER_ID_EXPRESSION );
@@ -748,7 +747,7 @@ public class AppointmentFormEntryJspBean extends MVCAdminJspBean
         return redirect( request, AppointmentFormJspBean.getURLManageAppointmentForms( request ) );
     }
 
-    @Action( ACTION_CHANGE_DISABLED )
+    @Action( value = ACTION_CHANGE_DISABLED, securityTokenAction = SECURITY_TOKEN_ACTION )
     public String doChangeActive( HttpServletRequest request )
     {
         int idEntry = NumberUtils.toInt( request.getParameter( PARAMETER_ID_ENTRY ), -1 );

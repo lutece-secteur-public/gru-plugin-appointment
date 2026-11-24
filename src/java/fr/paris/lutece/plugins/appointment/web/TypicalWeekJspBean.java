@@ -102,7 +102,7 @@ import jakarta.inject.Named;
  */
 @SessionScoped
 @Named
-@Controller( controllerJsp = TypicalWeekJspBean.JSP_MANAGE_APPOINTMENT_SLOTS, controllerPath = "jsp/admin/plugins/appointment/", right = AppointmentFormJspBean.RIGHT_MANAGEAPPOINTMENTFORM )
+@Controller( controllerJsp = TypicalWeekJspBean.JSP_MANAGE_APPOINTMENT_SLOTS, controllerPath = "jsp/admin/plugins/appointment/", right = AppointmentFormJspBean.RIGHT_MANAGEAPPOINTMENTFORM, securityTokenEnabled = true )
 public class TypicalWeekJspBean extends AbstractAppointmentFormAndSlotJspBean
 {
     /**
@@ -197,7 +197,7 @@ public class TypicalWeekJspBean extends AbstractAppointmentFormAndSlotJspBean
      * @return the page
      * @throws AccessDeniedException
      */
-    @View( value = VIEW_MANAGE_TYPICAL_WEEK )
+    @View( value = VIEW_MANAGE_TYPICAL_WEEK, securityTokenAction = SECURITY_TOKEN_ACTION )
     public String getViewManageTypicalWeek( HttpServletRequest request ) throws AccessDeniedException
     {
         _timeSlot = null;
@@ -284,7 +284,7 @@ public class TypicalWeekJspBean extends AbstractAppointmentFormAndSlotJspBean
      * @return Html Page
      * @throws AccessDeniedException
      */
-    @Action( ACTION_CREATE_TYPICAL_WEEK )
+    @Action( value = ACTION_CREATE_TYPICAL_WEEK, securityTokenAction = SECURITY_TOKEN_ACTION )
     public String doCreateTypicalWeek( HttpServletRequest request ) throws AccessDeniedException
     {
         String strIdForm = request.getParameter( PARAMETER_ID_FORM );
@@ -316,7 +316,7 @@ public class TypicalWeekJspBean extends AbstractAppointmentFormAndSlotJspBean
      * @return the page
      * @throws AccessDeniedException
      */
-    @Action( ACTION_MODIFY_ADVANCED_PARAMETERS )
+    @Action( value = ACTION_MODIFY_ADVANCED_PARAMETERS, securityTokenAction = SECURITY_TOKEN_ACTION )
     public String doModifyAdvancedParameters( HttpServletRequest request ) throws AccessDeniedException
     {
 
@@ -468,7 +468,7 @@ public class TypicalWeekJspBean extends AbstractAppointmentFormAndSlotJspBean
      * @return the page
      * @throws AccessDeniedException
      */
-    @Action( ACTION_MODIFY_GLOBAL_PARAM )
+    @Action( value = ACTION_MODIFY_GLOBAL_PARAM, securityTokenAction = SECURITY_TOKEN_ACTION )
     public String doModifyGlobalParameters( HttpServletRequest request ) throws AccessDeniedException
     {
         if ( !RBACService.isAuthorized( AppointmentFormDTO.RESOURCE_TYPE, String.valueOf( _appointmentForm.getIdForm( ) ),
@@ -501,7 +501,7 @@ public class TypicalWeekJspBean extends AbstractAppointmentFormAndSlotJspBean
      *            The HTTP request
      * @return the HTML code to confirm
      */
-    @Action( ACTION_CONFIRM_REMOVE_PARAMETER )
+    @Action( value = ACTION_CONFIRM_REMOVE_PARAMETER, securityTokenAction = SECURITY_TOKEN_ACTION )
     public String getConfirmRemoveParameter( HttpServletRequest request )
     {
         UrlItem url = new UrlItem( getActionUrl( ACTION_REMOVE_PARAMETER ) );
@@ -521,7 +521,7 @@ public class TypicalWeekJspBean extends AbstractAppointmentFormAndSlotJspBean
      * @throws AccessDeniedException
      *             If the user is not authorized to access this feature
      */
-    @Action( ACTION_REMOVE_PARAMETER )
+    @Action( value = ACTION_REMOVE_PARAMETER, securityTokenAction = SECURITY_TOKEN_ACTION )
     public String doRemoveParameter( HttpServletRequest request ) throws AccessDeniedException
     {
         String strIdForm = request.getParameter( PARAMETER_ID_FORM );
@@ -557,7 +557,7 @@ public class TypicalWeekJspBean extends AbstractAppointmentFormAndSlotJspBean
      * @return Html Page
      * @throws AccessDeniedException
      */
-    @Action( ACTION_DO_COPY_WEEK )
+    @Action( value = ACTION_DO_COPY_WEEK, securityTokenAction = SECURITY_TOKEN_ACTION )
     public String doCopyWeek( HttpServletRequest request ) throws AccessDeniedException
     {
         String strIdForm = request.getParameter( PARAMETER_ID_FORM );
@@ -581,7 +581,7 @@ public class TypicalWeekJspBean extends AbstractAppointmentFormAndSlotJspBean
      *            the request
      * @return the page
      */
-    @View( VIEW_MODIFY_TIME_SLOT )
+    @View( value = VIEW_MODIFY_TIME_SLOT, securityTokenAction = SECURITY_TOKEN_ACTION )
     public String getViewModifyTimeSlot( HttpServletRequest request )
     {
         int nIdTimeSlot = Integer.parseInt( request.getParameter( PARAMETER_ID_TIME_SLOT ) );
@@ -604,7 +604,7 @@ public class TypicalWeekJspBean extends AbstractAppointmentFormAndSlotJspBean
      * @return to the page of the typical week
      * @throws AccessDeniedException
      */
-    @Action( ACTION_DO_MODIFY_TIME_SLOT )
+    @Action( value = ACTION_DO_MODIFY_TIME_SLOT, securityTokenAction = SECURITY_TOKEN_ACTION )
     public String doModifyTimeSlot( HttpServletRequest request ) throws AccessDeniedException
     {
         String strIdForm = request.getParameter( PARAMETER_ID_FORM );
@@ -735,7 +735,7 @@ public class TypicalWeekJspBean extends AbstractAppointmentFormAndSlotJspBean
      * @return to the page of the typical week
      * @throws AccessDeniedException
      */
-    @Action( ACTION_DO_MODIFY_LIST_TIME_SLOT )
+    @Action( value = ACTION_DO_MODIFY_LIST_TIME_SLOT, securityTokenAction = SECURITY_TOKEN_ACTION )
     public String doModifyListTimeSlot( HttpServletRequest request ) throws AccessDeniedException
     {
         String strIdForm = request.getParameter( PARAMETER_ID_FORM );

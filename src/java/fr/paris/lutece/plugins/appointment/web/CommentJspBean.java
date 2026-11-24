@@ -81,7 +81,7 @@ import jakarta.inject.Named;
  */
 @SessionScoped
 @Named( "appointmentCommentJspBean" )
-@Controller( controllerJsp = CommentJspBean.JSP_MANAGE_COMMENTS, controllerPath = "jsp/admin/plugins/appointment/", right = CommentJspBean.RIGHT_MANAGECOMMENTTFORM )
+@Controller( controllerJsp = CommentJspBean.JSP_MANAGE_COMMENTS, controllerPath = "jsp/admin/plugins/appointment/", right = CommentJspBean.RIGHT_MANAGECOMMENTTFORM, securityTokenEnabled = true )
 public class CommentJspBean extends AbstractAppointmentFormAndSlotJspBean
 {
     /**
@@ -161,7 +161,7 @@ public class CommentJspBean extends AbstractAppointmentFormAndSlotJspBean
      * @return The page
      * @throws AccessDeniedException
      */
-    @View( value = VIEW_MANAGE_COMMENT, defaultView = true )
+    @View( value = VIEW_MANAGE_COMMENT, defaultView = true, securityTokenAction = SECURITY_TOKEN_ACTION )
     public String getManageComment( HttpServletRequest request )
     {
         _comment = null;
@@ -179,7 +179,7 @@ public class CommentJspBean extends AbstractAppointmentFormAndSlotJspBean
      * @return the html code of the comment form
      * @throws AccessDeniedException
      */
-    @View( VIEW_ADD_COMMENT )
+    @View( value = VIEW_ADD_COMMENT, securityTokenAction = SECURITY_TOKEN_ACTION )
     public String getViewAddComment( HttpServletRequest request ) throws AccessDeniedException
     {
         String strIdForm = request.getParameter( PARAMETER_ID_FORM );
@@ -210,7 +210,7 @@ public class CommentJspBean extends AbstractAppointmentFormAndSlotJspBean
      * @return The Jsp URL of the process result
      * @throws AccessDeniedException
      */
-    @Action( ACTION_DO_ADD_COMMENT )
+    @Action( value = ACTION_DO_ADD_COMMENT, securityTokenAction = SECURITY_TOKEN_ACTION )
     public String doAddComment( HttpServletRequest request ) throws AccessDeniedException
     {
         User user = getUser( );
@@ -252,7 +252,7 @@ public class CommentJspBean extends AbstractAppointmentFormAndSlotJspBean
      * @return the html code of the comment form
      * @throws AccessDeniedException
      */
-    @View( VIEW_MODIFY_COMMENT )
+    @View( value = VIEW_MODIFY_COMMENT, securityTokenAction = SECURITY_TOKEN_ACTION )
     public String getViewModifyComment( HttpServletRequest request ) throws AccessDeniedException
     {
         _comment = findAuthorizedComment( request );
@@ -277,7 +277,7 @@ public class CommentJspBean extends AbstractAppointmentFormAndSlotJspBean
      * @return The Jsp URL of the process result
      * @throws AccessDeniedException
      */
-    @Action( ACTION_DO_MODIFY_COMMENT )
+    @Action( value = ACTION_DO_MODIFY_COMMENT, securityTokenAction = SECURITY_TOKEN_ACTION )
     public String doModifyComment( HttpServletRequest request ) throws AccessDeniedException
     {
         _comment = findAuthorizedComment( request );
@@ -308,7 +308,7 @@ public class CommentJspBean extends AbstractAppointmentFormAndSlotJspBean
      * @return the html code to confirm
      * @throws AccessDeniedException
      */
-    @View( VIEW_CONFIRM_REMOVE_COMMENT )
+    @View( value = VIEW_CONFIRM_REMOVE_COMMENT, securityTokenAction = SECURITY_TOKEN_ACTION )
     public String getConfirmRemoveComment( HttpServletRequest request ) throws AccessDeniedException
     {
         _comment = findAuthorizedComment( request );
@@ -337,7 +337,7 @@ public class CommentJspBean extends AbstractAppointmentFormAndSlotJspBean
      * @return to the page of the comment
      * @throws AccessDeniedException
      */
-    @Action( ACTION_DO_REMOVE_COMMENT )
+    @Action( value = ACTION_DO_REMOVE_COMMENT, securityTokenAction = SECURITY_TOKEN_ACTION )
     public String doRemoveComment( HttpServletRequest request ) throws AccessDeniedException
     {
         Comment comment = findAuthorizedComment( request );

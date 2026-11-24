@@ -107,7 +107,7 @@ import jakarta.inject.Named;
  */
 @SessionScoped
 @Named
-@Controller( controllerJsp = "ManageAppointmentForms.jsp", controllerPath = "jsp/admin/plugins/appointment/", right = AppointmentFormJspBean.RIGHT_MANAGEAPPOINTMENTFORM )
+@Controller( controllerJsp = "ManageAppointmentForms.jsp", controllerPath = "jsp/admin/plugins/appointment/", right = AppointmentFormJspBean.RIGHT_MANAGEAPPOINTMENTFORM, securityTokenEnabled = true )
 public class AppointmentFormJspBean extends AbstractAppointmentFormAndSlotJspBean
 {
 
@@ -228,7 +228,7 @@ public class AppointmentFormJspBean extends AbstractAppointmentFormAndSlotJspBea
      *            the request
      * @return The HTML content to display
      */
-    @View( value = VIEW_MANAGE_APPOINTMENTFORMS, defaultView = true )
+    @View( value = VIEW_MANAGE_APPOINTMENTFORMS, defaultView = true, securityTokenAction = SECURITY_TOKEN_ACTION )
     public String getManageAppointmentForms( HttpServletRequest request )
     {
         AdminUser adminUser = getUser( );
@@ -269,7 +269,7 @@ public class AppointmentFormJspBean extends AbstractAppointmentFormAndSlotJspBea
      * @throws AccessDeniedException
      *             If the user is not authorized to create appointment forms
      */
-    @View( VIEW_CREATE_APPOINTMENTFORM )
+    @View( value = VIEW_CREATE_APPOINTMENTFORM, securityTokenAction = SECURITY_TOKEN_ACTION )
     public String getCreateAppointmentForm( HttpServletRequest request ) throws AccessDeniedException
     {
         if ( !RBACService.isAuthorized( AppointmentFormDTO.RESOURCE_TYPE_CREATE, "0", AppointmentResourceIdService.PERMISSION_CREATE_FORM,
@@ -303,7 +303,7 @@ public class AppointmentFormJspBean extends AbstractAppointmentFormAndSlotJspBea
      * @throws AccessDeniedException
      *             If the user is not authorized to create appointment forms
      */
-    @Action( ACTION_CREATE_APPOINTMENTFORM )
+    @Action( value = ACTION_CREATE_APPOINTMENTFORM, securityTokenAction = SECURITY_TOKEN_ACTION )
     public String doCreateAppointmentForm( HttpServletRequest request ) throws AccessDeniedException
     {
         if ( !RBACService.isAuthorized( AppointmentFormDTO.RESOURCE_TYPE_CREATE, "0", AppointmentResourceIdService.PERMISSION_CREATE_FORM,
@@ -353,7 +353,7 @@ public class AppointmentFormJspBean extends AbstractAppointmentFormAndSlotJspBea
      * @throws AccessDeniedException
      *             If the user is not authorized to delete this appointment form
      */
-    @View( VIEW_CONFIRM_REMOVE_APPOINTMENTFORM )
+    @View( value = VIEW_CONFIRM_REMOVE_APPOINTMENTFORM, securityTokenAction = SECURITY_TOKEN_ACTION )
     public String getConfirmRemoveAppointmentForm( HttpServletRequest request ) throws AccessDeniedException
     {
         String strIdForm = request.getParameter( PARAMETER_ID_FORM );
@@ -383,7 +383,7 @@ public class AppointmentFormJspBean extends AbstractAppointmentFormAndSlotJspBea
      * @throws AccessDeniedException
      *             If the user is not authorized to delete this appointment form
      */
-    @Action( ACTION_REMOVE_APPOINTMENTFORM )
+    @Action( value = ACTION_REMOVE_APPOINTMENTFORM, securityTokenAction = SECURITY_TOKEN_ACTION )
     public String doRemoveAppointmentForm( HttpServletRequest request ) throws AccessDeniedException
     {
         String strIdForm = request.getParameter( PARAMETER_ID_FORM );
@@ -439,7 +439,7 @@ public class AppointmentFormJspBean extends AbstractAppointmentFormAndSlotJspBea
      * @throws AccessDeniedException
      *             If the user is not authorized to modify this appointment form
      */
-    @View( VIEW_MODIFY_APPOINTMENTFORM )
+    @View( value = VIEW_MODIFY_APPOINTMENTFORM, securityTokenAction = SECURITY_TOKEN_ACTION )
     public String getModifyAppointmentForm( HttpServletRequest request ) throws AccessDeniedException
     {
         String strIdForm = request.getParameter( PARAMETER_ID_FORM );
@@ -485,7 +485,7 @@ public class AppointmentFormJspBean extends AbstractAppointmentFormAndSlotJspBea
      * @throws AccessDeniedException
      *             If the user is not authorized to modify this appointment form
      */
-    @Action( ACTION_MODIFY_APPOINTMENTFORM )
+    @Action( value = ACTION_MODIFY_APPOINTMENTFORM, securityTokenAction = SECURITY_TOKEN_ACTION )
     public String doModifyAppointmentForm( HttpServletRequest request ) throws AccessDeniedException
     {
         String strIdForm = request.getParameter( PARAMETER_ID_FORM );
@@ -567,7 +567,7 @@ public class AppointmentFormJspBean extends AbstractAppointmentFormAndSlotJspBea
      * @throws AccessDeniedException
      *             If the user is not authorized to change the activation of this appointment form
      */
-    @Action( ACTION_DO_CHANGE_FORM_ACTIVATION )
+    @Action( value = ACTION_DO_CHANGE_FORM_ACTIVATION, securityTokenAction = SECURITY_TOKEN_ACTION )
     public String doChangeFormActivation( HttpServletRequest request ) throws AccessDeniedException
     {
         String strIdForm = request.getParameter( PARAMETER_ID_FORM );
@@ -622,7 +622,7 @@ public class AppointmentFormJspBean extends AbstractAppointmentFormAndSlotJspBea
      * @return the JSP URL to display the form to manage appointment forms
      * @throws AccessDeniedException
      */
-    @Action( ACTION_DO_COPY_FORM )
+    @Action( value = ACTION_DO_COPY_FORM, securityTokenAction = SECURITY_TOKEN_ACTION )
     public String doCopyAppointmentForm( HttpServletRequest request ) throws AccessDeniedException
     {
         if ( !RBACService.isAuthorized( AppointmentFormDTO.RESOURCE_TYPE_CREATE, "0", AppointmentResourceIdService.PERMISSION_CREATE_FORM,
@@ -655,7 +655,7 @@ public class AppointmentFormJspBean extends AbstractAppointmentFormAndSlotJspBea
      * @throws AccessDeniedException
      *             If the user is not authorized to modify this appointment form
      */
-    @View( VIEW_MODIFY_FORM_MESSAGES )
+    @View( value = VIEW_MODIFY_FORM_MESSAGES, securityTokenAction = SECURITY_TOKEN_ACTION )
     public String getModifyAppointmentFormMessages( HttpServletRequest request ) throws AccessDeniedException
     {
         String strIdForm = request.getParameter( PARAMETER_ID_FORM );
@@ -693,7 +693,7 @@ public class AppointmentFormJspBean extends AbstractAppointmentFormAndSlotJspBea
      * @throws AccessDeniedException
      *             If the user is not authorized to modify this appointment form
      */
-    @Action( ACTION_DO_MODIFY_FORM_MESSAGES )
+    @Action( value = ACTION_DO_MODIFY_FORM_MESSAGES, securityTokenAction = SECURITY_TOKEN_ACTION )
     public String doModifyAppointmentFormMessages( HttpServletRequest request ) throws AccessDeniedException
     {
         String strIdForm = request.getParameter( PARAMETER_ID_FORM );

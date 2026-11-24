@@ -88,7 +88,7 @@ import jakarta.inject.Named;
  */
 @RequestScoped
 @Named
-@Controller( controllerJsp = AppointmentAnnualCalendarJspBean.JSP_MANAGE_ANNUAL_CALENDAR, controllerPath = "jsp/admin/plugins/appointment/", right = AppointmentFormJspBean.RIGHT_MANAGEAPPOINTMENTFORM )
+@Controller( controllerJsp = AppointmentAnnualCalendarJspBean.JSP_MANAGE_ANNUAL_CALENDAR, controllerPath = "jsp/admin/plugins/appointment/", right = AppointmentFormJspBean.RIGHT_MANAGEAPPOINTMENTFORM, securityTokenEnabled = true )
 public class AppointmentAnnualCalendarJspBean extends AbstractAppointmentFormAndSlotJspBean
 {
     /**
@@ -156,7 +156,7 @@ public class AppointmentAnnualCalendarJspBean extends AbstractAppointmentFormAnd
      * @throws AccessDeniedException
      *             If the user is not authorized to modify the advanced settings of the form
      */
-    @View( value = VIEW_MANAGE_ANNUAL_CALENDAR )
+    @View( value = VIEW_MANAGE_ANNUAL_CALENDAR, securityTokenAction = SECURITY_TOKEN_ACTION )
     public String getViewManageAnnualCalendar( HttpServletRequest request ) throws AccessDeniedException
     {
         String strIdForm = request.getParameter( PARAMETER_ID_FORM );
@@ -201,7 +201,7 @@ public class AppointmentAnnualCalendarJspBean extends AbstractAppointmentFormAnd
      * @throws AccessDeniedException
      *             the AccessDeniedException
      */
-    @Action( ACTION_ASSIGN_WEEK )
+    @Action( value = ACTION_ASSIGN_WEEK, securityTokenAction = SECURITY_TOKEN_ACTION )
     public String doAssignWeek( HttpServletRequest request ) throws AccessDeniedException
     {
         String strIdForm = request.getParameter( PARAMETER_ID_FORM );
@@ -263,7 +263,7 @@ public class AppointmentAnnualCalendarJspBean extends AbstractAppointmentFormAnd
      * @return the page
      * @throws AccessDeniedException
      */
-    @Action( ACTION_UNASSIGN_WEEK )
+    @Action( value = ACTION_UNASSIGN_WEEK, securityTokenAction = SECURITY_TOKEN_ACTION )
     public String doUnassignWeek( HttpServletRequest request ) throws AccessDeniedException
     {
         String strIdForm = request.getParameter( PARAMETER_ID_FORM );
@@ -323,7 +323,7 @@ public class AppointmentAnnualCalendarJspBean extends AbstractAppointmentFormAnd
      * @return the page
      * @throws AccessDeniedException
      */
-    @Action( ACTION_REMOVE_WEEK_FROM_CALENDAR )
+    @Action( value = ACTION_REMOVE_WEEK_FROM_CALENDAR, securityTokenAction = SECURITY_TOKEN_ACTION )
     public String doRemoveWeekFromCalendar( HttpServletRequest request ) throws AccessDeniedException
     {
         String strIdForm = request.getParameter( PARAMETER_ID_FORM );

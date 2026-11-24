@@ -52,7 +52,6 @@ import fr.paris.lutece.portal.service.i18n.I18nService;
 import fr.paris.lutece.portal.service.message.AdminMessage;
 import fr.paris.lutece.portal.service.message.AdminMessageService;
 import fr.paris.lutece.portal.service.util.AppPathService;
-import fr.paris.lutece.portal.util.mvc.admin.MVCAdminJspBean;
 import fr.paris.lutece.portal.util.mvc.admin.annotations.Controller;
 import fr.paris.lutece.portal.util.mvc.commons.annotations.Action;
 import fr.paris.lutece.portal.util.mvc.commons.annotations.View;
@@ -72,8 +71,8 @@ import jakarta.inject.Named;
  */
 @RequestScoped
 @Named
-@Controller( controllerJsp = "ManageAppointmentFormFields.jsp", controllerPath = "jsp/admin/plugins/appointment/", right = AppointmentFormJspBean.RIGHT_MANAGEAPPOINTMENTFORM )
-public class AppointmentFormFieldJspBean extends MVCAdminJspBean
+@Controller( controllerJsp = "ManageAppointmentFormFields.jsp", controllerPath = "jsp/admin/plugins/appointment/", right = AppointmentFormJspBean.RIGHT_MANAGEAPPOINTMENTFORM, securityTokenEnabled = true )
+public class AppointmentFormFieldJspBean extends AbstractAppointmentJspBean
 {
     private static final long serialVersionUID = -1505164256619633838L;
 
@@ -137,7 +136,7 @@ public class AppointmentFormFieldJspBean extends MVCAdminJspBean
      *            The HTTP request
      * @return the field creation page
      */
-    @View( VIEW_GET_CREATE_FIELD )
+    @View( value = VIEW_GET_CREATE_FIELD, securityTokenAction = SECURITY_TOKEN_ACTION )
     public String getCreateField( HttpServletRequest request )
     {
         Entry entry = EntryHome.findByPrimaryKey( Integer.parseInt( request.getParameter( PARAMETER_ID_ENTRY ) ) );
@@ -157,7 +156,7 @@ public class AppointmentFormFieldJspBean extends MVCAdminJspBean
      *            The request
      * @return The HTML content to display, or the next URL to redirect to
      */
-    @View( VIEW_GET_MODIFY_FIELD )
+    @View( value = VIEW_GET_MODIFY_FIELD, securityTokenAction = SECURITY_TOKEN_ACTION )
     public String getModifyField( HttpServletRequest request )
     {
         return getModifyField( request, false );
@@ -170,7 +169,7 @@ public class AppointmentFormFieldJspBean extends MVCAdminJspBean
      *            The request
      * @return The HTML content to display, or the next URL to redirect to
      */
-    @View( VIEW_GET_MODIFY_FIELD_WITH_CONDITIONAL_QUESTIONS )
+    @View( value = VIEW_GET_MODIFY_FIELD_WITH_CONDITIONAL_QUESTIONS, securityTokenAction = SECURITY_TOKEN_ACTION )
     public String getModifyFieldWithConditionalQuestions( HttpServletRequest request )
     {
         return getModifyField( request, true );
@@ -224,7 +223,7 @@ public class AppointmentFormFieldJspBean extends MVCAdminJspBean
      *            The HTTP request
      * @return The URL to go after performing the action
      */
-    @Action( ACTION_DO_CREATE_FIELD )
+    @Action( value = ACTION_DO_CREATE_FIELD, securityTokenAction = SECURITY_TOKEN_ACTION )
     public String doCreateField( HttpServletRequest request )
     {
         if ( StringUtils.isEmpty( request.getParameter( PARAMETER_ID_ENTRY ) ) || !StringUtils.isNumeric( request.getParameter( PARAMETER_ID_ENTRY ) ) )
@@ -262,7 +261,7 @@ public class AppointmentFormFieldJspBean extends MVCAdminJspBean
      *            The HTTP request
      * @return The URL to go after performing the action
      */
-    @Action( ACTION_DO_MODIFY_FIELD )
+    @Action( value = ACTION_DO_MODIFY_FIELD, securityTokenAction = SECURITY_TOKEN_ACTION )
     public String doModifyField( HttpServletRequest request )
     {
         return doModifyField( request, false );
@@ -275,7 +274,7 @@ public class AppointmentFormFieldJspBean extends MVCAdminJspBean
      *            The HTTP request
      * @return The URL to go after performing the action
      */
-    @Action( ACTION_DO_MODIFY_FIELD_WITH_CONDITIONAL_QUESTIONS )
+    @Action( value = ACTION_DO_MODIFY_FIELD_WITH_CONDITIONAL_QUESTIONS, securityTokenAction = SECURITY_TOKEN_ACTION )
     public String doModifyFieldWithConditionalQuestions( HttpServletRequest request )
     {
         return doModifyField( request, true );
@@ -334,7 +333,7 @@ public class AppointmentFormFieldJspBean extends MVCAdminJspBean
      *            The HTTP request
      * @return the confirmation page before deleting a field
      */
-    @View( VIEW_GET_CONFIRM_REMOVE_FIELD )
+    @View( value = VIEW_GET_CONFIRM_REMOVE_FIELD, securityTokenAction = SECURITY_TOKEN_ACTION )
     public String getConfirmRemoveField( HttpServletRequest request )
     {
         String strIdField = request.getParameter( PARAMETER_ID_FIELD );
@@ -364,7 +363,7 @@ public class AppointmentFormFieldJspBean extends MVCAdminJspBean
      *            The HTTP request
      * @return The URL to go after performing the action
      */
-    @Action( ACTION_DO_REMOVE_FIELD )
+    @Action( value = ACTION_DO_REMOVE_FIELD, securityTokenAction = SECURITY_TOKEN_ACTION )
     public String doRemoveField( HttpServletRequest request )
     {
         String strIdField = request.getParameter( PARAMETER_ID_FIELD );
@@ -403,7 +402,7 @@ public class AppointmentFormFieldJspBean extends MVCAdminJspBean
      *            The request
      * @return The next URL to redirect to
      */
-    @Action( ACTION_DO_MOVE_FIELD_UP )
+    @Action( value = ACTION_DO_MOVE_FIELD_UP, securityTokenAction = SECURITY_TOKEN_ACTION )
     public String doMoveFieldUp( HttpServletRequest request )
     {
         return doMoveField( request, true );
@@ -416,7 +415,7 @@ public class AppointmentFormFieldJspBean extends MVCAdminJspBean
      *            The request
      * @return The next URL to redirect to
      */
-    @Action( ACTION_DO_MOVE_FIELD_DOWN )
+    @Action( value = ACTION_DO_MOVE_FIELD_DOWN, securityTokenAction = SECURITY_TOKEN_ACTION )
     public String doMoveFieldDown( HttpServletRequest request )
     {
         return doMoveField( request, false );

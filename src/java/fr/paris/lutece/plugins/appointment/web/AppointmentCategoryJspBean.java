@@ -64,7 +64,7 @@ import jakarta.inject.Named;
  */
 @SessionScoped
 @Named
-@Controller( controllerJsp = "ManageAppointmentCategory.jsp", controllerPath = "jsp/admin/plugins/appointment/", right = AppointmentCategoryJspBean.RIGHT_MANAGECATEGORY )
+@Controller( controllerJsp = "ManageAppointmentCategory.jsp", controllerPath = "jsp/admin/plugins/appointment/", right = AppointmentCategoryJspBean.RIGHT_MANAGECATEGORY, securityTokenEnabled = true )
 public class AppointmentCategoryJspBean extends AbstractAppointmentFormAndSlotJspBean
 {
     private static final long serialVersionUID = 5438468406405679511L;
@@ -128,7 +128,7 @@ public class AppointmentCategoryJspBean extends AbstractAppointmentFormAndSlotJs
      *            the request
      * @return The HTML content to display
      */
-    @View( value = VIEW_MANAGE_CATEGORY, defaultView = true )
+    @View( value = VIEW_MANAGE_CATEGORY, defaultView = true, securityTokenAction = SECURITY_TOKEN_ACTION )
     public String getManageCategory( HttpServletRequest request )
     {
         _category = null;
@@ -147,7 +147,7 @@ public class AppointmentCategoryJspBean extends AbstractAppointmentFormAndSlotJs
      * @throws AccessDeniedException
      *             If the user is not authorized
      */
-    @View( VIEW_CONFIRM_REMOVE_CATEGORY )
+    @View( value = VIEW_CONFIRM_REMOVE_CATEGORY, securityTokenAction = SECURITY_TOKEN_ACTION )
     public String getConfirmRemoveCategory( HttpServletRequest request )
     {
         String strIdCategory = request.getParameter( PARAMETER_ID_CATEGORY );
@@ -171,7 +171,7 @@ public class AppointmentCategoryJspBean extends AbstractAppointmentFormAndSlotJs
      * @throws AccessDeniedException
      *             If the user is not authorized
      */
-    @Action( ACTION_REMOVE_CATEGORY )
+    @Action( value = ACTION_REMOVE_CATEGORY, securityTokenAction = SECURITY_TOKEN_ACTION )
     public String doRemoveCategory( HttpServletRequest request )
     {
         String strIdCategory = request.getParameter( PARAMETER_ID_CATEGORY );
@@ -195,7 +195,7 @@ public class AppointmentCategoryJspBean extends AbstractAppointmentFormAndSlotJs
      * @throws AccessDeniedException
      *             If the user is not authorized
      */
-    @View( VIEW_CREATE_CATEGORY )
+    @View( value = VIEW_CREATE_CATEGORY, securityTokenAction = SECURITY_TOKEN_ACTION )
     public String getCreateCategory( HttpServletRequest request )
     {
         _category = ( _category == null ) ? new Category( ) : _category;
@@ -212,7 +212,7 @@ public class AppointmentCategoryJspBean extends AbstractAppointmentFormAndSlotJs
      * @throws AccessDeniedException
      *             If the user is not authorized
      */
-    @Action( ACTION_CREATE_CATEGORY )
+    @Action( value = ACTION_CREATE_CATEGORY, securityTokenAction = SECURITY_TOKEN_ACTION )
     public String doCreateCategory( HttpServletRequest request )
     {
         // a new category: the one of the session may have been reset by the list opened in another tab
@@ -242,7 +242,7 @@ public class AppointmentCategoryJspBean extends AbstractAppointmentFormAndSlotJs
      * @throws AccessDeniedException
      *             If the user is not authorized
      */
-    @View( VIEW_MODIFY_CATEGORY )
+    @View( value = VIEW_MODIFY_CATEGORY, securityTokenAction = SECURITY_TOKEN_ACTION )
     public String getModifyCategory( HttpServletRequest request )
     {
         String strIdCategory = request.getParameter( PARAMETER_ID_CATEGORY );
@@ -261,7 +261,7 @@ public class AppointmentCategoryJspBean extends AbstractAppointmentFormAndSlotJs
      * @throws AccessDeniedException
      *             If the user is not authorized
      */
-    @Action( ACTION_MODIFY_CATEGORY )
+    @Action( value = ACTION_MODIFY_CATEGORY, securityTokenAction = SECURITY_TOKEN_ACTION )
     public String doModifyCategory( HttpServletRequest request )
     {
         String strIdCategory = request.getParameter( PARAMETER_ID_CATEGORY );
