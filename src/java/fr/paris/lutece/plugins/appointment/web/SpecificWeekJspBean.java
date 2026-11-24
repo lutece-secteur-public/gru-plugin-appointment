@@ -382,7 +382,7 @@ public class SpecificWeekJspBean extends AbstractAppointmentFormAndSlotJspBean
                 _slot.setEndingDateTime( _slot.getDate( ).atTime( endingTime ) );
                 bEndingTimeHasChanged = true;
             }
-            if ( ( bEndingTimeHasChanged && !checkNoAppointmentsOnThisSlotOrOnTheSlotsImpacted( _slot, bShiftSlot ) )
+            if ( ( bEndingTimeHasChanged && !checkNoAppointmentsOnThisSlotOrOnTheSlotsImpacted( _slot, previousEndingTime, bShiftSlot ) )
                     || ( bEndingTimeHasChanged && !checkEndingTimeOfSlot( endingTime, _slot ) ) )
             {
                 return redirect( request, VIEW_MODIFY_SLOT, PARAMETER_ID_FORM, _slot.getIdForm( ) );
@@ -589,31 +589,38 @@ public class SpecificWeekJspBean extends AbstractAppointmentFormAndSlotJspBean
     }
 
     /**
-     * Check that there is no appointment on a slot or on the impacted slots that will be modified
+     * Check that there is no appointment on a slot or on the impacted slots that will be modified. Called once the new ending time is set on the
+     * slot.
      * 
      * @param slot
-     *            the slot
+     *            the slot, with its new ending time
+     * @param previousEndingTime
+     *            the ending time of the slot before the modification
      * @param bShiftSLot
      *            true if the next slots will be modified
      * @return false if there is an error
      */
-    private boolean checkNoAppointmentsOnThisSlotOrOnTheSlotsImpacted( Slot slot, boolean bShiftSLot )
+    private boolean checkNoAppointmentsOnThisSlotOrOnTheSlotsImpacted( Slot slot, LocalTime previousEndingTime, boolean bShiftSLot )
     {
-        boolean bReturn = true;
-        LocalDateTime endingDateTime = slot.getEndingDateTime( );
+        LocalDateTime endOfDay = slot.getDate( ).atTime( LocalTime.MAX );
         // If all the slot will be shifted,
         // Need to check if there is no appointment until the end of the day
-        if ( bShiftSLot )
+        LocalDateTime endingDateTime = endOfDay;
+        if ( !bShiftSLot )
         {
-            endingDateTime = slot.getDate( ).atTime( LocalTime.MAX );
+            // The slot itself and every slot that the new ending time covers, even partly: they are deleted
+            LocalTime lastEndingTime = slot.getEndingTime( );
+            if ( previousEndingTime != null && previousEndingTime.isAfter( lastEndingTime ) )
+            {
+                lastEndingTime = previousEndingTime;
+            }
+            endingDateTime = slot.getDate( ).atTime( lastEndingTime );
         }
-        List<Slot> listSlotImpacted = SlotService.findSlotsByIdFormAndDateRange( slot.getIdForm( ), slot.getStartingDateTime( ), endingDateTime );
+        LocalDateTime endOfRange = endingDateTime;
+        List<Slot> listSlotImpacted = SlotService.findSlotsByIdFormAndDateRange( slot.getIdForm( ), slot.getStartingDateTime( ), endOfDay ).stream( )
+                .filter( slotImpacted -> slotImpacted.getStartingDateTime( ).isBefore( endOfRange ) ).collect( Collectors.toList( ) );
         List<Appointment> listAppointment = AppointmentService.findListAppointmentByListSlot( listSlotImpacted );
-        if ( CollectionUtils.isNotEmpty( listAppointment ) )
-        {
-            bReturn = false;
-        }
-        return bReturn;
+        return CollectionUtils.isEmpty( listAppointment );
     }
 
     /**
@@ -685,9 +692,9 @@ public class SpecificWeekJspBean extends AbstractAppointmentFormAndSlotJspBean
                 LocalTime previousEndingTime = slot.getEndingTime( );
                 if ( endingTime != null && !endingTime.equals( previousEndingTime ) )
                 {
-                    bNoApptImpacted = checkNoAppointmentsOnThisSlotOrOnTheSlotsImpacted( slot, bShiftSlot );
                     slot.setEndingTime( endingTime );
                     slot.setEndingDateTime( slot.getDate( ).atTime( endingTime ) );
+                    bNoApptImpacted = checkNoAppointmentsOnThisSlotOrOnTheSlotsImpacted( slot, previousEndingTime, bShiftSlot );
                     bEndingTimeHasChanged = true;
                 }
                 if ( ( bEndingTimeHasChanged && !bNoApptImpacted ) || ( bEndingTimeHasChanged && !checkEndingTimeOfSlot( endingTime, slot ) ) )
@@ -729,7 +736,7 @@ public class SpecificWeekJspBean extends AbstractAppointmentFormAndSlotJspBean
                 boolean bNoSlotImpacted = true;
                 for ( Slot slt : listSlot )
                 {
-                    if ( !checkNoAppointmentsOnThisSlotOrOnTheSlotsImpacted( slt, bShiftSlot ) )
+                    if ( !checkNoAppointmentsOnThisSlotOrOnTheSlotsImpacted( slt, slt.getEndingTime( ), bShiftSlot ) )
                         bNoSlotImpacted = false;
                 }
                 if ( bNoSlotImpacted )

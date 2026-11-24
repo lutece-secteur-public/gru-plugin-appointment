@@ -635,9 +635,11 @@ public final class SlotSafeService
     private static void updateSlotWithoutShift( Slot slot )
     {
         List<Slot> listSlotToCreate = new ArrayList<>( );
-        // Need to get all the slots until the new end of this slot
-        List<Slot> listSlotToDelete = SlotService.findSlotsByIdFormAndDateRange( slot.getIdForm( ), slot.getStartingDateTime( ).plusMinutes( 1 ),
-                slot.getEndingDateTime( ) );
+        // Need to get all the slots that start before the new end of this slot, also the one that ends after it: the new end would overlap it
+        List<Slot> listSlotToDelete = SlotService
+                .findSlotsByIdFormAndDateRange( slot.getIdForm( ), slot.getStartingDateTime( ).plusMinutes( 1 ), slot.getDate( ).atTime( LocalTime.MAX ) )
+                .stream( ).filter( slotToDelete -> slotToDelete.getStartingDateTime( ).isBefore( slot.getEndingDateTime( ) ) )
+                .collect( Collectors.toList( ) );
         SlotService.deleteListSlots( listSlotToDelete );
         // Get the list of slot after the modified slot
         HashMap<LocalDateTime, Slot> mapNextSlot = SlotService.buildMapSlotsByIdFormAndDateRangeWithDateForKey( slot.getIdForm( ), slot.getEndingDateTime( ),
