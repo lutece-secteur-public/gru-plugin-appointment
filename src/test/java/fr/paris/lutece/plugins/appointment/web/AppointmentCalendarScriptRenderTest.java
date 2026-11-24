@@ -41,6 +41,7 @@ import org.junit.jupiter.api.Test;
 
 import fr.paris.lutece.portal.service.template.AppTemplateService;
 import fr.paris.lutece.test.LuteceTestCase;
+import fr.paris.lutece.util.ReferenceList;
 
 /**
  * Script of the back office calendars, written by the macro fullCalendarScript of appointment_commons.html
@@ -53,6 +54,7 @@ public class AppointmentCalendarScriptRenderTest extends LuteceTestCase
         model.put( "locale", "fr" );
         model.put( "permission_moderate_comment", "false" );
         model.put( "permission_access_code", "admin" );
+        model.put( "mailing_list", new ReferenceList( ) );
         String strFtl = "<#include \"/admin/plugins/appointment/appointment_commons.html\" />" + strMacroCall;
         return AppTemplateService.getTemplateFromStringFtl( strFtl, Locale.FRENCH, model ).getHtml( );
     }
@@ -77,5 +79,27 @@ public class AppointmentCalendarScriptRenderTest extends LuteceTestCase
     {
         assertFalse( render( "<@fullCalendarScript isSpecific=true />" ).contains( "navLinkDayClick" ) );
         assertFalse( render( "<@fullCalendarScript isTypical=true />" ).contains( "navLinkDayClick" ) );
+    }
+
+    /**
+     * The typical week shows the current week only: it does not jump to the week of a comment
+     */
+    @Test
+    public void testTypicalWeekDoesNotJumpToTheWeekOfAComment( )
+    {
+        assertFalse( render( "<@fullCalendarScript isTypical=true />" ).contains( "calendarInst.gotoDate(new Date(dtCurrent))" ) );
+        assertTrue( render( "<@fullCalendarScript selectable=false />" ).contains( "calendarInst.gotoDate(new Date(dtCurrent))" ) );
+    }
+
+    /**
+     * The week to come back to is stored when the comment form is submitted, not when its modal is opened
+     */
+    @Test
+    public void testCommentContextStoredOnSubmission( )
+    {
+        String strHtml = render( "<@getCommentModal 'commentModal' 'title' 'comment' 'startingValidityDate' 'endingValidityDate' 'idStartingTime' 'idEndingTime' 'doAddComment' 3 mailing_list />" );
+
+        assertFalse( strHtml, strHtml.contains( "localStorage.setItem('commentContext', firstDay)" ) );
+        assertTrue( strHtml, strHtml.contains( "localStorage.setItem('commentContext', window.pendingCommentContext)" ) );
     }
 }

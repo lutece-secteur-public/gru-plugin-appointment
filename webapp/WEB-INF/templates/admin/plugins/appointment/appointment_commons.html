@@ -257,9 +257,20 @@ document.addEventListener('DOMContentLoaded', function() {
 		fpSet(endDateEl, firstDay);
 		fpSet(startTimeEl, '00:00');
 		fpSet(endTimeEl, '00:00');
-		localStorage.setItem('commentContext', firstDay);
+		// The week to come back to once the comment is saved (written when the form is submitted, not when the modal is opened)
+		window.pendingCommentContext = firstDay;
 	});
 	</#if>
+	// The calendar comes back on the week of the comment only after a submission: a modal opened then closed changes nothing
+	var commentModalEl = document.getElementById('${modalId?js_string?no_esc}');
+	var commentFormEl = commentModalEl ? commentModalEl.querySelector('form') : null;
+	if (commentFormEl) {
+		commentFormEl.addEventListener('submit', function() {
+			if (window.pendingCommentContext) {
+				localStorage.setItem('commentContext', window.pendingCommentContext);
+			}
+		});
+	}
 	// Click on validation button events
 	document.querySelector( '[name="action_${action?js_string?no_esc}"]' ).addEventListener( 'click', function(e){
 		document.querySelectorAll('.labelErrorComment').forEach(function(el) {
@@ -400,7 +411,7 @@ modifyModalEl.addEventListener('show.bs.modal', function() {
 <#if update>
 	var formValues = JSON.parse( info.el.getAttribute( 'data-json' ) );
 	var csDate = new Date(formValues.comment_start);
-	localStorage.setItem( 'commentContext', fcFormatDate(csDate, 'YYYY-MM-DD') );
+	window.pendingCommentContext = fcFormatDate(csDate, 'YYYY-MM-DD');
 	tinymce.get( modifyModalEl.querySelector( 'textarea[name="comment"]' ).id ).setContent( formValues.comment_text );
 	document.querySelector( '#modify-comment input[name="id_comment"]' ).value = formValues.id_comment.slice(1);
 	document.querySelectorAll('.labelErrorComment').forEach(function(el) { el.style.display = 'none'; });
@@ -1021,7 +1032,10 @@ function initAppointmentCalendar() {
 	const dtCurrent=localStorage.getItem('commentContext');
 	if(  dtCurrent !='' && dtCurrent != null ){
 		localStorage.removeItem( 'commentContext' );
+		<#if !isTypical>
+		// the typical week shows the current week only (no navigation): no jump there
 		calendarInst.gotoDate(new Date(dtCurrent));
+		</#if>
 	}
 	<#nested>
 }
