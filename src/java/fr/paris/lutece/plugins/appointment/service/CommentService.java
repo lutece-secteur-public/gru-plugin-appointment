@@ -53,9 +53,13 @@ import fr.paris.lutece.plugins.appointment.web.dto.CommentDTO;
 import fr.paris.lutece.portal.business.mailinglist.Recipient;
 import fr.paris.lutece.portal.business.user.AdminUser;
 import fr.paris.lutece.portal.business.user.AdminUserHome;
+import fr.paris.lutece.portal.service.editor.RichTextContentService;
+import fr.paris.lutece.portal.service.editor.RichTextParsingException;
 import fr.paris.lutece.portal.service.mail.MailService;
 import fr.paris.lutece.portal.service.mailinglist.AdminMailingListService;
 import fr.paris.lutece.portal.service.template.AppTemplateService;
+import fr.paris.lutece.portal.service.template.HtmlMarkup;
+import fr.paris.lutece.portal.service.util.AppLogService;
 
 public class CommentService
 {
@@ -177,11 +181,7 @@ public class CommentService
 
             String strSenderEmail = MailService.getNoReplyEmail( );
             Collection<Recipient> listRecipients = AdminMailingListService.getRecipients( idMailingList );
-            Map<String, Object> model = fillModel( comment, config );
-
-            String strContent = AppTemplateService
-                    .getTemplateFromStringFtl( AppTemplateService.getTemplate( TEMPLATE_TASK_NOTIFY_MAIL, locale, model ).getHtml( ), locale, model )
-                    .getHtml( );
+            String strContent = buildNotificationContent( comment, config, locale );
             // Send Mail
             for ( Recipient recipient : listRecipients )
             {
@@ -190,6 +190,26 @@ public class CommentService
             }
         }
 
+    }
+
+    /**
+     * Build the HTML body of the notification of a comment. The message of the configuration is the source of a template, typed in the rich text
+     * editor: it is written as it is by the mail template, then rendered with the comment, whose rich text is given as sanitized markup
+     *
+     * @param comment
+     *            the comment
+     * @param config
+     *            the notification configuration
+     * @param locale
+     *            the locale
+     * @return the HTML body of the mail
+     */
+    static String buildNotificationContent( Comment comment, CommentNotificationConfig config, Locale locale )
+    {
+        Map<String, Object> model = fillModel( comment, config );
+        String strTemplateSource = AppTemplateService.getTemplate( TEMPLATE_TASK_NOTIFY_MAIL, locale, model ).getHtml( );
+
+        return AppTemplateService.getTemplateFromStringFtl( strTemplateSource, locale, model ).getHtml( );
     }
 
     public static List<CommentDTO> buildCommentDTO( List<Comment> listComment )
@@ -247,7 +267,7 @@ public class CommentService
         AdminUser user = AdminUserHome.findUserByLogin( comment.getCreatorUserName( ) );
         StringBuilder builder = new StringBuilder( );
         builder.append( user.getFirstName( ) ).append( StringUtils.SPACE ).append( user.getLastName( ) );
-        model.put( MARK_COMMENT, comment.getComment( ) );
+        model.put( MARK_COMMENT, RichTextContentService.getMarkup( comment.getComment( ) ) );
         model.put( MARK_CREATION_DATE, comment.getCreationDate( ).format( Utilities.getFormatter( ) ) );
         model.put( MARK_FORM_ID, form.getIdForm( ) );
         model.put( MARK_FORM_TITLE, form.getTitle( ) );
@@ -256,7 +276,18 @@ public class CommentService
         model.put( MARK_TIME_END_VALIDITY, comment.getEndingValidityTime( ) );
         model.put( MARK_DATE_START_VALIDITY, comment.getStartingValidityDate( ).format( Utilities.getFormatter( ) ) );
         model.put( MARK_TIME_START_VALIDITY, comment.getStartingValidityTime( ) );
-        model.put( MARK_MESSAGE, config.getMessage( ) );
+        String strMessage;
+        try
+        {
+            // the message is the source of a template: converted, not sanitized (the sanitizer would encode its markers)
+            strMessage = RichTextContentService.getTemplateSource( config.getMessage( ) );
+        }
+        catch( RichTextParsingException e )
+        {
+            AppLogService.error( "The message of the comment notification could not be converted", e );
+            strMessage = StringUtils.defaultString( config.getMessage( ) );
+        }
+        model.put( MARK_MESSAGE, HtmlMarkup.of( strMessage ) );
 
         return model;
     }
