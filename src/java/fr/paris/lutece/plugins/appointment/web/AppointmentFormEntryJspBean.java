@@ -378,10 +378,17 @@ public class AppointmentFormEntryJspBean extends MVCAdminJspBean
             Entry entry = EntryHome.findByPrimaryKey( nIdEntry );
             if ( request.getParameter( PARAMETER_CANCEL ) == null )
             {
+                // The state "disabled" is changed by its own button only: the modification screen does not post it
+                Field disabledField = entry.getFieldByCode( IEntryTypeService.FIELD_DISABLED );
+                String strDisabled = ( disabledField != null ) ? disabledField.getValue( ) : null;
                 String strError = EntryTypeServiceManager.getEntryTypeService( entry ).getRequestData( entry, request, getLocale( ) );
                 if ( strError != null )
                 {
                     return redirect( request, strError );
+                }
+                if ( strDisabled != null && entry.getFieldByCode( IEntryTypeService.FIELD_DISABLED ) != null )
+                {
+                    entry.getFieldByCode( IEntryTypeService.FIELD_DISABLED ).setValue( strDisabled );
                 }
                 EntryHome.update( entry );
                 if ( entry.getFields( ) != null )
