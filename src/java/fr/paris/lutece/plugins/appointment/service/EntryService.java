@@ -578,6 +578,11 @@ public class EntryService extends RemovalListenerService implements Serializable
         StringBuilder strConditionalQuestionStringBuffer = null;
         HtmlTemplate template;
         Entry entry = EntryHome.findByPrimaryKey( nIdEntry );
+        if ( bDisplayFront && entry.isOnlyDisplayInBack( ) )
+        {
+            // A question of the back office only, in a group or under an answer: the filter of the form only applies to the first level
+            return;
+        }
         Field disabledField = entry.getFieldByCode( IEntryTypeService.FIELD_DISABLED );
         if ( disabledField != null && !Boolean.parseBoolean( disabledField.getValue( ) ) )
         {
@@ -658,10 +663,31 @@ public class EntryService extends RemovalListenerService implements Serializable
      */
     public static List<GenericAttributeError> getResponseEntry( HttpServletRequest request, int nIdEntry, Locale locale, AppointmentDTO appointment )
     {
+        return getResponseEntry( request, nIdEntry, locale, appointment, false );
+    }
+
+    /**
+     * Add to the map of the appointment the response of the additional entry of the form
+     *
+     * @param request
+     *            the Request
+     * @param nIdEntry
+     *            the Entry Id
+     * @param locale
+     *            the Locale
+     * @param appointment
+     *            the Appointment
+     * @param bFront
+     *            true for the front office: the questions of the back office only are not read, at any level
+     * @return the list of possible errors
+     */
+    public static List<GenericAttributeError> getResponseEntry( HttpServletRequest request, int nIdEntry, Locale locale, AppointmentDTO appointment,
+            boolean bFront )
+    {
         List<Response> listResponse = new ArrayList<>( );
         appointment.getMapResponsesByIdEntry( ).put( nIdEntry, listResponse );
 
-        return getResponseEntry( request, nIdEntry, listResponse, false, locale, appointment );
+        return getResponseEntry( request, nIdEntry, listResponse, false, locale, appointment, bFront );
     }
 
     /**
@@ -682,10 +708,14 @@ public class EntryService extends RemovalListenerService implements Serializable
      * @return a list of possible errors
      */
     private static List<GenericAttributeError> getResponseEntry( HttpServletRequest request, int nIdEntry, List<Response> listResponse, boolean bResponseNull,
-            Locale locale, AppointmentDTO appointment )
+            Locale locale, AppointmentDTO appointment, boolean bFront )
     {
         List<GenericAttributeError> listFormErrors = new ArrayList<>( );
         Entry entry = EntryHome.findByPrimaryKey( nIdEntry );
+        if ( bFront && entry.isOnlyDisplayInBack( ) )
+        {
+            return listFormErrors;
+        }
 
         List<Field> listField = new ArrayList<>( );
 
@@ -707,7 +737,7 @@ public class EntryService extends RemovalListenerService implements Serializable
                     List<Response> listResponseChild = new ArrayList<>( );
                     appointment.getMapResponsesByIdEntry( ).put( entryChild.getIdEntry( ), listResponseChild );
 
-                    listFormErrors.addAll( getResponseEntry( request, entryChild.getIdEntry( ), listResponseChild, false, locale, appointment ) );
+                    listFormErrors.addAll( getResponseEntry( request, entryChild.getIdEntry( ), listResponseChild, false, locale, appointment, bFront ) );
                 }
             }
             else
@@ -749,7 +779,7 @@ public class EntryService extends RemovalListenerService implements Serializable
                                 appointment.getMapResponsesByIdEntry( ).put( conditionalEntry.getIdEntry( ), listResponseChild );
 
                                 listFormErrors.addAll( getResponseEntry( request, conditionalEntry.getIdEntry( ), listResponseChild, !bIsFieldInResponseList,
-                                        locale, appointment ) );
+                                        locale, appointment, bFront ) );
                             }
                         }
                     }

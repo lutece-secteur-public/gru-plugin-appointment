@@ -599,7 +599,7 @@ public final class AppointmentUtilities
         List<Entry> listEntryFirstLevel = EntryHome.getEntryList( filter );
         for ( Entry entry : listEntryFirstLevel )
         {
-            listFormErrors.addAll( EntryService.getResponseEntry( request, entry.getIdEntry( ), request.getLocale( ), appointmentDTO ) );
+            listFormErrors.addAll( EntryService.getResponseEntry( request, entry.getIdEntry( ), request.getLocale( ), appointmentDTO, !allEntries ) );
         }
     }
 
