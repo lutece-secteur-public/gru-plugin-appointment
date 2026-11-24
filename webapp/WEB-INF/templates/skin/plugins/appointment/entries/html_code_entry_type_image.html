@@ -41,5 +41,5 @@
 <#else>
 	<#assign listFiles = ''>
 </#if>
-<@addRequiredJsFiles />
+<@addRequiredJsFiles handlerName=uploadHandler.handlerName />
 <@addUploadedFilesBox fieldName=fieldName handler=uploadHandler listFiles=listFiles!'' />
