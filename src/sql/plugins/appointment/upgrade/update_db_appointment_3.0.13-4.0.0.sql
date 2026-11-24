@@ -20,3 +20,11 @@ UPDATE core_admin_right SET description = 'appointment.adminFeature.manageCommen
 -- precondition-sql-check expectedResult:0 SELECT COUNT(*) FROM information_schema.columns WHERE table_schema=database() AND table_name='appointment_display' AND column_name='calendar_button_config'
 -- Options of the "add to calendar" button of the confirmation page, as JSON; NULL keeps the defaults.
     ALTER TABLE appointment_display ADD COLUMN calendar_button_config LONG VARCHAR NULL;
+
+-- changeset appointment:update_db_appointment_3.0.13-4.0.0-reservation-rule-enable.sql
+-- preconditions onFail:MARK_RAN onError:WARN
+-- precondition-sql-check expectedResult:1 SELECT COUNT(*) FROM information_schema.columns WHERE table_schema=database() AND table_name='appointment_reservation_rule' AND column_name='is_actif'
+-- precondition-sql-check expectedResult:0 SELECT COUNT(*) FROM information_schema.columns WHERE table_schema=database() AND table_name='appointment_reservation_rule' AND column_name='enable'
+-- The 2.1.0 to 3.0.0 upgrade added the column is_actif to appointment_reservation_rule, while the create script and the plugin use enable:
+-- on a database upgraded from 2.1.0 the typical weeks could not be read. The column keeps its values under the right name.
+ALTER TABLE appointment_reservation_rule RENAME COLUMN is_actif TO enable;
