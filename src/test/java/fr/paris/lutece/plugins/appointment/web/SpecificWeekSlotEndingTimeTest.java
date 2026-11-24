@@ -52,6 +52,7 @@ import fr.paris.lutece.plugins.appointment.business.appointment.AppointmentHome;
 import fr.paris.lutece.plugins.appointment.business.planning.ClosingDay;
 import fr.paris.lutece.plugins.appointment.business.planning.ClosingDayHome;
 import fr.paris.lutece.plugins.appointment.business.slot.Slot;
+import fr.paris.lutece.plugins.appointment.business.slot.Period;
 import fr.paris.lutece.plugins.appointment.business.user.User;
 import fr.paris.lutece.plugins.appointment.business.user.UserHome;
 import fr.paris.lutece.plugins.appointment.service.AppointmentService;
@@ -180,6 +181,32 @@ public class SpecificWeekSlotEndingTimeTest extends LuteceTestCase
         instance.doModifyListSlots( request );
 
         assertNotNull( ClosingDayHome.findByIdFormAndDateOfCLosingDay( _nIdForm, day ) );
+        assertTrue( SlotService.findSlotsByIdFormAndDateRange( _nIdForm, day.atStartOfDay( ), day.atTime( LocalTime.MAX ) ).isEmpty( ) );
+    }
+
+    /**
+     * Legacy view, slot not yet created: an ending time before the start is refused, and refused again when the same form is submitted again
+     */
+    @Test
+    public void testRefusedEndingTimeSubmittedTwice( ) throws Exception
+    {
+        LocalDate day = DAY.plusDays( 2 );
+        MockHttpServletRequest request = new MockHttpServletRequest( );
+        SpecificWeekJspBean instance = bean( request );
+        Slot slot = SlotService.buildSlot( _nIdForm, new Period( day.atTime( 10, 0 ), day.atTime( 10, 30 ) ), 3, 3, 3, 0, Boolean.TRUE, Boolean.FALSE );
+        Field fieldSlot = SpecificWeekJspBean.class.getDeclaredField( "_slot" );
+        fieldSlot.setAccessible( true );
+        fieldSlot.set( ( (WeldClientProxy) instance ).getMetadata( ).getContextualInstance( ), slot );
+        request.addParameter( "id_slot", "0" );
+        request.addParameter( "id_form", String.valueOf( _nIdForm ) );
+        request.addParameter( "ending_time", "09:10" );
+        request.addParameter( "is_open", "true" );
+        request.addParameter( "max_capacity", "3" );
+        request.addParameter( "shift_slot", "false" );
+
+        instance.doModifySlot( request );
+        instance.doModifySlot( request );
+
         assertTrue( SlotService.findSlotsByIdFormAndDateRange( _nIdForm, day.atStartOfDay( ), day.atTime( LocalTime.MAX ) ).isEmpty( ) );
     }
 

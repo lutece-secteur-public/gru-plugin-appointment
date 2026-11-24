@@ -375,6 +375,9 @@ public class SpecificWeekJspBean extends AbstractAppointmentFormAndSlotJspBean
             if ( ( bEndingTimeHasChanged && !checkNoAppointmentsOnThisSlotOrOnTheSlotsImpacted( _slot, previousEndingTime, bShiftSlot ) )
                     || ( bEndingTimeHasChanged && !checkEndingTimeOfSlot( endingTime, _slot ) ) )
             {
+                // The slot of the session keeps its ending time: the refused one must be checked again when it is submitted again
+                _slot.setEndingTime( previousEndingTime );
+                _slot.setEndingDateTime( _slot.getDate( ).atTime( previousEndingTime ) );
                 return redirect( request, VIEW_MODIFY_SLOT, PARAMETER_ID_FORM, _slot.getIdForm( ) );
             }
             // If we edit the slot, we need to check if this slot is not a closing
