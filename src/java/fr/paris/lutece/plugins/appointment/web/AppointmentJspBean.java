@@ -57,6 +57,7 @@ import jakarta.servlet.http.HttpSession;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.math.NumberUtils;
 
 import fr.paris.lutece.api.user.User;
 import fr.paris.lutece.plugins.appointment.business.appointment.Appointment;
@@ -272,6 +273,7 @@ public class AppointmentJspBean extends MVCAdminJspBean
     private static final String MARK_RESOURCE_HISTORY = "resource_history";
     private static final String MARK_ADDON = "addon";
     private static final String MARK_LIST_RESPONSE_RECAP_DTO = "listResponseRecapDTO";
+    private static final String PARAMETER_FILE_INDEX = "file_index";
     private static final String MARK_READ_ONLY_ENTRIES = "readOnlyEntries";
     private static final String MARK_READ_ONLY_ENTRY = "entry";
     private static final String MARK_READ_ONLY_LIST_RESPONSES = "list_responses";
@@ -1498,14 +1500,21 @@ public class AppointmentJspBean extends MVCAdminJspBean
         }
 
         int nIdResponse = Integer.parseInt( strIdResponse );
+        // The rank of the file among the files of the question (one response per file)
+        int nFileIndex = NumberUtils.toInt( request.getParameter( PARAMETER_FILE_INDEX ), 0 );
         List<Response> lResponse = ( _validatedAppointment != null ) ? _validatedAppointment.getListResponse( ) : List.of( );
 
+        int nFile = 0;
         for ( Response response : lResponse )
         {
             if ( response.getEntry( ).getIdEntry( ) == nIdResponse && response.getFile( ) != null )
             {
-                respfile = response.getFile( );
-                break;
+                if ( nFile == nFileIndex )
+                {
+                    respfile = response.getFile( );
+                    break;
+                }
+                nFile++;
             }
         }
 

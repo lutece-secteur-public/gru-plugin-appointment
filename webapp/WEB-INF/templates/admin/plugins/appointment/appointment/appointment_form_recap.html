@@ -23,6 +23,7 @@
 				</@formGroup>
 			</#if>
 			<#assign shownEntries = [] />
+			<#assign fileIndexes = {} />
 			<#list listResponseRecapDTO as response>
 				<#assign readOnlyHtml = (readOnlyEntries[response.entry.idEntry?c])!'' />
 				<#if readOnlyHtml?has_content>
@@ -37,7 +38,10 @@
 					</#if>
 					<@formGroup labelKey='${formGroupLabelKey!}'>
 						<#if response.file??>
-							<@link href='jsp/admin/plugins/appointment/DoDownloadAppointmentsFileFromSession.jsp?view=downloadFileFromSession&idResponse=${response.entry.idEntry}'>
+							<#-- a question may hold several files: the link gives the rank of the file among the files of the question -->
+							<#assign fileIndex = (fileIndexes[response.entry.idEntry?c])!0 />
+							<#assign fileIndexes = fileIndexes + { response.entry.idEntry?c : fileIndex + 1 } />
+							<@link href='jsp/admin/plugins/appointment/DoDownloadAppointmentsFileFromSession.jsp?view=downloadFileFromSession&idResponse=${response.entry.idEntry}&file_index=${fileIndex}'>
 								<@staticText>${response.recapMarkup}</@staticText>
 							</@link>
 						<#else>
