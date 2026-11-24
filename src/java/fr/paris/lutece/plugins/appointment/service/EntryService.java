@@ -57,6 +57,8 @@ import fr.paris.lutece.plugins.genericattributes.business.Field;
 import fr.paris.lutece.plugins.genericattributes.business.FieldHome;
 import fr.paris.lutece.plugins.genericattributes.business.GenericAttributeError;
 import fr.paris.lutece.plugins.genericattributes.business.Response;
+import fr.paris.lutece.plugins.genericattributes.business.ResponseFilter;
+import fr.paris.lutece.plugins.genericattributes.business.ResponseHome;
 import fr.paris.lutece.plugins.genericattributes.service.entrytype.AbstractEntryTypeUpload;
 import fr.paris.lutece.plugins.genericattributes.service.entrytype.EntryTypeServiceManager;
 import fr.paris.lutece.plugins.genericattributes.service.entrytype.IEntryTypeService;
@@ -104,6 +106,65 @@ public class EntryService extends RemovalListenerService implements Serializable
     private static final String TEMPLATE_DIV_CONDITIONAL_ENTRY_FO = "skin/plugins/appointment/html_code_div_conditional_entry.html";
     private static final String TEMPLATE_DIV_CONDITIONAL_ENTRY_BO = "admin/plugins/appointment/html_code_div_conditional_entry.html";
 
+
+    /**
+     * Tell whether an entry has responses, counting the responses of the entries of its group and of the conditional questions of its
+     * answers, which are removed with it
+     *
+     * @param nIdEntry
+     *            the id of the entry
+     * @return true if the entry, one of its children or one of its conditional questions has at least one response
+     */
+    public static boolean hasResponses( int nIdEntry )
+    {
+        ResponseFilter responseFilter = new ResponseFilter( );
+        responseFilter.setIdEntry( nIdEntry );
+        if ( !ResponseHome.getResponseList( responseFilter ).isEmpty( ) )
+        {
+            return true;
+        }
+        Entry entry = EntryHome.findByPrimaryKey( nIdEntry );
+        if ( entry == null )
+        {
+            return false;
+        }
+        for ( Entry entryChild : entry.getChildren( ) )
+        {
+            if ( hasResponses( entryChild.getIdEntry( ) ) )
+            {
+                return true;
+            }
+        }
+        for ( Field field : entry.getFields( ) )
+        {
+            if ( hasConditionalQuestionResponses( field.getIdField( ) ) )
+            {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /**
+     * Tell whether one of the conditional questions of an answer has responses: they are removed with the answer
+     *
+     * @param nIdField
+     *            the id of the answer (field)
+     * @return true if a conditional question of the answer, or one of its own children or conditional questions, has at least one response
+     */
+    public static boolean hasConditionalQuestionResponses( int nIdField )
+    {
+        EntryFilter entryFilter = new EntryFilter( );
+        entryFilter.setIdFieldDepend( nIdField );
+        for ( Entry entry : EntryHome.getEntryList( entryFilter ) )
+        {
+            if ( hasResponses( entry.getIdEntry( ) ) )
+            {
+                return true;
+            }
+        }
+        return false;
+    }
 
     /**
      * Build an entry filter with static parameter

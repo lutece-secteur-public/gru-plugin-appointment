@@ -103,6 +103,11 @@ public final class AppointmentResponseHome
         for ( Integer nIdResponse : listIdResponse )
         {
             Response response = ResponseHome.findByPrimaryKey( nIdResponse );
+            if ( response == null )
+            {
+                // link to a response removed with its question
+                continue;
+            }
             if ( response.getField( ) != null && response.getField( ).getIdField( ) != 0 )
             {
                 response.setField( FieldHome.findByPrimaryKey( response.getField( ).getIdField( ) ) );

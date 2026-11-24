@@ -137,6 +137,11 @@ public final class AppointmentResponseService
         for ( int nIdResponse : listIdResponse )
         {
             Response response = ResponseHome.findByPrimaryKey( nIdResponse );
+            if ( response == null )
+            {
+                // link to a response removed with its question
+                continue;
+            }
             if ( response.getField( ) != null )
             {
                 response.setField( FieldHome.findByPrimaryKey( response.getField( ).getIdField( ) ) );
@@ -189,10 +194,10 @@ public final class AppointmentResponseService
      */
     public static void removeResponsesByIdAppointment( int nIdAppointment )
     {
-        List<Response> listResponse = AppointmentResponseService.findListResponse( nIdAppointment );
-        for ( Response response : listResponse )
+        // by id: also removes the links to responses that no longer exist
+        for ( int nIdResponse : AppointmentResponseService.findListIdResponse( nIdAppointment ) )
         {
-            AppointmentResponseService.removeResponseById( response.getIdResponse( ) );
+            AppointmentResponseService.removeResponseById( nIdResponse );
         }
     }
 

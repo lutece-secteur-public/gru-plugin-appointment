@@ -41,6 +41,7 @@ import jakarta.servlet.http.HttpServletRequest;
 
 import org.apache.commons.lang3.StringUtils;
 
+import fr.paris.lutece.plugins.appointment.service.EntryService;
 import fr.paris.lutece.plugins.appointment.service.EntryTypeService;
 import fr.paris.lutece.plugins.genericattributes.business.Entry;
 import fr.paris.lutece.plugins.genericattributes.business.EntryHome;
@@ -93,6 +94,7 @@ public class AppointmentFormFieldJspBean extends MVCAdminJspBean
 
     // Messages
     private static final String MESSAGE_CONFIRM_REMOVE_FIELD = "appointment.message.confirmRemoveField";
+    private static final String MESSAGE_CANT_REMOVE_FIELD_RESOURCES_ATTACHED = "appointment.message.cantRemoveField.resourceAttached";
     private static final String MESSAGE_MANDATORY_FIELD = "portal.util.message.mandatoryField";
     private static final String MESSAGE_FIELD_VALUE_FIELD = "appointment.message.error.fieldValue";
 
@@ -342,6 +344,12 @@ public class AppointmentFormFieldJspBean extends MVCAdminJspBean
             return redirect( request, AppointmentFormJspBean.getURLManageAppointmentForms( request ) );
         }
 
+        // the removal of an answer also removes its conditional questions and their responses
+        if ( EntryService.hasConditionalQuestionResponses( Integer.parseInt( strIdField ) ) )
+        {
+            return redirect( request, AdminMessageService.getMessageUrl( request, MESSAGE_CANT_REMOVE_FIELD_RESOURCES_ATTACHED, AdminMessage.TYPE_STOP ) );
+        }
+
         UrlItem url = new UrlItem( JSP_URL_MANAGE_APPOINTMENT_FORM_FIELDS );
         url.addParameter( MVCUtils.PARAMETER_ACTION, ACTION_DO_REMOVE_FIELD );
         url.addParameter( PARAMETER_ID_FIELD, strIdField );
@@ -374,6 +382,11 @@ public class AppointmentFormFieldJspBean extends MVCAdminJspBean
 
             if ( field != null )
             {
+                if ( EntryService.hasConditionalQuestionResponses( nIdField ) )
+                {
+                    return redirect( request,
+                            AdminMessageService.getMessageUrl( request, MESSAGE_CANT_REMOVE_FIELD_RESOURCES_ATTACHED, AdminMessage.TYPE_STOP ) );
+                }
                 FieldHome.remove( nIdField );
 
                 return redirect( request, AppointmentFormEntryJspBean.getURLModifyEntry( request, field.getParentEntry( ).getIdEntry( ) ) );

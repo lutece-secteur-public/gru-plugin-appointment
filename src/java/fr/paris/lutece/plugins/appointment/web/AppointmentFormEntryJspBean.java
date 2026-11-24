@@ -53,8 +53,6 @@ import fr.paris.lutece.plugins.genericattributes.business.EntryHome;
 import fr.paris.lutece.plugins.genericattributes.business.EntryTypeHome;
 import fr.paris.lutece.plugins.genericattributes.business.Field;
 import fr.paris.lutece.plugins.genericattributes.business.FieldHome;
-import fr.paris.lutece.plugins.genericattributes.business.ResponseFilter;
-import fr.paris.lutece.plugins.genericattributes.business.ResponseHome;
 import fr.paris.lutece.plugins.genericattributes.service.entrytype.EntryTypeServiceManager;
 import fr.paris.lutece.plugins.genericattributes.service.entrytype.IEntryTypeService;
 import fr.paris.lutece.portal.service.admin.AccessDeniedException;
@@ -435,13 +433,10 @@ public class AppointmentFormEntryJspBean extends MVCAdminJspBean
     {
         String strIdEntry = request.getParameter( PARAMETER_ID_ENTRY );
         int nIdEntry = Integer.parseInt( strIdEntry );
-        ResponseFilter responsefilter = new ResponseFilter( );
-        responsefilter.setIdEntry( nIdEntry );
-        if ( !ResponseHome.getResponseList( responsefilter ).isEmpty( ) )
+        // the removal of a group or of a question with answers also removes the responses of its children and conditional questions
+        if ( EntryService.hasResponses( nIdEntry ) )
         {
-
             return redirect( request, AdminMessageService.getMessageUrl( request, MESSAGE_CANT_REMOVE_ENTRY_RESOURCES_ATTACHED, AdminMessage.TYPE_STOP ) );
-
         }
         UrlItem url = new UrlItem( getActionUrl( ACTION_DO_REMOVE_ENTRY ) );
         url.addParameter( PARAMETER_ID_ENTRY, strIdEntry );
@@ -465,6 +460,10 @@ public class AppointmentFormEntryJspBean extends MVCAdminJspBean
             if ( nIdEntry <= 0 )
             {
                 return redirect( request, AppointmentFormJspBean.getURLManageAppointmentForms( request ) );
+            }
+            if ( EntryService.hasResponses( nIdEntry ) )
+            {
+                return redirect( request, AdminMessageService.getMessageUrl( request, MESSAGE_CANT_REMOVE_ENTRY_RESOURCES_ATTACHED, AdminMessage.TYPE_STOP ) );
             }
             Entry entry = EntryHome.findByPrimaryKey( nIdEntry );
             List<String> listErrors = new ArrayList<>( );
