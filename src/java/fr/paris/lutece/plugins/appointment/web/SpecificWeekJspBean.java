@@ -136,6 +136,7 @@ public class SpecificWeekJspBean extends AbstractAppointmentFormAndSlotJspBean
     private static final String PARAMETER_STARTING_DATE_TO_APPLY = "starting_date_apply";
     private static final String PARAMETER_ENDING_DATE_OF_DISPLAY = "ending_date_of_display";
     private static final String PARAMETER_DATE_OF_DISPLAY = "date_of_display";
+    private static final String MARK_STARTING_DATE_OF_DISPLAY = "starting_date_of_display";
     private static final String PARAMETER_ID_FORM = "id_form";
     private static final String PARAMETER_ID_SLOT = "id_slot";
     private static final String PARAMETER_STARTING_DATE_TIME = "starting_date_time";
@@ -248,6 +249,8 @@ public class SpecificWeekJspBean extends AbstractAppointmentFormAndSlotJspBean
         // Build the slots
         List<Slot> listSlot = SlotService.buildListSlot( nIdForm, mapReservationRule, dateOfDisplay, endingDateOfDisplay );
         listSlot = listSlot.stream( ).filter( s -> s.getEndingDateTime( ).isAfter( LocalDateTime.now( ) ) ).collect( Collectors.toList( ) );
+        // The first date that can be displayed; the date asked (the date of the slot just modified) is only the date the calendar opens on
+        LocalDate startingDateOfDisplay = dateOfDisplay;
         String strDateOfDisplay = request.getParameter( PARAMETER_DATE_OF_DISPLAY );
         if ( StringUtils.isNotEmpty( strDateOfDisplay ) )
         {
@@ -255,6 +258,7 @@ public class SpecificWeekJspBean extends AbstractAppointmentFormAndSlotJspBean
         }
         addInfo( MESSAGE_INFO_OVERLOAD, getLocale( ) );
         _models.put( PARAMETER_DATE_OF_DISPLAY, dateOfDisplay );
+        _models.put( MARK_STARTING_DATE_OF_DISPLAY, startingDateOfDisplay );
         _models.put( PARAMETER_ENDING_DATE_OF_DISPLAY, endingDateOfDisplay );
         _models.put( PARAMETER_DAY_OF_WEEK, listDayOfWeek );
         _models.put( PARAMETER_EVENTS, listSlot );
@@ -263,7 +267,7 @@ public class SpecificWeekJspBean extends AbstractAppointmentFormAndSlotJspBean
         _models.put( PARAMETER_MIN_DURATION, LocalTime.MIN.plusMinutes( AppointmentUtilities.THIRTY_MINUTES ) );
         _models.put( PARAMETER_ID_FORM, nIdForm );
         _models.put( PARAMETER_EVENTS_COMMENTS, CommentService
-                .buildCommentDTO( CommentService.finListComments( Date.valueOf( dateOfDisplay ), Date.valueOf( endingDateOfDisplay ), nIdForm ) ) );
+                .buildCommentDTO( CommentService.finListComments( Date.valueOf( startingDateOfDisplay ), Date.valueOf( endingDateOfDisplay ), nIdForm ) ) );
         addElementsToModel( _appointmentForm, getUser( ), getLocale( ), _models );
         _models.put( MARK_LOCALE_TINY, getLocale( ) );
         _models.put( MARK_WEBAPP_URL, AppPathService.getBaseUrl( request ) );
