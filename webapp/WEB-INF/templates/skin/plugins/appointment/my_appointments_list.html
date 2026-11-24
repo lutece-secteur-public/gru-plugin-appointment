@@ -1,4 +1,5 @@
-<#if list_appointments?? && list_appointments?size gt 0>
+<#-- only the upcoming appointments that are not cancelled are listed: the message "no item" is shown when none is left -->
+<#if list_appointments?? && list_appointments?filter( appointment -> !appointment.isCancelled && localeDateTime.isBefore( appointment.startingDateTime ) )?has_content>
 	<@chList>
 		<#list list_appointments?sort_by('startingDateTime') as appointment>
 			<#if !appointment.isCancelled && localeDateTime.isBefore(appointment.startingDateTime)>
