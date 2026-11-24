@@ -33,12 +33,15 @@
  */
 package fr.paris.lutece.plugins.appointment.web;
 
+import java.time.LocalDate;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
 import org.junit.jupiter.api.Test;
 
+import fr.paris.lutece.plugins.appointment.web.dto.CommentDTO;
 import fr.paris.lutece.portal.service.template.AppTemplateService;
 import fr.paris.lutece.test.LuteceTestCase;
 import fr.paris.lutece.util.ReferenceList;
@@ -50,7 +53,11 @@ public class AppointmentCalendarScriptRenderTest extends LuteceTestCase
 {
     private static String render( String strMacroCall )
     {
-        Map<String, Object> model = new HashMap<>( );
+        return render( strMacroCall, new HashMap<>( ) );
+    }
+
+    private static String render( String strMacroCall, Map<String, Object> model )
+    {
         model.put( "locale", "fr" );
         model.put( "permission_moderate_comment", "false" );
         model.put( "permission_access_code", "admin" );
@@ -114,5 +121,27 @@ public class AppointmentCalendarScriptRenderTest extends LuteceTestCase
         assertFalse( strHtml, strHtml.contains( "fpSet(startDateEl, firstDay)" ) );
         assertTrue( strHtml, strHtml.contains( "fpForce(startDateEl, firstDay)" ) );
         assertTrue( strHtml, strHtml.contains( "fpForce(endDateEl, firstDay)" ) );
+    }
+
+    /**
+     * A comment without times is written with its dates alone: a date followed by an empty time is refused by the calendar
+     */
+    @Test
+    public void testCommentWithoutTimes( )
+    {
+        CommentDTO comment = new CommentDTO( );
+        comment.setId( 7 );
+        comment.setComment( "bh" );
+        comment.setStartingValidityDate( LocalDate.of( 2026, 12, 1 ) );
+        comment.setEndingValidityDate( LocalDate.of( 2026, 12, 3 ) );
+        comment.setCreationDate( LocalDate.of( 2026, 11, 24 ) );
+        Map<String, Object> model = new HashMap<>( );
+        model.put( "comments", List.of( comment ) );
+
+        String strHtml = render( "<@getComments comments_list=comments />", model );
+
+        assertTrue( strHtml, strHtml.contains( "\"start\" : \"2026-12-01\"" ) );
+        assertFalse( strHtml, strHtml.contains( "2026-12-01T\"" ) );
+        assertFalse( strHtml, strHtml.matches( "(?s).*\"end\" : \"[0-9-]+T\".*" ) );
     }
 }

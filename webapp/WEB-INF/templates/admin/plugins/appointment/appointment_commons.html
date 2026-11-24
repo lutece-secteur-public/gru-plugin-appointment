@@ -444,8 +444,9 @@ commentModal.show();
 </#compress>
 {
 	"title" : "${comment_title?json_string?no_esc}",
-	"start" : "${comment_event.startingValidityDate}T${comment_event.startingValidityTime!}",
-	"end" : "${comment_event.calendarAllDaySlotEnd}T${comment_event.endingValidityTime!}",
+	<#-- A comment may have no time: a date alone, "2026-12-01T" would be refused by the calendar -->
+	"start" : "${comment_event.startingValidityDate}<#if comment_event.startingValidityTime??>T${comment_event.startingValidityTime}</#if>",
+	"end" : "${comment_event.calendarAllDaySlotEnd}<#if comment_event.endingValidityTime??>T${comment_event.endingValidityTime}</#if>",
 	"validity_end" : "${comment_event.endingValidityDate}",
 	"start_time" : "${comment_event.startingValidityTime!}",
 	"end_time" : "${comment_event.endingValidityTime!}",
