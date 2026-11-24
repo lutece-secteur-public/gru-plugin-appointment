@@ -46,6 +46,7 @@ import fr.paris.lutece.plugins.appointment.business.form.Form;
 import fr.paris.lutece.plugins.appointment.business.portlet.AppointmentFormPortlet;
 import fr.paris.lutece.plugins.appointment.business.portlet.AppointmentFormPortletHome;
 import fr.paris.lutece.plugins.appointment.service.FormService;
+import fr.paris.lutece.portal.business.portlet.Portlet;
 import fr.paris.lutece.portal.business.portlet.PortletHome;
 import fr.paris.lutece.portal.service.message.AdminMessage;
 import fr.paris.lutece.portal.service.message.AdminMessageService;
@@ -91,6 +92,28 @@ public class AppointmentFormPortletJspBean extends AbstractPortletJspBean
         Map<String, Object> model = new HashMap<>( );
         model.put( MARK_LIST_APPOINTMENT_FORM, refListAppointmentForm );
 
+        return model;
+    }
+
+    /**
+     * {@inheritDoc} The form of the portlet stays in the list, even when it is no longer active or displayed on portlet: otherwise the browser
+     * would post the first form of the list, and the portlet would silently show another form
+     */
+    @Override
+    protected Map<String, Object> getPortletModel( Portlet portlet )
+    {
+        Map<String, Object> model = getPortletModel( );
+        ReferenceList refListAppointmentForm = (ReferenceList) model.get( MARK_LIST_APPOINTMENT_FORM );
+        int nIdForm = ( (AppointmentFormPortlet) portlet ).getIdAppointmentForm( );
+        String strIdForm = String.valueOf( nIdForm );
+        if ( refListAppointmentForm.stream( ).noneMatch( item -> strIdForm.equals( item.getCode( ) ) ) )
+        {
+            Form form = FormService.findFormLightByPrimaryKey( nIdForm );
+            if ( form != null )
+            {
+                refListAppointmentForm.addItem( nIdForm, form.getTitle( ) );
+            }
+        }
         return model;
     }
 

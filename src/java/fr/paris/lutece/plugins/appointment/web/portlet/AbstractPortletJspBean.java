@@ -100,7 +100,7 @@ public abstract class AbstractPortletJspBean extends PortletJspBean
             return I18nService.getLocalizedString( MESSAGE_PORTLET_NOT_FOUND, getLocale( ) );
         }
 
-        Map<String, Object> model = getPortletModel( );
+        Map<String, Object> model = getPortletModel( portlet );
         model.put( SecurityTokenService.MARK_TOKEN, getSecurityTokenService( ).getToken( request, ACTION_MODIFY_PORTLET ) );
 
         return getModifyTemplate( portlet, model ).getHtml( );
@@ -114,5 +114,17 @@ public abstract class AbstractPortletJspBean extends PortletJspBean
     protected Map<String, Object> getPortletModel( )
     {
         return new HashMap<>( );
+    }
+
+    /**
+     * Returns the model the modify form of a portlet needs beyond the common portlet fields.
+     *
+     * @param portlet
+     *            the portlet being modified
+     * @return the model, the one of the create form by default
+     */
+    protected Map<String, Object> getPortletModel( Portlet portlet )
+    {
+        return getPortletModel( );
     }
 }
