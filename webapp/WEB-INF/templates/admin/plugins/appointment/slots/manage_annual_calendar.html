@@ -129,7 +129,10 @@ document.addEventListener('DOMContentLoaded', function() {
 	</#list>
 	];
 
-	const currentDate = new Date().toJSON().slice(0, 10);
+	// The year asked (start_year: the year of the last assignment), today when it is the current year
+	const startYear = ${start_year?c};
+	const today = new Date();
+	const currentDate = ( today.getFullYear() === startYear ) ? today : new Date( startYear, 0, 1 );
 
 	calendarInst = new FullCalendar.Calendar(calendarEl, {
 		initialView: 'multiMonthYear',
