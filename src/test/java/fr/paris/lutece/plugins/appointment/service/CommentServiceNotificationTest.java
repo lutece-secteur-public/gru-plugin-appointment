@@ -104,6 +104,19 @@ public class CommentServiceNotificationTest extends LuteceTestCase
         assertFalse( strContent.contains( "${" ), strContent );
     }
 
+    /**
+     * The back office account of the author of the comment was deleted: the e-mail gives its login
+     */
+    @Test
+    public void testAuthorWithoutAccount( )
+    {
+        _comment.setCreatorUserName( "bh_deleted_author" );
+
+        String strContent = CommentService.buildNotificationContent( _comment, config( "<p>${creator_user_name!}</p>" ), Locale.ENGLISH );
+
+        assertEquals( "<p>bh_deleted_author</p>", strContent );
+    }
+
     private static CommentNotificationConfig config( String strMessage )
     {
         CommentNotificationConfig config = new CommentNotificationConfig( );

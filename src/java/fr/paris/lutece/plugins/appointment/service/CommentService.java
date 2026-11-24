@@ -266,7 +266,15 @@ public class CommentService
 
         AdminUser user = AdminUserHome.findUserByLogin( comment.getCreatorUserName( ) );
         StringBuilder builder = new StringBuilder( );
-        builder.append( user.getFirstName( ) ).append( StringUtils.SPACE ).append( user.getLastName( ) );
+        if ( user != null )
+        {
+            builder.append( user.getFirstName( ) ).append( StringUtils.SPACE ).append( user.getLastName( ) );
+        }
+        else
+        {
+            // the account of the author was deleted: its login is kept by the comment
+            builder.append( StringUtils.defaultString( comment.getCreatorUserName( ) ) );
+        }
         model.put( MARK_COMMENT, RichTextContentService.getMarkup( comment.getComment( ) ) );
         model.put( MARK_CREATION_DATE, comment.getCreationDate( ).format( Utilities.getFormatter( ) ) );
         model.put( MARK_FORM_ID, form.getIdForm( ) );
