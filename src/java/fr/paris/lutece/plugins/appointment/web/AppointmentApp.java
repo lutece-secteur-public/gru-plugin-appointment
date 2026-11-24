@@ -592,7 +592,8 @@ public class AppointmentApp extends MVCApplication
          */
         String dayView = null;
         String weekView = null;
-        switch( calendarTemplate.getTitle( ) )
+        // the behaviour comes from the file of the template, not from its title, which can be changed
+        switch( calendarTemplate.getBehaviour( ) )
         {
             case CalendarTemplate.FREE_SLOTS:
                 // Keep only the available slots

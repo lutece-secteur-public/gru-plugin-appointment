@@ -55,6 +55,13 @@ public final class CalendarTemplate implements Serializable
     public static final String FREE_SLOTS = "Liste des créneaux disponibles";
     public static final String FREE_SLOTS_ON_OPEN_DAYS = "Liste des créneaux disponibles jours ouverts";
 
+    // Files of the delivered templates: the behaviour of a template in the front office comes from its file, its title can be changed
+    private static final String FILE_CALENDAR = "appointment_form_calendar.html";
+    private static final String FILE_CALENDAR_OPEN_DAYS = "appointment_form_calendar_opendays.html";
+    private static final String FILE_FREE_SLOTS = "appointment_form_list_open_slots.html";
+    private static final String FILE_FREE_SLOTS_ON_OPEN_DAYS = "appointment_form_list_open_slots_opendays.html";
+    private static final String FILE_FREE_SLOTS_GROUPED = "appointment_form_list_open_slots_grouped.html";
+
     /**
      * Serial version UID
      */
@@ -168,5 +175,31 @@ public final class CalendarTemplate implements Serializable
     public void setTemplatePath( String strTemplatePath )
     {
         this._strTemplatePath = strTemplatePath;
+    }
+
+    /**
+     * Gives the behaviour of the template in the front office (open days only, free slots only...), from the file of the template: the title of
+     * a delivered template may be changed in the back office. A template with another file keeps the behaviour given by its title, as before.
+     *
+     * @return one of CALENDAR, CALENDAR_OPEN_DAYS, FREE_SLOTS, FREE_SLOTS_ON_OPEN_DAYS, FREE_SLOTS_GROUPED, or the title of the template
+     */
+    public String getBehaviour( )
+    {
+        String strFile = ( _strTemplatePath == null ) ? "" : _strTemplatePath.substring( _strTemplatePath.lastIndexOf( '/' ) + 1 );
+        switch( strFile )
+        {
+            case FILE_CALENDAR:
+                return CALENDAR;
+            case FILE_CALENDAR_OPEN_DAYS:
+                return CALENDAR_OPEN_DAYS;
+            case FILE_FREE_SLOTS:
+                return FREE_SLOTS;
+            case FILE_FREE_SLOTS_ON_OPEN_DAYS:
+                return FREE_SLOTS_ON_OPEN_DAYS;
+            case FILE_FREE_SLOTS_GROUPED:
+                return FREE_SLOTS_GROUPED;
+            default:
+                return ( _strTitle == null ) ? "" : _strTitle;
+        }
     }
 }
