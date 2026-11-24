@@ -599,11 +599,15 @@ function initAppointmentCalendar() {
 			today : "#i18n{appointment.appointmentCalendar.labelToday}",
 		},
 		height: 'auto',
+		<#if !isSpecific && !isTypical>
+		// day header: list of the appointments of that day (the planning screens have no such list)
 		navLinks: true,
 		navLinkDayClick: function( date, jsEvent ) {
-			var dateStr = date.toISOString().slice(0,10);
+			// local date: toISOString is in UTC, the day before east of Greenwich
+			var dateStr = fcFormatDate( date, 'YYYY-MM-DD' );
 			location.href = eventUrl + 'manageAppointments&id_form=' + idForm + '&starting_date_time=' + dateStr + 'T00:00&ending_date_time=' + dateStr + 'T23:59';
 		},
+		</#if>
 		initialDate: defaultDate,
 		nowIndicator: true,
 		initialView: 'timeGridWeek',
