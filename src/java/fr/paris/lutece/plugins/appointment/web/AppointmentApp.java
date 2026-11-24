@@ -1816,6 +1816,8 @@ public class AppointmentApp extends MVCApplication
                 _models.put( MARK_TASKS_FORM, HtmlMarkup.of( strHtmlTasksForm ) );
                 _models.put( PARAMETER_ID_ACTION, nIdAction );
                 _models.put( PARAMETER_REF_APPOINTMENT, refAppointment );
+                // a new token at each display, also when the form is displayed again after a failed validation (the posted token is consumed)
+                _models.put( SecurityTokenService.MARK_TOKEN, _securityTokenService.getToken( request, ACTION_DO_PROCESS_WORKFLOW_ACTION ) );
 
                 return getXPage( TEMPLATE_TASKS_FORM_WORKFLOW, getLocale( request ), _models );
             }
@@ -1824,7 +1826,10 @@ public class AppointmentApp extends MVCApplication
             url.addParameter( MVCUtils.PARAMETER_ACTION, ACTION_DO_PROCESS_WORKFLOW_ACTION );
             url.addParameter( PARAMETER_ID_ACTION, nIdAction );
             url.addParameter( PARAMETER_REF_APPOINTMENT, refAppointment );
-            SiteMessageService.setMessage( request, MESSAGE_CONFIRM_WORKFLOW_ACTION, SiteMessage.TYPE_CONFIRMATION, url.getUrl( ) );
+            // the confirmation form posts the token of the action as a hidden field
+            Map<String, Object> mapParameters = new HashMap<>( );
+            mapParameters.put( SecurityTokenService.PARAMETER_TOKEN, _securityTokenService.getToken( request, ACTION_DO_PROCESS_WORKFLOW_ACTION ) );
+            SiteMessageService.setMessage( request, MESSAGE_CONFIRM_WORKFLOW_ACTION, SiteMessage.TYPE_CONFIRMATION, url.getUrl( ), mapParameters );
         }
         return getMyAppointments( request );
     }
@@ -1839,10 +1844,17 @@ public class AppointmentApp extends MVCApplication
      *             if the user is not signed in
      * @throws SiteMessageException
      *             when the task form, displayed again on an error, asks for a confirmation
+     * @throws AccessDeniedException
+     *             if the security token is invalid
      */
     @Action( ACTION_DO_PROCESS_WORKFLOW_ACTION )
-    public synchronized XPage doProcessWorkflowAction( HttpServletRequest request ) throws UserNotSignedException, SiteMessageException
+    public synchronized XPage doProcessWorkflowAction( HttpServletRequest request ) throws UserNotSignedException, SiteMessageException, AccessDeniedException
     {
+        // CSRF Token control
+        if ( !_securityTokenService.validate( request, ACTION_DO_PROCESS_WORKFLOW_ACTION ) )
+        {
+            throw new AccessDeniedException( MESSAGE_ERROR_TOKEN );
+        }
         LuteceUser luteceUser = SecurityService.getInstance( ).getRegisteredUser( request );
         String strIdAction = request.getParameter( PARAMETER_ID_ACTION );
         String refAppointment = request.getParameter( PARAMETER_REF_APPOINTMENT );
