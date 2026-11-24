@@ -303,6 +303,7 @@ public class AppointmentApp extends MVCApplication
     private static final String MESSAGE_MY_APPOINTMENTS_PAGE_TITLE = "appointment.myAppointments.name";
     private static final String MESSAGE_WF_ACTION_SUCESS = "appointment.wf.action.success";
     private static final String MESSAGE_ACTION_LOCKED = "appointment.message.error.actionLocked";
+    private static final String MESSAGE_CANCEL_NOT_POSSIBLE = "appointment.message.error.cancelNotPossible";
     private static final String MESSAGE_WORKFLOW_ACTION_ERROR = "appointment.message.error.workflowAction";
 
     // Properties
@@ -1512,6 +1513,15 @@ public class AppointmentApp extends MVCApplication
                 // Check if the appointment is passed
                 if ( appointment.getIdActionCancelled( ) > 0 )
                 {
+                    Map<String, String> mapCancelParameters = new HashMap<>( );
+                    mapCancelParameters.put( PARAMETER_REF_APPOINTMENT, strRef );
+                    // The workflow does nothing, without error, when the action cannot be processed (state changed, action removed)
+                    if ( !_workflowService.canProcessAction( appointment.getIdAppointment( ), Appointment.APPOINTMENT_RESOURCE_TYPE,
+                            appointment.getIdActionCancelled( ), appointmentDto.getIdForm( ), request, true ) )
+                    {
+                        addError( MESSAGE_CANCEL_NOT_POSSIBLE, getLocale( request ) );
+                        return redirect( request, VIEW_GET_VIEW_CANCEL_APPOINTMENT, mapCancelParameters );
+                    }
                     try
                     {
                         _workflowService.doProcessAction( appointment.getIdAppointment( ), Appointment.APPOINTMENT_RESOURCE_TYPE,
@@ -1528,7 +1538,9 @@ public class AppointmentApp extends MVCApplication
                         else
                         {
                             AppLogService.error( "Error Workflow", e );
+                            addError( MESSAGE_CANCEL_NOT_POSSIBLE, getLocale( request ) );
                         }
+                        return redirect( request, VIEW_GET_VIEW_CANCEL_APPOINTMENT, mapCancelParameters );
                     }
                 }
                 else

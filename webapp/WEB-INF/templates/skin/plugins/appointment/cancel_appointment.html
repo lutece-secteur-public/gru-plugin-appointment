@@ -39,6 +39,7 @@
 	</@cStepDone>
 	<@cStepCurrent step='4' title='#i18n{appointment.cancelAppointment.pageTitle}' hasMandatory=false>
 		<@cForm class='form-horizontal' id='form-validate' action='jsp/site/Portal.jsp' method='post' enctype='multipart/form-data'>
+			<#if errors?? && errors?size gt 0><#list errors as error><@cAlert type='danger' title=error.message! /></#list></#if>
 			<#if alreadyCancelled??>
 				<@cAlert type='info' title='#i18n{appointment.message.info.alreadyCancelled}' />
 			<#elseif appointmentPassed??>
