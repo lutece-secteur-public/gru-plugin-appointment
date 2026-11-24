@@ -40,18 +40,18 @@ import java.util.Map;
 
 import jakarta.servlet.http.HttpServletRequest;
 
-import fr.paris.lutece.portal.business.file.File;
-import fr.paris.lutece.portal.service.upload.MultipartItem;
+
+
 
 import fr.paris.lutece.plugins.appointment.business.appointment.AppointmentResponseHome;
 import jakarta.enterprise.inject.spi.CDI;
 
-import fr.paris.lutece.plugins.appointment.service.upload.AppointmentAsynchronousUploadHandler;
+
 import fr.paris.lutece.plugins.genericattributes.business.Entry;
 import fr.paris.lutece.plugins.genericattributes.business.EntryHome;
 import fr.paris.lutece.plugins.genericattributes.business.Field;
 import fr.paris.lutece.plugins.genericattributes.business.FieldHome;
-import fr.paris.lutece.plugins.genericattributes.business.GenAttFileItem;
+
 import fr.paris.lutece.plugins.genericattributes.business.Response;
 import fr.paris.lutece.plugins.genericattributes.business.ResponseHome;
 import fr.paris.lutece.plugins.genericattributes.service.entrytype.IEntryTypeService;
@@ -148,19 +148,9 @@ public final class AppointmentResponseService
             }
             if ( response.getFile( ) != null )
             {
-                // load from default generic attribute file service
-                 File file = CDI.current( ).select( GenericAttributeFileService.class ).get( ).load( response.getFile( ).getFileKey( ), null);
-
-                response.setFile( file );
-                String strIdEntry = Integer.toString( response.getEntry( ).getIdEntry( ) );
-                MultipartItem fileItem = null;
-                if ( file != null )
-                {
-                    fileItem = new GenAttFileItem( file.getPhysicalFile( ).getValue( ), file.getTitle( ), IEntryTypeService.PREFIX_ATTRIBUTE + strIdEntry,
-                            response.getIdResponse( ), CDI.current( ).select( GenericAttributeFileService.class ).get( ).getFileStoreProviderName()  );
-                }
-                CDI.current( ).select( AppointmentAsynchronousUploadHandler.class ).get( ).addFileItemToUploadedFilesList( fileItem, IEntryTypeService.PREFIX_ATTRIBUTE + strIdEntry,
-                        request );
+                // load from default generic attribute file service. The files are only read: they are not put in the upload session, where the
+                // next booking form of the session would take them as its own answers
+                response.setFile( CDI.current( ).select( GenericAttributeFileService.class ).get( ).load( response.getFile( ).getFileKey( ), null ) );
             }
             listResponses.add( response );
         }
