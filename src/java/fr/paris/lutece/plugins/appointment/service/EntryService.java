@@ -716,6 +716,11 @@ public class EntryService extends RemovalListenerService implements Serializable
         {
             return listFormErrors;
         }
+        if ( !bFront && Boolean.TRUE.equals( entry.getEntryType( ).getMyLuteceUser( ) ) )
+        {
+            // The answer of this question is the front office user of the request: an agent has none, and the back office form has no input for it
+            return listFormErrors;
+        }
 
         List<Field> listField = new ArrayList<>( );
 

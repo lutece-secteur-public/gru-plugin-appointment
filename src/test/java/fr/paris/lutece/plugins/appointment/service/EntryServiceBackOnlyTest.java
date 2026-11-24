@@ -61,6 +61,7 @@ public class EntryServiceBackOnlyTest extends LuteceTestCase
     private static final int ID_RESOURCE = 987670;
     private static final int ID_TYPE_TEXT = 128;
     private static final int ID_TYPE_GROUP = 131;
+    private static final int ID_TYPE_MYLUTECE_USER = 135;
 
     private final List<Integer> _listIdEntry = new ArrayList<>( );
 
@@ -85,6 +86,17 @@ public class EntryServiceBackOnlyTest extends LuteceTestCase
         StringBuilder sbHtml = new StringBuilder( );
         EntryService.getHtmlEntry( new HashMap<>( ), nIdGroup, sbHtml, Locale.FRENCH, true, new AppointmentDTO( ) );
         assertFalse( sbHtml.toString( ), sbHtml.toString( ).contains( "attribute" + nIdChild ) );
+    }
+
+    /**
+     * The back office does not read the question « Utilisateur MyLutece »: an agent has no front office user
+     */
+    @Test
+    public void testMyLuteceUserQuestionIsNotReadInBackOffice( )
+    {
+        int nIdEntry = createEntry( ID_TYPE_MYLUTECE_USER, "bh MyLutece", null, false );
+
+        assertTrue( EntryService.getResponseEntry( new MockHttpServletRequest( ), nIdEntry, Locale.FRENCH, new AppointmentDTO( ) ).isEmpty( ) );
     }
 
     /**
