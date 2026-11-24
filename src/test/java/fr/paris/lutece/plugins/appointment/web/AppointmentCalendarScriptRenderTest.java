@@ -124,6 +124,25 @@ public class AppointmentCalendarScriptRenderTest extends LuteceTestCase
     }
 
     /**
+     * The dates of the displayed week are set without firing onChange, and the start / end constraints are cleared: a later start
+     * date picked afterwards must not be refused and emptied by a maximum date set by the forced end date
+     */
+    @Test
+    public void testForcedDatesLeaveNoConstraint( )
+    {
+        String strHtml = render( "<@getCommentModal 'commentModal' 'title' 'comment' 'startingValidityDate' 'endingValidityDate' 'idStartingTime' 'idEndingTime' 'doAddComment' 3 mailing_list />" );
+
+        int nForce = strHtml.indexOf( "function fpForce" );
+        assertTrue( strHtml, nForce >= 0 );
+        String strForce = strHtml.substring( nForce, strHtml.indexOf( '}', strHtml.indexOf( "else", nForce ) ) );
+        assertTrue( strForce, strForce.contains( "setDate(value, false)" ) );
+        int nForced = strHtml.indexOf( "fpForce(endDateEl, firstDay)" );
+        String strAfter = strHtml.substring( nForced, nForced + 400 );
+        assertTrue( strAfter, strAfter.contains( "startDateEl._flatpickr.set('maxDate', null)" ) );
+        assertTrue( strAfter, strAfter.contains( "endDateEl._flatpickr.set('minDate', null)" ) );
+    }
+
+    /**
      * A comment without times is written with its dates alone: a date followed by an empty time is refused by the calendar
      */
     @Test
