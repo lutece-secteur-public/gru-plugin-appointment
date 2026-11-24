@@ -83,15 +83,15 @@ public final class CategoryService
      * 
      * @param category
      *            the category to store
+     * @return the category created, or null if another category already has its label (the labels are unique)
      */
     public static Category saveCategory( Category category )
     {
-        Category categoryInDb = CategoryHome.findByLabel( category.getLabel( ) );
-        if ( categoryInDb == null )
+        if ( CategoryHome.findByLabel( category.getLabel( ) ) != null )
         {
-            categoryInDb = CategoryHome.create( category );
+            return null;
         }
-        return categoryInDb;
+        return CategoryHome.create( category );
     }
 
     /**
@@ -111,10 +111,18 @@ public final class CategoryService
      * 
      * @param category
      *            the category to update
+     * @return false if another category already has the label: nothing is updated
      */
-    public static void updateCategory( Category category )
+    public static boolean updateCategory( Category category )
     {
+        Category categoryInDb = CategoryHome.findByLabel( category.getLabel( ) );
+        if ( categoryInDb != null && categoryInDb.getIdCategory( ) != category.getIdCategory( ) )
+        {
+            // the labels are unique
+            return false;
+        }
         CategoryHome.update( category );
+        return true;
     }
 
     /**

@@ -111,6 +111,7 @@ public class AppointmentCategoryJspBean extends AbstractAppointmentFormAndSlotJs
     private static final String ACTION_REMOVE_CATEGORY = "removeCategory";
 
     // Infos
+    private static final String MESSAGE_ERROR_LABEL_ALREADY_USED = "appointment.message.error.categoryLabelAlreadyUsed";
     private static final String INFO_CATEGORY_CREATED = "appointment.info.category.created";
     private static final String INFO_CATEGORY_UPDATED = "appointment.info.category.updated";
     private static final String INFO_CATEGORY_REMOVED = "appointment.info.category.removed";
@@ -221,7 +222,11 @@ public class AppointmentCategoryJspBean extends AbstractAppointmentFormAndSlotJs
             return redirectView( request, VIEW_CREATE_CATEGORY );
         }
 
-        CategoryService.saveCategory( _category );
+        if ( CategoryService.saveCategory( _category ) == null )
+        {
+            addError( MESSAGE_ERROR_LABEL_ALREADY_USED, getLocale( ) );
+            return redirectView( request, VIEW_CREATE_CATEGORY );
+        }
         addInfo( INFO_CATEGORY_CREATED, getLocale( ) );
         return redirectView( request, VIEW_MANAGE_CATEGORY );
     }
@@ -265,9 +270,13 @@ public class AppointmentCategoryJspBean extends AbstractAppointmentFormAndSlotJs
         // Check constraints
         if ( !validateBean( _category, VALIDATION_ATTRIBUTES_PREFIX ) )
         {
-            return redirectView( request, VIEW_MODIFY_CATEGORY );
+            return redirect( request, VIEW_MODIFY_CATEGORY, PARAMETER_ID_CATEGORY, nIdCategory );
         }
-        CategoryService.updateCategory( _category );
+        if ( !CategoryService.updateCategory( _category ) )
+        {
+            addError( MESSAGE_ERROR_LABEL_ALREADY_USED, getLocale( ) );
+            return redirect( request, VIEW_MODIFY_CATEGORY, PARAMETER_ID_CATEGORY, nIdCategory );
+        }
         addInfo( INFO_CATEGORY_UPDATED, getLocale( ) );
         return redirectView( request, VIEW_MANAGE_CATEGORY );
     }
