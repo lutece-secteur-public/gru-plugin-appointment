@@ -21,6 +21,9 @@
 				<#assign yVal = response.toStringValueResponse! />
 			<#elseif response.field.code == "idAddress">
 				<#assign idAddressVal = response.toStringValueResponse! />
+			<#elseif response.field.code == "geometry">
+				<#-- the geometry comes after the address in the responses: it must not replace the address typed -->
+				<#assign geometryVal = response.toStringValueResponse! />
 			<#else>
 				<#assign addressValue = response.toStringValueResponse! />
 				<#if response.entry.error?? && response.entry.error.isDisplayableError>
@@ -41,6 +44,7 @@
 		</#if>
 		<@cInput type='hidden' name='${entry.idEntry}_x' id='${entry.idEntry}_x' class='' value='${xVal!}' />
 		<@cInput type='hidden' name='${entry.idEntry}_y' id='${entry.idEntry}_y' class='' value='${yVal!}' />
+		<@cInput type='hidden' name='${entry.idEntry}_geometry' id='${entry.idEntry}_geometry' class='' value='${geometryVal!}' />
 		<@cInput type='hidden' name='${entry.idEntry}_idAddress' id='${entry.idEntry}_idAddress' class='' value='${idAddressVal!}' />
 	<#else>
 		<#if useAddressAutocomplete>
