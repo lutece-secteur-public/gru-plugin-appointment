@@ -34,6 +34,7 @@
 package fr.paris.lutece.plugins.appointment.web;
 
 import java.io.IOException;
+import java.util.Locale;
 import java.time.LocalDate;
 import java.time.LocalTime;
 
@@ -55,6 +56,8 @@ import fr.paris.lutece.plugins.appointment.web.dto.AppointmentDTO;
 import fr.paris.lutece.portal.service.security.ISecurityTokenService;
 import fr.paris.lutece.portal.service.security.SecurityTokenService;
 import fr.paris.lutece.portal.web.LocalVariables;
+import fr.paris.lutece.portal.service.i18n.I18nService;
+import fr.paris.lutece.portal.web.xpages.XPage;
 import fr.paris.lutece.test.LuteceTestCase;
 import fr.paris.lutece.test.mocks.MockHttpServletRequest;
 import fr.paris.lutece.test.mocks.MockHttpServletResponse;
@@ -114,6 +117,12 @@ public class AppointmentAppCancelWorkflowTest extends LuteceTestCase
         assertNotNull( response._strLocation );
         assertTrue( response._strLocation.contains( "view=getViewCancelAppointment" ), response._strLocation );
         assertFalse( AppointmentHome.findByPrimaryKey( appointment.getIdAppointment( ) ).getIsCancelled( ) );
+
+        // the cancel page the visitor is sent back to shows why the cancellation was refused
+        XPage page = CDI.current( ).select( AppointmentApp.class ).get( ).getViewCancelAppointment( request );
+        assertTrue( page.getContent( ).contains( I18nService.getLocalizedString( "appointment.message.error.cancelNotPossible", Locale.FRENCH ) )
+                || page.getContent( ).contains( I18nService.getLocalizedString( "appointment.message.error.cancelNotPossible", Locale.ENGLISH ) ),
+                "message of the refused cancellation shown" );
     }
 
     /**

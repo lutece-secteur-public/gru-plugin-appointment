@@ -1473,6 +1473,8 @@ public class AppointmentApp extends MVCApplication
         {
             model.put( MARK_NO_APPOINTMENT_WITH_THIS_REFERENCE, Boolean.TRUE );
         }
+        // the errors of a refused cancellation (doCancelAppointment redirects here) are shown by the template
+        fillCommons( model );
         Locale locale = getLocale( request );
         XPage xpage = getXPage( TEMPLATE_CANCEL_APPOINTMENT, locale, model );
         xpage.setTitle( I18nService.getLocalizedString( MESSAGE_CANCEL_APPOINTMENT_PAGE_TITLE, locale ) );
