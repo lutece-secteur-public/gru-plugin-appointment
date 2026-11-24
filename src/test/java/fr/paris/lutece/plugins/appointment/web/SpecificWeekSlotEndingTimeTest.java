@@ -49,6 +49,8 @@ import org.junit.jupiter.api.Test;
 import fr.paris.lutece.plugins.appointment.business.AppointmentTest;
 import fr.paris.lutece.plugins.appointment.business.SlotTest;
 import fr.paris.lutece.plugins.appointment.business.appointment.AppointmentHome;
+import fr.paris.lutece.plugins.appointment.business.planning.ClosingDay;
+import fr.paris.lutece.plugins.appointment.business.planning.ClosingDayHome;
 import fr.paris.lutece.plugins.appointment.business.slot.Slot;
 import fr.paris.lutece.plugins.appointment.business.user.User;
 import fr.paris.lutece.plugins.appointment.business.user.UserHome;
@@ -150,6 +152,35 @@ public class SpecificWeekSlotEndingTimeTest extends LuteceTestCase
         assertEquals( DAY.atTime( 10, 30 ), SlotService.findSlotById( _slotA.getIdSlot( ) ).getEndingDateTime( ) );
         assertNotNull( SlotService.findSlotById( _slotB.getIdSlot( ) ) );
         assertEquals( 2, slotsOfTheDay( ).size( ) );
+    }
+
+    /**
+     * A closed day, whose block is given an ending time after the end of the day: refused, the day stays closed
+     */
+    @Test
+    public void testRefusedModificationOfAClosedDay( ) throws Exception
+    {
+        LocalDate day = DAY.plusDays( 1 );
+        ClosingDay closingDay = new ClosingDay( );
+        closingDay.setIdForm( _nIdForm );
+        closingDay.setDateOfClosingDay( day );
+        ClosingDayHome.create( closingDay );
+        MockHttpServletRequest request = new MockHttpServletRequest( );
+        SpecificWeekJspBean instance = bean( request );
+        request.addParameter( "id_form", String.valueOf( _nIdForm ) );
+        request.addParameter( "capacity", "new_cap" );
+        request.addParameter( "max_capacity", "3" );
+        request.addParameter( "ending_time", "19:00" );
+        request.addParameter( "shift_slot", "false" );
+        request.addParameter( "date_of_display", day.toString( ) );
+        request.addParameter( "slotsData", "[{\"idSlot\":0,\"startingDateTime\":\"" + day + "T09:00\",\"startingTime\":\"09:00\",\"endingDateTime\":\"" + day
+                + "T18:00\",\"endingTime\":\"18:00\",\"isOpen\":false,\"isSpecific\":false,\"idForm\":" + _nIdForm + ",\"date\":\"" + day
+                + "\",\"maxCapacity\":3}]" );
+
+        instance.doModifyListSlots( request );
+
+        assertNotNull( ClosingDayHome.findByIdFormAndDateOfCLosingDay( _nIdForm, day ) );
+        assertTrue( SlotService.findSlotsByIdFormAndDateRange( _nIdForm, day.atStartOfDay( ), day.atTime( LocalTime.MAX ) ).isEmpty( ) );
     }
 
     private void bookSlotB( )

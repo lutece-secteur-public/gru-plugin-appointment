@@ -354,16 +354,6 @@ public class SpecificWeekJspBean extends AbstractAppointmentFormAndSlotJspBean
                 bOpeningHasChanged = true;
             }
 
-            // If we edit the slot, we need to check if this slot is not a closing
-            // day
-            ClosingDay closingDay = ClosingDayService.findClosingDayByIdFormAndDateOfClosingDay( _slot.getIdForm( ), _slot.getDate( ) );
-            if ( closingDay != null )
-            {
-                // If the slot is a closing day, we need to remove it from the table
-                // closing day so that the slot is not in conflict with the
-                // definition of the closing days
-                ClosingDayService.removeClosingDay( closingDay );
-            }
             if ( nMaxCapacity != _slot.getMaxCapacity( ) )
             {
                 _slot.setMaxCapacity( nMaxCapacity );
@@ -386,6 +376,16 @@ public class SpecificWeekJspBean extends AbstractAppointmentFormAndSlotJspBean
                     || ( bEndingTimeHasChanged && !checkEndingTimeOfSlot( endingTime, _slot ) ) )
             {
                 return redirect( request, VIEW_MODIFY_SLOT, PARAMETER_ID_FORM, _slot.getIdForm( ) );
+            }
+            // If we edit the slot, we need to check if this slot is not a closing
+            // day. Not before the checks: a refused modification keeps the day closed
+            ClosingDay closingDay = ClosingDayService.findClosingDayByIdFormAndDateOfClosingDay( _slot.getIdForm( ), _slot.getDate( ) );
+            if ( closingDay != null )
+            {
+                // If the slot is a closing day, we need to remove it from the table
+                // closing day so that the slot is not in conflict with the
+                // definition of the closing days
+                ClosingDayService.removeClosingDay( closingDay );
             }
             SlotSafeService.updateSlot( _slot, bEndingTimeHasChanged, previousEndingTime, bShiftSlot );
 
@@ -664,15 +664,6 @@ public class SpecificWeekJspBean extends AbstractAppointmentFormAndSlotJspBean
                     slot.setIsOpen( bIsOpen );
                     bOpeningHasChanged = true;
                 }
-                if ( dateSlot == null || !dateSlot.isEqual( slot.getDate( ) ) )
-                {
-                    dateSlot = slot.getDate( );
-                    // If we edit the slot, we need to check if this slot is not a closing day
-                    // If the slot is a closing day, we need to remove it from the table
-                    // closing day so that the slot is not in conflict with the
-                    // definition of the closing days
-                    ClosingDayHome.deleteByIdFormAndDateOfClosingDay( slot.getIdForm( ), dateSlot );
-                }
                 if ( nVarMaxCapacity != 0 || ( nMaxCapacity >= 0 && nMaxCapacity != slot.getMaxCapacity( ) ) )
                 {
                     nNewMaxCapacity = ( nVarMaxCapacity != 0 ) ? ( slot.getMaxCapacity( ) + nVarMaxCapacity ) : nMaxCapacity;
@@ -704,6 +695,14 @@ public class SpecificWeekJspBean extends AbstractAppointmentFormAndSlotJspBean
                 }
                 else
                 {
+                    if ( dateSlot == null || !dateSlot.isEqual( slot.getDate( ) ) )
+                    {
+                        dateSlot = slot.getDate( );
+                        // The slot is saved: if its day is a closing day, we need to remove it from the table
+                        // closing day so that the slot is not in conflict with the
+                        // definition of the closing days. Not before: a refused modification keeps the day closed
+                        ClosingDayHome.deleteByIdFormAndDateOfClosingDay( slot.getIdForm( ), dateSlot );
+                    }
                     SlotSafeService.updateSlot( slot, bEndingTimeHasChanged, previousEndingTime, bShiftSlot );
                     if ( !appointmentsImpacted && slot.getNbPlacesTaken( ) > 0 )
                     {
