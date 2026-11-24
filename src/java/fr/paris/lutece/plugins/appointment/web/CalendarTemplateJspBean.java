@@ -212,9 +212,10 @@ public class CalendarTemplateJspBean extends MVCAdminJspBean
         }
         else
         {
-            if ( _template == null )
+            if ( _template == null || _template.getIdCalendarTemplate( ) > 0 )
             {
-                // Otherwise, we create a new template
+                // Otherwise, we create a new template. The session keeps a new template only to display it again after an error: a template
+                // being modified (in another tab) is never reused for a creation
                 _template = new CalendarTemplate( );
             }
         }
@@ -282,6 +283,10 @@ public class CalendarTemplateJspBean extends MVCAdminJspBean
                 addError( error.getMessage( ) );
             }
 
+            if ( _template.getIdCalendarTemplate( ) > 0 )
+            {
+                return redirect( request, VIEW_CREATE_MODIFY_TEMPLATE, PARAMETER_ID_TEMPLATE, _template.getIdCalendarTemplate( ) );
+            }
             return redirectView( request, VIEW_CREATE_MODIFY_TEMPLATE );
         }
 

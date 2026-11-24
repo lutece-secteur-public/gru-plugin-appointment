@@ -215,6 +215,8 @@ public class AppointmentCategoryJspBean extends AbstractAppointmentFormAndSlotJs
     @Action( ACTION_CREATE_CATEGORY )
     public String doCreateCategory( HttpServletRequest request )
     {
+        // a new category: the one of the session may have been reset by the list opened in another tab
+        _category = new Category( );
         populate( _category, request );
         // Check constraints
         if ( !validateBean( _category, VALIDATION_ATTRIBUTES_PREFIX ) )

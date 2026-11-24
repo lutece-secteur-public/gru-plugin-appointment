@@ -84,6 +84,7 @@ public class CommentNotificationJspBean extends MVCAdminJspBean
 
     // Parameters
     private static final String PARAMETER_TYPE = "type";
+    private static final String PARAMETER_NOTIFY_TYPE = "notify_type";
 
     // Messages
     private static final String INFO_COMMENT_UPDATED = "appointment.info.comment.updated";
@@ -146,6 +147,13 @@ public class CommentNotificationJspBean extends MVCAdminJspBean
     @Action( ACTION_DO_UPDATE_NOTIFICATION_CONFIG )
     public String doUpdateNotificationCommentConfig( HttpServletRequest request )
     {
+        // The configuration is the one of the posted type, not the one kept in the session: another tab may have opened another type
+        CommentNotificationConfig config = CommentNotificationHome.loadCommentNotificationConfigByType( request.getParameter( PARAMETER_NOTIFY_TYPE ) );
+        if ( config == null )
+        {
+            return redirectView( request, VIEW_NOTIFIACTION_CONFIG );
+        }
+        _commentNotificationConfig = config;
         populate( _commentNotificationConfig, request );
         CommentNotificationHome.update( _commentNotificationConfig );
         addInfo( INFO_COMMENT_UPDATED, getLocale( ) );

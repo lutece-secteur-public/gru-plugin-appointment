@@ -33,6 +33,7 @@
 			<@formGroup labelFor='message' labelKey='#i18n{appointment.task_notify_appointment_comment_config.label_message}' mandatory=true>
 				<@input type='textarea' richtext=true name='message' rows=20 cols=90>${(config.message)!}</@input>
 			</@formGroup>
+			<@input type='hidden' name='notify_type' value='${config.type}' />
 			<@button type='submit' name='action_updateNotificationCommentConfig' buttonIcon='check' title='#i18n{portal.util.labelModify}' />
 			<@button type='submit' name='view_notificationConfig' buttonIcon='arrow-left' title='#i18n{portal.util.labelCancel}' color='light' cancel=true />
 		</@tform>
