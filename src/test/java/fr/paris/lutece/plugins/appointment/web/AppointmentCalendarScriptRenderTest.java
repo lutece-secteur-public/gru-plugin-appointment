@@ -102,4 +102,17 @@ public class AppointmentCalendarScriptRenderTest extends LuteceTestCase
         assertFalse( strHtml, strHtml.contains( "localStorage.setItem('commentContext', firstDay)" ) );
         assertTrue( strHtml, strHtml.contains( "localStorage.setItem('commentContext', window.pendingCommentContext)" ) );
     }
+
+    /**
+     * The dates of a new comment are set to the displayed week when the modal opens, even if the fields already hold today's date
+     */
+    @Test
+    public void testNewCommentDatesSetToTheDisplayedWeek( )
+    {
+        String strHtml = render( "<@getCommentModal 'commentModal' 'title' 'comment' 'startingValidityDate' 'endingValidityDate' 'idStartingTime' 'idEndingTime' 'doAddComment' 3 mailing_list />" );
+
+        assertFalse( strHtml, strHtml.contains( "fpSet(startDateEl, firstDay)" ) );
+        assertTrue( strHtml, strHtml.contains( "fpForce(startDateEl, firstDay)" ) );
+        assertTrue( strHtml, strHtml.contains( "fpForce(endDateEl, firstDay)" ) );
+    }
 }

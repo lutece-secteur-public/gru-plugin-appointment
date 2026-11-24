@@ -213,6 +213,13 @@ document.addEventListener('DOMContentLoaded', function() {
 		else { el.value = value; }
 	}
 
+	// Helper: set Flatpickr date/time via its API, whatever the field holds
+	function fpForce(el, value) {
+		if (!el) { return; }
+		if (el._flatpickr) { el._flatpickr.setDate(value, true); }
+		else { el.value = value; }
+	}
+
 	fpSet(startDateEl, today);
 	fpSet(endDateEl, today);
 	fpSet(startTimeEl, '00:00');
@@ -253,8 +260,9 @@ document.addEventListener('DOMContentLoaded', function() {
 				firstDay = earliest.getFullYear() + '-' + String(earliest.getMonth() + 1).padStart(2, '0') + '-' + String(earliest.getDate()).padStart(2, '0');
 			}
 		}
-		fpSet(startDateEl, firstDay);
-		fpSet(endDateEl, firstDay);
+		// The dates of a new comment are those of the displayed week, even if the fields already hold today's date
+		fpForce(startDateEl, firstDay);
+		fpForce(endDateEl, firstDay);
 		fpSet(startTimeEl, '00:00');
 		fpSet(endTimeEl, '00:00');
 		// The week to come back to once the comment is saved (written when the form is submitted, not when the modal is opened)
