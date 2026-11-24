@@ -70,6 +70,8 @@ import fr.paris.lutece.plugins.genericattributes.business.FieldHome;
 import fr.paris.lutece.plugins.genericattributes.business.Response;
 import fr.paris.lutece.plugins.genericattributes.business.ResponseHome;
 import fr.paris.lutece.plugins.genericattributes.service.entrytype.EntryTypeServiceManager;
+import fr.paris.lutece.plugins.genericattributes.service.file.GenericAttributeFileService;
+import fr.paris.lutece.portal.business.file.File;
 import fr.paris.lutece.plugins.workflowcore.business.state.State;
 import jakarta.enterprise.inject.spi.CDI;
 
@@ -333,7 +335,7 @@ public final class AppointmentExportService
         String strPrefix = StringUtils.EMPTY;
 
         List<Response> listResponsesForEntry = listResponses.stream( ).filter( resp -> key.equals( resp.getEntry( ).getIdEntry( ) ) )
-                .filter( resp -> StringUtils.isNotEmpty( resp.getResponseValue( ) ) ).collect( Collectors.toList( ) );
+                .filter( resp -> StringUtils.isNotEmpty( resp.getResponseValue( ) ) || resp.getFile( ) != null ).collect( Collectors.toList( ) );
 
         for ( Response resp : listResponsesForEntry )
         {
@@ -343,7 +345,16 @@ public final class AppointmentExportService
                 resp.setField( FieldHome.findByPrimaryKey( f.getIdField( ) ) );
             }
 
-            String valueExport = EntryTypeServiceManager.getEntryTypeService( e ).getResponseValueForExport( e, null, resp, locale );
+            String valueExport;
+            if ( StringUtils.isEmpty( resp.getResponseValue( ) ) )
+            {
+                // the answer of a file or image question is a file, without response value: its name is exported
+                valueExport = getFileName( resp.getFile( ) );
+            }
+            else
+            {
+                valueExport = EntryTypeServiceManager.getEntryTypeService( e ).getResponseValueForExport( e, null, resp, locale );
+            }
             if ( StringUtils.isNotEmpty( valueExport ) )
             {
                 strValue.append( strPrefix + valueExport );
@@ -351,6 +362,23 @@ public final class AppointmentExportService
             }
         }
         return strValue.toString( );
+    }
+
+    /**
+     * Gives the name of the file of an answer
+     *
+     * @param file
+     *            the file of the answer, with its title or its key only
+     * @return the name of the file, empty if it is not found
+     */
+    private static String getFileName( File file )
+    {
+        if ( StringUtils.isNotEmpty( file.getTitle( ) ) )
+        {
+            return file.getTitle( );
+        }
+        File fileStored = CDI.current( ).select( GenericAttributeFileService.class ).get( ).load( file.getFileKey( ), file.getOrigin( ) );
+        return ( fileStored != null ) ? StringUtils.defaultString( fileStored.getTitle( ) ) : StringUtils.EMPTY;
     }
 
     public static ReferenceList getDefaultColumnList( Locale locale )
