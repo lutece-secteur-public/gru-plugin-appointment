@@ -4,6 +4,8 @@
 		<#if errors??><#list errors as error><@cAlert type='danger' title=error.message ! /></#list></#if>
 		<@cForm action='jsp/site/Portal.jsp?page=appointment' enctype='multipart/form-data'>
 			<@cFieldset legend='#i18n{appointment.taskFormWorkflow.pageTitle}'>
+				<#-- the form is multipart: the page must be a field, a parameter of the action URL is not read from a multipart request -->
+				<@cInput type='hidden' name='page' value='appointment' class='' />
 				<@cInput type='hidden' name='action' value='doProcessWorkflowAction' class='' />
 				<@cInput type='hidden' name='id_action' value='${id_action}' class='' />
 				<@cInput type='hidden' name='refAppointment' value='${refAppointment}' class='' />

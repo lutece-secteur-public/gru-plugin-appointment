@@ -174,4 +174,22 @@ public class AppointmentAppWorkflowActionTokenTest extends LuteceTestCase
 
         assertTrue( strHtml.contains( "name=\"token\"" ) && strHtml.contains( "value=\"tok123\"" ), strHtml );
     }
+
+    /**
+     * The task form is posted as multipart: the page of the XPage must be a field of the form, a parameter of the action URL is not read
+     * from a multipart request
+     */
+    @Test
+    public void testTaskFormPostsThePageAsAField( )
+    {
+        Map<String, Object> model = new HashMap<>( );
+        model.put( "tasks_form", HtmlMarkup.of( "<textarea name=\"comment_value_1\"></textarea>" ) );
+        model.put( "id_action", 3 );
+        model.put( "refAppointment", "ref" );
+
+        String strHtml = AppTemplateService.getTemplate( TEMPLATE_TASKS_FORM, Locale.ENGLISH, model ).getHtml( );
+
+        assertTrue( strHtml.matches( "(?s).*<input[^>]*name=\"page\"[^>]*value=\"appointment\".*" )
+                || strHtml.matches( "(?s).*<input[^>]*value=\"appointment\"[^>]*name=\"page\".*" ), strHtml );
+    }
 }
