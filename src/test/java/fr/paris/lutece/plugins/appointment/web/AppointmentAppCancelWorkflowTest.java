@@ -123,6 +123,8 @@ public class AppointmentAppCancelWorkflowTest extends LuteceTestCase
         assertTrue( page.getContent( ).contains( I18nService.getLocalizedString( "appointment.message.error.cancelNotPossible", Locale.FRENCH ) )
                 || page.getContent( ).contains( I18nService.getLocalizedString( "appointment.message.error.cancelNotPossible", Locale.ENGLISH ) ),
                 "message of the refused cancellation shown" );
+        // the common model (errors) does not overwrite the values of the view, such as the user of the appointment
+        assertTrue( page.getContent( ).contains( "Dupont" ), "user of the appointment shown" );
     }
 
     /**

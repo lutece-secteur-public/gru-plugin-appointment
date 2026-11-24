@@ -1439,6 +1439,9 @@ public class AppointmentApp extends MVCApplication
             appointment = AppointmentService.findAppointmentByReference( refAppointment );
         }
         Map<String, Object> model = new HashMap<>( );
+        // the errors of a refused cancellation (doCancelAppointment redirects here) are shown by the template; the common model goes first, the
+        // values of this view (the user of the appointment…) must not be overwritten by it
+        fillCommons( model );
         model.put( PARAMETER_REF_APPOINTMENT, refAppointment );
         model.put( SecurityTokenService.MARK_TOKEN, _securityTokenService.getToken( request, ACTION_DO_CANCEL_APPOINTMENT ) );
         if ( appointment != null )
@@ -1473,8 +1476,6 @@ public class AppointmentApp extends MVCApplication
         {
             model.put( MARK_NO_APPOINTMENT_WITH_THIS_REFERENCE, Boolean.TRUE );
         }
-        // the errors of a refused cancellation (doCancelAppointment redirects here) are shown by the template
-        fillCommons( model );
         Locale locale = getLocale( request );
         XPage xpage = getXPage( TEMPLATE_CANCEL_APPOINTMENT, locale, model );
         xpage.setTitle( I18nService.getLocalizedString( MESSAGE_CANCEL_APPOINTMENT_PAGE_TITLE, locale ) );
