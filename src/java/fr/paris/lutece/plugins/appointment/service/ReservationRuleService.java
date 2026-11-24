@@ -170,7 +170,8 @@ public final class ReservationRuleService
     }
 
     /**
-     * Update a form with the new values of an appointmentForm DTO Advanced Parameters (with a date of application) --> new Typical Week
+     * Update a form with the new values of an appointmentForm DTO Advanced Parameters (with a date of application) --> new Typical Week. When the
+     * opening hours, the duration of the slots and the open days do not change, the time slots are kept; otherwise they are generated again
      * 
      * @param appointmentForm
      *            the appointmentForm DTO
@@ -178,6 +179,13 @@ public final class ReservationRuleService
     public static void updateAdvancedParameters( AppointmentFormDTO appointmentForm )
     {
         int nIdForm = appointmentForm.getIdForm( );
+        // Same grid of time slots: keep the time slots customised one by one (closed, own capacity, ending time)
+        AppointmentFormDTO appointmentFormStored = FormService.buildAppointmentForm( nIdForm, appointmentForm.getIdReservationRule( ) );
+        if ( hasSameGrid( appointmentFormStored, appointmentForm ) )
+        {
+            updateAdvancedParametersKeepingTimeSlots( appointmentForm, appointmentFormStored.getMaxCapacityPerSlot( ) );
+            return;
+        }
         ReservationRule reservationRule = updateReservationRule( appointmentForm, nIdForm );
         int nMaxCapacity = reservationRule.getMaxCapacityPerSlot( );
         List<WorkingDay> listWorkingDay = WorkingDayService.findListWorkingDayByWeekDefinitionRule( reservationRule.getIdReservationRule( ) );
@@ -204,6 +212,90 @@ public final class ReservationRuleService
 
             CDI.current( ).getBeanManager( ).getEvent( ).select( WeekDefinitionEvent.class, new TypeQualifier( EventAction.UPDATE ) ).fireAsync( new WeekDefinitionEvent( appointmentForm.getIdForm( ), listWeek ) );
         }
+    }
+
+    /**
+     * Tell whether two versions of the advanced parameters build the same grid of time slots: same opening hours, same duration of the slots and
+     * same open days
+     *
+     * @param appointmentFormBefore
+     *            the advanced parameters as stored
+     * @param appointmentFormAfter
+     *            the advanced parameters submitted
+     * @return true if the time slots of the typical week would be the same
+     */
+    public static boolean hasSameGrid( AppointmentFormDTO appointmentFormBefore, AppointmentFormDTO appointmentFormAfter )
+    {
+        return appointmentFormBefore.getTimeStart( ) != null && appointmentFormAfter.getTimeStart( ) != null
+                && appointmentFormBefore.getTimeEnd( ) != null && appointmentFormAfter.getTimeEnd( ) != null
+                && LocalTime.parse( appointmentFormBefore.getTimeStart( ) ).equals( LocalTime.parse( appointmentFormAfter.getTimeStart( ) ) )
+                && LocalTime.parse( appointmentFormBefore.getTimeEnd( ) ).equals( LocalTime.parse( appointmentFormAfter.getTimeEnd( ) ) )
+                && appointmentFormBefore.getDurationAppointments( ) == appointmentFormAfter.getDurationAppointments( )
+                && WorkingDayService.getOpenDays( appointmentFormBefore ).equals( WorkingDayService.getOpenDays( appointmentFormAfter ) );
+    }
+
+    /**
+     * Update the advanced parameters of a typical week whose grid of time slots does not change: the time slots are kept with their opening and
+     * their own capacity; only the time slots that had the previous capacity of the typical week get the new one
+     *
+     * @param appointmentForm
+     *            the appointmentForm DTO
+     * @param nPreviousMaxCapacity
+     *            the capacity per slot of the typical week before the modification
+     */
+    private static void updateAdvancedParametersKeepingTimeSlots( AppointmentFormDTO appointmentForm, int nPreviousMaxCapacity )
+    {
+        ReservationRule reservationRule = updateReservationRule( appointmentForm, appointmentForm.getIdForm( ) );
+        int nMaxCapacity = reservationRule.getMaxCapacityPerSlot( );
+        if ( nMaxCapacity != nPreviousMaxCapacity )
+        {
+            for ( WorkingDay workingDay : WorkingDayService.findListWorkingDayByWeekDefinitionRule( reservationRule.getIdReservationRule( ) ) )
+            {
+                for ( TimeSlot timeSlot : workingDay.getListTimeSlot( ) )
+                {
+                    if ( timeSlot.getMaxCapacity( ) == nPreviousMaxCapacity )
+                    {
+                        timeSlot.setMaxCapacity( nMaxCapacity );
+                        TimeSlotHome.update( timeSlot );
+                    }
+                }
+            }
+        }
+        List<WeekDefinition> listWeek = WeekDefinitionService.findByReservationRule( appointmentForm.getIdReservationRule( ) );
+        if ( CollectionUtils.isNotEmpty( listWeek ) )
+        {
+            CDI.current( ).getBeanManager( ).getEvent( ).select( WeekDefinitionEvent.class, new TypeQualifier( EventAction.UPDATE ) )
+                    .fireAsync( new WeekDefinitionEvent( appointmentForm.getIdForm( ), listWeek ) );
+        }
+    }
+
+    /**
+     * Count the time slots of a typical week that were customised one by one: closed, with a capacity other than the capacity of the typical week, or
+     * with an ending time other than their starting time plus the duration of the slots. A new grid of time slots resets them.
+     *
+     * @param nIdReservationRule
+     *            the id of the typical week
+     * @param nMaxCapacity
+     *            the capacity per slot of the typical week
+     * @param nDuration
+     *            the duration of the slots, in minutes
+     * @return the number of customised time slots
+     */
+    public static int countCustomisedTimeSlots( int nIdReservationRule, int nMaxCapacity, int nDuration )
+    {
+        int nCount = 0;
+        for ( WorkingDay workingDay : WorkingDayService.findListWorkingDayByWeekDefinitionRule( nIdReservationRule ) )
+        {
+            for ( TimeSlot timeSlot : workingDay.getListTimeSlot( ) )
+            {
+                if ( !timeSlot.getIsOpen( ) || timeSlot.getMaxCapacity( ) != nMaxCapacity
+                        || !timeSlot.getEndingTime( ).equals( timeSlot.getStartingTime( ).plusMinutes( nDuration ) ) )
+                {
+                    nCount++;
+                }
+            }
+        }
+        return nCount;
     }
 
     /**

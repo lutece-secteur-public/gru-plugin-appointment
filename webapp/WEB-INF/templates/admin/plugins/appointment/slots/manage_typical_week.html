@@ -40,7 +40,7 @@
 			</#if>
 			<!-- Modify Advanced Parameters-->
 			<#if canUpdateAdvancedParam >
-				<@tform action='jsp/admin/plugins/appointment/ManageAppointmentSlots.jsp' enctype="multipart/form-data">
+				<@tform action='jsp/admin/plugins/appointment/ManageAppointmentSlots.jsp' id='advanced_parameters_form' enctype="multipart/form-data">
 					<@input type='hidden' name='id_form' value='${appointmentform.idForm}' />
 					<@input type='hidden' id='bo_overbooking' name='bo_overbooking' value='${appointmentform.boOverbooking?then("true", "false")}'/> 
 					<@input type='hidden' id='is_multislot_appointment' name='is_multislot_appointment' value='${appointmentform.isMultislotAppointment?then("true", "false")}'/>
@@ -257,9 +257,9 @@
 </@tform>
 </@modalBody>
 </@modal> 
-<#if canUpdateLimitedAdvancedParam>
+<#if canUpdateLimitedAdvancedParam || canUpdateAdvancedParam>
 <#include "/admin/plugins/appointment/slots/confirm_advanced_parameters.html" />
-<@confirmAdvancedParameters formId='limited_advanced_parameters_form' slots=slotsWithAppointment />
+<@confirmAdvancedParameters formId=canUpdateLimitedAdvancedParam?then('limited_advanced_parameters_form','advanced_parameters_form') slots=slotsWithAppointment nbCustomisedTimeSlots=nbCustomisedTimeSlots!0 />
 </#if>
 <script>
 const slotDuration = '${min_duration}';

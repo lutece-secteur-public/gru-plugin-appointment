@@ -155,6 +155,7 @@ public class TypicalWeekJspBean extends AbstractAppointmentFormAndSlotJspBean
     private static final String CAN_UPDATE_ADVANCED_PARAM = "canUpdateAdvancedParam";
     private static final String CAN_UPDATE_LIMITED_ADVANCED_PARAM = "canUpdateLimitedAdvancedParam";
     private static final String MARK_SLOTS_WITH_APPOINTMENT = "slotsWithAppointment";
+    private static final String MARK_NB_CUSTOMISED_TIME_SLOTS = "nbCustomisedTimeSlots";
 
     // Views
     private static final String VIEW_MANAGE_TYPICAL_WEEK = "manageTypicalWeek";
@@ -261,6 +262,9 @@ public class TypicalWeekJspBean extends AbstractAppointmentFormAndSlotJspBean
         _models.put( CAN_UPDATE_ADVANCED_PARAM, bCanUpdateAdvancedParam );
         _models.put( CAN_UPDATE_LIMITED_ADVANCED_PARAM, bCanUpdateLimitedAdvancedParam );
         _models.put( MARK_SLOTS_WITH_APPOINTMENT, listSlotWithAppointment );
+        _models.put( MARK_NB_CUSTOMISED_TIME_SLOTS, nIdReservationRule == 0 ? 0
+                : ReservationRuleService.countCustomisedTimeSlots( nIdReservationRule, _appointmentForm.getMaxCapacityPerSlot( ),
+                        _appointmentForm.getDurationAppointments( ) ) );
         _models.put( PARAMETER_DAY_OF_WEEK, listDayOfWeek );
         _models.put( PARAMETER_EVENTS, listTimeSlot );
         _models.put( PARAMETER_MIN_TIME, minStartingTime );
@@ -321,6 +325,8 @@ public class TypicalWeekJspBean extends AbstractAppointmentFormAndSlotJspBean
         {
             throw new AccessDeniedException( AppointmentResourceIdService.PERMISSION_MODIFY_ADVANCED_SETTING_FORM );
         }
+        // The advanced parameters as stored, to know whether the grid of time slots changes
+        AppointmentFormDTO appointmentFormStored = FormService.buildAppointmentForm( _appointmentForm.getIdForm( ), _appointmentForm.getIdReservationRule( ) );
         // The advanced parameters do not post the activation of the form: populate would set it to false and skip the check of the weeks open in FO
         boolean bIsActive = _appointmentForm.getIsActive( );
         populate( _appointmentForm, request );
@@ -342,6 +348,8 @@ public class TypicalWeekJspBean extends AbstractAppointmentFormAndSlotJspBean
                     _appointmentForm.getIdReservationRule( ) );
         }
 
+        // Same grid: the time slots customised one by one and the specific slots of the assigned weeks are kept
+        boolean bSameGrid = ReservationRuleService.hasSameGrid( appointmentFormStored, _appointmentForm );
         for ( WeekDefinition week : listWeekDefinition )
         {
             if ( week.getEndingDateOfApply( ).isBefore( dateNow ) )
@@ -353,6 +361,11 @@ public class TypicalWeekJspBean extends AbstractAppointmentFormAndSlotJspBean
                     week.getEndingDateOfApply( ).atTime( LocalTime.MAX ) ) );
             listSlotsImpactedWithAppointment.addAll( SlotService.findSlotWithAppointmentByDateRange( _appointmentForm.getIdForm( ),
                     startingDate.atStartOfDay( ), week.getEndingDateOfApply( ).atTime( LocalTime.MAX ) ) );
+        }
+        if ( bSameGrid )
+        {
+            listSlotsImpacted.removeIf( Slot::getIsSpecific );
+            listSlotsImpactedWithAppointment.removeIf( Slot::getIsSpecific );
         }
 
         // if there are slots impacted
