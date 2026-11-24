@@ -18,7 +18,7 @@
 				</@manageFeatureItem>
 				</#list>
 			</@manageFeature>
-			<#if category_list?size gte 10>
+			<#if paginator.pagesCount gt 1 || paginator.itemsCount gte 10>
 				<@paginationAdmin paginator=paginator combo=1 />
 			</#if>
 		<#else>
