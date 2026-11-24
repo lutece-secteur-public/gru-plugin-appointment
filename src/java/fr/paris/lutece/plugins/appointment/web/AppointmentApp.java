@@ -111,6 +111,8 @@ import fr.paris.lutece.portal.service.captcha.ICaptchaService;
 import fr.paris.lutece.portal.service.util.BeanUtils;
 import fr.paris.lutece.portal.service.i18n.I18nService;
 import fr.paris.lutece.portal.service.image.ImageResource;
+import fr.paris.lutece.portal.service.message.AdminMessage;
+import fr.paris.lutece.portal.service.message.AdminMessageService;
 import fr.paris.lutece.portal.service.message.SiteMessage;
 import fr.paris.lutece.portal.service.message.SiteMessageException;
 import fr.paris.lutece.portal.service.message.SiteMessageService;
@@ -301,6 +303,7 @@ public class AppointmentApp extends MVCApplication
     private static final String MESSAGE_MY_APPOINTMENTS_PAGE_TITLE = "appointment.myAppointments.name";
     private static final String MESSAGE_WF_ACTION_SUCESS = "appointment.wf.action.success";
     private static final String MESSAGE_ACTION_LOCKED = "appointment.message.error.actionLocked";
+    private static final String MESSAGE_WORKFLOW_ACTION_ERROR = "appointment.message.error.workflowAction";
 
     // Properties
     private static final String PROPERTY_USER_ATTRIBUTE_FIRST_NAME = "appointment.userAttribute.firstName";
@@ -1872,8 +1875,10 @@ public class AppointmentApp extends MVCApplication
                                     slot.getIdForm( ), request, getLocale( request ), luteceUser );
                             if ( strError != null )
                             {
-                                AppLogService.error( "Error Workflow: {}", strError );
-                                addError( strError );
+                                // strError is the URL of the back-office message page: the task form is displayed again, with the posted values
+                                // and the message of the task
+                                AppLogService.debug( "Validation of the task form of the workflow action {} failed: {}", nIdAction, strError );
+                                addError( getTaskFormErrorMessage( request, strError, getLocale( request ) ) );
                                 return getWorkflowActionForm( request );
                             }
                         }
@@ -1930,6 +1935,30 @@ public class AppointmentApp extends MVCApplication
             }
         }
         return getMyAppointments( request );
+    }
+
+    /**
+     * Returns the message of a failed validation of a workflow task form. The task components report it the back-office way: they store an
+     * AdminMessage in the session and answer the URL of the back-office message page, which must not be shown to a front-office user.
+     *
+     * @param request
+     *            The request
+     * @param strError
+     *            The error answered by the validation of the task form
+     * @param locale
+     *            The locale
+     * @return the text of the message of the task, or a generic error message
+     */
+    static String getTaskFormErrorMessage( HttpServletRequest request, String strError, Locale locale )
+    {
+        AdminMessage message = strError.contains( AdminMessageService.getMessageRelativeUrl( ) ) ? AdminMessageService.getMessage( request ) : null;
+
+        if ( message != null )
+        {
+            return message.getText( locale );
+        }
+
+        return I18nService.getLocalizedString( MESSAGE_WORKFLOW_ACTION_ERROR, locale );
     }
 
     /**
