@@ -91,6 +91,22 @@ document.addEventListener('DOMContentLoaded', function() {
 			}
 		}
 	});
+
+	// the coordinates belong to the picked address: typing another text or erasing the field drops them
+	function clearPoi() {
+		if (inputGeometry) inputGeometry.value = '';
+		inputY.value = '';
+		inputX.value = '';
+		inputIdAddress.value = '';
+	}
+	var addressInput = autocompleteContainer.querySelector('.lutece-autocomplete-search-input');
+	if (addressInput) {
+		addressInput.addEventListener('input', clearPoi);
+	}
+	var removeButton = autocompleteContainer.querySelector('.lutece-autocomplete-remove');
+	if (removeButton) {
+		removeButton.addEventListener('click', clearPoi);
+	}
 });
 </script>
 </#if>
