@@ -410,3 +410,32 @@ CREATE TABLE appointment_comment_notification_cf
 	subject VARCHAR(255) DEFAULT NULL, 
 	message LONG VARCHAR DEFAULT NULL
 );
+
+-- changeset appointment:create_db_appointment-comment-notification-log.sql
+-- preconditions onFail:MARK_RAN onError:WARN
+-- comment The notifications of the comments, shown in the notification zone of the admin header
+CREATE TABLE IF NOT EXISTS appointment_comment_notification_log (
+	id_notification INT AUTO_INCREMENT,
+	notify_type VARCHAR(45) NOT NULL,
+	id_form INT DEFAULT 0 NOT NULL,
+	id_comment INT DEFAULT 0 NOT NULL,
+	comment LONG VARCHAR,
+	comment_user_creator VARCHAR(255),
+	starting_validity_date DATE,
+	ending_validity_date DATE,
+	date_notification TIMESTAMP NOT NULL,
+	PRIMARY KEY (id_notification),
+	CONSTRAINT fk_appointment_comment_notification_log FOREIGN KEY (id_form) REFERENCES appointment_form (id_form)
+);
+CREATE INDEX idx_appointment_comment_notification_log_date ON appointment_comment_notification_log (date_notification);
+
+-- changeset appointment:create_db_appointment-comment-notification-read.sql
+-- preconditions onFail:MARK_RAN onError:WARN
+-- precondition-sql-check expectedResult:0 SELECT COUNT(*) FROM information_schema.tables WHERE table_schema=database() AND table_name='appointment_comment_notification_read'
+-- The comment notifications each admin user has read: they are no longer shown to him.
+CREATE TABLE IF NOT EXISTS appointment_comment_notification_read (
+	id_notification INT NOT NULL,
+	id_user INT NOT NULL,
+	PRIMARY KEY (id_notification, id_user),
+	CONSTRAINT fk_appointment_comment_notification_read FOREIGN KEY (id_notification) REFERENCES appointment_comment_notification_log (id_notification)
+);

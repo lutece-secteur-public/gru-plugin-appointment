@@ -1,0 +1,25 @@
+<#-- Notification zone of the admin header: the unread comments added, modified or removed lately on the forms the user may view.
+     Clicking one marks it as read, so it leaves the zone, and opens the calendar of its form at the date of the comment. -->
+<#assign typeIcons = { 'CREATE': 'message-plus', 'UPDATE': 'message', 'DELETE': 'message-x' } />
+<#assign typeColors = { 'CREATE': 'text-success', 'UPDATE': 'text-primary', 'DELETE': 'text-danger' } />
+<@div class='appointment-comment-notification' params={"data-count": "${nb_notifications}"}>
+	<@div class='d-flex align-items-center mb-1'>
+		<@span class='status-dot status-dot-animated bg-primary me-2'></@span>
+		<@span class='text-body fw-bold'>${label}</@span>
+	</@div>
+	<#list notification_list as item>
+	<#assign itemType>#i18n{appointment.commentNotification.type.${item.type}}</#assign><#assign itemType = itemType?markup_string />
+	<@tform method='post' name='appointment_comment_notification_${item.id}' action='jsp/admin/plugins/appointment/CommentNotifications.jsp' class='m-0'>
+		<@input type='hidden' name='action' value='markCommentNotificationRead' />
+		<@input type='hidden' name='id_notification' value='${item.id}' />
+		<@button type='submit' color='ghost-secondary' class='w-100 justify-content-start text-start py-1 px-2' title='${itemType} - ${(item.form_title!"")} - ${(item.author!"")} : ${item.text}'>
+			<@icon style=typeIcons[item.type] class='${typeColors[item.type]} me-2' />
+			<@span class='d-flex flex-column text-truncate'>
+				<@span class='text-truncate fw-semibold'>${itemType} - ${(item.form_title!'')}</@span>
+				<@span class='text-truncate fw-normal'>${(item.author!'')} : ${item.text}</@span>
+				<@span class='text-secondary small fw-normal'>${item.date}</@span>
+			</@span>
+		</@button>
+	</@tform>
+	</#list>
+</@div>
