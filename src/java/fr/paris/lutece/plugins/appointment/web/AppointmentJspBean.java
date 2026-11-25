@@ -1045,6 +1045,20 @@ public class AppointmentJspBean extends AbstractAppointmentJspBean
             }
         }
 
+        if ( !bModificationForm )
+        {
+            // A booking left unfinished in the session on another form is not continued here: its answers belong to the
+            // questions of that form
+            if ( _notValidatedAppointment != null && _notValidatedAppointment.getIdForm( ) != nIdForm )
+            {
+                _notValidatedAppointment = null;
+            }
+            if ( _validatedAppointment != null && _validatedAppointment.getIdForm( ) != nIdForm )
+            {
+                _validatedAppointment = null;
+            }
+        }
+
         // Get the not validated appointment in session if it exists
 
         if ( _notValidatedAppointment == null )
