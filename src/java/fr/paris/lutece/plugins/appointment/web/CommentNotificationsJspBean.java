@@ -69,7 +69,7 @@ public class CommentNotificationsJspBean extends MVCAdminJspBean
     public static final String CONTROLLER_PATH = "jsp/admin/plugins/appointment/";
     /** The name of the JSP of this controller */
     public static final String CONTROLLER_JSP = "CommentNotifications.jsp";
-    /** The markRead action, its name is also the key of its security token */
+    /** The markRead action; its security token is the shared one of the back office of the plugin */
     public static final String ACTION_MARK_READ = "markCommentNotificationRead";
 
     // Parameters
@@ -90,7 +90,7 @@ public class CommentNotificationsJspBean extends MVCAdminJspBean
      *            the request
      * @return the URL of the calendar, or of the admin home when the notification is not found or not visible
      */
-    @Action( ACTION_MARK_READ )
+    @Action( value = ACTION_MARK_READ, securityTokenAction = AbstractAppointmentJspBean.SECURITY_TOKEN_ACTION )
     public String doMarkRead( HttpServletRequest request )
     {
         AdminUser user = getUser( );

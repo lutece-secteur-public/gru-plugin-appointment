@@ -156,7 +156,7 @@ public class CommentNotificationDashboardComponent extends DashboardComponent
         Models models = instanceModels.isResolvable( ) ? instanceModels.get( ) : null;
         Object previousToken = ( models != null ) ? models.get( SecurityTokenHandler.MARK_CSRF_TOKEN ) : null;
 
-        String strToken = CDI.current( ).select( ISecurityTokenService.class ).get( ).getToken( request, CommentNotificationsJspBean.ACTION_MARK_READ );
+        String strToken = CDI.current( ).select( ISecurityTokenService.class ).get( ).getToken( request, AbstractAppointmentJspBean.SECURITY_TOKEN_ACTION );
 
         if ( models != null )
         {
