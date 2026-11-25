@@ -54,7 +54,7 @@
 <script>
 var featureLink = document.createElement('a');
 featureLink.href = 'jsp/admin/plugins/appointment/Comments.jsp?plugin_name=appointment';
-featureLink.title = featureLink.textContent = '<#noautoesc>${i18n('appointment.manage_comments.pageTitle')?js_string}</#noautoesc>';
+featureLink.title = featureLink.textContent = '${i18n('appointment.manage_comments.pageTitle')?js_string?no_esc}';
 document.getElementById('feature-title').replaceChildren(featureLink);
 </script>
 <script type="module">
