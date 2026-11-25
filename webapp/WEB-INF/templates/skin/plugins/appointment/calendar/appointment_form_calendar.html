@@ -16,19 +16,19 @@ ${mark_nb_places_to_take_form!}
 <@cStepCurrent step='2' title=stepCalendarTitle showPrevStep=false hasMandatory=false>
 	<#if infos?? && infos?size gt 0>
 		<#-- the description of the calendar is rich text typed in the back office -->
-		<#assign infoMsg><#list infos as info>${richText(info.message)}</#list></#assign><#assign infoMsg = infoMsg?markup_string />
-		<@cAlert type='info' title=infoMsg />
+		<#-- the messages go in the content of the alert: a markup title is not accepted by every theme, a string title is escaped -->
+		<@cAlert type='info'><#list infos as info>${richText(info.message)}</#list></@cAlert>
 	</#if>
 	<#if formCalendarErrors??>
 		<#if (errors!)?size gt 0>
-			<#assign errorMsg><#list errors as error>${error.message}</#list></#assign><#assign errorMsg = errorMsg?markup_string />
-			<@cAlert type='danger' title=errorMsg />
+			<#-- the messages go in the content of the alert: a markup title is not accepted by every theme, a string title is escaped -->
+			<@cAlert type='danger'><#list errors as error>${error.message}</#list></@cAlert>
 		</#if>
 	<#else>
 	<#-- A slot refused (full, closed or too late) sends back here with its message -->
 	<#if (errors!)?size gt 0>
-		<#assign errorMsg><#list errors as error>${error.message}<#sep><br></#sep></#list></#assign>
-		<@cAlert type='danger' title=errorMsg />
+		<#-- the messages go in the content of the alert: a markup title is not accepted by every theme, a string title is escaped -->
+		<@cAlert type='danger'><#list errors as error>${error.message}<#sep><br></#sep></#list></@cAlert>
 	</#if>
 	<@cBlock id='appointment-picker'>
 		<@cBlock id='day-panel' params={"role": "region", "aria-label": "#i18n{appointment.appointmentCalendar.labelSelectDay}"}>
