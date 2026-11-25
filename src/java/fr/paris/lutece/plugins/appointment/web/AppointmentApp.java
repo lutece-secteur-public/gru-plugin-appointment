@@ -394,8 +394,8 @@ public class AppointmentApp extends MVCApplication
         {
             // If we want to change the date of an appointment
             AppointmentDTO appointmentDTO = AppointmentService.buildAppointmentDTOFromRefAppointment( refAppointment );
-            // Check if an appointment Object was found and built with the given reference
-            if( appointmentDTO == null )
+            // Check if an appointment Object was found and built with the given reference, for the form displayed
+            if( !isAppointmentOfForm( appointmentDTO, nIdForm ) )
             {
             	// When the appointment Object doesn't exist, we display an error message to the user
             	return getXPage( TEMPLATE_ERROR_APPOINTMENT_REFERENCE, locale, _models );
@@ -1160,6 +1160,20 @@ public class AppointmentApp extends MVCApplication
     }
 
     /**
+     * Tells whether the appointment of a reference, to be rescheduled, belongs to the form displayed.
+     *
+     * @param appointment
+     *            the appointment, null when the reference is unknown
+     * @param nIdForm
+     *            the id of the form displayed
+     * @return true if the appointment exists and belongs to the form
+     */
+    static boolean isAppointmentOfForm( AppointmentDTO appointment, int nIdForm )
+    {
+        return appointment != null && appointment.getIdForm( ) == nIdForm;
+    }
+
+    /**
      * Get the page to notify the user that the appointment has been created
      *
      * @param request
@@ -1320,6 +1334,12 @@ public class AppointmentApp extends MVCApplication
             return redirectView( request, VIEW_APPOINTMENT_FORM_LIST );
         }
 
+        if ( !isAppointmentOfForm( _validatedAppointment, nIdForm ) )
+        {
+            // the appointment to move belongs to another form: it is never moved to a slot of this one
+            _validatedAppointment = null;
+            return redirectView( request, VIEW_APPOINTMENT_FORM_LIST );
+        }
         if ( !form.getIsActive( ) || _validatedAppointment.getStartingDateTime( ).isBefore( LocalDateTime.now( ) )
                 || !isAuthorizedDate( startingDateTime ) )
         {
