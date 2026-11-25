@@ -264,7 +264,7 @@ public class AppointmentFormFieldJspBean extends AbstractAppointmentJspBean
     @Action( value = ACTION_DO_MODIFY_FIELD, securityTokenAction = SECURITY_TOKEN_ACTION )
     public String doModifyField( HttpServletRequest request )
     {
-        return doModifyField( request, false );
+        return modifyField( request, false );
     }
 
     /**
@@ -277,7 +277,7 @@ public class AppointmentFormFieldJspBean extends AbstractAppointmentJspBean
     @Action( value = ACTION_DO_MODIFY_FIELD_WITH_CONDITIONAL_QUESTIONS, securityTokenAction = SECURITY_TOKEN_ACTION )
     public String doModifyFieldWithConditionalQuestions( HttpServletRequest request )
     {
-        return doModifyField( request, true );
+        return modifyField( request, true );
     }
 
     /**
@@ -290,8 +290,8 @@ public class AppointmentFormFieldJspBean extends AbstractAppointmentJspBean
      * @return The URL to go after performing the action
      */
 
-    // @Action( ACTION_DO_MODIFY_FIELD )
-    private String doModifyField( HttpServletRequest request, boolean bWithConditionalQuestion )
+    // not named do…: the core disables the security token of an action when the controller has a method of the same name without @Action
+    private String modifyField( HttpServletRequest request, boolean bWithConditionalQuestion )
     {
         String strIdField = request.getParameter( PARAMETER_ID_FIELD );
 

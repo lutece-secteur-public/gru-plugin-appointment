@@ -134,6 +134,61 @@ public class AppointmentAdminSecurityTokenTest extends LuteceTestCase
     }
 
     /**
+     * The core disables the token of an action when the controller has a method of the same name without @Action nor @View (rule of the XPages
+     * that do not use the MVC model): no such method may hide an action of the plugin
+     */
+    @Test
+    public void testNoMethodDisablesTheTokenOfAnAction( )
+    {
+        for ( Bean<?> bean : CDI.current( ).getBeanManager( ).getBeans( MVCAdminJspBean.class, Any.Literal.INSTANCE ) )
+        {
+            Class<?> clazz = bean.getBeanClass( );
+            if ( clazz.getAnnotation( Controller.class ) == null || !clazz.getName( ).startsWith( PACKAGE ) )
+            {
+                continue;
+            }
+            Set<String> setActions = new java.util.HashSet<>( );
+            List<Method> listMethods = new ArrayList<>( );
+            for ( Class<?> c = clazz; c != null && c != Object.class; c = c.getSuperclass( ) )
+            {
+                listMethods.addAll( List.of( c.getDeclaredMethods( ) ) );
+            }
+            for ( Method method : listMethods )
+            {
+                if ( method.isAnnotationPresent( Action.class ) )
+                {
+                    setActions.add( method.getAnnotation( Action.class ).value( ) );
+                }
+            }
+            for ( Method method : listMethods )
+            {
+                if ( method.getName( ).startsWith( "do" ) && !method.isAnnotationPresent( Action.class ) && !method.isAnnotationPresent( View.class ) )
+                {
+                    assertFalse( setActions.contains( method.getName( ) ),
+                            clazz.getSimpleName( ) + "." + method.getName( ) + " disables the security token of the action " + method.getName( ) );
+                }
+            }
+        }
+    }
+
+    /**
+     * The modification of an answer posted without token is refused (a private method named as the action disabled its token)
+     */
+    @Test
+    public void testModifyFieldWithoutTokenIsRefused( )
+    {
+        SecurityTokenHandler handler = CDI.current( ).select( SecurityTokenHandler.class ).get( );
+        handler.registerAdminControllers( null );
+        MockHttpServletRequest request = new MockHttpServletRequest( );
+        request.setMethod( "POST" );
+        request.setServletPath( "/jsp/admin/plugins/appointment/ManageAppointmentFormFields.jsp" );
+        request.addParameter( "action", "doModifyField" );
+        request.addParameter( "id_field", "1" );
+
+        assertFalse( handler.shouldNotFilter( request ) );
+    }
+
+    /**
      * The token of a page of the plugin is accepted by an action of another controller of the plugin (a modal of the calendar of the appointments
      * posts to the specific week), once
      */
