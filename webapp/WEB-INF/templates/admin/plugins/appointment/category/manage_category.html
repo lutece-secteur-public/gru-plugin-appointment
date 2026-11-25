@@ -1,29 +1,36 @@
+<#assign pageTitle><span class="avatar avatar-sm bg-green-lt me-2" aria-hidden="true"><@icon style='calendar-event' /></span>#i18n{appointment.adminFeature.manageCategories.name}</#assign>
 <@pageContainer>
 	<@pageColumn>
-		<@pageHeader title='#i18n{appointment.adminFeature.manageCategories.name}'>
-			<@aButton href='jsp/admin/plugins/appointment/ManageAppointmentCategory.jsp?view=createCategory' title='#i18n{appointment.manageCategory.buttonAdd}' buttonIcon='plus' color='primary' />
+		<@pageHeader title=pageTitle>
+			<@aButton href='jsp/admin/plugins/appointment/ManageAppointmentCategory.jsp?view=createCategory' title='#i18n{appointment.manageCategory.buttonAdd}' buttonIcon='plus' color='primary' hideTitle=['xs','sm','md'] />
 		</@pageHeader>
-		<@messages infos=infos errors=errors />
+		<@messages infos=infos![] errors=errors![] warnings=warnings![] />
 		<#if category_list?has_content>
-			<@manageFeature>
+			<@manageFeature layout='list' id='category-list'>
 				<#list category_list as category>
 				<@manageFeatureItem>
-					<@manageFeatureItemColumn auto=true>
-						<@p class='mb-0'><strong>${category.label}</strong> - #i18n{appointment.manageCategory.columnLabelNbMaxAppointments} : <@span class='fw-bold'>${category.nbMaxAppointmentsPerUser}</@span></@p>
+					<@manageFeatureItemColumn class='d-flex align-items-center gap-2 text-truncate'>
+						<span class="avatar avatar-sm bg-green-lt" aria-hidden="true"><@icon style='tag' /></span>
+						<@div class='text-truncate'>
+							<@link class='text-reset fw-semibold' href='jsp/admin/plugins/appointment/ManageAppointmentCategory.jsp?view=modifyCategory&id_category=${category.idCategory}'>${category.label!}</@link>
+							<@div class='text-secondary small text-truncate'>#i18n{appointment.manageCategory.columnLabelNbMaxAppointments} : ${category.nbMaxAppointmentsPerUser}</@div>
+						</@div>
 					</@manageFeatureItemColumn>
-					<@manageFeatureItemColumn align='end'>
-						<@aButton href='jsp/admin/plugins/appointment/ManageAppointmentCategory.jsp?view=modifyCategory&id_category=${category.idCategory}' title='#i18n{portal.util.labelModify}' buttonIcon='pencil' class='me-1' hideTitle=['xs','md'] />
-						<@aButton href='jsp/admin/plugins/appointment/ManageAppointmentCategory.jsp?view=confirmRemoveCategory&id_category=${category.idCategory}' title='#i18n{portal.util.labelDelete}' buttonIcon='trash' color='danger' hideTitle=['xs','md'] size='' />
+					<@manageFeatureItemColumn auto=true align='end'>
+						<@div class='btn-actions'>
+							<@aButton href='jsp/admin/plugins/appointment/ManageAppointmentCategory.jsp?view=modifyCategory&id_category=${category.idCategory}' style='btn-action' color='' buttonIcon='pencil' title='#i18n{portal.util.labelModify} ${category.label!}' hideTitle=['all'] />
+							<@aButton href='jsp/admin/plugins/appointment/ManageAppointmentCategory.jsp?view=confirmRemoveCategory&id_category=${category.idCategory}' style='btn-action text-danger' color='' buttonIcon='trash' title='#i18n{portal.util.labelDelete} ${category.label!}' hideTitle=['all'] />
+						</@div>
 					</@manageFeatureItemColumn>
 				</@manageFeatureItem>
 				</#list>
 			</@manageFeature>
-			<#if paginator.pagesCount gt 1 || paginator.itemsCount gte 10>
+			<#if paginator?? && ( paginator.pagesCount gt 1 || paginator.itemsCount gte 10 )>
 				<@paginationAdmin paginator=paginator combo=1 />
 			</#if>
 		<#else>
 			<@card>
-				<@empty title='#i18n{appointment.manageCategory.empty}' iconName='tags-off' actionTitle='#i18n{appointment.manageCategory.buttonAdd}' actionUrl='jsp/admin/plugins/appointment/ManageAppointmentCategory.jsp?view=createCategory' />
+				<@empty title='#i18n{appointment.manageCategory.empty}' iconName='tags-off' subtitle=' ' actionTitle='#i18n{appointment.manageCategory.buttonAdd}' actionUrl='jsp/admin/plugins/appointment/ManageAppointmentCategory.jsp?view=createCategory' />
 			</@card>
 		</#if>
 	</@pageColumn>

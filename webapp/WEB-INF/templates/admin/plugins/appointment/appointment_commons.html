@@ -1057,3 +1057,32 @@ if (document.readyState === 'loading') {
 	initAppointmentCalendar();
 }
 </#macro>
+<#--
+-- Breadcrumb of the back office screens: feature root > form > intermediate screens > current page
+-- @param root the feature root: forms, categories, comments, notifications or calendarTemplates
+-- @param form the appointment form the screen belongs to (optional)
+-- @param items the intermediate screens, a sequence of { 'url', 'label' } (optional)
+-- @param current the label of the current page
+-->
+<#macro appointmentBreadcrumb root='forms' form='' items=[] current=''>
+<#local roots = {
+	'forms': { 'url': 'jsp/admin/plugins/appointment/ManageAppointmentForms.jsp', 'icon': 'calendar', 'label': '#i18n{appointment.breadcrumb.forms}' },
+	'categories': { 'url': 'jsp/admin/plugins/appointment/ManageAppointmentCategory.jsp', 'icon': 'category', 'label': '#i18n{appointment.breadcrumb.categories}' },
+	'comments': { 'url': 'jsp/admin/plugins/appointment/Comments.jsp?view=manageComment', 'icon': 'message', 'label': '#i18n{appointment.breadcrumb.comments}' },
+	'notifications': { 'url': 'jsp/admin/plugins/appointment/NotificationCommentConfig.jsp?view=notificationConfig', 'icon': 'bell', 'label': '#i18n{appointment.breadcrumb.notifications}' },
+	'calendarTemplates': { 'url': 'jsp/admin/plugins/appointment/ManageCalendarTemplates.jsp', 'icon': 'template', 'label': '#i18n{appointment.breadcrumb.calendarTemplates}' }
+} />
+<#local rootItem = roots[root] />
+<@breadcrumbs class='mb-1'>
+	<@breadcrumbItem><@link href=rootItem.url label=rootItem.label linkIcon=rootItem.icon /></@breadcrumbItem>
+	<#if form?is_hash>
+		<@breadcrumbItem><@link href='jsp/admin/plugins/appointment/ManageAppointments.jsp?view=manageAppointments&id_form=${form.idForm}' label=form.title! /></@breadcrumbItem>
+	</#if>
+	<#list items as item>
+		<@breadcrumbItem><@link href=item.url label=item.label /></@breadcrumbItem>
+	</#list>
+	<#if current?has_content>
+		<@breadcrumbItem class='active' params={"aria-current": "page"}>${current}</@breadcrumbItem>
+	</#if>
+</@breadcrumbs>
+</#macro>

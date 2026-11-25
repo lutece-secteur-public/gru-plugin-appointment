@@ -1,6 +1,8 @@
+<#assign bc><@appointmentBreadcrumb items=[ { 'url': 'jsp/admin/plugins/appointment/ManageSpecificWeek.jsp?view=manageSpecificWeek&id_form=${id_form}&date_of_display=${date_of_display}', 'label': '#i18n{appointment.specificWeek.pageTitle}' } ] current='${slot.date} ${slot.startingTime}' /></#assign>
+<#assign pageTitle><span class="avatar avatar-sm bg-green-lt me-2" aria-hidden="true"><@icon style='calendar-event' /></span>#i18n{appointment.modifySlot.labelDate}</#assign>
 <@pageContainer>
 	<@pageColumn>
-		<@pageHeader title='#i18n{appointment.modifySlot.labelDate}' />
+		<@pageHeader title=pageTitle breadcrumb=bc />
 		<@messages errors=errors infos=infos />
 		<@tform action='jsp/admin/plugins/appointment/ManageSpecificWeek.jsp' boxed=true>
 		<@input type='hidden' name='action' value='doModifySlot' />

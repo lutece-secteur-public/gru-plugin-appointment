@@ -43,7 +43,7 @@
 		<@formGroup>
 			<@button type='submit' name='save' buttonIcon='check' class='form-validation' title='#i18n{appointment.labelSave}' />
 			<@button type='submit' name='apply' buttonIcon='check' title='#i18n{appointment.createEntry.buttonApplyAndManageResponse}' />
-			<@button type='submit' name='cancel' buttonIcon='arrow-left' class='form-validation' title='#i18n{appointment.labelCancel}' value='cancel' color='light' cancel=true />
+			<@button type='submit' name='cancel' buttonIcon='arrow-left' class='form-validation' title='#i18n{appointment.labelCancel}' value='cancel' color='light' params={"formnovalidate": "formnovalidate"} />
 		</@formGroup>
 		</@tform>
 	</@pageColumn>

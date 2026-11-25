@@ -19,7 +19,7 @@
 		</#if>
 	</@tabList>
 	<@tabContent id='${tab}-content'>
-		<@messages infos=infos errors=errors />
+		<@messages infos=infos![] errors=errors![] warnings=warnings![] />
 		<#nested>
 	</@tabContent>
 </@tabs>
@@ -30,7 +30,7 @@
 <@box>
 	<@boxHeader title='#i18n{appointment.modifyAppointmentForm.titleAlterablesParameters}' boxTools=true>
 		<@button type='submit' name='action_modifyAppointmentForm' title='#i18n{portal.util.labelModify}' buttonIcon='check' size='' />
-		<@button type='submit' name='view_manageAppointmentForms' title='#i18n{portal.util.labelCancel}' buttonIcon='times' size='' color='light' cancel=true />
+		<@button type='submit' name='view_manageAppointmentForms' title='#i18n{portal.util.labelCancel}' buttonIcon='times' size='' color='light' params={"formnovalidate": "formnovalidate"} />
 	</@boxHeader>
 	<@boxBody>
 		<@row>
@@ -198,7 +198,7 @@
 		<@row class='my-3'>
 			<@columns>
 				<@button type='submit' name='action_modifyAppointmentForm' title='#i18n{portal.util.labelModify}' buttonIcon='check' size='' />
-				<@button type='submit' name='view_manageAppointmentForms' title='#i18n{portal.util.labelCancel}' buttonIcon='times' size='' color='light' cancel=true />
+				<@button type='submit' name='view_manageAppointmentForms' title='#i18n{portal.util.labelCancel}' buttonIcon='times' size='' color='light' params={"formnovalidate": "formnovalidate"} />
 			</@columns>
 		</@row>
 		</@boxBody>

@@ -1,21 +1,20 @@
 <#include "/admin/plugins/asynchronousupload/upload_commons.html" />
+<#assign bc><@appointmentBreadcrumb items=[ { 'url': 'jsp/admin/plugins/appointment/ManageAppointments.jsp?view=viewAppointment&id_appointment=${id_appointment}', 'label': '#i18n{appointment.breadcrumb.appointment}' } ] current='#i18n{appointment.taskFormWorkflow.pageTitle}' /></#assign>
+<#assign pageTitle><span class="avatar avatar-sm bg-green-lt me-2" aria-hidden="true"><@icon style='calendar-event' /></span>#i18n{appointment.taskFormWorkflow.pageTitle}</#assign>
 <@pageContainer>
 	<@pageColumn>
-		<@pageHeader title='#i18n{appointment.taskFormWorkflow.pageTitle}' />
-		<@box>
-			<@boxBody>
-				<@tform action='jsp/admin/plugins/appointment/ManageAppointments.jsp' enctype='multipart/form-data'>
-					<@input type='hidden' name='action' value='doProcessWorkflowAction' />
-					<@input type='hidden' name='id_action' value='${id_action}' />
-					<@input type='hidden' name='id_appointment' value='${id_appointment}' />
-					${tasks_form}
-					<@formGroup>
-						<@button type='submit' name='save' buttonIcon='check' title='#i18n{workflow.tasks_form_test_workflow.button_save}' />
-						<@button type='submit' name='back' value='back' buttonIcon='arrow-left' title='#i18n{workflow.tasks_form_test_workflow.button_cancel}' color='light' cancel=true />
-					</@formGroup>
-				</@tform>
-			</@boxBody>
-		</@box>
+		<@pageHeader title=pageTitle breadcrumb=bc />
+		<@messages infos=infos![] errors=errors![] warnings=warnings![] />
+		<@tform action='jsp/admin/plugins/appointment/ManageAppointments.jsp' enctype='multipart/form-data' boxed=true>
+			<@input type='hidden' name='action' value='doProcessWorkflowAction' />
+			<@input type='hidden' name='id_action' value='${id_action}' />
+			<@input type='hidden' name='id_appointment' value='${id_appointment}' />
+			${tasks_form}
+			<@formGroup>
+				<@button type='submit' name='save' buttonIcon='check' title='#i18n{workflow.tasks_form_test_workflow.button_save}' />
+				<@button type='submit' name='back' value='back' buttonIcon='arrow-left' title='#i18n{workflow.tasks_form_test_workflow.button_cancel}' color='light' params={"formnovalidate": "formnovalidate"} />
+			</@formGroup>
+		</@tform>
 	</@pageColumn>
 </@pageContainer>
 <@addRequiredBOJsFiles />

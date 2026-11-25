@@ -1,18 +1,20 @@
+<#assign pageTitle><span class="avatar avatar-sm bg-green-lt me-2" aria-hidden="true"><@icon style='calendar-event' /></span>#i18n{appointment.modify.category.title}</#assign>
+<#assign bc><@appointmentBreadcrumb root='categories' current='${category.label!}' /></#assign>
 <@pageContainer>
 	<@pageColumn>
-		<@pageHeader title='#i18n{appointment.modify.category.title}' />
-		<@messages errors=errors />
+		<@pageHeader title=pageTitle breadcrumb=bc />
+		<@messages infos=infos![] errors=errors![] warnings=warnings![] />
 		<@tform action='jsp/admin/plugins/appointment/ManageAppointmentCategory.jsp' boxed=true>
 			<@input type='hidden' name='id_category' value='${category.idCategory}' />
-			<@formGroup labelFor='label' labelKey='#i18n{appointment.createCategory.label}' mandatory=true>
+			<@formGroup rows=2 labelFor='label' labelKey='#i18n{appointment.createCategory.label}' mandatory=true>
 				<@input type='text' name='label' id='label' value='${category.label!}' maxlength=255 />
 			</@formGroup>
-			<@formGroup labelFor='nb_max_appointments_per_user' labelKey='#i18n{appointment.createCategory.labelNbMaxAppointments}' helpKey='#i18n{appointment.createCategory.labelNbMaxAppointments.help}' mandatory=true>
+			<@formGroup rows=2 labelFor='nb_max_appointments_per_user' labelKey='#i18n{appointment.createCategory.labelNbMaxAppointments}' helpKey='#i18n{appointment.createCategory.labelNbMaxAppointments.help}' mandatory=true>
 				<@input type='number' name='nb_max_appointments_per_user' id='nb_max_appointments_per_user' value='${category.nbMaxAppointmentsPerUser!}' maxlength=3 />
 			</@formGroup>
-			<@formGroup>
-				<@button name='action_modifyCategory' type='submit' buttonIcon='check' title='#i18n{portal.util.labelModify}' />
-				<@button name='view_manageCategory' type='submit' buttonIcon='arrow-left' title='#i18n{portal.util.labelCancel}' color='light' cancel=true />
+			<@formGroup rows=2>
+				<@button name='action_modifyCategory' type='submit' buttonIcon='check' color='primary' title='#i18n{portal.util.labelModify}' />
+				<@button name='view_manageCategory' type='submit' buttonIcon='x' title='#i18n{portal.util.labelCancel}' color='light' params={"formnovalidate": "formnovalidate"} />
 			</@formGroup>
 		</@tform>
 	</@pageColumn>

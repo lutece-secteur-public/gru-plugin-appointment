@@ -1,6 +1,8 @@
+<#assign pageTitle><span class="avatar avatar-sm bg-green-lt me-2" aria-hidden="true"><@icon style='calendar-event' /></span>#i18n{appointment.modify_comment.pageTitle}</#assign>
+<#assign bc><@appointmentBreadcrumb root='comments' current='#i18n{appointment.modify_comment.pageTitle}' /></#assign>
 <@pageContainer>
 	<@pageColumn>
-		<@pageHeader title='#i18n{appointment.modify_comment.pageTitle}' />
+		<@pageHeader title=pageTitle breadcrumb=bc />
 		<@getCommentModal modalId='modify-comment' modalTitle='#i18n{appointment.modify_comment.pageTitle}' idComment='comment' idStartingDate='modifyStartingValidityDate' idEndingDate='modifyEndingValidityDate' idStartingTime='idStartingTime' idEndingTime='idEndingTime' action='doModifyComment' idForm=id_form mailingList=mailing_list inline=true current=comment />
 	</@pageColumn>
 </@pageContainer>

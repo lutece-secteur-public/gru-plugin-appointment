@@ -41,7 +41,7 @@
 		<@formGroup rows=2>
 			<@button type='submit' name='save' id='save' buttonIcon='check' class='form-validation' title='#i18n{appointment.labelSave}' hideTitle=['xs'] />
 			<@button type='submit' name='apply' id='apply' buttonIcon='check' title='#i18n{appointment.modifyEntry.buttonApply}' hideTitle=['xs'] />
-			<@button type='submit' name='cancel' value='cancel' buttonIcon='arrow-left' class='form-validation' color='light' title='#i18n{appointment.labelCancel}' cancel=true hideTitle=['xs'] />
+			<@button type='submit' name='cancel' value='cancel' buttonIcon='arrow-left' class='form-validation' color='light' title='#i18n{appointment.labelCancel}' params={"formnovalidate": "formnovalidate"} hideTitle=['xs'] />
 		</@formGroup>
 	</@tform>
 	<@box color='primary'>

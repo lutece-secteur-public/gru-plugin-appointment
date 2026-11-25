@@ -31,7 +31,7 @@
 		</@formGroup>
 		<@formGroup>
 			<@button type='submit' name='save' id='save' buttonIcon='check' title='#i18n{appointment.labelSave}' hideTitle=['xs'] class='form-validation' />
-			<@button type='submit' name='cancel' id='cancel' value='cancel' buttonIcon='arrow-left' color='light' title='#i18n{appointment.labelCancel}' cancel=true hideTitle=['xs'] class='form-validation' />
+			<@button type='submit' name='cancel' id='cancel' value='cancel' buttonIcon='arrow-left' color='light' title='#i18n{appointment.labelCancel}' params={"formnovalidate": "formnovalidate"} hideTitle=['xs'] class='form-validation' />
 		</@formGroup>
 		</@tform>
 	</@pageColumn>

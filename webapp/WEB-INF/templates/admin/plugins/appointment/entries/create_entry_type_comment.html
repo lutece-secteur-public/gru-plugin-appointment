@@ -21,7 +21,7 @@
             </@formGroup>
             <@formGroup>
                 <@button type='submit' name='save' buttonIcon='check' title='#i18n{appointment.labelSave}' class='form-validation' />
-                <@button type='submit' name='cancel' buttonIcon='arrow-left' class='form-validation' color='light' title='#i18n{appointment.labelCancel}' cancel=true />
+                <@button type='submit' name='cancel' buttonIcon='arrow-left' class='form-validation' color='light' title='#i18n{appointment.labelCancel}' params={"formnovalidate": "formnovalidate"} />
             </@formGroup>
         </@tform>
     </@pageColumn>

@@ -1,25 +1,31 @@
+<#assign pageTitle><span class="avatar avatar-sm bg-green-lt me-2" aria-hidden="true"><@icon style='calendar-event' /></span>#i18n{appointment.task_notify_appointment_comment_config.title}</#assign>
 <@pageContainer>
 	<@pageColumn>
-		<@pageHeader title='#i18n{appointment.task_notify_appointment_comment_config.title}' />
+		<@pageHeader title=pageTitle />
+		<@messages infos=infos![] errors=errors![] warnings=warnings![] />
 		<@tabs>
 			<@tabsComment tab='notif' />
 			<@tabContent>
-				<@h level=3></@h>
 				<#if list_config?has_content>
-					<@manageFeature>
+					<@manageFeature layout='list' id='notification-config-list'>
 						<#list list_config as config>
 						<@manageFeatureItem>
-							<@manageFeatureItemColumn auto=true flex=false>
-								<strong>#i18n{appointment.notificationType.${config.type}}</strong>
+							<@manageFeatureItemColumn class='d-flex align-items-center gap-2 text-truncate'>
+								<span class="avatar avatar-sm bg-green-lt" aria-hidden="true"><@icon style='bell' /></span>
+								<@link class='text-reset fw-semibold' href='jsp/admin/plugins/appointment/NotificationCommentConfig.jsp?view=modifyNotificationCommentConfig&type=${config.type}'>#i18n{appointment.notificationType.${config.type}}</@link>
 							</@manageFeatureItemColumn>
-							<@manageFeatureItemColumn align='end'>
-								<@aButton href='jsp/admin/plugins/appointment/NotificationCommentConfig.jsp?view=modifyNotificationCommentConfig&type=${config.type}' title='#i18n{portal.util.labelModify}' buttonIcon='edit' color='primary' hideTitle=['xs','sm','md'] />
+							<@manageFeatureItemColumn auto=true align='end'>
+								<@div class='btn-actions'>
+									<@aButton href='jsp/admin/plugins/appointment/NotificationCommentConfig.jsp?view=modifyNotificationCommentConfig&type=${config.type}' style='btn-action' color='' buttonIcon='pencil' title='#i18n{portal.util.labelModify} #i18n{appointment.notificationType.${config.type}}' hideTitle=['all'] />
+								</@div>
 							</@manageFeatureItemColumn>
 						</@manageFeatureItem>
 						</#list>
 					</@manageFeature>
 				<#else>
-					<@empty title='#i18n{appointment.task_notify_appointment_comment_config.empty}' iconName='bell-off' />
+					<@card>
+						<@empty title='#i18n{appointment.task_notify_appointment_comment_config.empty}' iconName='bell-off' subtitle=' ' />
+					</@card>
 				</#if>
 			</@tabContent>
 		</@tabs>

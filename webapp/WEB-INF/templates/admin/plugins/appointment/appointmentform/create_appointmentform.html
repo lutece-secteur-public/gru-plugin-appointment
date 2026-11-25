@@ -6,15 +6,17 @@
 </#attempt>
 <#assign hasMap = hasSuggestPOI && (isLeafletInstalled!false) />
 <@commonsAppJS />
+<#assign bc><@appointmentBreadcrumb current='#i18n{appointment.createAppointmentForm.title}' /></#assign>
+<#assign pageTitle><span class="avatar avatar-sm bg-green-lt me-2" aria-hidden="true"><@icon style='calendar-event' /></span>#i18n{appointment.createAppointmentForm.title}</#assign>
 <@pageContainer>
 	<@pageColumn>
 		<@tform id='formid' method='post' action='jsp/admin/plugins/appointment/ManageAppointmentForms.jsp' enctype='multipart/form-data'>
-		<@pageHeader title='#i18n{appointment.createAppointmentForm.title}' >
+		<@pageHeader title=pageTitle breadcrumb=bc >
 			<@button type='submit' buttonIcon='check' title='#i18n{portal.util.labelCreate}' />
 			<@aButton href='jsp/admin/plugins/appointment/ManageAppointmentForms.jsp' buttonIcon='times' title='#i18n{portal.util.labelCancel}' color='light' />
 		</@pageHeader>
 		<@input type='hidden' id='id_form' name='id_form' />
-		<@messages errors=errors />
+		<@messages infos=infos![] errors=errors![] warnings=warnings![] />
 		<@row>
 			<@columns xs=12 md=6>
 				<@box>
