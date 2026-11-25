@@ -38,6 +38,8 @@ import jakarta.inject.Named;
 
 import fr.paris.lutece.plugins.genericattributes.business.Entry;
 import fr.paris.lutece.plugins.genericattributes.service.entrytype.AbstractEntryTypeRadioButton;
+import fr.paris.lutece.plugins.genericattributes.util.GenericAttributesUtils;
+import jakarta.servlet.http.HttpServletRequest;
 
 /**
  *
@@ -80,6 +82,17 @@ public class EntryTypeRadioButton extends AbstractEntryTypeRadioButton
     public String getTemplateCreate( Entry entry, boolean bDisplayFront )
     {
         return TEMPLATE_CREATE;
+    }
+
+    /**
+     * {@inheritDoc} A radio button question has no anonymisation type: the anonymisation of the archive never changes its
+     * answer, so it cannot be marked anonymisable (the setting would be accepted and have no effect).
+     */
+    @Override
+    protected void initCommonRequestData( Entry entry, HttpServletRequest request )
+    {
+        super.initCommonRequestData( entry, request );
+        GenericAttributesUtils.createOrUpdateField( entry, FIELD_ANONYMIZABLE, null, Boolean.FALSE.toString( ) );
     }
 
 }
