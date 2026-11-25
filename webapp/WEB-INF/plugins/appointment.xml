@@ -86,6 +86,12 @@
             <dashboard-component-class>fr.paris.lutece.plugins.appointment.web.AppointmentFormDashboardComponent</dashboard-component-class>
             <dashboard-feature-right>APPOINTMENT_FORM_MANAGEMENT</dashboard-feature-right>
         </dashboard-component>
+        <!-- the notification zone of the admin header (zone 5 when lutece.dashboard.zones.count=4): the comments added, modified or removed lately -->
+        <dashboard-component>
+            <dashboard-component-name>APPOINTMENT_COMMENT_NOTIFICATION</dashboard-component-name>
+            <dashboard-component-class>fr.paris.lutece.plugins.appointment.web.CommentNotificationDashboardComponent</dashboard-component-class>
+            <dashboard-feature-right>APPOINTMENT_FORM_MANAGEMENT</dashboard-feature-right>
+        </dashboard-component>
     </dashboard-components>
 	<!-- Portlet parameters -->
     <portlets>

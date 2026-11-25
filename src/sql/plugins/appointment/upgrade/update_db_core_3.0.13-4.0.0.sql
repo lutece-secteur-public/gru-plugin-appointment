@@ -41,3 +41,9 @@ UPDATE core_portlet SET id_style = 0 WHERE id_portlet_type IN ('APPOINTMENT_PORT
 
 -- changeset appointment:update_db_core_3.0.13-4.0.0.sql-rev6.sql
 UPDATE core_admin_right SET level_right = 2 WHERE id_right IN ( 'APPOINTMENT_FORM_MANAGEMENT', 'APPOINTMENT_CATEGORY_MANAGEMENT' );
+
+-- changeset appointment:update_db_core_3.0.13-4.0.0.sql-rev7.sql
+-- preconditions onFail:MARK_RAN onError:WARN
+-- precondition-sql-check expectedResult:0 SELECT COUNT(*) FROM core_dashboard WHERE dashboard_name = 'APPOINTMENT_COMMENT_NOTIFICATION'
+-- comment The comment notifications in the notification zone of the admin header (zone 5 with lutece.dashboard.zones.count=4)
+INSERT INTO core_dashboard(dashboard_name, dashboard_column, dashboard_order) VALUES('APPOINTMENT_COMMENT_NOTIFICATION', 5, 2);

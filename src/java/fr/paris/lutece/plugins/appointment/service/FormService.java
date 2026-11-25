@@ -44,6 +44,7 @@ import org.apache.commons.collections.CollectionUtils;
 
 import fr.paris.lutece.plugins.appointment.business.appointment.Appointment;
 import fr.paris.lutece.plugins.appointment.business.comment.CommentHome;
+import fr.paris.lutece.plugins.appointment.business.comment.CommentNotificationLogHome;
 import fr.paris.lutece.plugins.appointment.business.display.Display;
 import fr.paris.lutece.plugins.appointment.business.display.DisplayHome;
 import fr.paris.lutece.plugins.appointment.business.form.Form;
@@ -751,6 +752,7 @@ public final class FormService
             DisplayHome.deleteByIdForm( nIdForm );
             LocalizationHome.deleteByIdForm( nIdForm );
             FormMessageHome.deleteByIdForm( nIdForm );
+            CommentNotificationLogHome.removeByIdForm( nIdForm );
             CommentHome.removeByIdFom( nIdForm );
             FormHome.delete( nIdForm );
             CDI.current( ).select( EntryService.class ).get( ).removeEntriesByIdAppointmentForm( nIdForm );

@@ -34,6 +34,8 @@
 package fr.paris.lutece.plugins.appointment.service;
 
 import java.sql.Date;
+import java.sql.Timestamp;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -48,6 +50,8 @@ import fr.paris.lutece.plugins.appointment.business.comment.CommentHome;
 import fr.paris.lutece.plugins.appointment.business.comment.CommentNotificationConfig;
 import fr.paris.lutece.plugins.appointment.business.comment.CommentNotificationConfig.NotificationType;
 import fr.paris.lutece.plugins.appointment.business.comment.CommentNotificationHome;
+import fr.paris.lutece.plugins.appointment.business.comment.CommentNotificationLog;
+import fr.paris.lutece.plugins.appointment.business.comment.CommentNotificationLogHome;
 import fr.paris.lutece.plugins.appointment.business.form.Form;
 import fr.paris.lutece.plugins.appointment.web.dto.CommentDTO;
 import fr.paris.lutece.portal.business.mailinglist.Recipient;
@@ -60,6 +64,7 @@ import fr.paris.lutece.portal.service.mailinglist.AdminMailingListService;
 import fr.paris.lutece.portal.service.template.AppTemplateService;
 import fr.paris.lutece.portal.service.template.HtmlMarkup;
 import fr.paris.lutece.portal.service.util.AppLogService;
+import fr.paris.lutece.portal.service.util.AppPropertiesService;
 
 public class CommentService
 {
@@ -77,6 +82,12 @@ public class CommentService
     private static final String MARK_TIME_END_VALIDITY = "time_end_validity";
     private static final String MARK_DATE_START_VALIDITY = "date_start_validity";
     private static final String MARK_TIME_START_VALIDITY = "time_start_validity";
+
+    // PROPERTIES
+    private static final String PROPERTY_NOTIFICATION_NB_DAYS = "appointment.commentNotification.nbDays";
+
+    // CONSTANTS
+    private static final int DEFAULT_NOTIFICATION_NB_DAYS = 7;
 
     private CommentService( )
     {
@@ -176,6 +187,11 @@ public class CommentService
 
         CommentNotificationConfig config = CommentNotificationHome.loadCommentNotificationConfigByType( type.name( ) );
 
+        if ( config != null )
+        {
+            logNotification( comment, type );
+        }
+
         if ( config != null && idMailingList != -1 )
         {
 
@@ -210,6 +226,44 @@ public class CommentService
         String strTemplateSource = AppTemplateService.getTemplate( TEMPLATE_TASK_NOTIFY_MAIL, locale, model ).getHtml( );
 
         return AppTemplateService.getTemplateFromStringFtl( strTemplateSource, locale, model ).getHtml( );
+    }
+
+    /**
+     * Keep a notification of a comment, shown in the notification zone of the admin header, and forget the ones older
+     * than the period they are shown
+     *
+     * @param comment
+     *            the comment
+     * @param type
+     *            the type of the notification
+     */
+    private static void logNotification( Comment comment, NotificationType type )
+    {
+        CommentNotificationLog notification = new CommentNotificationLog( );
+        notification.setType( type );
+        notification.setIdForm( comment.getIdForm( ) );
+        notification.setIdComment( comment.getId( ) );
+        notification.setComment( comment.getComment( ) );
+        notification.setCreatorUserName( comment.getCreatorUserName( ) );
+        notification.setStartingValidityDate( comment.getStartingValidityDate( ) );
+        notification.setEndingValidityDate( comment.getEndingValidityDate( ) );
+        notification.setDateNotification( Timestamp.valueOf( LocalDateTime.now( ) ) );
+
+        CommentNotificationLogHome.removeBefore( getNotificationStartDate( ) );
+        CommentNotificationLogHome.create( notification );
+    }
+
+    /**
+     * The date of the oldest comment notification shown: the notifications are kept and shown for
+     * the number of days of the property appointment.commentNotification.nbDays (7 by default)
+     *
+     * @return the date
+     */
+    public static Timestamp getNotificationStartDate( )
+    {
+        int nNbDays = AppPropertiesService.getPropertyInt( PROPERTY_NOTIFICATION_NB_DAYS, DEFAULT_NOTIFICATION_NB_DAYS );
+
+        return Timestamp.valueOf( LocalDateTime.now( ).minusDays( nNbDays ) );
     }
 
     public static List<CommentDTO> buildCommentDTO( List<Comment> listComment )
