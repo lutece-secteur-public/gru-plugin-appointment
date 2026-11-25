@@ -82,6 +82,8 @@ import fr.paris.lutece.plugins.appointment.service.WorkingDayService;
 import fr.paris.lutece.plugins.appointment.web.dto.AppointmentFormDTO;
 import fr.paris.lutece.portal.service.admin.AccessDeniedException;
 import fr.paris.lutece.portal.service.i18n.I18nService;
+import fr.paris.lutece.portal.service.message.AdminMessage;
+import fr.paris.lutece.portal.service.message.AdminMessageService;
 import fr.paris.lutece.portal.service.rbac.RBACService;
 import fr.paris.lutece.portal.service.util.AppLogService;
 import fr.paris.lutece.portal.service.util.AppPathService;
@@ -311,6 +313,11 @@ public class SpecificWeekJspBean extends AbstractAppointmentFormAndSlotJspBean
             {
                 _slot = SlotService.findSlotById( nIdSlot );
             }
+        }
+        if ( _slot == null || ReservationRuleService.findReservationRuleByIdFormAndClosestToDateOfApply( nIdForm, _slot.getDate( ) ) == null )
+        {
+            _slot = null;
+            return redirect( request, AdminMessageService.getMessageUrl( request, ERROR_MESSAGE_EMPTY_RESERVATIONS_RULES, AdminMessage.TYPE_STOP ) );
         }
         _models.put( PARAMETER_DATE_OF_DISPLAY, _slot.getDate( ) );
         _models.put( MARK_SLOT, _slot );
