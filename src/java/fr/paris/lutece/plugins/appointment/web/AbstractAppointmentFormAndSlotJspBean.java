@@ -33,6 +33,7 @@
  */
 package fr.paris.lutece.plugins.appointment.web;
 
+import org.apache.commons.lang3.StringUtils;
 import java.time.LocalTime;
 import java.time.temporal.ChronoUnit;
 import java.util.List;
@@ -86,6 +87,7 @@ public abstract class AbstractAppointmentFormAndSlotJspBean extends AbstractAppo
     private static final String MESSAGE_MULTI_SLOT_ERROR_NUMBER_OF_SEATS_BOOKED = "appointment.message.error.multiSlot.numberOfSeatsBookedAndConcurrentAppointments";
     private static final String MESSAGE_ERROR_NUMBER_DAY_BETWEEN_TWO_APPOINTMENTS = "appointment.message.error.nbDaysBetweenTwoAppointments";
     private static final String MESSAGE_ERROR_MAX_APPOINTMENTS_PER_USER = "appointment.message.error.nbMaxAppointmentsPerUser";
+    private static final String MESSAGE_ERROR_ANONYMIZATION_PATTERN_MISSING = "appointment.message.error.anonymizationPatternMissing";
 
     // Constantes
     protected static final String VAR_CAP = "var_cap";
@@ -136,7 +138,8 @@ public abstract class AbstractAppointmentFormAndSlotJspBean extends AbstractAppo
     {
         return checkStartingAndEndingTime( appointmentForm ) && checkStartingAndEndingValidityDate( appointmentForm )
                 && checkSlotCapacityAndPeoplePerAppointment( appointmentForm ) && checkAtLeastOneWorkingDayOpen( appointmentForm )
-                && checkMultiSlotFormTypeBookablePlaces( appointmentForm ) && checkControlMaxAppointmentsPerUser( appointmentForm );
+                && checkMultiSlotFormTypeBookablePlaces( appointmentForm ) && checkControlMaxAppointmentsPerUser( appointmentForm )
+                && checkAnonymizationPattern( appointmentForm );
     }
 
     /**
@@ -300,6 +303,35 @@ public abstract class AbstractAppointmentFormAndSlotJspBean extends AbstractAppo
             addError( MESSAGE_ERROR_MAX_APPOINTMENTS_PER_USER, getLocale( ) );
         }
         return bReturn;
+    }
+
+    /**
+     * Tells whether an anonymisable form has no anonymisation pattern: the anonymisation of its appointments would do nothing
+     *
+     * @param appointmentForm
+     *            the form
+     * @return true when the pattern is missing
+     */
+    static boolean isAnonymizationPatternMissing( AppointmentFormDTO appointmentForm )
+    {
+        return appointmentForm.isAnonymizable( ) && StringUtils.isBlank( appointmentForm.getAnonymizationPattern( ) );
+    }
+
+    /**
+     * Check that an anonymisable form has an anonymisation pattern
+     *
+     * @param appointmentForm
+     *            the form
+     * @return false (with an error) when the pattern is missing
+     */
+    protected boolean checkAnonymizationPattern( AppointmentFormDTO appointmentForm )
+    {
+        if ( isAnonymizationPatternMissing( appointmentForm ) )
+        {
+            addError( MESSAGE_ERROR_ANONYMIZATION_PATTERN_MISSING, getLocale( ) );
+            return false;
+        }
+        return true;
     }
 
     /**
