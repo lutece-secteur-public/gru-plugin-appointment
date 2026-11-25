@@ -1,5 +1,6 @@
+<#assign pageTitle><span class="avatar avatar-sm bg-green-lt me-2" aria-hidden="true"><@icon style='calendar-event' /></span>#i18n{appointment.modifyAppointmentFormEntries.pageTitle} : ${appointmentform.title!}</#assign>
 <#include "/admin/plugins/appointment/appointmentform/modify_appointmentform_tabs.html" />
-<@pageHeader title='#i18n{appointment.modifyAppointmentFormEntries.pageTitle} : ${appointmentform.title!}' />
+<@pageHeader title=pageTitle />
 <@appointmentTabs tab="entries" appointmentform=appointmentform>
 	<@row>
 		<@columns class='appointment-list-group' xs=12 md=10>

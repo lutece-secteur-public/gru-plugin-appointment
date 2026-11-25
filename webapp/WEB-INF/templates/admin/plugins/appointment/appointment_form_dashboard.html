@@ -1,13 +1,17 @@
-<#assign dashboardCreate><#if permission_create=="true"><@aButton href='jsp/admin/plugins/appointment/ManageAppointmentForms.jsp?view=createAppointmentForm' buttonIcon='plus' title='#i18n{appointment.manageAppointmentForms.buttonAdd}' hideTitle=['all'] size='sm' /></#if></#assign>
+<#assign dashboardCreate><#if permission_create=="true"><@aButton href='jsp/admin/plugins/appointment/ManageAppointmentForms.jsp?view=createAppointmentForm' buttonIcon='plus' title='#i18n{portal.util.labelCreate}' hideTitle=['xs'] size='sm' /></#if></#assign>
 <@adminDashboardWidget title='#i18n{appointment.manage.appointmentforms.title}' id='appointment_dashboard_card' url=url boxIcon='calendar-event' headerActions=dashboardCreate flush=true>
 <#if appointmentform_list?has_content>
 	<@listGroup class='list-group-flush'>
 	<#list appointmentform_list as appointmentform>
 		<#assign permission = permissions[appointmentform?index] />
 		<@li class='list-group-item'>
+			<#assign appointmentformStatus><#if appointmentform.isActive>#i18n{portal.util.labelEnabled}<#else>#i18n{portal.util.labelDisabled}</#if></#assign>
 			<@row class='align-items-center g-2'>
+				<@div class='col-auto'>
+					<@span class='status-dot ${appointmentform.isActive?then("status-green", "status-red")}' params={"title": appointmentformStatus}></@span>
+					<@span class='visually-hidden'>${appointmentformStatus}</@span>
+				</@div>
 				<@div class='col text-truncate'>
-					<#if appointmentform.isActive><@icon style='check' class='text-success fs-2' title='#i18n{portal.util.labelEnabled}' /><#else><@icon style='x' class='text-danger fs-2' title='#i18n{portal.util.labelDisabled}' /></#if>
 					<#if permission[2]=="true">
 						<@link href='jsp/admin/plugins/appointment/ManageAppointmentForms.jsp?view=modifyAppointmentForm&id_form=${appointmentform.idForm}' label=appointmentform.title class='text-reset fw-semibold' title='#i18n{portal.util.labelModify} ${appointmentform.title}' />
 					<#else>

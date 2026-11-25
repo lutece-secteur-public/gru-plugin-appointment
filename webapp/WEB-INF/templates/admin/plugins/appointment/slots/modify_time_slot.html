@@ -1,6 +1,8 @@
+<#assign bc><@appointmentBreadcrumb items=[ { 'url': 'jsp/admin/plugins/appointment/ManageAppointmentSlots.jsp?view=manageTypicalWeek&id_form=${id_form}&id_reservation_rule=${id_reservation_rule}', 'label': '#i18n{appointment.typicalWeek.pageTitle}' } ] current='${timeSlot.startingTime}' /></#assign>
+<#assign pageTitle><span class="avatar avatar-sm bg-green-lt me-2" aria-hidden="true"><@icon style='calendar-event' /></span>#i18n{appointment.model.entity.appointmentform.attribute.timeEnd}</#assign>
 <@pageContainer>
 	<@pageColumn>
-		<@pageHeader title='#i18n{appointment.model.entity.appointmentform.attribute.timeEnd}' />
+		<@pageHeader title=pageTitle breadcrumb=bc />
 		<@messages errors=errors infos=infos />
 		<@tform action='jsp/admin/plugins/appointment/ManageAppointmentSlots.jsp' boxed=true>
 		<@input type='hidden' name='action' value='doModifyTimeSlot' />

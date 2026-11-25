@@ -1,27 +1,29 @@
 <#if template.idCalendarTemplate?? && template.idCalendarTemplate gt 0><#assign pageTitle = '#i18n{appointment.createModifyCalendarTemplate.pageTitleModify}' /><#else><#assign pageTitle = '#i18n{appointment.labelAddTemplate}' /></#if>
+<#assign pageTitleAv><span class="avatar avatar-sm bg-green-lt me-2" aria-hidden="true"><@icon style='calendar-event' /></span>${pageTitle}</#assign>
+<#assign bc><@appointmentBreadcrumb root='calendarTemplates' current=pageTitle /></#assign>
 <@pageContainer>
 	<@pageColumn>
-		<@pageHeader title=pageTitle />
+		<@pageHeader title=pageTitleAv breadcrumb=bc />
 		<@div id='form-create-modify-calendar-template' >
-		<@messages infos=infos errors=errors />
+		<@messages infos=infos![] errors=errors![] warnings=warnings![] />
 		<@tform action='jsp/admin/plugins/appointment/ManageCalendarTemplates.jsp' boxed=true>
 		<#if (template.idCalendarTemplate)?? && template.idCalendarTemplate gt 0><@input type='hidden' name='idCalendarTemplate' value='${template.idCalendarTemplate}' /></#if>
-		<@formGroup labelKey='#i18n{appointment.labelTitle}'>
+		<@formGroup labelKey='#i18n{appointment.labelTitle}' labelFor='title' mandatory=true rows=2>
 			<@input type='text' name='title' id='title' value='${(template.title)!}' maxlength=255 />
 		</@formGroup>
-		<@formGroup labelKey='#i18n{appointment.labelDescription}'>
+		<@formGroup labelKey='#i18n{appointment.labelDescription}' labelFor='description' mandatory=true rows=2>
 			<@input type='text' name='description' id='description' value='${(template.description)!}' maxlength=255 />
 		</@formGroup>
-		<@formGroup labelKey='#i18n{appointment.createModifyCalendarTemplate.labelTemplatePath}'>
+		<@formGroup labelKey='#i18n{appointment.createModifyCalendarTemplate.labelTemplatePath}' labelFor='templatePath' mandatory=true rows=2>
 			<@inputGroup>
 				<@select items=refListTemplates default_value=(template.templatePath)!'' name='templatePath' />
 				<#-- formaction is not a parameter of the button macro: the button is written as is, its target is a literal -->
 				<button type="submit" name="action" value="doDownloadTemplate" class="btn btn-light" formaction="jsp/admin/plugins/appointment/DoDownloadCalendarTemplate.jsp"><i class="ti ti-download me-1" aria-hidden="true"></i>#i18n{portal.util.labelDownload}</button>
 			</@inputGroup>
 		</@formGroup>
-		<@formGroup>
-			<@button type='submit' name='action' id='action' value='doCreateModifyTemplate' buttonIcon='check' title='#i18n{appointment.labelSave}' />
-			<@aButton href='jsp/admin/plugins/appointment/ManageCalendarTemplates.jsp' buttonIcon='arrow-left' title='#i18n{portal.util.labelCancel}' color='light' />
+		<@formGroup rows=2>
+			<@button type='submit' name='action' id='action' value='doCreateModifyTemplate' buttonIcon='check' color='primary' title='#i18n{appointment.labelSave}' />
+			<@aButton href='jsp/admin/plugins/appointment/ManageCalendarTemplates.jsp' buttonIcon='x' title='#i18n{portal.util.labelCancel}' color='light' />
 		</@formGroup>
 		</@tform>
 		</@div>

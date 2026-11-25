@@ -1,55 +1,29 @@
+<#assign pageTitle><span class="avatar avatar-sm bg-green-lt me-2" aria-hidden="true"><@icon style='calendar-event' /></span>#i18n{appointment.adminFeature.manageCalendarTemplates.name}</#assign>
 <@pageContainer>
 	<@pageColumn>
-		<@pageHeader title='#i18n{appointment.adminFeature.manageCalendarTemplates.name}'>
-			<@aButton href='jsp/admin/plugins/appointment/ManageCalendarTemplates.jsp?view=getCreateModifyTemplate' title='#i18n{appointment.labelAddTemplate}' buttonIcon='plus' color='primary' />
+		<@pageHeader title=pageTitle>
+			<@aButton href='jsp/admin/plugins/appointment/ManageCalendarTemplates.jsp?view=getCreateModifyTemplate' title='#i18n{appointment.labelAddTemplate}' buttonIcon='plus' color='primary' hideTitle=['xs','sm','md'] />
 		</@pageHeader>
-		<@messages infos=infos errors=errors /> 
-		<#if 0 < dataTableManager.items?size>
-		<@manageFeature>
-			<#list dataTableManager.items as item>
-			<@manageFeatureItem>
-				<@manageFeatureItemColumn auto=true flex=false>
-					<#list dataTableManager.listColumn as column>
-						<#if column.typeColumn = "STRING">
-							<#assign propName = "item." + column.parameterName>
-							<#assign value = propName?eval>
-							<#if column.parameterName != 'templatePath'>
-								<#if column.parameterName = 'title'><#assign pClass='fw-bold mb-1' /><#else><#assign pClass='mb-0' /></#if>
-								<@p class=pClass>${value!}</@p>
-							<#else>
-								<@p class='mb-0 fs-5 bg-light p-2 border-radius'>#i18n{appointment.createModifyCalendarTemplate.labelTemplatePath} : <#if value?? && value != ""><@span class='text-muted'>${value}</@span></#if></@p>
-							</#if>
-						<#elseif column.typeColumn = "LABEL">
-							<#assign propName = "item." + column.parameterName>
-							<#assign value = propName?eval>
-							<@p class='mb-0'>#i18n{${value!}}</@p>
-						<#elseif column.typeColumn = "BOOLEAN">
-							<#assign propName = "item." + column.parameterName>
-							<#assign value = propName?eval>
-							<@p class='mb-0'>#i18n{${column.titleKey}} : <#if value?? && value><@tag color='success' tagIcon='check'>#i18n{${column.labelTrue!}}</@tag><#else><@tag color='danger' tagIcon='times'>#i18n{${column.labelFalse!}}</@tag></#if></@p>
-						<#elseif column.typeColumn = "EMAIL">
-							<#assign propName = "item." + column.parameterName>
-							<#assign value = propName?eval>
-							<@p class='mb-0'>#i18n{${column.titleKey}} : <#if value?? && value != ""><@link href='mailto:${value}' title='${value}' label='${value}' /></#if></@p>
-						</#if>
-					</#list>
-				</@manageFeatureItemColumn>
-				<@manageFeatureItemColumn align='end'>
-					<#list dataTableManager.listColumn as column>
-						<#if column.typeColumn = "ACTION">
-							<#if column.parameterName?? && column.parameterName != "">
-								<#assign macroName = column.parameterName>
-							<#else>
-								<#assign macroName = 'actionColumnCalendarTemplate'>
-							</#if>
-							<#if macroName?? && macroName != "">
-								<@.vars[macroName] item=item /> 
-							</#if>
-						</#if>
-					</#list>
-				</@manageFeatureItemColumn>
-			</@manageFeatureItem>
-			</#list>
+		<@messages infos=infos![] errors=errors![] warnings=warnings![] />
+		<#if dataTableManager.items?has_content>
+			<@manageFeature layout='list' id='calendar-template-list'>
+				<#list dataTableManager.items as item>
+				<@manageFeatureItem>
+					<@manageFeatureItemColumn class='d-flex align-items-center gap-2 text-truncate'>
+						<span class="avatar avatar-sm bg-green-lt" aria-hidden="true"><@icon style='template' /></span>
+						<@div class='text-truncate'>
+							<@link class='text-reset fw-semibold' href='jsp/admin/plugins/appointment/ManageCalendarTemplates.jsp?view=getCreateModifyTemplate&idTemplate=${item.idCalendarTemplate}'>${item.title!}</@link>
+							<@div class='text-secondary small text-truncate'>${item.description!}<#if item.templatePath?has_content> &middot; ${item.templatePath}</#if></@div>
+						</@div>
+					</@manageFeatureItemColumn>
+					<@manageFeatureItemColumn auto=true align='end'>
+						<@div class='btn-actions'>
+							<@aButton href='jsp/admin/plugins/appointment/ManageCalendarTemplates.jsp?view=getCreateModifyTemplate&idTemplate=${item.idCalendarTemplate}' style='btn-action' color='' buttonIcon='pencil' title='#i18n{portal.util.labelModify} ${item.title!}' hideTitle=['all'] />
+							<@aButton href='jsp/admin/plugins/appointment/ManageCalendarTemplates.jsp?view=getConfirmRemoveTemplate&idTemplate=${item.idCalendarTemplate}' style='btn-action text-danger' color='' buttonIcon='trash' title='#i18n{portal.util.labelDelete} ${item.title!}' hideTitle=['all'] />
+						</@div>
+					</@manageFeatureItemColumn>
+				</@manageFeatureItem>
+				</#list>
 			</@manageFeature>
 			<#if dataTableManager.enablePaginator && (dataTableManager.paginator.pagesCount > 1)>
 			<@tform method='post' action='${dataTableManager.sortUrl}' class='w-100 d-flex justify-content-between align-items-center mt-3'>
@@ -60,12 +34,8 @@
 			</#if>
 		<#else>
 			<@card>
-				<@empty title='#i18n{portal.util.labelNoItem}' iconName='template-off' actionTitle='#i18n{appointment.labelAddTemplate}' actionUrl='jsp/admin/plugins/appointment/ManageCalendarTemplates.jsp?view=getCreateModifyTemplate' />
+				<@empty title='#i18n{portal.util.labelNoItem}' iconName='template-off' subtitle=' ' actionTitle='#i18n{appointment.labelAddTemplate}' actionUrl='jsp/admin/plugins/appointment/ManageCalendarTemplates.jsp?view=getCreateModifyTemplate' />
 			</@card>
 		</#if>
 	</@pageColumn>
 </@pageContainer>
-<#macro actionColumnCalendarTemplate item>
-<@aButton href='jsp/admin/plugins/appointment/ManageCalendarTemplates.jsp?view=getCreateModifyTemplate&idTemplate=${item.idCalendarTemplate}' title='#i18n{portal.util.labelModify}' buttonIcon='edit' class='me-1' hideTitle=['xs','sm','md'] />
-<@aButton href='jsp/admin/plugins/appointment/ManageCalendarTemplates.jsp?view=getConfirmRemoveTemplate&idTemplate=${item.idCalendarTemplate}' buttonIcon='trash' color='danger' title='#i18n{portal.util.labelDelete}' hideTitle=['xs','sm','md'] />
-</#macro>

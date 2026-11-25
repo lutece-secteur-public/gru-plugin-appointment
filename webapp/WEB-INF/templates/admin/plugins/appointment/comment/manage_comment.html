@@ -1,6 +1,7 @@
+<#assign pageTitle><span class="avatar avatar-sm bg-green-lt me-2" aria-hidden="true"><@icon style='calendar-event' /></span>#i18n{appointment.manage_comments.pageTitle}</#assign>
 <@pageContainer>
 	<@pageColumn>
-		<@pageHeader title='#i18n{appointment.manage_comments.pageTitle}'>
+		<@pageHeader title=pageTitle>
 			<@tform method='post' type='inline'>
 				<@formGroup labelFor='search_comments' labelKey='#i18n{appointment.manage_comments.labelSearch}' hideLabel=['all'] formStyle='inline'>
 					<@inputGroup>
@@ -13,30 +14,32 @@
 		<@tabs>
 			<@tabsComment tab='comment' />
 			<@tabContent>
-				<@messages infos=infos />
+				<@messages infos=infos![] errors=errors![] warnings=warnings![] />
 				<#if comment_list?has_content>
-					<@manageFeature>
+					<@manageFeature layout='list' id='comment-list'>
 						<#list comment_list as comment>
 						<@manageFeatureItem class='comment-item'>
-							<@manageFeatureItemColumn auto=true>
-								<@div class='searchable'><strong class='d-block'>${comment.formTitle!}</strong>${richText(comment.comment!)}</@div>
+							<@manageFeatureItemColumn class='d-flex align-items-center gap-2 text-truncate'>
+								<span class="avatar avatar-sm bg-green-lt" aria-hidden="true"><@icon style='message' /></span>
+								<@div class='text-truncate'>
+									<@div class='fw-semibold text-truncate searchable'>${comment.formTitle!}</@div>
+									<@div class='text-secondary small searchable'>${richText(comment.comment!)}</@div>
+									<@div class='text-secondary small text-truncate searchable'>${comment.userFirstName!} ${comment.userLastName!}</@div>
+								</@div>
 							</@manageFeatureItemColumn>
-							<@manageFeatureItemColumn auto=true>
-								<@p class='mb-0 searchable'>#i18n{appointment.manage_comments.columnStartingValidityDate} : <@span class='text-muted'>${(comment.startingValidityDate?string?date.xs?string.short)!} ${comment.startingValidityTime!}</@span></@p>
-							</@manageFeatureItemColumn>
-							<@manageFeatureItemColumn auto=true>
-								<@p class='mb-0 searchable'>#i18n{appointment.manage_comments.columnEndingValidityDate} : <@span class='text-muted'>${(comment.endingValidityDate?string?date.xs?string.short)!} ${comment.endingValidityTime!}</@span></@p>
-							</@manageFeatureItemColumn>
-							<@manageFeatureItemColumn auto=true>
-								<@p class='mb-0 searchable'>#i18n{appointment.manage_comments.columnUserCreator} : <@span class='text-muted'>${comment.userFirstName!} ${comment.userLastName!}</@span></@p>
-							</@manageFeatureItemColumn>
-							<@manageFeatureItemColumn align='end'>
-								<@aButton href='jsp/admin/plugins/appointment/Comments.jsp?view=confirmRemoveComment&id_comment=${comment.id}&idMailingList=-1' title='#i18n{portal.util.labelDelete}' buttonIcon='trash' hideTitle=['xs','sm','md'] color='danger' size='' />
+							<@manageFeatureItemColumn auto=true align='end'>
+								<@div class='d-flex flex-wrap align-items-center justify-content-end gap-2'>
+									<@tag color='' class='bg-green-lt' tagIcon='calendar-event'>#i18n{appointment.manage_comments.columnStartingValidityDate} : ${(comment.startingValidityDate?string?date.xs?string.short)!} ${comment.startingValidityTime!}</@tag>
+									<@tag color='' class='bg-orange-lt' tagIcon='calendar-off'>#i18n{appointment.manage_comments.columnEndingValidityDate} : ${(comment.endingValidityDate?string?date.xs?string.short)!} ${comment.endingValidityTime!}</@tag>
+									<@div class='btn-actions'>
+										<@aButton href='jsp/admin/plugins/appointment/Comments.jsp?view=confirmRemoveComment&id_comment=${comment.id}&idMailingList=-1' style='btn-action text-danger' color='' buttonIcon='trash' title='#i18n{portal.util.labelDelete} ${comment.formTitle!}' hideTitle=['all'] />
+									</@div>
+								</@div>
 							</@manageFeatureItemColumn>
 						</@manageFeatureItem>
 						</#list>
 					</@manageFeature>
-					<#if paginator.pagesCount gt 1 || paginator.itemsCount gte 10>
+					<#if paginator?? && ( paginator.pagesCount gt 1 || paginator.itemsCount gte 10 )>
 						<@paginationAdmin paginator=paginator combo=1 />
 					</#if>
 				<#else>
@@ -51,7 +54,7 @@
 <script>
 var featureLink = document.createElement('a');
 featureLink.href = 'jsp/admin/plugins/appointment/Comments.jsp?plugin_name=appointment';
-featureLink.title = featureLink.textContent = '${i18n('appointment.manage_comments.pageTitle')?js_string?no_esc}';
+featureLink.title = featureLink.textContent = '<#noautoesc>${i18n('appointment.manage_comments.pageTitle')?js_string}</#noautoesc>';
 document.getElementById('feature-title').replaceChildren(featureLink);
 </script>
 <script type="module">

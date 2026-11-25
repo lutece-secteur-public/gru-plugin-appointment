@@ -1,8 +1,10 @@
 <#if form.displayTitleFo && form.title != ""><#assign title=form.title /><#else><#assign title='#i18n{appointment.appointmentApp.defaultTitle}' /></#if>
+<#assign bc><@appointmentBreadcrumb form=form current='#i18n{appointment.breadcrumb.newAppointment}' /></#assign>
+<#assign pageTitle><span class="avatar avatar-sm bg-green-lt me-2" aria-hidden="true"><@icon style='calendar-event' /></span>${title}</#assign>
 <@pageContainer>
 	<@pageColumn>
-		<@pageHeader title='${title}' class='col-md-8' />
-		<#if infos?? || errors??><@messages infos=infos errors=errors /></#if>
+		<@pageHeader title=pageTitle breadcrumb=bc />
+		<#if infos?? || errors??><@messages infos=infos![] errors=errors![] warnings=warnings![] /></#if>
 		<@tform id='form-validate' action='jsp/admin/plugins/appointment/ManageAppointments.jsp' enctype='multipart/form-data' boxed=true>
 		<@input type='hidden' name='action' value='doValidateForm' />
 		<@input type='hidden' name='id_form' value='${form.idForm}' />

@@ -4,9 +4,10 @@
 	<@breadcrumbItem>#i18n{appointment.modifyField.title}</@breadcrumbItem>
 </@breadcrumbs>
 </#assign>
+<#assign pageTitle><span class="avatar avatar-sm bg-green-lt me-2" aria-hidden="true"><@icon style='calendar-event' /></span>#i18n{appointment.modifyField.title} : ${field.parentEntry.title}</#assign>
 <@pageContainer>
 	<@pageColumn>
-		<@pageHeader title='#i18n{appointment.modifyField.title} : ${field.parentEntry.title}' class='col-md-8' breadcrumb=headerBreadcrumbs />
+		<@pageHeader title=pageTitle breadcrumb=headerBreadcrumbs />
 		<@tform id='modify-field' action='jsp/admin/plugins/appointment/ManageAppointmentFormFields.jsp' boxed=true>
 		<@input type='hidden' name='action' value='doModifyField' />
 		<@input type='hidden' name='id_field' value='${field.idField}' />
@@ -24,7 +25,7 @@
 		</@formGroup>
 		<@formGroup>
 			<@button type='submit' buttonIcon='check' title='#i18n{appointment.labelSave}' />
-			<@button type='submit' name='cancel' buttonIcon='arrow-left' title='#i18n{appointment.labelCancel}' color='light' cancel=true />
+			<@button type='submit' name='cancel' buttonIcon='arrow-left' title='#i18n{appointment.labelCancel}' color='light' params={"formnovalidate": "formnovalidate"} />
 		</@formGroup>
 		</@tform>
 	</@pageColumn>

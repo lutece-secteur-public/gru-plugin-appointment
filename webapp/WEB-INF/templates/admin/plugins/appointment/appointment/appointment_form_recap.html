@@ -1,7 +1,9 @@
 <#assign formSubtitle = (form.displayTitleFo && form.title != "")?then(form.title, '#i18n{appointment.appointmentApp.defaultTitle}') />
+<#assign bc><@appointmentBreadcrumb form=form current='#i18n{appointment.appointmentApp.recap.title}' /></#assign>
+<#assign pageTitle><span class="avatar avatar-sm bg-green-lt me-2" aria-hidden="true"><@icon style='calendar-event' /></span>#i18n{appointment.appointmentApp.recap.title}</#assign>
 <@pageContainer>
 	<@pageColumn>
-		<@pageHeader title='#i18n{appointment.appointmentApp.recap.title}' description=formSubtitle />
+		<@pageHeader title=pageTitle description=formSubtitle breadcrumb=bc />
 		<@tform id='form-validate' action='jsp/admin/plugins/appointment/ManageAppointments.jsp' enctype='multipart/form-data' boxed=true>
 			<@input type='hidden' name='action' value='doMakeAppointment' />
 			<@formGroup labelFor='lastname' labelKey='${formMessages.fieldLastNameTitle!}'>

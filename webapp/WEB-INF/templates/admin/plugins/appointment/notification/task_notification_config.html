@@ -1,8 +1,10 @@
 <#include "/admin/util/editor/editor.html" />
+<#assign pageTitle><span class="avatar avatar-sm bg-green-lt me-2" aria-hidden="true"><@icon style='calendar-event' /></span>#i18n{appointment.task_notify_appointment_comment_config.title} : #i18n{appointment.notificationType.${config.type}}</#assign>
+<#assign bc><@appointmentBreadcrumb root='notifications' current='#i18n{appointment.notificationType.${config.type}}' /></#assign>
 <@pageContainer>
 	<@pageColumn>
-		<@pageHeader title='#i18n{appointment.task_notify_appointment_comment_config.title} : #i18n{appointment.notificationType.${config.type}}' />
-		<@messages errors=errors infos=infos />
+		<@pageHeader title=pageTitle breadcrumb=bc />
+		<@messages infos=infos![] errors=errors![] warnings=warnings![] />
 		<@tform id='formid' method='post' action='jsp/admin/plugins/appointment/NotificationCommentConfig.jsp' boxed=true>
 			<@row>
 				<@columns xs=12 sm=5>
@@ -30,12 +32,14 @@
 					</@table>
 				</@columns>
 			</@row>
-			<@formGroup labelFor='message' labelKey='#i18n{appointment.task_notify_appointment_comment_config.label_message}' mandatory=true>
+			<@formGroup labelFor='message' labelKey='#i18n{appointment.task_notify_appointment_comment_config.label_message}' mandatory=true rows=2>
 				<@input type='textarea' richtext=true name='message' rows=20 cols=90>${(config.message)!}</@input>
 			</@formGroup>
 			<@input type='hidden' name='notify_type' value='${config.type}' />
-			<@button type='submit' name='action_updateNotificationCommentConfig' buttonIcon='check' title='#i18n{portal.util.labelModify}' />
-			<@button type='submit' name='view_notificationConfig' buttonIcon='arrow-left' title='#i18n{portal.util.labelCancel}' color='light' cancel=true />
+			<@formGroup rows=2>
+				<@button type='submit' name='action_updateNotificationCommentConfig' buttonIcon='check' color='primary' title='#i18n{portal.util.labelModify}' />
+				<@button type='submit' name='view_notificationConfig' buttonIcon='x' title='#i18n{portal.util.labelCancel}' color='light' params={"formnovalidate": "formnovalidate"} />
+			</@formGroup>
 		</@tform>
 	</@pageColumn>
 </@pageContainer>
