@@ -189,6 +189,23 @@ ${commentActions}		</@modalFooter>
 </@modal>
 </#if>
 <script>
+/* The comment field is edited by the rich text editor of the editor profile (TinyMCE, Autumn Note, Milkdown) or by the bare textarea:
+   its content is set and read through the editor that holds it, when it has one. */
+function setCommentEditorContent( field, html ) {
+	if ( !field ) { return; }
+	field.value = html;
+	var tinyEditor = window.tinymce ? tinymce.get( field.id ) : null;
+	if ( tinyEditor ) { tinyEditor.setContent( html ); return; }
+	var noteEditor = window.AutumnNote ? AutumnNote.getInstance( field ) : null;
+	if ( noteEditor ) { noteEditor.setHTML( html ); }
+}
+function getCommentEditorContent( field ) {
+	if ( !field ) { return ''; }
+	var tinyEditor = window.tinymce ? tinymce.get( field.id ) : null;
+	if ( tinyEditor ) { return tinyEditor.getContent( ); }
+	var noteEditor = window.AutumnNote ? AutumnNote.getInstance( field ) : null;
+	return noteEditor ? noteEditor.getHTML( ) : field.value;
+}
 document.addEventListener('focusin', function(e) {
 	if (e.target.closest('.tox-tinymce, .tox-tinymce-aux, .moxman-window, .tam-assetmanager-root') !== null) {
 		e.stopImmediatePropagation();
@@ -310,8 +327,7 @@ document.addEventListener('DOMContentLoaded', function() {
 			}
 			e.preventDefault();
 		}
-		var commentEditor = window.tinymce ? tinymce.get( '${idComment?js_string?no_esc}' ) : null;
-		var commentText = commentEditor ? commentEditor.getContent( ) : document.getElementById( '${idComment?js_string?no_esc}' ).value;
+		var commentText = getCommentEditorContent( document.getElementById( '${idComment?js_string?no_esc}' ) );
 		if( commentText.trim().length === 0 ){
 			document.getElementById( '${idComment?js_string?no_esc}_errorEmpty' ).style.display = 'block';
 			e.preventDefault();
@@ -423,7 +439,7 @@ modifyModalEl.addEventListener('show.bs.modal', function() {
 	var formValues = JSON.parse( info.el.getAttribute( 'data-json' ) );
 	var csDate = new Date(formValues.comment_start);
 	window.pendingCommentContext = fcFormatDate(csDate, 'YYYY-MM-DD');
-	tinymce.get( modifyModalEl.querySelector( 'textarea[name="comment"]' ).id ).setContent( formValues.comment_text );
+	setCommentEditorContent( modifyModalEl.querySelector( 'textarea[name="comment"]' ), formValues.comment_text );
 	document.querySelector( '#modify-comment input[name="id_comment"]' ).value = formValues.id_comment.slice(1);
 	document.querySelectorAll('.labelErrorComment').forEach(function(el) { el.style.display = 'none'; });
 	// Set dates/times via Flatpickr API
