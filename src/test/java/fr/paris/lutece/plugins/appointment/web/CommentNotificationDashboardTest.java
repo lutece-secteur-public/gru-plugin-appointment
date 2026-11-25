@@ -33,15 +33,18 @@
  */
 package fr.paris.lutece.plugins.appointment.web;
 
+import java.lang.reflect.Field;
 import java.sql.Timestamp;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.jboss.weld.proxy.WeldClientProxy;
 
 import fr.paris.lutece.plugins.appointment.business.FormTest;
 import fr.paris.lutece.plugins.appointment.business.comment.CommentNotificationConfig.NotificationType;
@@ -49,13 +52,18 @@ import fr.paris.lutece.plugins.appointment.business.comment.CommentNotificationL
 import fr.paris.lutece.plugins.appointment.business.comment.CommentNotificationLogHome;
 import fr.paris.lutece.plugins.appointment.business.form.Form;
 import fr.paris.lutece.plugins.appointment.business.form.FormHome;
+import fr.paris.lutece.plugins.appointment.service.CommentService;
 import fr.paris.lutece.portal.business.rbac.RBACRole;
 import fr.paris.lutece.portal.business.user.AdminUser;
+import fr.paris.lutece.portal.util.mvc.admin.MVCAdminJspBean;
+import fr.paris.lutece.test.AdminUserUtils;
 import fr.paris.lutece.test.LuteceTestCase;
 import fr.paris.lutece.test.mocks.MockHttpServletRequest;
+import fr.paris.lutece.test.mocks.MockHttpServletResponse;
+import jakarta.enterprise.inject.spi.CDI;
 
 /**
- * Comment notifications of the admin header: the text of a rich text comment
+ * Comment notifications of the admin header: the text of a rich text comment, and the workgroup of its form
  */
 public class CommentNotificationDashboardTest extends LuteceTestCase
 {
@@ -108,5 +116,34 @@ public class CommentNotificationDashboardTest extends LuteceTestCase
         assertTrue( strHtml, strHtml.contains( "Texte gras du commentaire" ) );
         assertFalse( strHtml, strHtml.contains( "&lt;p&gt;" ) );
         assertFalse( strHtml, strHtml.contains( "&lt;strong&gt;" ) );
+    }
+
+    /**
+     * A notification of a form outside the workgroups of the user is not marked as read by him
+     *
+     * @throws Exception
+     *             if the bean cannot be prepared
+     */
+    @Test
+    public void testMarkReadChecksTheWorkgroup( ) throws Exception
+    {
+        _form.setWorkgroup( "bh_wg_other" );
+        FormHome.update( _form );
+        AdminUser user = superAdmin( );
+        MockHttpServletRequest request = new MockHttpServletRequest( );
+        AdminUserUtils.registerAdminUserWithRight( request, user, "APPOINTMENT_FORM_MANAGEMENT" );
+        request.addParameter( "id_notification", Integer.toString( _notification.getId( ) ) );
+        CommentNotificationsJspBean instance = CDI.current( ).select( CommentNotificationsJspBean.class ).get( );
+        instance.init( request, "APPOINTMENT_FORM_MANAGEMENT" );
+        Field fieldResponse = MVCAdminJspBean.class.getDeclaredField( "_response" );
+        fieldResponse.setAccessible( true );
+        Object target = ( instance instanceof WeldClientProxy ) ? ( (WeldClientProxy) instance ).getMetadata( ).getContextualInstance( ) : instance;
+        fieldResponse.set( target, new MockHttpServletResponse( ) );
+
+        instance.doMarkRead( request );
+
+        List<CommentNotificationLog> listUnread = CommentNotificationLogHome.findUnreadByIdFormsSince( List.of( _form.getIdForm( ) ),
+                CommentService.getNotificationStartDate( ), user.getUserId( ) );
+        assertEquals( 1, listUnread.size( ) );
     }
 }

@@ -38,11 +38,14 @@ import org.apache.commons.lang3.math.NumberUtils;
 import fr.paris.lutece.api.user.User;
 import fr.paris.lutece.plugins.appointment.business.comment.CommentNotificationLog;
 import fr.paris.lutece.plugins.appointment.business.comment.CommentNotificationLogHome;
+import fr.paris.lutece.plugins.appointment.business.form.Form;
+import fr.paris.lutece.plugins.appointment.business.form.FormHome;
 import fr.paris.lutece.plugins.appointment.service.AppointmentResourceIdService;
 import fr.paris.lutece.plugins.appointment.web.dto.AppointmentFormDTO;
 import fr.paris.lutece.portal.business.user.AdminUser;
 import fr.paris.lutece.portal.service.rbac.RBACService;
 import fr.paris.lutece.portal.service.util.AppPathService;
+import fr.paris.lutece.portal.service.workgroup.AdminWorkgroupService;
 import fr.paris.lutece.portal.util.mvc.admin.MVCAdminJspBean;
 import fr.paris.lutece.portal.util.mvc.admin.annotations.Controller;
 import fr.paris.lutece.portal.util.mvc.commons.annotations.Action;
@@ -94,8 +97,11 @@ public class CommentNotificationsJspBean extends MVCAdminJspBean
         CommentNotificationLog notification = CommentNotificationLogHome
                 .findByPrimaryKey( NumberUtils.toInt( request.getParameter( PARAMETER_ID_NOTIFICATION ), -1 ) );
 
-        if ( notification == null || !RBACService.isAuthorized( AppointmentFormDTO.RESOURCE_TYPE, Integer.toString( notification.getIdForm( ) ),
-                AppointmentResourceIdService.PERMISSION_VIEW_FORM, (User) user ) )
+        // same forms as the notification zone: those of the workgroups of the user he may view
+        Form form = ( notification == null ) ? null : FormHome.findByPrimaryKey( notification.getIdForm( ) );
+
+        if ( form == null || !AdminWorkgroupService.isAuthorized( form, (User) user ) || !RBACService.isAuthorized( AppointmentFormDTO.RESOURCE_TYPE,
+                Integer.toString( notification.getIdForm( ) ), AppointmentResourceIdService.PERMISSION_VIEW_FORM, (User) user ) )
         {
             return redirect( request, AppPathService.getBaseUrl( request ) + AppPathService.getAdminMenuUrl( ) );
         }
