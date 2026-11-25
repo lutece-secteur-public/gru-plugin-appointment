@@ -909,23 +909,25 @@ public class AppointmentFormJspBean extends AbstractAppointmentFormAndSlotJspBea
         return Boolean.parseBoolean( request.getParameter( PARAMETER_CALENDAR_BUTTON_PREFIX + strName ) );
     }
 
-    private void populateAddress( AppointmentFormDTO appointmentForm, HttpServletRequest request )
+    /**
+     * Fills the address of the form: the address typed or picked, with the coordinates of a picked address only (an address
+     * typed without picking a suggestion has none)
+     *
+     * @param appointmentForm
+     *            the form
+     * @param request
+     *            the request
+     */
+    static void populateAddress( AppointmentFormDTO appointmentForm, HttpServletRequest request )
     {
         String strGeolocAddress = request.getParameter( PARAMETER_GEOLOC_ADDRESS );
-        String strGeolocLatitude = request.getParameter( PARAMETER_GEOLOC_LATITUDE );
-        String strGeolocLongitude = request.getParameter( PARAMETER_GEOLOC_LONGITUDE );
-        if ( StringUtils.isNotBlank( strGeolocAddress ) && StringUtils.isNotBlank( strGeolocLatitude ) && StringUtils.isNotBlank( strGeolocLongitude ) )
-        {
-            appointmentForm.setAddress( strGeolocAddress );
-            appointmentForm.setLatitude( Double.valueOf( strGeolocLatitude ) );
-            appointmentForm.setLongitude( Double.valueOf( strGeolocLongitude ) );
-        }
-        else
-        {
-            appointmentForm.setAddress( null );
-            appointmentForm.setLatitude( null );
-            appointmentForm.setLongitude( null );
-        }
+        Double dLatitude = NumberUtils.isCreatable( request.getParameter( PARAMETER_GEOLOC_LATITUDE ) ) ? Double.valueOf( request.getParameter( PARAMETER_GEOLOC_LATITUDE ) ) : null;
+        Double dLongitude = NumberUtils.isCreatable( request.getParameter( PARAMETER_GEOLOC_LONGITUDE ) ) ? Double.valueOf( request.getParameter( PARAMETER_GEOLOC_LONGITUDE ) ) : null;
+        boolean bAddress = StringUtils.isNotBlank( strGeolocAddress );
+        boolean bCoordinates = bAddress && ( dLatitude != null ) && ( dLongitude != null );
+        appointmentForm.setAddress( bAddress ? strGeolocAddress.trim( ) : null );
+        appointmentForm.setLatitude( bCoordinates ? dLatitude : null );
+        appointmentForm.setLongitude( bCoordinates ? dLongitude : null );
     }
 
 }

@@ -257,7 +257,19 @@ document.addEventListener('DOMContentLoaded', function() {
 			document.getElementById('geoloc_address').value = '';
 			document.getElementById('geoloc_latitude').value = '';
 			document.getElementById('geoloc_longitude').value = '';
-			map.setView([39.290736, -76.610838], 12);
+			map.setView([48.85632, 2.33272], 12);
+			markersLayer.clearLayers();
+		});
+	}
+
+	// An address typed without picking a suggestion is kept as typed, without the coordinates of a previous pick
+	var addressInput = autocompleteContainer.querySelector('.lutece-autocomplete-search-input');
+	if (addressInput) {
+		addressInput.addEventListener('input', function() {
+			document.getElementById('hidden_address').value = 'false';
+			document.getElementById('geoloc_address').value = addressInput.value;
+			document.getElementById('geoloc_latitude').value = '';
+			document.getElementById('geoloc_longitude').value = '';
 			markersLayer.clearLayers();
 		});
 	}
