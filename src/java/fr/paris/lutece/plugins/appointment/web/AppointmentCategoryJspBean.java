@@ -98,6 +98,7 @@ public class AppointmentCategoryJspBean extends AbstractAppointmentFormAndSlotJs
     // Properties
     private static final String MESSAGE_CONFIRM_REMOVE_CATEGORY = "appointment.message.confirmRemoveCategory";
     private static final String MESSAGE_ERROR_REMOVE_CATEGORY = "appointment.message.categoryIsAffected.errorRemoveCategory";
+    private static final String MESSAGE_CATEGORY_NOT_FOUND = "appointment.message.categoryNotFound";
 
     // Views
     private static final String VIEW_MANAGE_CATEGORY = "manageCategory";
@@ -246,8 +247,12 @@ public class AppointmentCategoryJspBean extends AbstractAppointmentFormAndSlotJs
     public String getModifyCategory( HttpServletRequest request )
     {
         String strIdCategory = request.getParameter( PARAMETER_ID_CATEGORY );
-        int nIdCategory = Integer.parseInt( strIdCategory );
-        _category = CategoryService.findCategoryById( nIdCategory );
+        Category category = StringUtils.isNumeric( strIdCategory ) ? CategoryService.findCategoryById( Integer.parseInt( strIdCategory ) ) : null;
+        if ( category == null )
+        {
+            return redirect( request, AdminMessageService.getMessageUrl( request, MESSAGE_CATEGORY_NOT_FOUND, AdminMessage.TYPE_STOP ) );
+        }
+        _category = category;
         _models.put( MARK_CATEGORY, _category );
         return getPage( PROPERTY_PAGE_TITLE_MODIFY_CATEGORY, TEMPLATE_MODIFY_CATEGORY );
     }
