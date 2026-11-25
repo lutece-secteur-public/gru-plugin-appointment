@@ -22,6 +22,7 @@
 					</@columns>
 				</@row>
 				</#if>
+				<#if entry_list?has_content>
 				<@manageFeature>
 					<#list entry_list as entry>
 						<#if entry.entryType.group><#assign lastGroup = entry></#if>
@@ -93,6 +94,9 @@
 						</@manageFeatureItem>
 					</#list>
 				</@manageFeature>
+				<#else>
+				<@empty title='#i18n{portal.util.labelNoItem}' iconName='list-search' />
+				</#if>
 				</@tform>
 				<#-- The buttons of the entries post these forms: a form cannot be nested in the order form above -->
 				<#list entry_list as entry>
