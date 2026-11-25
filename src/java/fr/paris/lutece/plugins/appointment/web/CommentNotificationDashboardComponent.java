@@ -43,6 +43,7 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.StringUtils;
+import org.jsoup.Jsoup;
 
 import fr.paris.lutece.api.user.User;
 import fr.paris.lutece.plugins.appointment.business.comment.CommentNotificationLog;
@@ -122,7 +123,8 @@ public class CommentNotificationDashboardComponent extends DashboardComponent
             mapItem.put( KEY_ID_FORM, notification.getIdForm( ) );
             mapItem.put( KEY_FORM_TITLE, mapFormTitles.get( notification.getIdForm( ) ) );
             mapItem.put( KEY_AUTHOR, mapAuthors.computeIfAbsent( StringUtils.defaultString( notification.getCreatorUserName( ) ), this::getUserName ) );
-            mapItem.put( KEY_TEXT, StringUtils.abbreviate( StringUtils.defaultString( notification.getComment( ) ), MAX_TEXT_LENGTH ) );
+            // the comment is rich text: its text, without the tags, is shortened
+            mapItem.put( KEY_TEXT, StringUtils.abbreviate( Jsoup.parse( StringUtils.defaultString( notification.getComment( ) ) ).text( ), MAX_TEXT_LENGTH ) );
             mapItem.put( KEY_DATE, notification.getDateNotification( ).toLocalDateTime( ).format( formatter ) );
             listItems.add( mapItem );
         }
