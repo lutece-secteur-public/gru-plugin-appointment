@@ -40,6 +40,7 @@ import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.StringUtils;
@@ -50,8 +51,8 @@ import fr.paris.lutece.plugins.appointment.business.comment.CommentNotificationL
 import fr.paris.lutece.plugins.appointment.business.comment.CommentNotificationLogHome;
 import fr.paris.lutece.plugins.appointment.service.AppointmentResourceIdService;
 import fr.paris.lutece.plugins.appointment.service.CommentService;
-import fr.paris.lutece.plugins.appointment.service.FormService;
 import fr.paris.lutece.plugins.appointment.web.dto.AppointmentFormDTO;
+import fr.paris.lutece.portal.business.rbac.RBAC;
 import fr.paris.lutece.portal.business.user.AdminUser;
 import fr.paris.lutece.portal.business.user.AdminUserHome;
 import fr.paris.lutece.portal.service.dashboard.DashboardComponent;
@@ -102,9 +103,7 @@ public class CommentNotificationDashboardComponent extends DashboardComponent
     @Override
     public String getDashboardData( AdminUser user, HttpServletRequest request )
     {
-        Map<Integer, String> mapFormTitles = getAuthorizedFormTitles( user );
-        List<CommentNotificationLog> listNotifications = CommentNotificationLogHome.findUnreadByIdFormsSince( mapFormTitles.keySet( ),
-                CommentService.getNotificationStartDate( ), user.getUserId( ) );
+        List<CommentNotificationLog> listNotifications = findNotifications( user );
 
         if ( listNotifications.isEmpty( ) )
         {
@@ -121,7 +120,7 @@ public class CommentNotificationDashboardComponent extends DashboardComponent
             mapItem.put( KEY_ID, notification.getId( ) );
             mapItem.put( KEY_TYPE, notification.getType( ).name( ) );
             mapItem.put( KEY_ID_FORM, notification.getIdForm( ) );
-            mapItem.put( KEY_FORM_TITLE, mapFormTitles.get( notification.getIdForm( ) ) );
+            mapItem.put( KEY_FORM_TITLE, notification.getFormTitle( ) );
             mapItem.put( KEY_AUTHOR, mapAuthors.computeIfAbsent( StringUtils.defaultString( notification.getCreatorUserName( ) ), this::getUserName ) );
             // the comment is rich text: its text, without the tags, is shortened
             mapItem.put( KEY_TEXT, StringUtils.abbreviate( Jsoup.parse( StringUtils.defaultString( notification.getComment( ) ) ).text( ), MAX_TEXT_LENGTH ) );
@@ -167,19 +166,37 @@ public class CommentNotificationDashboardComponent extends DashboardComponent
     }
 
     /**
-     * The forms whose comments the user may see, as on their calendar: those of his workgroups he may view
+     * The unread notifications of the forms whose comments the user may see, as on their calendar: those of his workgroups he may view. One
+     * query reads the notifications of the forms of his workgroups, with their titles; the permission is checked through the RBAC service, once
+     * when the user may view every form, else once per form found.
      *
      * @param user
      *            the user
-     * @return the titles of the forms, by id
+     * @return the notifications, most recent first
      */
-    private static Map<Integer, String> getAuthorizedFormTitles( AdminUser user )
+    private static List<CommentNotificationLog> findNotifications( AdminUser user )
     {
-        List<AppointmentFormDTO> listForms = FormService.buildAllAppointmentFormLight( );
-        listForms = (List<AppointmentFormDTO>) AdminWorkgroupService.getAuthorizedCollection( listForms, (User) user );
+        List<String> listWorkgroups = new ArrayList<>( );
+        listWorkgroups.add( AdminWorkgroupService.ALL_GROUPS );
+        if ( user.getUserWorkgroups( ) != null )
+        {
+            listWorkgroups.addAll( user.getUserWorkgroups( ) );
+        }
+        List<CommentNotificationLog> listNotifications = CommentNotificationLogHome.findUnreadByWorkgroupsSince( listWorkgroups,
+                CommentService.getNotificationStartDate( ), user.getUserId( ) );
 
-        return RBACService.getAuthorizedCollection( listForms, AppointmentResourceIdService.PERMISSION_VIEW_FORM, (User) user ).stream( )
-                .collect( Collectors.toMap( AppointmentFormDTO::getIdForm, AppointmentFormDTO::getTitle, ( strTitle1, strTitle2 ) -> strTitle1 ) );
+        if ( listNotifications.isEmpty( ) || RBACService.isAuthorized( AppointmentFormDTO.RESOURCE_TYPE, RBAC.WILDCARD_RESOURCES_ID,
+                AppointmentResourceIdService.PERMISSION_VIEW_FORM, (User) user ) )
+        {
+            return listNotifications;
+        }
+
+        Set<Integer> setAuthorizedForms = listNotifications.stream( ).map( CommentNotificationLog::getIdForm ).distinct( )
+                .filter( nIdForm -> RBACService.isAuthorized( AppointmentFormDTO.RESOURCE_TYPE, Integer.toString( nIdForm ),
+                        AppointmentResourceIdService.PERMISSION_VIEW_FORM, (User) user ) )
+                .collect( Collectors.toSet( ) );
+
+        return listNotifications.stream( ).filter( notification -> setAuthorizedForms.contains( notification.getIdForm( ) ) ).collect( Collectors.toList( ) );
     }
 
     /**

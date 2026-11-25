@@ -130,4 +130,20 @@ public final class CommentNotificationLogHome
     {
         return _dao.selectUnreadByIdFormsSince( listIdForms, dateSince, nIdUser, _plugin );
     }
+
+    /**
+     * Find, in one query, the unread notifications since a date of the forms of some workgroups, with the title of their form, most recent first
+     *
+     * @param listWorkgroups
+     *            the keys of the workgroups, the key of all the workgroups included
+     * @param dateSince
+     *            the date of the oldest notification
+     * @param nIdUser
+     *            the id of the admin user
+     * @return the notifications
+     */
+    public static List<CommentNotificationLog> findUnreadByWorkgroupsSince( Collection<String> listWorkgroups, Timestamp dateSince, int nIdUser )
+    {
+        return _dao.selectUnreadByWorkgroupsSince( listWorkgroups, dateSince, nIdUser, _plugin );
+    }
 }

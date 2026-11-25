@@ -56,6 +56,7 @@ public class CommentNotificationLog implements Serializable
     private LocalDate _dateStartingValidityDate;
     private LocalDate _dateEndingValidityDate;
     private Timestamp _dateNotification;
+    private String _strFormTitle;
 
     /**
      * @return the id of the notification
@@ -208,5 +209,26 @@ public class CommentNotificationLog implements Serializable
     public void setDateNotification( Timestamp dateNotification )
     {
         _dateNotification = dateNotification;
+    }
+
+    /**
+     * Get the title of the form of the notification, when it was read with the notification
+     *
+     * @return the title of the form
+     */
+    public String getFormTitle( )
+    {
+        return _strFormTitle;
+    }
+
+    /**
+     * Set the title of the form of the notification
+     *
+     * @param strFormTitle
+     *            the title of the form
+     */
+    public void setFormTitle( String strFormTitle )
+    {
+        _strFormTitle = strFormTitle;
     }
 }

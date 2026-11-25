@@ -111,4 +111,20 @@ public interface ICommentNotificationLogDAO
      * @return the notifications
      */
     List<CommentNotificationLog> selectUnreadByIdFormsSince( Collection<Integer> listIdForms, Timestamp dateSince, int nIdUser, Plugin plugin );
+
+    /**
+     * Load, in one query, the unread notifications since a date of the forms of some workgroups, with the title of their form, most recent first.
+     * A form without workgroup belongs to every workgroup.
+     *
+     * @param listWorkgroups
+     *            the keys of the workgroups, the key of all the workgroups included
+     * @param dateSince
+     *            the date of the oldest notification
+     * @param nIdUser
+     *            the id of the admin user
+     * @param plugin
+     *            the plugin
+     * @return the notifications
+     */
+    List<CommentNotificationLog> selectUnreadByWorkgroupsSince( Collection<String> listWorkgroups, Timestamp dateSince, int nIdUser, Plugin plugin );
 }

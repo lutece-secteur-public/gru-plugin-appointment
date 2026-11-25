@@ -59,6 +59,11 @@ public class CommentNotificationLogDAO implements ICommentNotificationLogDAO
     private static final String SQL_QUERY_DELETE_BEFORE = "DELETE FROM appointment_comment_notification_log WHERE date_notification < ?";
     private static final String SQL_QUERY_SELECT_UNREAD_BY_ID_FORMS_SINCE = SQL_COLUMNS
             + " n WHERE date_notification >= ? AND NOT EXISTS ( SELECT 1 FROM appointment_comment_notification_read r WHERE r.id_notification = n.id_notification AND r.id_user = ? ) AND id_form IN ( ";
+    private static final String SQL_QUERY_SELECT_UNREAD_BY_WORKGROUPS_SINCE = "SELECT n.id_notification, n.notify_type, n.id_form, n.id_comment, n.comment, n.comment_user_creator, n.starting_validity_date, n.ending_validity_date, n.date_notification, f.title"
+            + " FROM appointment_comment_notification_log n JOIN appointment_form f ON f.id_form = n.id_form WHERE n.date_notification >= ?"
+            + " AND NOT EXISTS ( SELECT 1 FROM appointment_comment_notification_read r WHERE r.id_notification = n.id_notification AND r.id_user = ? )"
+            + " AND ( f.workgroup IS NULL OR f.workgroup = '' OR f.workgroup IN ( ";
+    private static final String SQL_ORDER_BY_DATE_DESC_WORKGROUPS = " ) ) ORDER BY n.date_notification DESC, n.id_notification DESC";
     private static final String SQL_ORDER_BY_DATE_DESC = " ) ORDER BY date_notification DESC, id_notification DESC";
     private static final String SQL_QUERY_INSERT_READ = "INSERT INTO appointment_comment_notification_read ( id_notification, id_user ) SELECT ?, ? FROM appointment_comment_notification_log WHERE id_notification = ? AND NOT EXISTS ( SELECT 1 FROM appointment_comment_notification_read WHERE id_notification = ? AND id_user = ? )";
     private static final String SQL_QUERY_DELETE_READ_BY_ID_FORM = "DELETE FROM appointment_comment_notification_read WHERE id_notification IN ( SELECT id_notification FROM appointment_comment_notification_log WHERE id_form = ? )";
@@ -204,6 +209,46 @@ public class CommentNotificationLogDAO implements ICommentNotificationLogDAO
      *            the DAOUtil on the row
      * @return the notification
      */
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public List<CommentNotificationLog> selectUnreadByWorkgroupsSince( Collection<String> listWorkgroups, Timestamp dateSince, int nIdUser, Plugin plugin )
+    {
+        List<CommentNotificationLog> listNotifications = new ArrayList<>( );
+
+        if ( listWorkgroups == null || listWorkgroups.isEmpty( ) )
+        {
+            return listNotifications;
+        }
+
+        String strQuery = SQL_QUERY_SELECT_UNREAD_BY_WORKGROUPS_SINCE + String.join( ",", Collections.nCopies( listWorkgroups.size( ), "?" ) )
+                + SQL_ORDER_BY_DATE_DESC_WORKGROUPS;
+
+        try ( DAOUtil daoUtil = new DAOUtil( strQuery, plugin ) )
+        {
+            int nIndex = 1;
+            daoUtil.setTimestamp( nIndex++, dateSince );
+            daoUtil.setInt( nIndex++, nIdUser );
+
+            for ( String strWorkgroup : listWorkgroups )
+            {
+                daoUtil.setString( nIndex++, strWorkgroup );
+            }
+
+            daoUtil.executeQuery( );
+
+            while ( daoUtil.next( ) )
+            {
+                CommentNotificationLog notification = dataToObject( daoUtil );
+                notification.setFormTitle( daoUtil.getString( 10 ) );
+                listNotifications.add( notification );
+            }
+        }
+
+        return listNotifications;
+    }
+
     private static CommentNotificationLog dataToObject( DAOUtil daoUtil )
     {
         int nIndex = 1;
