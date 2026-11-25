@@ -65,11 +65,11 @@ var events = [
                         + "<a class=\"open-AddBookDialog\" href=\"#\" data-starting_date_time=\"${event.startingDateTime}\" title=\"#i18n{appointment.manageCalendarSlots.labelAddAppointment}\"><span class=\"badge badge-primary\"><i class=\"ti ti-plus\"></i></span></a>"
                         <#elseif event.isOpen & (event.nbRemainingPlaces = 0)>
                         "<a href=\"" + eventUrl + "manageAppointments&id_form=${event.idForm}&starting_date_time=${event.startingDateTime}&ending_date_time=${event.endingDateTime}\">${nbAppointments} / ${event.maxCapacity}</a>"
-                        <#elseif event.isOpen & (event.nbRemainingPlaces > 0) & (event.nbPotentialRemainingPlaces = 0)>'${i18n('appointment.manageCalendarSlots.labelEditFull')?js_string?no_esc}'
+                        <#elseif event.isOpen & (event.nbRemainingPlaces > 0) & (event.nbPotentialRemainingPlaces = 0)>'<span class="appointment-slot-status" title="${i18n('appointment.manageCalendarSlots.labelEditFull')?js_string?no_esc}">${i18n('appointment.manageCalendarSlots.labelEditFull')?js_string?no_esc}</span>'
                         <#elseif event.isOpen & !event.isPassed & (event.nbRemainingPlaces > 0) & (event.nbPotentialRemainingPlaces > 0) & (event.nbRemainingPlaces > event.nbPotentialRemainingPlaces)>
                         "<a href=\"" + eventUrl + "manageAppointments&id_form=${event.idForm}&starting_date_time=${event.startingDateTime}&ending_date_time=${event.endingDateTime}\">${nbAppointments} / ${event.maxCapacity}</a>"
                         + "&nbsp;"
-                        + "#i18n{appointment.manageCalendarSlots.labelEdit}"
+                        + "<span class=\"appointment-slot-status\" title=\"#i18n{appointment.manageCalendarSlots.labelEdit}\">#i18n{appointment.manageCalendarSlots.labelEdit}</span>"
                         + "&nbsp;"
                         + "<a class=\"open-AddBookDialog\" href=\"#\" data-starting_date_time=\"${event.startingDateTime}\" title=\"#i18n{appointment.manageCalendarSlots.labelAddAppointment}\"><span class=\"badge badge-primary\"><i class=\"ti ti-plus\"></i></span></a>"
                         <#elseif event.isOpen>

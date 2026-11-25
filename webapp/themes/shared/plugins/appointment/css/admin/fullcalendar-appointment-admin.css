@@ -108,6 +108,25 @@
     width: 25px
 }
 
+.fc-timegrid-cols .fc-event .fc-event-main .fc-event-title-container  .fc-event-title a:not(.btn){
+    width: auto;
+    flex-shrink: 0;
+}
+
+.fc-timegrid-cols .fc-event .fc-event-main .fc-event-title-container  .fc-event-title a.btn{
+    flex-shrink: 0;
+}
+
+.fc-event-title .appointment-slot-status {
+    flex: 1 1 auto;
+    min-width: 0;
+    margin-inline: .25rem;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    font-size: .75rem;
+}
+
 .fc-out-of-opening-hours {
     background: repeating-linear-gradient( 45deg, #fff3cd, #fff3cd 6px, #ffe69c 6px, #ffe69c 12px ) !important;
     border: 2px dashed #f59f00 !important;
