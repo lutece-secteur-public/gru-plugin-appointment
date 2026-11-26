@@ -40,9 +40,11 @@ import java.time.LocalTime;
 import java.time.format.DateTimeParseException;
 import java.time.format.TextStyle;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
+import java.util.LinkedHashSet;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Locale;
@@ -574,14 +576,17 @@ public class AppointmentApp extends MVCApplication
         }
         if ( formMessages != null && StringUtils.isNotEmpty( formMessages.getCalendarDescription( ) ) )
         {
-            List<ErrorMessage> listInfos = (List<ErrorMessage>) _models.get( MARK_INFOS );
-            if ( listInfos == null )
+            // The infos may already hold the plain strings of the core (Set of String since lutece-core LUT-30580,
+            // also restored there after a redirect): keep them and add the description, whatever the collection type
+            // The core adds its own messages to this model as a Set (MVCApplication.addMessage): keep a Set
+            Set<Object> setInfos = new LinkedHashSet<>( );
+            Object infos = _models.get( MARK_INFOS );
+            if ( infos instanceof Collection<?> collection )
             {
-                listInfos = new ArrayList<>( );
-                _models.put( MARK_INFOS, listInfos );
+                setInfos.addAll( collection );
             }
-            MVCMessage message = new MVCMessage( formMessages.getCalendarDescription( ) );
-            listInfos.add( message );
+            setInfos.add( new MVCMessage( formMessages.getCalendarDescription( ) ) );
+            _models.put( MARK_INFOS, setInfos );
         }
 
         CalendarTemplate calendarTemplate = CalendarTemplateHome.findByPrimaryKey( _appointmentForm.getCalendarTemplateId( ) );
