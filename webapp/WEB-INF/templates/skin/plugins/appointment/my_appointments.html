@@ -10,7 +10,7 @@
 	<@cRow>
 		<@cCol>
 			<@cTitle level=2 class='mb-4'>#i18n{appointment.myAppointments.name}</@cTitle>
-			<#if infos?? && infos?size gt 0><#list infos as info><@cAlert type='info' title=info.message! /></#list></#if>
+			<#if infos?? && infos?size gt 0><#list infos as info><@cAlert type='info' title=((info?is_hash)?then(info.message!'', info))! /></#list></#if>
 			<#if errors?? && errors?size gt 0><#list errors as error><@cAlert type='danger' title=error.message! /></#list></#if>
 			<#include "/skin/plugins/appointment/my_appointments_list.html" />
 		</@cCol>

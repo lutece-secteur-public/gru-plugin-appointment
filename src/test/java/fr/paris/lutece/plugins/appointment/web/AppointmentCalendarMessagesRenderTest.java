@@ -60,6 +60,8 @@ public class AppointmentCalendarMessagesRenderTest extends LuteceTestCase
     private static final String INFO = "<p>Apportez une <strong>pièce</strong> <a href=\"https://example.org\">voir</a></p>";
     private static final String ERROR = "L'heure choisie n'est plus disponible";
 
+    private Object _infos = List.of( new MVCMessage( INFO ) );
+
     private Map<String, Object> model( boolean bFormCalendarErrors )
     {
         AppointmentFormDTO form = new AppointmentFormDTO( );
@@ -69,7 +71,7 @@ public class AppointmentCalendarMessagesRenderTest extends LuteceTestCase
         Map<String, Object> model = new HashMap<>( );
         model.put( "form", form );
         model.put( "formMessages", new FormMessage( ) );
-        model.put( "infos", List.of( new MVCMessage( INFO ) ) );
+        model.put( "infos", _infos );
         model.put( "errors", List.of( new MVCMessage( ERROR ) ) );
         if ( bFormCalendarErrors )
         {
@@ -103,6 +105,28 @@ public class AppointmentCalendarMessagesRenderTest extends LuteceTestCase
         {
             check( strTemplate, true );
             check( strTemplate, false );
+        }
+    }
+
+    /**
+     * The core MVCApplication (LUT-30580) adds the FO infos as plain strings: every calendar template shows them too.
+     */
+    @Test
+    public void testInfosAddedByTheCoreAsText( )
+    {
+        java.util.Set<String> infos = new java.util.LinkedHashSet<>( );
+        infos.add( INFO );
+        _infos = infos;
+        try
+        {
+            for ( String strTemplate : TEMPLATES )
+            {
+                check( strTemplate, false );
+            }
+        }
+        finally
+        {
+            _infos = List.of( new MVCMessage( INFO ) );
         }
     }
 }

@@ -15,7 +15,7 @@ ${mark_nb_places_to_take_form!}
 	<#if infos?? && infos?size gt 0>
 		<#-- the description of the calendar is rich text typed in the back office -->
 		<#-- the messages go in the content of the alert: a markup title is not accepted by every theme, a string title is escaped -->
-		<@cAlert type='info'><#list infos as info>${richText(info.message)}</#list></@cAlert>
+		<@cAlert type='info'><#list infos as info>${richText(((info?is_hash)?then(info.message!'', info)))}</#list></@cAlert>
 	</#if>
 	<#if formCalendarErrors??>
 		<#if (errors!)?size gt 0>
